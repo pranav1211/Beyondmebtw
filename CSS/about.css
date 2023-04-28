@@ -1,0 +1,261 @@
+/******************************* link ***************************************/
+a:link {
+    color: white;
+    text-decoration: none;
+
+}
+
+a:visited {
+    color: white;
+}
+
+/***********************************     header *****************************************/
+
+.homehead {
+    position: relative;
+    color: white;
+    padding-bottom: 10px;
+}
+
+.homehead::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 102%;
+    height: 2px;
+    background-color: #ffffff;
+    transform: scaleX(0);
+    transform-origin: bottom left;
+    transition: transform 0.5s ease-in-out;
+}
+
+.homehead:hover::after {
+    transform: scaleX(1);
+}
+
+
+.bloghead {
+    position: relative;
+
+    color: white;
+    padding-bottom: 10px;
+}
+
+.bloghead::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #ffffff;
+    transform: scaleX(0);
+    transform-origin: bottom left;
+    transition: transform 0.5s ease-in-out;
+}
+
+.bloghead:hover::after {
+    transform: scaleX(1);
+}
+
+.abouthead {
+    position: relative;
+
+    color: white;
+    padding-bottom: 10px;
+}
+
+.abouthead::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #ffffff;
+    transform: scaleX(0);
+    transform-origin: bottom left;
+    transition: transform 0.5s ease-in-out;
+}
+
+.abouthead:hover::after {
+    transform: scaleX(1);
+}
+
+#beyond {
+    float: left;
+    font-size: 290%;
+    margin-left: 2vw;
+    margin-top: 2.9vh;
+    position: inherit;
+    color: white;
+}
+
+#hai {
+    float: right;
+    font-size: 210%;
+    margin-right: 2vw;
+    margin-top: 3.9vh;
+    margin-left: -20%;
+    position: relative;
+    display: flex;
+
+
+}
+
+.header {
+
+    margin: 0px;
+    width: 100%;
+    height: 12vh;
+    font-family: 'Cinzel', serif;
+    font-style: italic;
+    position: relative;
+    background-color: black;
+
+}
+
+.twitter {
+    border: 0px;
+    background-blend-mode: inherit;
+    font-size: 40px;
+    margin-bottom: 2vw;
+    background-color: inherit;
+    color: white;
+    cursor: pointer;
+}
+
+.dropbtn {
+    background-color: black;
+    border: none;
+    cursor: pointer;    
+    position: relative;
+    
+    
+}
+
+#imga {
+    width: 30px;
+    height: 40px;
+
+}
+
+/****************************body*****************************/
+
+
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+
+}
+
+body {
+    margin: 0px;
+    background-image: linear-gradient(-225deg, #77FFD2 0%, #6297DB 48%, #1EECFF 100%);
+    background-blend-mode: multiply;
+
+}
+
+/************** into 1 *********************/
+
+#intro1{
+    color: white;
+    text-align: center;
+    font-size: 12vw;
+    font-family: 'Rajdhani', sans-serif;
+}
+
+
+/*************************** copywright ******************************/
+
+footer {
+    text-align: center;
+    color: white;
+    bottom: 0;
+    position: fixed;
+    left: 0;
+    width: 100%;
+
+    padding-bottom: 1%;
+}
+
+#f1 {
+    font-size: 2.5vh;
+    font-style: italic;
+    font-family: 'Cinzel', serif;
+}
+
+#f2 {
+    font-size: 1.5vh;
+    font-family: 'Rajdhani', sans-serif;
+}
+
+/************************************************************************/
+
+/*******************************phone hamburger*****************************/
+
+.dropdown,
+#downdr {
+    display: flex;
+}
+
+
+
+/********************not a phone**************************/
+@media screen and (min-width:630px) {
+    .dropbtn {
+        visibility: hidden;
+
+    }
+
+    #downdr {
+
+        display: flex;
+    }
+
+    #link1,
+    #link2,
+    #link3,
+    #link4 {
+        visibility: visible;
+
+
+    }
+
+}
+
+
+/************************phone***************************************/
+@media screen and (max-width:630px) {
+    .dropbtn {
+        visibility: visible;
+
+
+    }
+
+    #link1,
+    #link2,
+    #link3,
+    #link4 {
+        visibility: hidden;
+        padding-bottom: 20px;
+        
+        
+
+    }
+
+    #downdr {
+        margin-top: 11vh;
+        position: absolute;
+        margin-left: -47vw;
+        display: block;
+        
+
+
+
+    }
+
+  
+}
