@@ -30,3 +30,5 @@ Here is the changelog :
     V 0.4 27/04/2023
     ->Added a Hamburger button for small devices that contain the contents of the header
     
+## Phase 2 :
+ coming soon.
