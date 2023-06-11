@@ -114,7 +114,7 @@ if (screen.width > 630) {
     clc();
     window.onload = function () {
         if (!window.location.hash) {
-            window.location = window.location + '#';
+            window.location = window.location + '#1';
             window.location.reload();
         }
     }
