@@ -39,7 +39,7 @@ let count = 1;
 
 bt.addEventListener('click', () => {
 
-    alert("works");
+    
     if (count % 2 === 0) {
         hid();
         count = 3;
