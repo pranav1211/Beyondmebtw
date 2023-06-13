@@ -30,6 +30,12 @@ Here is the changelog :
     V 0.4 27/04/2023
     ->Added a Hamburger button for small devices that contain the contents of the header
     
-## Phase 2 :
- coming soon.
+  ## Phase 2 :
+    V 0.5 13/06/2023
+    ->fixed home page image overflow on smaller devices
+    ->positioned and sized header across all devices
+    ->resized the 'Nice to meet you portion' for smaller devices
+    ->The hamburger icon when clicked takes over the whole page to show the options
+    ->sized the blog and about pages to the same/similar standards as the home page
+
 
