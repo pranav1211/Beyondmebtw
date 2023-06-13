@@ -112,8 +112,9 @@ bt.addEventListener('click', () => {
 });
 console.log(count);
 
-if (screen.width > 630) {
+if (screen.width > 675) {
     clc();
+    bod.style.overflow = 'visible';
     window.onload = function () {
         if (!window.location.hash) {
             window.location = window.location + '#1';
@@ -121,6 +122,6 @@ if (screen.width > 630) {
         }
     }
 }
-if (screen.width < 630) {
+if (screen.width < 675) {
     hid();
 }
