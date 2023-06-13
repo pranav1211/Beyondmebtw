@@ -74,14 +74,16 @@ const bt = document.querySelector('.dropbtn');
 
 const bacg = document.querySelector('.downdr');
 
-const i1hei = document.querySelector('#intro1')
+const i1hei = document.querySelector('#one')
+
+const nm = document.querySelector('#beyond')
 
 function hid() {
     li1.style.visibility = 'hidden';
     li2.style.visibility = 'hidden';
     li3.style.visibility = 'hidden';
     li4.style.visibility = 'hidden';
-    i1hei.style.marginTop = '14vh';
+    i1hei.style.marginTop = '0vh';
     bod.style.overflow = 'visible';
 }
 function clc() {
@@ -89,8 +91,9 @@ function clc() {
     li2.style.visibility = 'visible';
     li3.style.visibility = 'visible';
     li4.style.visibility = 'visible';
-    i1hei.style.marginTop = '101vh';
+    i1hei.style.marginTop = '102vh';
     bod.style.overflow = 'hidden';
+    
 
 }
 
@@ -113,8 +116,13 @@ bt.addEventListener('click', () => {
 console.log(count);
 
 if (screen.width > 675) {
-    clc();
+    li1.style.visibility = 'visible';
+    li2.style.visibility = 'visible';
+    li3.style.visibility = 'visible';
+    li4.style.visibility = 'visible';
     bod.style.overflow = 'visible';
+    i1hei.style.marginTop = '0vh';
+
     window.onload = function () {
         if (!window.location.hash) {
             window.location = window.location + '#1';
@@ -124,4 +132,6 @@ if (screen.width > 675) {
 }
 if (screen.width < 675) {
     hid();
+    
 }
+
