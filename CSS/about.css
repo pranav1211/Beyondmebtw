@@ -113,7 +113,7 @@ a:visited {
     font-style: italic;
     position: relative;
     background-color: inherit;
-    
+
 
 }
 
@@ -163,7 +163,7 @@ body {
 }
 
 
-/*************************** copywright ******************************/
+/*************************** footer ******************************/
 
 #footer {
     text-align: center;
@@ -174,7 +174,7 @@ body {
 }
 
 #f1 {
-    margin-left: 4vw;
+    margin-right: 0.6vw;
     font-size: 2.5vh;
     font-style: italic;
     font-family: 'Cinzel', serif;
@@ -263,15 +263,16 @@ body {
         display: block;
     }
 
-    #nm{
+    #nm {
         font-size: 240%;
         margin-top: 3vw;
     }
-    #ipara{
+
+    #ipara {
         font-size: 120%;
     }
 
-    .header{
+    .header {
         margin-bottom: 3vw;
         margin-top: -3vw;
     }
@@ -279,13 +280,64 @@ body {
 
 }
 
-@media screen and (max-width:950px)
-{
-    #one{
+@media screen and (max-width:950px) {
+    #one {
         margin-top: 4.5vw;
         height: fit-content;
     }
-    #intro2{
+
+    #intro2 {
         margin-top: 1vw;
     }
+}
+
+
+
+/****************************** slider ************************************/
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.slider {
+
+    max-width: 50.1%;
+    margin: auto;
+    position: relative;
+    
+
+}
+
+.carou {
+    overflow: hidden;
+    width:99.99%;
+}
+
+.slides {
+    display: flex;
+    width: max-content;
+    height: 31.06vw;
+    image-resolution: inherit;
+    position: relative;
+
+}
+
+@media screen and (max-width:950px) {
+    img {
+        width: 81vw;
+        height: 54vw;
+    }
+
+
+    .slider {
+        max-width: 81vw;
+        height: 54vw;
+    }
+
+    .carou {
+        overflow: hidden;
+    }
+
 }
