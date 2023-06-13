@@ -1,3 +1,65 @@
+const slide = document.querySelector('.slides');
+const images = document.querySelectorAll('.slides img');
+
+//buttons
+const prev = document.querySelector('#prevbtn');
+const next = document.querySelector('#nextbtn');
+
+
+//counter
+let counter = 1;
+const size = images[0].clientWidth;
+
+slide.style.transform = 'translateX(' + (-size * counter) + 'px)'
+
+//blur
+
+images[counter + 1].style.opacity = 0.7;
+images[counter - 1].style.opacity = 0.7;
+
+
+
+//button listner
+
+
+function move() {
+    {
+        if (counter >= images.length - 1) return;
+        slide.style.transition = "transform 1.9s ease-in-out";
+        counter++;
+        slide.style.transform = 'translateX(' + (-size * counter) + 'px)'
+        images[counter].style.opacity = 1;
+        images[counter + 1].style.opacity = 0.7;
+        images[counter - 1].style.opacity = 0.7;
+
+    }
+}
+
+
+setInterval(move,7000);
+
+///////// last and first
+
+slide.addEventListener('transitionend', () => {
+    if (images[counter].id === 'lastclone') {
+        slide.style.transition = "none";
+        counter = images.length - 2;
+        slide.style.transform = 'translateX(' + (-size * counter) + 'px)'
+        images[counter].style.opacity = 1;
+        images[counter + 1].style.opacity = 0.7;
+        images[counter - 1].style.opacity = 0.7;
+    }
+
+    else if (images[counter].id === 'firstclone') {
+        slide.style.transition = "none";
+        counter = images.length - counter;
+        slide.style.transform = 'translateX(' + (-size * counter) + 'px)'
+        images[counter].style.opacity = 1;
+        images[counter + 1].style.opacity = 0.7;
+        images[counter - 1].style.opacity = 0.7;
+    }
+});
+///////////////////////////////////////////////////////////////////
 
 const bod = document.querySelector('.bod');
 const li1 = document.querySelector('.homehead');
