@@ -85,18 +85,18 @@ a:visited {
 
 #beyond {
     float: left;
-    font-size: 290%;
-    margin-left: 2vw;
-    margin-top: 2.9vh;
+    font-size: 270%;
+    margin-left: 4vw;
+    margin-top: 4.1vh;
     position: inherit;
     color: white;
 }
 
 #hai {
     float: right;
-    font-size: 210%;
-    margin-right: 2vw;
-    margin-top: 3.9vh;
+    font-size: 270%;
+    margin-right: 3vw;
+    margin-top: 4.4vh;
     margin-left: -20%;
     position: relative;
     display: flex;
@@ -108,11 +108,12 @@ a:visited {
 
     margin: 0px;
     width: 100%;
-    height: 12vh;
+    height: 11.5vh;
     font-family: 'Cinzel', serif;
     font-style: italic;
     position: relative;
-    background-color: black;
+    background-color: inherit;
+    
 
 }
 
@@ -127,12 +128,13 @@ a:visited {
 }
 
 .dropbtn {
-    background-color: black;
+    background-color: inherit;
     border: none;
-    cursor: pointer;    
+    cursor: pointer;
+
     position: relative;
-    
-    
+
+
 }
 
 #imga {
@@ -155,33 +157,24 @@ body {
     margin: 0px;
     background-image: linear-gradient(-225deg, #77FFD2 0%, #6297DB 48%, #1EECFF 100%);
     background-blend-mode: multiply;
+    overflow: visible;
+    position: relative;
 
-}
-
-/************** into 1 *********************/
-
-#intro1{
-    color: white;
-    text-align: center;
-    font-size: 12vw;
-    font-family: 'Rajdhani', sans-serif;
 }
 
 
 /*************************** copywright ******************************/
 
-footer {
+#footer {
     text-align: center;
     color: white;
-    bottom: 0;
-    position: fixed;
-    left: 0;
-    width: 100%;
+
 
     padding-bottom: 1%;
 }
 
 #f1 {
+    margin-left: 4vw;
     font-size: 2.5vh;
     font-style: italic;
     font-family: 'Cinzel', serif;
@@ -204,7 +197,8 @@ footer {
 
 
 /********************not a phone**************************/
-@media screen and (min-width:630px) {
+
+@media screen and (min-width:675px) {
     .dropbtn {
         visibility: hidden;
 
@@ -224,15 +218,22 @@ footer {
 
     }
 
+
+
+    #hai {
+        font-size: 240%;
+
+    }
+
+
 }
 
 
 /************************phone***************************************/
-@media screen and (max-width:630px) {
+@media screen and (max-width:675px) {
+
     .dropbtn {
         visibility: visible;
-
-
     }
 
     #link1,
@@ -240,22 +241,51 @@ footer {
     #link3,
     #link4 {
         visibility: hidden;
-        padding-bottom: 20px;
-        
-        
+        padding-bottom: 55px;
+        font-style: normal;
 
+
+    }
+
+    #link3 {
+        margin-left: 3vw;
+        padding-bottom: 56px;
+    }
+
+    #link4 {
+        margin-left: 7vw;
     }
 
     #downdr {
-        margin-top: 11vh;
+        margin-top: 22vh;
         position: absolute;
-        margin-left: -47vw;
+        margin-left: -53vw;
         display: block;
-        
-
-
-
     }
 
-  
+    #nm{
+        font-size: 240%;
+        margin-top: 3vw;
+    }
+    #ipara{
+        font-size: 120%;
+    }
+
+    .header{
+        margin-bottom: 3vw;
+        margin-top: -3vw;
+    }
+
+
+}
+
+@media screen and (max-width:950px)
+{
+    #one{
+        margin-top: 4.5vw;
+        height: fit-content;
+    }
+    #intro2{
+        margin-top: 1vw;
+    }
 }

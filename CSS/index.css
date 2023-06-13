@@ -86,8 +86,8 @@ a:visited {
 #beyond {
     float: left;
     font-size: 270%;
-    margin-left: 3vw;
-    margin-top: 3.9vh;
+    margin-left: 4vw;
+    margin-top: 4.1vh;
     position: inherit;
     color: white;
 }
@@ -95,7 +95,7 @@ a:visited {
 #hai {
     float: right;
     font-size: 270%;
-    margin-right: 2vw;
+    margin-right: 3vw;
     margin-top: 4.4vh;
     margin-left: -20%;
     position: relative;
@@ -113,6 +113,7 @@ a:visited {
     font-style: italic;
     position: relative;
     background-color: inherit;
+    
 
 }
 
@@ -157,6 +158,7 @@ body {
     background-color: black;
     background-blend-mode: multiply;
     overflow: visible;
+    position: relative;
 
 }
 
@@ -165,18 +167,15 @@ body {
 
 
 #one {
-
-    width: 100%;
     
+    width: 100%;
+    position: relative;
     background-repeat: no-repeat;
     object-fit: contain;
+    
 }
 
-#intro1 {
-    position: relative;
 
-
-}
 
 
 
@@ -186,8 +185,12 @@ body {
 
 /******************** inro 2 *********************************/
 
+#intro2{
+    margin-top: 3vh;
+}
+
 #nm {
-    margin-top: -22vh;
+    
     color: white;
     text-align: center;
     font-size: 350%;
@@ -211,11 +214,18 @@ body {
     padding-right: 10%;
 }
 
-
+#wixx{
+    font-size: 1.6em;
+    color: white;
+    text-align: center;
+    font-family: 'Rajdhani', sans-serif;
+    line-height: 130%;
+    letter-spacing: 1;
+}
 
 /*************************** copywright ******************************/
 
-footer {
+#footer {
     text-align: center;
     color: white;
 
@@ -267,9 +277,7 @@ footer {
 
     }
 
-    #one {
-        margin-top: -98vh;
-    }
+
 
     #hai {
         font-size: 240%;
@@ -285,8 +293,6 @@ footer {
 
     .dropbtn {
         visibility: visible;
-
-
     }
 
     #link1,
@@ -306,7 +312,7 @@ footer {
     }
 
     #link4 {
-        margin-left: 6vw;
+        margin-left: 7vw;
     }
 
     #downdr {
@@ -316,13 +322,29 @@ footer {
         display: block;
     }
 
-    #one {
-        margin-top: -10vh;
-
-
+    #nm{
+        font-size: 240%;
+        margin-top: 3vw;
+    }
+    #ipara{
+        font-size: 120%;
     }
 
-    #nm {
-        margin-top: 22vw;
+    .header{
+        margin-bottom: 3vw;
+        margin-top: -3vw;
+    }
+
+
+}
+
+@media screen and (max-width:950px)
+{
+    #one{
+        margin-top: 4.5vw;
+        height: fit-content;
+    }
+    #intro2{
+        margin-top: 1vw;
     }
 }
