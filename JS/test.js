@@ -36,7 +36,7 @@ function move() {
 }
 
 
-setInterval(move,4000);
+setInterval(move,5000);
 
 ///////// last and first
 
