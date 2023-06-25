@@ -262,15 +262,6 @@ body {
         margin-left: -53vw;
         display: block;
     }
-
-    #nm{
-        font-size: 240%;
-        margin-top: 3vw;
-    }
-    #ipara{
-        font-size: 120%;
-    }
-
     .header{
         margin-bottom: 3vw;
         margin-top: -3vw;
@@ -284,8 +275,5 @@ body {
     #one{
         margin-top: 4.5vw;
         height: fit-content;
-    }
-    #intro2{
-        margin-top: 1vw;
     }
 }
