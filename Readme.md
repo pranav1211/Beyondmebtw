@@ -39,6 +39,6 @@ Here is the changelog :
     ->sized the blog and about pages to the same/similar standards as the home page
 
     V 0.6 26/06/2023
-    -> fixed hamburger button not working on        blog and about pages
+    -> fixed hamburger button not working on blog and about pages
 
 
