@@ -36,7 +36,7 @@ function move() {
 }
 
 
-//setInterval(move,5500);
+setInterval(move,5500);
 
 ///////// last and first
 
@@ -124,12 +124,6 @@ if (screen.width > 675) {
 }
 if (screen.width < 675){ 
     hid();
-    window.onload = function () {
-        if (!window.location.hash) {
-            window.location = window.location + '#';
-            window.location.reload();
-        }
-
-    }
+     
 }
 
