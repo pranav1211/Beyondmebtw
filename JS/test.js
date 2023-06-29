@@ -36,7 +36,7 @@ function move() {
 }
 
 
-setInterval(move,5000);
+setInterval(move,5500);
 
 ///////// last and first
 
@@ -123,12 +123,8 @@ if (screen.width > 675) {
     bod.style.overflow = 'visible';
     i1hei.style.marginTop = '0vh';
 
-    window.onload = function () {
-        if (!window.location.hash) {
-            window.location = window.location + '#1';
-            window.location.reload();
-        }
-    }
+    
+    
 }
 if (screen.width < 675) {
     hid();
