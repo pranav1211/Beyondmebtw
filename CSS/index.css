@@ -113,7 +113,7 @@ a:visited {
     font-style: italic;
     position: relative;
     background-color: inherit;
-    
+
 
 }
 
@@ -167,12 +167,12 @@ body {
 
 
 #one {
-    
+
     width: 100%;
     position: relative;
     background-repeat: no-repeat;
     object-fit: contain;
-    
+
 }
 
 
@@ -185,12 +185,14 @@ body {
 
 /******************** inro 2 *********************************/
 
-#intro2{
+
+
+#intro2 {
     margin-top: 3vh;
 }
 
 #nm {
-    
+
     color: white;
     text-align: center;
     font-size: 350%;
@@ -214,7 +216,7 @@ body {
     padding-right: 10%;
 }
 
-#wixx{
+#wixx {
     font-size: 1.6em;
     color: white;
     text-align: center;
@@ -284,6 +286,14 @@ body {
 
     }
 
+    #embedd {
+        padding-left: 33%;
+        padding-right: 25%;
+        margin-bottom: 2%;
+        display: flex;
+
+    }
+
 
 }
 
@@ -316,35 +326,63 @@ body {
     }
 
     #downdr {
+        height: 2%;
         margin-top: 22vh;
         position: absolute;
         margin-left: -53vw;
         display: block;
     }
 
-    #nm{
+    #nm {
         font-size: 240%;
         margin-top: 3vw;
     }
-    #ipara{
+
+    #ipara {
         font-size: 120%;
     }
 
-    .header{
+    .header {
         margin-bottom: 3vw;
         margin-top: -3vw;
     }
 
+    #embedd {
+        padding-left: 4%;
+        margin-bottom: 2%;
+        display: flex;
+
+
+    }
 
 }
 
-@media screen and (max-width:950px)
-{
-    #one{
-        margin-top: 4.5vw;
-        height: fit-content;
+
+    @media screen and (max-width:950px) {
+        #one {
+            margin-top: 4.5vw;
+            height: fit-content;
+        }
+
+        #intro2 {
+            margin-top: 1vw;
+        }
     }
-    #intro2{
-        margin-top: 1vw;
+
+
+
+
+
+
+    /************************ embedded area ***************************************/
+
+    #embedd {
+        display: flex;
     }
-}
+
+    #twitem {
+        width: 96%;
+        height: 20%;
+        
+    }
+
