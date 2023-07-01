@@ -41,4 +41,10 @@ Here is the changelog :
     V 0.6 26/06/2023
     ->fixed hamburger button not working on blog and about pages
 
+    V 0.7 29/06/2023
+    ->added a twitter embedd on home page
+    ->added an image carousel to about page
+    ->about page has content(check it out)
+    ->fixed an issue where ceratin part of the wix link was un-clickable
+
 
