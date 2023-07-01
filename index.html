@@ -12,17 +12,13 @@
 
     <link rel="stylesheet" href="CSS/index.css">
     <link rel="stylesheet" href="CSS/test.css">
-    <script  type='text/javascript'>
-        (function () {
-            if (window.localStorage) {
-                if (!localStorage.getItem('firstLoad')) {
-                    localStorage['firstLoad'] = true;
-                    window.location.reload();
-                }
-                else
-                    localStorage.removeItem('firstLoad');
+    <script type='text/javascript'>
+        window.onload = function () {
+            if (!window.location.hash) {
+                window.location = window.location + '#loaded';
+                window.location.reload();
             }
-        })();
+        }
     </script>
     <script src="path/to/lazysizes.min.js" async></script>
 
