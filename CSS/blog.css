@@ -155,8 +155,8 @@ a:visited {
 
 body {
     margin: 0px;
-    background-image: linear-gradient(-225deg, #5D9FFF 0%, #B8DCFF 48%, #6BBBFF 100%);
-    background-blend-mode: multiply;
+    background-image: linear-gradient(to right, #874da2 0%, #c43a30 100%);
+    background-repeat: repeat-y;
     overflow: visible;
     position: relative;
 

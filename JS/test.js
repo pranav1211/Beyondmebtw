@@ -34,10 +34,12 @@ function move() {
     }
 }
 
-window.addEventListener('load',()=>{
-    window.location.reload
-})
-
+window.onload = function() {
+    if (!window.location.hash) {
+        window.location = window.location + '#loaded';
+        window.location.reload();
+    }
+}
 setInterval(move,6500);
 
 ///////// last and first
