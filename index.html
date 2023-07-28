@@ -13,14 +13,11 @@
     <link rel="stylesheet" href="CSS/index.css">
     <link rel="stylesheet" href="CSS/test.css">
     <script type='text/javascript'>
-        window.onload = function () {
-            if (!window.location.hash) {
-                window.location = window.location + '#';
-                window.location.reload();
-            }
+        function loa(){
+            location.reload()
         }
     </script>
-    <script src="path/to/lazysizes.min.js" async></script>
+
 
 </head>
 
@@ -28,7 +25,7 @@
 
 
 
-<body class="bod">
+<body class="bod" onload="reload()">
 
 
 
@@ -99,15 +96,15 @@
 
 
     <br><br>
-    <!--
+    
     <div id="embedd">
         <div id="twitem"><a class="twitter-timeline lazyload" data-width="600" data-height="650"
-                href="https://fxtwitter.com/Pranavisda1?ref_src=twsrc%5Etfw"></a>
+                href="https://twitter.com/Pranavisda1?ref_src=twsrc%5Etfw"></a>
             <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
         </div>
 
     </div>
--->
+
 
 
 
