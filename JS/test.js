@@ -18,7 +18,6 @@ images[counter + 1].style.opacity = 0.7;
 images[counter - 1].style.opacity = 0.7;
 
 
-
 //button listner
 
 
@@ -35,8 +34,12 @@ function move() {
     }
 }
 
+window.addEventListener('load',()=>{
+    window.location.reload
+    alert('hel')
+})
 
-setInterval(move,5500);
+setInterval(move,6500);
 
 ///////// last and first
 
@@ -113,7 +116,7 @@ bt.addEventListener('click', () => {
     }
 
 });
-console.log(count);
+
 
 if (screen.width > 675) {
     li1.style.visibility = 'visible';
