@@ -36,7 +36,6 @@ function move() {
 
 window.addEventListener('load',()=>{
     window.location.reload
-    alert('hel')
 })
 
 setInterval(move,6500);
