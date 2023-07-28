@@ -35,6 +35,9 @@ function move() {
     }
 }
 
+window.addEventListener('load',()=>{
+    window.location.reload
+})
 
 setInterval(move,5500);
 
