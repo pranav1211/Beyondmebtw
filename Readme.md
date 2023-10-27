@@ -52,4 +52,11 @@ Here is the changelog :
     ->about page has content(check it out)
     ->fixed an issue where ceratin part of the wix link was un-clickable
 
+    V 0.8 28/10/2023
+    ->removed the blog page
+    ->using wix as the blog page i.e. when the blog button is clicked, you are redirected to the wix site
+    ->twitter embedd re-sizing
+    -> Check out https://beyondmebtw.wixsite.com/beyond-btw/post/new-project-alert for an interesting update
+
+
 
