@@ -4,7 +4,8 @@ Feel free to use the designs but kindly do not use my name or personal informati
 
 Here is the site : www.Beyondmebtw.com
 
-<img src="https://beyondmebtw.com/Images/homepage.png">
+Here is an image of the Home page :
+<img src="https://beyondmebtw.com/Images/homepage.png" "homepage">
 
 
 Here is the changelog :
