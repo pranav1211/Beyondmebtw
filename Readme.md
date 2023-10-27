@@ -6,7 +6,7 @@ Here is the site : www.Beyondmebtw.com
 
 Here is an image of the Home page :
 
-<img src="https://beyondmebtw.com/Images/homepage.png" "homepage">
+<img src="https://beyondmebtw.com/Images/homepage.png" alt="Home page">
 
 
 Here is the changelog :
