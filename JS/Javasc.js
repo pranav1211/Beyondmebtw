@@ -35,13 +35,17 @@ var linkshow = 1;
 emaillink.addEventListener('click', () => {
     if (linkshow == 1) {
 
-        emailidlink.style.visibility = 'visible'        
-        triangleup.style.visibility = 'visible'        
+        emailidlink.style.visibility = 'visible'
+        emailidlink.style.opacity = 1;
+        triangleup.style.visibility = 'visible'
+        triangleup.style.opacity = 1;
         linkshow = 0;
     }
     else if (linkshow == 0) {
-        emailidlink.style.visibility = 'hidden'        
-        triangleup.style.visibility = 'hidden'        
+        emailidlink.style.visibility = 'hidden'
+        emailidlink.style.opacity = 0;
+        triangleup.style.visibility = 'hidden'
+        triangleup.style.opacity = 0;
         linkshow = 1;
     }
 });
@@ -60,8 +64,10 @@ var mouseovermail = 0;
 
 emaillink.addEventListener('click', () => {
     if (mouseovermail == 1) {
-        emailidlink.style.visibility = 'hidden';        
+        emailidlink.style.visibility = 'hidden';
+        emailidlink.style.opacity = 0;
         triangleup.style.visibility = 'hidden'
+        triangleup.style.opacity = 0;
     }
 });
 
@@ -79,4 +85,20 @@ function clipboardcopyout() {
     triangleleft.style.visibility = 'hidden';
     clipboard.style.visibility = 'hidden';
     copiedtoc.style.visibility = 'hidden'
+}
+
+//////////////////////////// about the icons
+var contactbutton = document.querySelector('#contactbutton');
+var infoaboutbutts = document.querySelector('#infoaboutbutts');
+
+function aboutbuttson() {
+    infoaboutbutts.style.visibility = 'visible';
+}
+function aboutbuttsoff() {
+    infoaboutbutts.style.visibility = 'hidden';
+}
+
+if (screen.width < 972) {
+    contactbutton.style.visibility = 'hidden';
+
 }
