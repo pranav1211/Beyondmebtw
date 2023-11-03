@@ -2,9 +2,7 @@
 <html lang="en">
 
 <head>
-    <meta 
-    name="description"
-    content="A personal blog by Pranav Veeraghanta, a college student who is passionate about coding and life.
+    <meta name="description" content="A personal blog by Pranav Veeraghanta, a college student who is passionate about coding and life.
     I blog about personal experiences and topics like movies, music and video games">
 
     <title>Home | BeyondMeBTW</title>
@@ -20,6 +18,12 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Oxygen:wght@300&family=Rajdhani&display=swap');
     </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jacques+Francois+Shadow&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ruluko&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="CSS/index.css">
     <link rel="stylesheet" href="CSS/test.css">
@@ -27,11 +31,11 @@
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QT901JZ6DD"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
 
-  gtag('config', 'G-QT901JZ6DD');
+    gtag('config', 'G-QT901JZ6DD');
 </script>
 
 <body class="bod">
@@ -51,25 +55,42 @@
 
                     <div id="link3">
                         <a class="bloghead" href="https://beyondmebtw.wixsite.com/beyond-btw">Blog</a> &#160;&#160;
-                    </div>
-
-                    <div id="link4">
-                        <button class="twitter" onclick="twit()" role="button" aria-label="Name" ><i class="bi bi-twitter"></i></button>
-                    </div>
+                    </div>                   
                 </div>
             </div>
-            <button class="dropbtn"><img src="Images/test.jpg" id="imga" ></button>
+            <button class="dropbtn"><img src="Images/test.jpg" id="imga"></button>
         </div>
     </header>
 
     <img src="Images/onne.png" id="one" alt="welcome image">
-
+    <div id="contactbutton">
+        <i class="bi bi-github cicon githubli"></i>
+        <i class="bi bi-linkedin cicon linkedin"></i>
+        <i class="bi bi-medium cicon medium"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-twitter-x cicon twitterr"
+            viewBox="0 0 16 16">
+            <path
+                d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z" />
+        </svg>
+        <i class="bi bi-envelope-fill cicon email" onmouseover="fadein()" ></i>
+    </div>
+    <div>
+        <div id="email1">
+            <div class="triangle-up"></div>
+            <div id="maillink" value"Beyondmebtw@gmail.com" onmouseover="clipboardcopyover()" onmouseout="clipboardcopyout()">Beyondmebtw@gmail.com</div>
+        </div>
+        <div id="email2">
+            <div class="triangle-left"></div>
+            <div class="clipboard">Copy to clipboard</div>
+            <div class="copiedtoc">Copied</div>
+        </div>
+    </div>
     <div id="intro2">
         <p id="nm">Nice to Meet You</p>
         <br>
         <p id="ipara">
             Hello There, I'm Pranav Veeraghanta. I'm a college student
-            studying Computer Science. I love Movies, Music and Gaming.<br>
+            studying Artificial Intelligence and Machine Learning. I love Movies, Music and Gaming.<br>
             Welcome to my blog and get to know me Beyond Me.</p>
     </div>
     <br><br>
@@ -107,7 +128,7 @@
 
     <footer id="footer">
         <p id="f1">Beyondme_BTW</p><br>
-        <p id="f2">&copy2023 by BeyondmeBTW. Proudly created by Pranav Veeraghanta</p>
+        <p id="f2">&copy2023 BeyondmeBTW. Proudly created by Pranav Veeraghanta</p>
     </footer>
 </body>
 

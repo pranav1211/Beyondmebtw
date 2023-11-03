@@ -1,16 +1,14 @@
-/******************************* link ***************************************/
+/******************************* links ***************************************/
 a:link {
     color: white;
     text-decoration: none;
-
 }
 
 a:visited {
     color: white;
 }
 
-/***********************************     header *****************************************/
-
+/*********************************** header *****************************************/
 .homehead {
     position: relative;
     color: white;
@@ -37,7 +35,6 @@ a:visited {
 
 .bloghead {
     position: relative;
-
     color: white;
     padding-bottom: 10px;
 }
@@ -61,7 +58,6 @@ a:visited {
 
 .abouthead {
     position: relative;
-
     color: white;
     padding-bottom: 10px;
 }
@@ -105,36 +101,20 @@ a:visited {
 }
 
 .header {
-
     margin: 0px;
     width: 100%;
     height: 9.5vh;
     font-family: 'Cinzel', serif;
     font-style: italic;
-    position: relative;
     background-color: inherit;
-
-
-}
-
-.twitter {
-    border: 0px;
-    background-blend-mode: inherit;
-    font-size: 40px;
-    margin-bottom: 2vw;
-    background-color: inherit;
-    color: white;
-    cursor: pointer;
+    margin-bottom: 1vw;
 }
 
 .dropbtn {
     background-color: black;
     border: none;
     cursor: pointer;
-
     position: relative;
-
-
 }
 
 #imga {
@@ -164,8 +144,6 @@ body {
 
 /************** into 1 *********************/
 
-
-
 #one {
 
     width: 100%;
@@ -174,14 +152,6 @@ body {
     object-fit: contain;
 
 }
-
-
-
-
-
-
-
-
 
 /******************** inro 2 *********************************/
 
@@ -246,8 +216,6 @@ body {
     font-family: 'Rajdhani', sans-serif;
 }
 
-/************************************************************************/
-
 /*******************************phone hamburger*****************************/
 
 .dropdown,
@@ -272,8 +240,7 @@ body {
 
     #link1,
     #link2,
-    #link3,
-    #link4 {
+    #link3 {
         visibility: visible;
 
 
@@ -307,8 +274,7 @@ body {
 
     #link1,
     #link2,
-    #link3,
-    #link4 {
+    #link3 {
         visibility: hidden;
         padding-bottom: 55px;
         font-style: normal;
@@ -321,9 +287,7 @@ body {
         padding-bottom: 56px;
     }
 
-    #link4 {
-        margin-left: 7vw;
-    }
+
 
     #downdr {
         height: 2%;
@@ -358,30 +322,126 @@ body {
 }
 
 
-    @media screen and (max-width:950px) {
-        #one {
-            margin-top: 4.5vw;
-            height: fit-content;
-        }
-
-        #intro2 {
-            margin-top: 1vw;
-        }
+@media screen and (max-width:950px) {
+    #one {
+        margin-top: 4.5vw;
+        height: fit-content;
     }
 
-
-
-
-
-
-    /************************ embedded area ***************************************/
-
-    #embedd {
-        display: flex;
+    #intro2 {
+        margin-top: 1vw;
     }
+}
 
-    #twitem {
-        width: 96%;
-        height: 20%;
-        
-    }
+
+
+
+
+
+/************************ twitter embedded***************************************/
+#embedd {
+    display: flex;
+}
+
+#twitem {
+    width: 96%;
+    height: 20%;
+}
+
+/******************************* contact button ********************************/
+
+#contactbutton {
+    background-color: rgba(255, 255, 255, 0.6);
+    margin-left: 8vw;
+    margin-right: 80vw;
+    margin-top: -26vw;
+    position: fixed;
+    font-size: 2.5vw;
+    padding: 0.4vw;
+    border-radius: 20px;
+    font-family: 'Jacques Francois Shadow', serif;
+    font-weight: bolder;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.cicon {
+    margin-bottom: 1vw;
+    cursor: pointer;
+}
+
+.email {
+    margin-bottom: -0.3vw;
+}
+
+#maillink {
+    color: black;
+    margin-left: 1vw;
+    margin-top: -4.8vw;
+    position: fixed;
+    font-size: 1.4vw;
+    font-family: 'Ruluko', sans-serif;
+    background-color: rgba(255, 255, 255, 1);
+    border-radius: 20px;
+    padding: 1%;
+    cursor: pointer;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.triangle-up {
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 40px solid rgba(255, 255, 255, 1);
+    margin-left: 8.7%;
+    margin-top: -6.5vw;
+    position: fixed;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+#email1 {
+    display: flex;
+    flex-direction: column;
+}
+
+#email2 {
+    color: wheat;
+}
+
+.clipboard {
+    margin-left: 19.5vw;
+    position: fixed;
+    margin-top: -3.67vw;
+    background-color: rgba(80, 77, 77, 1);
+    padding: 0.3vw;
+    border-radius: 10px;
+    visibility: hidden;
+}
+
+.copiedtoc {
+    margin-left: 19.5vw;
+    position: fixed;
+    margin-top: -3.64vw;
+    background-color: rgba(80, 77, 77, 1);
+    padding: 0.3vw;
+    border-radius: 10px;
+    visibility: hidden;
+}
+
+.triangle-left {
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 20px solid rgba(80, 77, 77, 1);
+    margin-left: 18.67vw;
+    margin-top: -3.4vw;
+    position: fixed;
+    visibility: hidden;
+}
