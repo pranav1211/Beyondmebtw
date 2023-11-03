@@ -110,21 +110,14 @@ function hid() {
 function clc() {
     li1.style.visibility = 'visible';
     li2.style.visibility = 'visible';
-    li3.style.visibility = 'visible';
-    
+    li3.style.visibility = 'visible';    
     i1hei.style.marginTop = '102vh';
     bod.style.overflow = 'hidden';
-
-
 }
-
-
-
 if (screen.width > 675) {
     li1.style.visibility = 'visible';
     li2.style.visibility = 'visible';
-    li3.style.visibility = 'visible';
-    
+    li3.style.visibility = 'visible';    
     bod.style.overflow = 'visible';
     i1hei.style.marginTop = '0vh';
 }
