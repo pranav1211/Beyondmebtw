@@ -2,7 +2,6 @@
 a:link {
     color: white;
     text-decoration: none;
-
 }
 
 a:visited {
@@ -10,7 +9,6 @@ a:visited {
 }
 
 /***********************************     header *****************************************/
-
 .homehead {
     position: relative;
     color: white;
@@ -37,7 +35,6 @@ a:visited {
 
 .bloghead {
     position: relative;
-
     color: white;
     padding-bottom: 10px;
 }
@@ -61,7 +58,6 @@ a:visited {
 
 .abouthead {
     position: relative;
-
     color: white;
     padding-bottom: 10px;
 }
@@ -113,44 +109,25 @@ a:visited {
     font-style: italic;
     position: relative;
     background-color: inherit;
-
-
-}
-
-.twitter {
-    border: 0px;
-    background-blend-mode: inherit;
-    font-size: 40px;
-    margin-bottom: 2vw;
-    background-color: inherit;
-    color: white;
-    cursor: pointer;
 }
 
 .dropbtn {
     background-color: inherit;
     border: none;
     cursor: pointer;
-
     position: relative;
-
-
 }
 
 #imga {
     width: 30px;
     height: 40px;
-
 }
 
 /****************************body*****************************/
-
-
 * {
     margin: 0px;
     padding: 0px;
     box-sizing: border-box;
-
 }
 
 body {
@@ -159,17 +136,12 @@ body {
     background-blend-mode: multiply;
     overflow: visible;
     position: relative;
-
 }
 
-
 /*************************** footer ******************************/
-
 #footer {
     text-align: center;
     color: white;
-
-
     padding-bottom: 1%;
 }
 
@@ -185,52 +157,36 @@ body {
     font-family: 'Rajdhani', sans-serif;
 }
 
-/************************************************************************/
-
 /*******************************phone hamburger*****************************/
-
 .dropdown,
 #downdr {
     display: flex;
 }
 
-
-
 /********************not a phone**************************/
-
 @media screen and (min-width:675px) {
     .dropbtn {
         visibility: hidden;
-
     }
 
     #downdr {
-
         display: flex;
     }
 
     #link1,
     #link2,
-    #link3,
-    #link4 {
+    #link3 {
         visibility: visible;
-
-
     }
-
-
 
     #hai {
         font-size: 240%;
-
     }
-    #parag{
+
+    #parag {
         font-size: 140%;
     }
-
-
 }
-
 
 /************************phone***************************************/
 @media screen and (max-width:675px) {
@@ -241,13 +197,10 @@ body {
 
     #link1,
     #link2,
-    #link3,
-    #link4 {
+    #link3 {
         visibility: hidden;
         padding-bottom: 55px;
         font-style: normal;
-
-
     }
 
     #link3 {
@@ -279,22 +232,15 @@ body {
         margin-bottom: 3vw;
         margin-top: -3vw;
     }
-
-
 }
 
 @media screen and (max-width:950px) {
-    
-
-    #about{
+    #about {
         margin-top: 1vw;
     }
 }
 
-
-
 /****************************** slider ************************************/
-
 * {
     padding: 0;
     margin: 0;
@@ -302,17 +248,14 @@ body {
 }
 
 .slider {
-
     max-width: 39.1%;
     margin: auto;
     position: relative;
-    
-
 }
 
 .carou {
     overflow: hidden;
-    width:99.99%;
+    width: 99.99%;
 }
 
 .slides {
@@ -321,7 +264,6 @@ body {
     height: 21.06vw;
     image-resolution: inherit;
     position: relative;
-
 }
 
 @media screen and (max-width:950px) {
@@ -329,7 +271,6 @@ body {
         width: 81vw;
         height: 54vw;
     }
-
 
     .slider {
         max-width: 81vw;
@@ -339,35 +280,32 @@ body {
     .carou {
         overflow: hidden;
     }
-
 }
-
-
 
 /*********************************** about *****************/
-
-#am{
+#am {
     color: white;
     text-align: center;
-    font-size: 420%;    
+    font-size: 420%;
     font-family: 'Dancing Script', cursive;
 }
-#parag{
+
+#parag {
     color: white;
     text-align: center;
-    font-family: 'Playfair Display SC', serif;
+    font-family: 'Merienda', cursive;
+    font-family: 'Nova Mono', monospace;
     line-height: 130%;
     letter-spacing: 1.5;
     justify-content: center;
-
 }
 
-#am,#parag{
+#am,
+#parag {
     padding-left: 5%;
     padding-right: 5%;
 }
 
-#horli{
-    width: 100% ;
-    
+#horli {
+    width: 100%;
 }

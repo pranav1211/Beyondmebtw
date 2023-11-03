@@ -58,5 +58,9 @@ Here is the changelog :
     ->twitter embedd re-sizing
     -> Check out https://beyondmebtw.wixsite.com/beyond-btw/post/new-project-alert for an interesting update
 
+  V 0.9 03/11/2023
+    ->remove twitter icon and link from header on home and about page
+    ->changed font about page to improve readability
+    ->added a contact bar, contains links to linkedin, letterboxd, twitter, github and also email
 
 
