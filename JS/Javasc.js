@@ -28,30 +28,20 @@ githublink.addEventListener('click', () => {
     window.open("https://github.com/pranav1211");
 });
 
-emaillink.addEventListener("mouseover", () => {
-    emailidlink.style.visibility = 'visible';
-    emailidlink.style.opacity = 1;
-    triangleup.style.visibility = 'visible'
-    triangleup.style.opacity = 1;
-    mouseovermail = 1;
-});
+
 /////////////////////// email icon click
 
 var linkshow = 1;
-emaillink.addEventListener('touchstart', () => {
+emaillink.addEventListener('click', () => {
     if (linkshow == 1) {
 
-        emailidlink.style.visibility = 'visible'
-        emailidlink.style.opacity = 1;
-        triangleup.style.visibility = 'visible'
-        triangleup.style.opacity = 1;
+        emailidlink.style.visibility = 'visible'        
+        triangleup.style.visibility = 'visible'        
         linkshow = 0;
     }
     else if (linkshow == 0) {
-        emailidlink.style.visibility = 'hidden'
-        emailidlink.style.opacity = 0;
-        triangleup.style.visibility = 'hidden'
-        triangleup.style.opacity = 0;
+        emailidlink.style.visibility = 'hidden'        
+        triangleup.style.visibility = 'hidden'        
         linkshow = 1;
     }
 });
@@ -59,7 +49,7 @@ emaillink.addEventListener('touchstart', () => {
 //////////////////////// email id click
 var emailidd = "Beyondmebtw@gmail.com"
 
-emailidlink.addEventListener('touchstart', () => {
+emailidlink.addEventListener('click', () => {
     navigator.clipboard.writeText(emailidd);
     clipboard.style.visibility = 'hidden';
     copiedtoc.style.visibility = 'visible';
@@ -68,12 +58,10 @@ emailidlink.addEventListener('touchstart', () => {
 
 var mouseovermail = 0;
 
-emaillink.addEventListener('touchstart', () => {
+emaillink.addEventListener('click', () => {
     if (mouseovermail == 1) {
-        emailidlink.style.visibility = 'hidden';
-        emailidlink.style.opacity = 0;
+        emailidlink.style.visibility = 'hidden';        
         triangleup.style.visibility = 'hidden'
-        triangleup.style.opacity = 0;
     }
 });
 

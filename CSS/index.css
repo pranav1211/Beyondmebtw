@@ -387,8 +387,7 @@ body {
     padding: 1%;
     cursor: pointer;
     visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.5s ease;
+ 
 }
 
 .triangle-up {
@@ -401,8 +400,7 @@ body {
     margin-top: -6.5vw;
     position: fixed;
     visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.5s ease;
+
 }
 
 #email1 {
