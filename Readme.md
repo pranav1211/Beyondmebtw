@@ -63,7 +63,7 @@ Here is the changelog :
       ->remove twitter icon and link from header on home and about page
       ->changed font about page to improve readability
       ->added a contact bar, contains links to linkedin, letterboxd, twitter, github and also email
-      ->abandoning the phase system as i have completed the base of the site and now features are going to be added
-        so it makes more sense to keep it simple
+      ->abandoning the phase system as i have completed the base of the site and now features are going
+      to be added so it makes more sense to keep it simple
 
 
