@@ -71,7 +71,7 @@ const bod = document.querySelector('.bod');
 const li1 = document.querySelector('.homehead');
 const li2 = document.querySelector('.abouthead');
 const li3 = document.querySelector('.bloghead');
-const li4 = document.querySelector('.twitter');
+
 
 const bt = document.getElementsByClassName('.dropbtn');
 
@@ -103,7 +103,7 @@ function hid() {
     li1.style.visibility = 'hidden';
     li2.style.visibility = 'hidden';
     li3.style.visibility = 'hidden';
-    li4.style.visibility = 'hidden';
+    
     i1hei.style.marginTop = '0vh';
     bod.style.overflow = 'visible';
 }
@@ -111,7 +111,7 @@ function clc() {
     li1.style.visibility = 'visible';
     li2.style.visibility = 'visible';
     li3.style.visibility = 'visible';
-    li4.style.visibility = 'visible';
+    
     i1hei.style.marginTop = '102vh';
     bod.style.overflow = 'hidden';
 
@@ -124,7 +124,7 @@ if (screen.width > 675) {
     li1.style.visibility = 'visible';
     li2.style.visibility = 'visible';
     li3.style.visibility = 'visible';
-    li4.style.visibility = 'visible';
+    
     bod.style.overflow = 'visible';
     i1hei.style.marginTop = '0vh';
 }
