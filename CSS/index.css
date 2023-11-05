@@ -107,7 +107,7 @@ a:visited {
     font-family: 'Cinzel', serif;
     font-style: italic;
     background-color: inherit;
-    margin-bottom: 1vw;
+    margin-bottom: 1.5vw;
 }
 
 .dropbtn {
@@ -315,9 +315,10 @@ body {
         padding-left: 4%;
         margin-bottom: 2%;
         display: flex;
-
+        
 
     }
+
 
 }
 
@@ -356,7 +357,7 @@ body {
     margin-right: 80vw;
     margin-top: -26vw;
     position: fixed;
-    font-size: 2.5vw;
+    width: 3.5vw;
     padding: 0.4vw;
     border-radius: 20px;
     font-family: 'Jacques Francois Shadow', serif;
@@ -367,20 +368,21 @@ body {
 }
 
 .cicon {
-    margin-bottom: 1vw;
+    margin-bottom: 1.8vw;
     cursor: pointer;
+    
 }
 
 .email {
-    margin-bottom: -0.3vw;
+    margin-bottom: -0.04vw;
 }
 
 #maillink {
     color: black;
-    margin-left: 1vw;
-    margin-top: -4.8vw;
+    margin-left: 2.6vw;
+    margin-top: -4.1vw;
     position: fixed;
-    font-size: 1.4vw;
+    font-size: 1.1vw;
     font-family: 'Ruluko', sans-serif;
     background-color: rgba(255, 255, 255, 1);
     border-radius: 20px;
@@ -395,11 +397,11 @@ body {
 .triangle-up {
     width: 0;
     height: 0;
-    border-left: 1.2vw solid transparent;
-    border-right: 1.2vw solid transparent;
-    border-bottom: 2.4vw solid rgba(255, 255, 255, 1);
-    margin-left: 8.57%;
-    margin-top: -6.64vw;
+    border-left: 0.9vw solid transparent;
+    border-right: 0.9vw solid transparent;
+    border-bottom: 1.8vw solid rgba(255, 255, 255, 1);
+    margin-left: 8.96%;
+    margin-top: -5.2vw;
     position: fixed;
     visibility: hidden;
     opacity: 0;
@@ -417,9 +419,9 @@ body {
 }
 
 .clipboard {
-    margin-left: 19.5vw;
+    margin-left: 17.6vw;
     position: fixed;
-    margin-top: -3.67vw;
+    margin-top: -3.14vw;
     background-color: rgba(80, 77, 77, 1);
     padding: 0.3vw;
     border-radius: 10px;
@@ -427,9 +429,9 @@ body {
 }
 
 .copiedtoc {
-    margin-left: 19.5vw;
+    margin-left: 17.6vw;
     position: fixed;
-    margin-top: -3.64vw;
+    margin-top: -3.14vw;
     background-color: rgba(80, 77, 77, 1);
     padding: 0.3vw;
     border-radius: 10px;
@@ -442,8 +444,8 @@ body {
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent;
     border-right: 20px solid rgba(80, 77, 77, 1);
-    margin-left: 18.67vw;
-    margin-top: -3.4vw;
+    margin-left: 16.9vw;
+    margin-top: -2.9vw;
     position: fixed;
     visibility: hidden;
 }
@@ -473,31 +475,31 @@ body {
 .github-about {
     position: fixed;
     margin-top: -24.9vw;
-    margin-left: 11.3vw;
+    margin-left: 11.5vw;
 }
 
 .linkedin-about {
     position: fixed;
     margin-top: -20.6vw;
-    margin-left: 11.3vw;
+    margin-left: 11.5vw;
 }
 
 .medium-about {
     position: fixed;
-    margin-top: -16.4vw;
-    margin-left: 11.3vw;
+    margin-top: -16.2vw;
+    margin-left: 11.5vw;
 }
 
 .twitter-about {
     position: fixed;
-    margin-top: -12.4vw;
-    margin-left: 11.3vw;
+    margin-top: -11.9vw;
+    margin-left: 11.5vw;
 }
 
 .email-about {
     position: fixed;
-    margin-top: -8.5vw;
-    margin-left: 11.3vw;
+    margin-top: -8.1vw;
+    margin-left: 11.5vw;
 }
 
 .itsgithub,
@@ -512,6 +514,7 @@ body {
 }
 
 .itsgithub {
+    margin-left: 12.6vw;
     margin-top: -25.03vw;
     position: fixed;
 
@@ -520,21 +523,25 @@ body {
 .itslinkedin {
     position: fixed;
     margin-top: -20.7vw;
+    margin-left: 12.6vw;
 }
 
 .itsmedium {
     position: fixed;
-    margin-top: -16.46vw;
+    margin-top: -16.3vw;
+    margin-left: 12.6vw;
 }
 
 .itstwitter {
     position: fixed;
-    margin-top: -12.54vw;
+    margin-top: -11.97vw;
+    margin-left: 12.6vw;
 }
 
 .itsemail {
     position: fixed;
-    margin-top: -8.6vw;
+    margin-top: -8.2vw;
+    margin-left: 12.6vw;
 }
 #infoaboutbutts{
     visibility: hidden;
