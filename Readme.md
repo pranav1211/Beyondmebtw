@@ -60,18 +60,24 @@ Here is the changelog :
 
   ## Log
     V 0.9 03/11/2023
-      ->remove twitter icon and link from header on home and about page
+      ->remove twitter icon and link from header on home,about and blog page
       ->changed font about page to improve readability
       ->added a contact bar to homepage, contains links to linkedin, medium, twitter, github and also email
       
       * abandoning the phase system as i have completed the base of the site and now features are going
       to be added so it makes more sense to keep it simple
     
-    V 1.02 4/11/2023
+    V 1.0 4/11/2023
       ->added information about the buttons when mouse hovers over the contact area
       ->removed a feature that displayed email address when mouse hovered over email icon
         due to link clickable issues
       ->fixed hamburger button menu issue on phones that made content overlab
       ->removed the contact bar for smaller devices while i develop a replacement
-
+    
+    V 1.10 5/11/2023
+      ->added contact bar to about page
+      ->added contact bar to blog page
+      ->spaced header in blog page
+      ->added a new horizontal line in blog page visible only to small devices
+      ->made the icons source local
 
