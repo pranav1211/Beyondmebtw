@@ -332,6 +332,10 @@ body {
     color: white;
 }
 
+#about-github-link{
+    text-decoration: underline;
+}
+
 /**************************************/
 
 #contactbutton {
