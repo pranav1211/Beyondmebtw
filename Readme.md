@@ -84,4 +84,4 @@ Here is the changelog :
     V 1.11 06/11/2023
       ->added a css media query for the contact bar to make it hidden in smaller devices.
       ->edited and added some content to in the about section of the about page.
-      ->added a different gradient background to about page.
+      ->added a different gradient background to bout page.
