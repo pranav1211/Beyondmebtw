@@ -260,7 +260,9 @@ body {
         display: flex;
 
     }
-
+#contactbutton{
+    visibility: visible;
+}
 
 }
 
@@ -318,7 +320,9 @@ body {
         
 
     }
-
+#contactbutton{
+    visibility: hidden;
+}
 
 }
 
