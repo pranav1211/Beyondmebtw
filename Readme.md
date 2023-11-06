@@ -67,17 +67,19 @@ Here is the changelog :
       * abandoning the phase system as i have completed the base of the site and now features are going
       to be added so it makes more sense to keep it simple
     
-    V 1.0 4/11/2023
+    V 1.0 04/11/2023
       ->added information about the buttons when mouse hovers over the contact area
       ->removed a feature that displayed email address when mouse hovered over email icon
         due to link clickable issues
       ->fixed hamburger button menu issue on phones that made content overlab
       ->removed the contact bar for smaller devices while i develop a replacement
     
-    V 1.10 5/11/2023
+    V 1.10 05/11/2023
       ->added contact bar to about page
       ->added contact bar to blog page
       ->spaced header in blog page
       ->added a new horizontal line in blog page visible only to small devices
       ->made the icons source local
 
+    V 1.11 06/11/2023
+      ->added a css media query for the contact bar to make it hidden in smaller devices
