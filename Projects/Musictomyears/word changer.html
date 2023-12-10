@@ -1,0 +1,148 @@
+<html>
+
+<head>
+    <style>
+        #butss {
+            margin-left: 50%;
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <button onclick="doits()" id="butss">do it</button>
+
+    <br>
+    <p>////////////////////////////////////////////</p>
+    <div id="vnum"></div>
+
+    <div id="pl"></div>
+
+
+
+    <div id="pa"></div>
+
+    <br>
+
+    <div id="epl"></div>
+
+
+
+    <div id="epa"></div>
+
+    <br>
+
+    <div id="filna"></div>
+
+
+    <script>
+
+        var vnum = document.getElementById('vnum')
+        var pl = document.getElementById('pl');
+        var pa = document.getElementById('pa');
+        var epl = document.getElementById('epl');
+        var epa = document.getElementById('epa');
+
+        var filna = document.getElementById('filna');
+
+
+
+
+
+        function doits() {
+            var v1 = prompt('Song Title');
+            var v3 = localStorage.getItem('noofsongs')
+            var v4 = v1.replace(/ /g, "-");
+            var v5 = prompt("number of words in the song title")
+            var v6;
+            var v7;
+            var vk;
+
+            const arr = v1.split("");
+            var nme = arr[0];
+            var spacecount;
+            let arr2 = v1.split("");
+            var tinme = arr[0]
+            var ind;
+
+            for (i = 1; i < arr.length; i++) {
+                if (arr2[i] == " ") {
+                    spacecount++;
+                }
+            }
+
+            var nspacecount = 0;
+            
+            for (i = 1; i < arr2.length; i++) {
+                tinme = tinme + arr2[i]
+                if (arr2[i] == " ") {
+                    nspacecount++;
+                    if (nspacecount == v5) {
+                        ind = i;
+                    }
+                }
+            }
+            arr2[ind] = " - "
+            var tinme = arr[0]
+            for (i = 1; i < arr2.length; i++) {
+                tinme = tinme + arr2[i];
+            }
+            v6 = tinme;
+            v7 = v6;
+
+            for (i = 1; i < arr.length; i++) {
+                if (arr[i] == " ") {
+                    nme = nme + arr[i + 1];
+                }
+                else {
+                    nme = nme;
+                }
+            } v1 = nme;
+
+            document.getElementById("vnum").innerHTML = "var p" + v3 + " = document.getElementById('t" + v3 + "')";
+            document.getElementById("pl").innerHTML = "var " + v1 + "pl = document.querySelector('." + v1 + "pl');";
+            document.getElementById("pa").innerHTML = "var " + v1 + "pa = document.querySelector('." + v1 + "pa');";
+
+            document.getElementById("epl").innerHTML = "document.querySelector('." + v1 + "pl').addEventListener('click', () => {<br>p" + v3 + ".play();<br>" + v1 + "pl.style.visibility = 'hidden';<br>" + v1 + "pa.style.visibility = 'visible';});";
+            document.getElementById("epa").innerHTML = "document.querySelector('." + v1 + "pa').addEventListener('click', () => {<br>p" + v3 + ".pause();<br>" + v1 + "pl.style.visibility = 'visible';<br>" + v1 + "pa.style.visibility = 'hidden';});";
+
+            console.log('<br>\n\n<div class="' + v4 + ' title">\n<span class="material-symbols-outlined ' + v1 + 'pl play">\nplay_circle\n</span>\n<span class="material-symbols-outlined ' + v1 + 'pa pause">\npause_circle\n</span>\n<p class="' + v1 + ' sname">' + v6 + '</p>\n</div>\n<audio id=t' + v3 + ' class="audio-element" data-file-name="' + v7 + '" >\n<source src="music/' + v7 + '.opus" type="audio/mpeg">\n</audio>');
+
+
+
+
+            vk = v1 + " song"
+            console.log(vk);
+            localStorage.setItem(vk, v3)
+
+            function keyandvaluesonglocals() {
+                const keyandvaluesong = {};
+                Object.keys(localStorage).forEach(key => {
+                    if (key.includes('song')) {
+                        keyandvaluesong[key] = localStorage.getItem(key);
+                    }
+                });
+                return keyandvaluesong;
+            }
+
+            const keyandvaluesong = keyandvaluesonglocals();
+            let sortsong = [];
+            for (var vehicle in keyandvaluesong) {
+                sortsong.push([vehicle, keyandvaluesong[vehicle]]);
+            }
+
+            sortsong.sort(function (a, b) {
+                return a[1] - b[1];
+            });
+            console.log(sortsong);
+
+
+
+            v3++;
+            localStorage.setItem('noofsongs', v3)
+        }
+    </script>
+</body>
+
+</html>
