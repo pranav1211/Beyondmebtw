@@ -1,9 +1,0 @@
-
-    function cart()
-    {
-  
-      alert('test');
-  
-    }
-
-  
