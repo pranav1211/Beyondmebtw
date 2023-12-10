@@ -1,0 +1,306 @@
+img {
+  width: 50%;
+  height: 96%;
+  border-radius: 20px;
+  position: relative;
+
+}
+
+.items {
+  text-align: center;
+  margin-top: -45%;
+  margin-left: 53%;
+  position: relative;
+
+
+}
+
+
+.box {
+
+  padding: 1.2%;
+  background-color: rgb(165, 253, 224);
+  border-radius: 20px;
+  box-sizing: border-box;
+  width: 25%;
+
+  box-shadow: rgba(22, 31, 39, 0.42) 5px 60px 123px -25px,
+    rgba(19, 26, 32, 0.08) 5px 35px 75px -35px;
+  position: relative;
+  overflow:hidden;
+
+
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  overflow: -moz-scrollbars-none; /* For Firefox */
+  
+}
+
+.box::-webkit-scrollbar {
+  display: none;
+}
+.grid {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  
+
+
+}
+
+.text {
+  text-align: center;
+
+  position: relative;
+  margin: 0;
+  margin-bottom: 3%;
+
+  font-size: 1.8em;
+  width: auto;
+
+
+
+
+}
+
+.buttons {
+  text-align: center;
+  
+  margin-top: 10%;
+  border-radius: 5px;
+
+  font-size: 1.9em;
+  width: auto;
+
+}
+button::hover{
+  cursor: pointer;
+}
+.adin,
+.bdec,
+.binc,
+.kinc,
+.kdec,
+.dinc,
+.ddec {
+  border-radius: 5px;
+  
+  padding-right: 3%;
+  padding-left: 3%;
+  font-size: 1.3em;
+  font-weight: bold;
+  width: 20%;
+  
+  margin-top: 1%;
+  margin-bottom: 1%;
+
+  border: 0;
+  color: white;
+  background-image: linear-gradient(to top, #1e3c72 0%, #1e3c72 1%, #2a5298 100%);
+}
+
+
+.donb{
+  display: none;
+}
+
+
+
+.dairy,.veggies,.fruits{
+  margin-top: 5%;
+  
+}
+
+.veggies{
+  margin-bottom: 5%;
+}
+
+.butter,.avocado,.cuc{
+  margin-right: 3%;
+}
+.mozza,.mango,.pot{
+  margin-left: 5%;
+}
+
+/**********************************************************************/
+a:link {
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+
+}
+
+a:visited {
+  color: black;
+}
+
+/****************************************************************************/
+
+.homehead {
+  position: relative;
+
+  color: #333;
+  padding-bottom: 10px;
+}
+
+.homehead::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 107px;
+  height: 2px;
+  background-color: #333;
+  transform: scaleX(0);
+  transform-origin: bottom left;
+  transition: transform 0.3s ease-in-out;
+}
+
+.homehead:hover::after {
+  transform: scaleX(1);
+}
+
+
+
+
+
+.itemhead {
+  position: relative;
+
+  color: #333;
+  padding-bottom: 10px;
+}
+
+.itemhead::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 97px;
+  height: 2px;
+  background-color: #333;
+  transform: scaleX(0);
+  transform-origin: bottom left;
+  transition: transform 0.3s ease-in-out;
+}
+
+.itemhead:hover::after {
+  transform: scaleX(1);
+}
+
+
+footer {
+  background-color: green;
+  width: 100%;
+  position: relative;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+
+}
+
+
+
+* {
+  margin: 0px;
+
+}
+
+body {
+  margin: 0px;
+  position: relative;
+  min-height: 100vh;
+}
+
+
+footer {
+  background-color: green;
+  width: 100%;
+  position: relative;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: max-content;
+  
+}
+
+#grocery {
+  float: left;
+  font-size: 40px;
+  margin-left: 2%;
+  margin-top: 30px;
+}
+
+#hai {
+  float: right;
+  font-size: 40px;
+  margin-right: 3%;
+  margin-top: 30px;
+
+}
+
+h1.aboutheading {
+  color: black;
+  text-align: center;
+  padding-top: 2%;
+  font-size: 85px;
+  font-family: 'Courier New';
+  font-style: italic;
+}
+
+section.about {
+
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: absolute;
+  width: 100%;
+  height: 60%;
+  padding-bottom: 60%;
+
+
+}
+
+.bod {
+  background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+  background-attachment: fixed;
+}
+
+
+
+.header {
+  margin: 10px;
+  border-radius: 30px;
+  background-image: linear-gradient(60deg, #64b3f4 0%, #c2e59c 100%);
+  width: 99%;
+  height: 120px;
+  box-shadow: rgba(22, 31, 39, 0.42) 5px 60px 123px -25px,
+      rgba(19, 26, 32, 0.08) 5px 35px 75px -35px;
+  border-color: green;
+  font-family: 'Chelsea Market', cursive;
+
+
+
+}
+
+.cart {
+  
+  border: 0px;
+  background-blend-mode: inherit;
+
+  
+  font-size: 65px;
+  border-radius: 20px;
+  
+  box-shadow: rgba(22, 31, 39, 0.42) 5px 60px 123px -25px,
+      rgba(19, 26, 32, 0.08) 5px 35px 75px -35px;
+  background-color: inherit;
+
+
+  
+}
+
+
+.ketch,.bread,.donuts{
+  margin-right: 2%;
+  margin-left: 2%;
+}

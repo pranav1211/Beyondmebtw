@@ -1,0 +1,100 @@
+img {
+  width: 50%;
+  height: 96%;
+  border-radius: 20px;
+  position: relative;
+
+}
+
+.items {
+  text-align: center;
+  margin-top: -45%;
+  margin-left: 53%;
+  position: relative;
+
+
+}
+
+
+.box {
+
+  padding: 1.2%;
+  background-color: rgb(165, 253, 224);
+  border-radius: 20px;
+  box-sizing: border-box;
+  width: 25%;
+  overflow: hidden;
+
+  box-shadow: rgba(22, 31, 39, 0.42) 5px 60px 123px -25px,
+    rgba(19, 26, 32, 0.08) 5px 35px 75px -35px;
+  position: relative;
+  
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  overflow: -moz-scrollbars-none; /* For Firefox */
+  
+}
+
+.box::-webkit-scrollbar {
+  display: none;
+}
+.grid {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  
+
+
+}
+
+.text {
+  text-align: center;
+
+  position: relative;
+  margin: 0;
+  margin-bottom: 3%;
+
+  font-size: 1.8em;
+  width: auto;
+
+
+
+
+}
+
+.buttons {
+  text-align: center;
+  
+  margin-top: 10%;
+  border-radius: 5px;
+
+  font-size: 1.9em;
+  width: auto;
+
+}
+
+.bdec,
+.binc,
+.kinc,
+.kdec,
+.dinc,
+.ddec {
+  border-radius: 5px;
+
+  padding-right: 3%;
+  padding-left: 3%;
+  font-size: 1.2em;
+
+
+  margin-top: 1%;
+  margin-bottom: 1%;
+
+  border: 0;
+  color: white;
+  background-image: linear-gradient(to top, #1e3c72 0%, #1e3c72 1%, #2a5298 100%);
+}
+
+
+.donb{
+  display: none;
+}
