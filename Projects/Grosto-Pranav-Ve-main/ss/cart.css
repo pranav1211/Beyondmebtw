@@ -1,0 +1,61 @@
+body{
+    background-color: rgb(206, 89, 108);
+    background-image: linear-gradient(red,blue,pink);
+}
+
+.tab{
+    size: 10;
+    border-collapse: collapse;
+    width: 20em;
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0px 10px 30px 5px  rgba(0,0,0,.20);
+    margin: 25px auto;
+    font-family:'Courier New', Courier, monospace ;
+}
+
+
+.tab thead tr{
+    border-bottom: 1px dashed blue;
+
+}
+
+.tab tfoot tr{
+    border-top: 1px dashed blue;
+    
+}
+
+.tab thead tr td{
+    font-size: 16px;
+    letter-spacing: 1px;
+    color: grey;
+    padding: 8px; 
+}
+
+.tab tfoot tr td{
+    font-size: 19px;
+    letter-spacing: 1px;
+    color: green;
+    padding: 8px; 
+}
+
+.tab tbody tr td{
+    padding: 8px; 
+}
+
+.tab thead tr td:nth-last-child(1),
+.tab tbody tr td:nth-last-child(1),
+.tab tfoot tr td:nth-last-child(1)
+{
+    text-align: right;
+} 
+
+.tab tbody{
+    font-weight: 700;
+}
+
+.tab tbody tr span{
+    font-size: x-small;
+    color: grey;
+}
+
