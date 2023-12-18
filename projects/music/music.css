@@ -1,0 +1,129 @@
+body {
+    background-color: white;
+}
+
+.play,
+.pause {
+    margin-left: 25px;
+    margin-right: 25px;
+    margin-top: 25px;
+    cursor: pointer;
+    border-radius: 35px;
+
+}
+
+.play-circle-img {
+    visibility: visible;
+    width: 2.5vw;
+
+}
+
+.pause-circle-img {
+    visibility: hidden;
+    margin-left: -5.32vw;
+    width: 2.5vw;
+}
+
+.replaybutt {
+    cursor: pointer;
+    width: 1.5vw;
+}
+
+.replaystopbutt {
+    cursor: pointer;
+    width: 1.5vw;
+    margin-left: -1.99vw !important;
+    visibility: hidden;
+}
+
+.title {
+    border-bottom: 1px solid black;
+    margin-bottom: 0.4vw;
+    padding-bottom: 1.vw;
+    padding-right: 1vw;
+    margin-top: -0.6vw;
+
+}
+
+.sname {
+    float: right;
+    font-family: 'Nova Mono', monospace;
+    font-size: 1.2vw;
+    font-weight: bold;
+}
+
+.artist {
+    font-size: 0.9vw;
+    float: right;
+}
+
+#songnamemain {
+    float: right;
+}
+
+#playbuts {
+    margin-top: 4vw;
+    display: flex;
+    flex-direction: column;
+    overflow: scroll;
+    height: 40vw;
+    overflow-x: hidden;
+    border: 1px solid black;
+    margin-right: 28vw;
+    margin-left: 28vw;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    box-shadow: 0.8 0 0 5px grey;
+    border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: black;
+    border-radius: 10px;
+
+}
+
+
+#musiccontrols {
+    background-color: yellow;
+    position: fixed;
+    z-index: 10;
+    text-align: center;
+    margin-left: 3vw;
+    padding: 1vw;
+    width: 20vw;
+}
+
+#titletrack,
+#trackartist {
+    font-family: 'Nova Mono';
+}
+
+#titletrack {
+    font-weight: bolder;
+}
+
+#trackartist {
+    font-size: 1.2vw;
+}
+
+#titletrack,
+#counter {
+
+    color: black;
+    font-size: 30px;
+
+}
+
+#counter {
+    display: flex;
+    margin-top: -1%;
+    margin-left: 8.4vw;
+}
