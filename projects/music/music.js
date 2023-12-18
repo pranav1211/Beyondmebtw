@@ -1,15 +1,25 @@
-
-var plays = document.querySelectorAll('.play-circle-img')
-var pauses = document.querySelectorAll('.pause-circle-img')
-
 const audioElements = document.querySelectorAll('.audio-element');
 let currentlyPlaying = null;
+let mcplay = document.querySelector('.mcplay')
+let mcpause = document.querySelector('.mcpause')
+let shuffleon = document.querySelector('.shuffleon');
+let shuffleoff = document.querySelector('.shuffleoff');
 
+var totalchecker = '1';
 
+shuffleon.addEventListener('click', () => {
+    shuffleon.style.visibility = 'hidden'
+    shuffleoff.style.visibility = 'visible';
+
+});
+shuffleoff.addEventListener('click', () => {
+    shuffleon.style.visibility = 'visible'
+    shuffleoff.style.visibility = 'hidden';
+
+});
 
 audioElements.forEach(audio => {
 
-    var duration;
     var minuter = 0; // goes in the inute div
     var secondr = 1; //goes in the second div
     var mindiv = document.querySelector('#minuter');
@@ -17,7 +27,9 @@ audioElements.forEach(audio => {
     var intervalid1;
     var replaybut = document.querySelector('.replaybutt')
     var replaystopbut = document.querySelector('.replaystopbutt')
+
     let loopit;
+
     var songid = audio.getAttribute('song-id');
     let pauseid = "." + songid + "pa";
     let pause = document.querySelector(pauseid);
@@ -29,11 +41,21 @@ audioElements.forEach(audio => {
 
     audio.addEventListener('play', () => {
 
+        mcpause.addEventListener('click', () => {
+            iddd.pause();
+            mcplay.style.visibility = 'visible';
+            mcpause.style.visibility = 'hidden';
+            totalchecker = '1';
+        });
+        mcplay.addEventListener('click', () => {
+            iddd.play();
+        });
 
 
         if (currentlyPlaying !== null && currentlyPlaying !== audio) {
             currentlyPlaying.pause();
-            minuter = 1;
+
+            minuter = 0;
             secondr = 1;
             mindiv.innerHTML = "0:";
             audio.currentTime = 0;
@@ -47,7 +69,7 @@ audioElements.forEach(audio => {
         document.getElementById("trackartist").innerHTML = `${artfileName}`;
 
 
-        ///////// counter
+        // counter
 
         function forsecond() {
 
@@ -68,10 +90,14 @@ audioElements.forEach(audio => {
         intervalid1 = setInterval(forsecond, 1000);
     });
 
+    //pause
+
     audio.addEventListener('pause', () => {
         clearInterval(intervalid1);
+
     });
 
+    //replay
 
     replaybut.addEventListener('click', () => {
         replaybut.style.visibility = 'hidden'
@@ -84,84 +110,84 @@ audioElements.forEach(audio => {
         loopit = false;
     });
 
+    //on end loop or not
+
     audio.addEventListener('ended', () => {
+        minuter = 0;
+        secondr = 1;
 
         if (loopit == true) {
             iddd.play();
-
+            minuter = 0;
+            mindiv.innerHTML = "0:";
         }
         else {
-            pause.style.visibility = 'hidden';
-            play.style.visibility = 'visible';
+            mcplay.style.visibility = 'visible';
+            mcpause.style.visibility = 'hidden';
         }
-        minuter = 1;
-        secondr = 0;
     });
-
-
 });
+
 
 
 
 /////////////////////////////////////////////////////////////////
 var p1 = document.getElementById("t1")
-var spl = document.querySelector('.showerpl')
-var spa = document.querySelector('.showerpa')
-
+var checker1 = '1';
 document.querySelector('.showerpl').addEventListener("click", () => {
-    p1.play();
-    spl.style.visibility = 'hidden';
-    spa.style.visibility = 'visible';
+    if (checker1 == '1' || totalchecker == '1') {
+        p1.play();
+        totalchecker, checker1 = '0';
+        mcplay.style.visibility = 'hidden';
+        mcpause.style.visibility = 'visible';
+    }
+    else if (checker1 == '0') {
+        p1.pause();
+        checker1 = '1';
+    }
 });
-document.querySelector('.showerpa').addEventListener("click", () => {
-    p1.pause();
-    spl.style.visibility = 'visible';
-    spa.style.visibility = 'hidden';
-});
-
 //////////////////////////////////////////////////////
 var p2 = document.getElementById("t2")
-var cptupl = document.querySelector('.cptupl')
-var cptupa = document.querySelector('.cptupa')
-
+var checker2 = '1';
 document.querySelector('.cptupl').addEventListener('click', () => {
-    p2.play();
-    cptupl.style.visibility = 'hidden';
-    cptupa.style.visibility = 'visible';
+    if (checker2 == '1' || totalchecker == '1') {
+        p2.play();
+        totalchecker, checker2 = '0';
+        mcplay.style.visibility = 'hidden';
+        mcpause.style.visibility = 'visible';
+    }
+    else if (checker2 == '0') {
+        p2.pause();
+        checker2 = '1';
+    }
 });
-document.querySelector('.cptupa').addEventListener("click", () => {
-    p2.pause();
-    cptupl.style.visibility = 'visible';
-    cptupa.style.visibility = 'hidden';
-});
-
 //////////////////////////////////////////////////////
 var p3 = document.getElementById("t3")
-var solrpl = document.querySelector('.solrpl');
-var solrpa = document.querySelector('.solrpa');
-
+var checker3 = '1';
 document.querySelector('.solrpl').addEventListener('click', () => {
-    p3.play();
-    solrpl.style.visibility = 'hidden';
-    solrpa.style.visibility = 'visible';
-});
-document.querySelector('.solrpa').addEventListener('click', () => {
-    p3.pause();
-    solrpl.style.visibility = 'visible';
-    solrpa.style.visibility = 'hidden';
+    if (checker3 == '1' || totalchecker == '1') {
+        p3.play();
+        totalchecker, checker3 = '0';
+        mcplay.style.visibility = 'hidden';
+        mcpause.style.visibility = 'visible';
+    }
+    else if (checker3 == '0') {
+        p3.pause();
+        checker3 = '1';
+    }
 });
 ////////////////////////////////////////////////////////
 var p4 = document.getElementById('t4')
-var sfttrarlpl = document.querySelector('.sfttrarlpl');
-var sfttrarlpa = document.querySelector('.sfttrarlpa');
-
+var checker4 = '1';
 document.querySelector('.sfttrarlpl').addEventListener('click', () => {
-    p4.play();
-    sfttrarlpl.style.visibility = 'hidden';
-    sfttrarlpa.style.visibility = 'visible';
-});
-document.querySelector('.sfttrarlpa').addEventListener('click', () => {
-    p4.pause();
-    sfttrarlpl.style.visibility = 'visible';
-    sfttrarlpa.style.visibility = 'hidden';
+    if (checker4 == '1' || totalchecker == '1') {
+        p4.play();
+        totalchecker, checker4 = '0';
+        mcplay.style.visibility = 'hidden';
+        mcpause.style.visibility = 'visible';
+    }
+    else if (checker4 == '0') {
+        p4.pause();
+        checker4 = '1';
+    }
 });

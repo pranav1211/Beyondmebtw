@@ -5,15 +5,30 @@ I'm open to sugesstions and criticism as it will only make it better.
 Changelog :-
 
     27/10/23 : 
-        V0.1
+        V 0.1
             -> made a change to the word changer to add a class and data-file-name value to the audio
             -> made the audio of the previous set to zero when another track starts playing
             -> added 3 songs.
     18/12/23 :
         V 0.2
-        -> removed 16 songs
-        -> the music timer works now properly.
-        -> the pause button and the play button reset to original position after the song ends
+            -> removed 16 songs
+            -> the music timer works now properly.
+            -> the pause button and the play button reset to original position after the song ends
+    19/12/23:
+        V 0.3
+            -> music timer still works properly
+            -> added next, previous and shuffle buttons that do not work for the moment, will enable \
+                in the future.
+            ->removed the pause button, you can still pause by pressing the play button it just does \
+                show. the pause button can be seen in the music controls section.\
+                made it to work even when song is changed in the middle and also made it so \
+                when you go back to play another song that was played before it plays and does not \
+                require a double click
+            ->changed the javascript code where it now only has one queryselector for each song that \
+                is the play button
+            ->changed the html wherin i removed the pause span tag.
+            -> added a background gradient to the whole page
+            -> added a 3d effect to the song list and the music controls
 
 
 The Wordchanger file :-\
@@ -36,3 +51,5 @@ chane the word changer document to make it compatible with new format.
 18/12/23\
 
 made the fix of the minute part starting on 59 seconds, realised that it was a scope issue.
+added some empty buttons, will need a way to iterate in the future for next and shuffle.
+maybe JSON or a JS object can use the song-id part.

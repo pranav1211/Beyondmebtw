@@ -1,5 +1,5 @@
 body {
-    background-color: white;
+    background-image: linear-gradient(120deg, #a6c0fe 0%, #f68084 100%);
 }
 
 .play,
@@ -26,15 +26,57 @@ body {
 
 .replaybutt {
     cursor: pointer;
-    width: 1.5vw;
+    width: 1.7vw;
+    
+    margin-left: 0.4vw;
 }
 
 .replaystopbutt {
     cursor: pointer;
-    width: 1.5vw;
-    margin-left: -1.99vw !important;
+    width: 1.7vw;
+    margin-left: -2.2vw !important;
     visibility: hidden;
 }
+
+.mcpause {
+    margin-left: -2.62vw;
+    visibility: hidden;
+    cursor: pointer;
+}
+
+.mcplay {
+    margin-left: 0vw;
+    cursor: pointer;
+}
+
+.prevsong,
+.nextsong {
+    margin-bottom: 0.2vw;
+    cursor: pointer;
+}
+
+.prevsong{
+    margin-right: 1vw;
+}
+
+.nextsong{
+    margin-left: 1vw;
+}
+
+.shuffle{
+    width: 1.8vw;
+    cursor: pointer;    
+}
+
+.shuffleon{
+    visibility: hidden;
+    margin-left: -2vw;
+}
+.shuffleoff{
+    margin-left: 1.5vw;
+}
+
+
 
 .title {
     border-bottom: 1px solid black;
@@ -71,6 +113,8 @@ body {
     border: 1px solid black;
     margin-right: 28vw;
     margin-left: 28vw;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+    border-radius: 20px;
 }
 
 ::-webkit-scrollbar {
@@ -90,20 +134,22 @@ body {
 
 }
 
-
 #musiccontrols {
-    background-color: yellow;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
     position: fixed;
     z-index: 10;
     text-align: center;
     margin-left: 3vw;
     padding: 1vw;
     width: 20vw;
+    border-radius: 20px;
 }
 
 #titletrack,
 #trackartist {
     font-family: 'Nova Mono';
+    margin-left: 0.4vw;
 }
 
 #titletrack {
@@ -125,5 +171,5 @@ body {
 #counter {
     display: flex;
     margin-top: -1%;
-    margin-left: 8.4vw;
+    margin-left: 8.6vw;
 }
