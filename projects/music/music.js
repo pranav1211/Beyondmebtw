@@ -42,14 +42,14 @@ audioElements.forEach(audio => {
     audio.addEventListener('play', () => {
 
         mcpause.addEventListener('click', () => {
-            iddd.pause(); 
+            currentlyPlaying.pause();
             mcplay.style.visibility = 'visible';
             mcpause.style.visibility = 'hidden';
             totalchecker = '1';
         });
 
         mcplay.addEventListener('click', () => {
-            audio.play();
+            currentlyPlaying.play();
             mcplay.style.visibility = 'hidden';
             mcpause.style.visibility = 'visible';
         });
@@ -61,7 +61,7 @@ audioElements.forEach(audio => {
             minuter = 0;
             secondr = 1;
             mindiv.innerHTML = "0:";
-            audio.currentTime = 0; 
+            audio.currentTime = 0;
 
         }
 
@@ -140,7 +140,8 @@ var checker1 = '1';
 document.querySelector('.showerpl').addEventListener("click", () => {
     if (checker1 == '1' || totalchecker == '1') {
         p1.play();
-        totalchecker, checker1 = '0';
+        totalchecker = '0';
+        checker1 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
     }
@@ -155,7 +156,8 @@ var checker2 = '1';
 document.querySelector('.cptupl').addEventListener('click', () => {
     if (checker2 == '1' || totalchecker == '1') {
         p2.play();
-        totalchecker, checker2 = '0';
+        totalchecker = '0';
+        checker2 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
     }
@@ -170,7 +172,8 @@ var checker3 = '1';
 document.querySelector('.solrpl').addEventListener('click', () => {
     if (checker3 == '1' || totalchecker == '1') {
         p3.play();
-        totalchecker, checker3 = '0';
+        totalchecker = '0';
+        checker3 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
     }
@@ -185,7 +188,8 @@ var checker4 = '1';
 document.querySelector('.sfttrarlpl').addEventListener('click', () => {
     if (checker4 == '1' || totalchecker == '1') {
         p4.play();
-        totalchecker, checker4 = '0';
+        totalchecker = '0';
+        checker4 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
     }
