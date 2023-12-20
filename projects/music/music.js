@@ -147,6 +147,8 @@ document.querySelector('.showerpl').addEventListener("click", () => {
     }
     else if (checker1 == '0') {
         p1.pause();
+        mcplay.style.visibility = 'visible';
+        mcpause.style.visibility = 'hidden';
         checker1 = '1';
     }
 });
@@ -163,6 +165,8 @@ document.querySelector('.cptupl').addEventListener('click', () => {
     }
     else if (checker2 == '0') {
         p2.pause();
+        mcplay.style.visibility = 'visible';
+        mcpause.style.visibility = 'hidden';
         checker2 = '1';
     }
 });
@@ -179,6 +183,8 @@ document.querySelector('.solrpl').addEventListener('click', () => {
     }
     else if (checker3 == '0') {
         p3.pause();
+        mcplay.style.visibility = 'visible';
+        mcpause.style.visibility = 'hidden';
         checker3 = '1';
     }
 });
@@ -195,6 +201,8 @@ document.querySelector('.sfttrarlpl').addEventListener('click', () => {
     }
     else if (checker4 == '0') {
         p4.pause();
+        mcplay.style.visibility = 'visible';
+        mcpause.style.visibility = 'hidden';
         checker4 = '1';
     }
 });
