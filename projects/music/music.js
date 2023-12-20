@@ -5,11 +5,13 @@ let mcplay = document.querySelector('.mcplay')
 let mcpause = document.querySelector('.mcpause')
 let shuffleon = document.querySelector('.shuffleon');
 let shuffleoff = document.querySelector('.shuffleoff');
+var nextsong = document.querySelector(".nextsong");
 
 var songid;
 var songnumber;
 var getsong;
-var newsongnumber
+var newsongnumber;
+var songduration;
 
 var totalchecker = '1';
 
@@ -22,11 +24,13 @@ shuffleoff.addEventListener('click', () => {
     shuffleoff.style.visibility = 'hidden';
 });
 
+var noofsongs;
+
 // getting the number of songs for control purposses
 fetch('musicdata.json')
     .then(response => response.json())
     .then(data => {
-        const noofsongs = data['number of songs'];
+        noofsongs = data['number of songs'];
         console.log(noofsongs);
     })
     .catch(error => console.error('Error reading JSON:', error));
@@ -111,6 +115,26 @@ audioElements.forEach(audio => {
 
     audio.addEventListener('pause', () => {
         clearInterval(intervalid1);
+    });
+
+    // next song button
+    nextsong.addEventListener('click', () => {
+        if (noofsongs < newsongnumber) {
+            audio.currentTime = 3000;
+            mindiv.innerHTML = "0:";
+            secdiv.innerHTML = "00"
+            minuter = 0;
+            secondr = 1;
+        }
+
+        clearInterval(intervalid1);
+        getsong = document.querySelector(songid);
+        getsong.play();
+        mcplay.style.visibility = 'hidden';
+        mcpause.style.visibility = 'visible';
+
+        minuter = 0;
+        secondr = 1;
     });
 
     //replay
