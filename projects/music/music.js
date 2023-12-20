@@ -1,9 +1,13 @@
 const audioElements = document.querySelectorAll('.audio-element');
 let currentlyPlaying = null;
+
 let mcplay = document.querySelector('.mcplay')
 let mcpause = document.querySelector('.mcpause')
 let shuffleon = document.querySelector('.shuffleon');
 let shuffleoff = document.querySelector('.shuffleoff');
+
+var songid = "#t";
+var songnumber;
 
 var totalchecker = '1';
 
@@ -18,29 +22,48 @@ shuffleoff.addEventListener('click', () => {
 
 });
 
+// Assuming you have a file named 'data.json' with the content:
+// {
+//   "number of songs": 4
+// }
+
+// Using fetch
+fetch('musicdata.json')
+    .then(response => response.json())
+    .then(data => {
+        // Access the value using the key
+        const noofsongs = data['number of songs'];
+        console.log(noofsongs);
+    })
+
+    .catch(error => console.error('Error reading JSON:', error));
+
+
 audioElements.forEach(audio => {
 
-    var minuter = 0; // goes in the inute div
+    var minuter = 0; // goes in the minute div
     var secondr = 1; //goes in the second div
     var mindiv = document.querySelector('#minuter');
     var secdiv = document.querySelector('#seconder');
-    var intervalid1;
-    var replaybut = document.querySelector('.replaybutt')
-    var replaystopbut = document.querySelector('.replaystopbutt')
+    var intervalid1; // for the second
+    var replaybut = document.querySelector('.replaybutt') //replay off
+    var replaystopbut = document.querySelector('.replaystopbutt') // repeat on
 
-    let loopit;
-
-    var songid = audio.getAttribute('song-id');
-    let pauseid = "." + songid + "pa";
-    let pause = document.querySelector(pauseid);
-    let playid = "." + songid + "pl";
-    let play = document.querySelector(playid);
-    let idd = audio.getAttribute('id');
-    idd = "#" + idd;
-    let iddd = document.querySelector(idd);
+    let loopit; // to check if track should be looped
 
     audio.addEventListener('play', () => {
 
+        songnumber = audio.getAttribute('id');
+        var newsongnumber = songnumber.charAt(1);
+        newsongnumber = parseInt(newsongnumber);
+        newsongnumber++;
+        console.log(newsongnumber)
+
+        songid = songid + newsongnumber;
+        var getsong = document.querySelector(songid);
+        // console.log(getsong)
+
+        // music control pause button
         mcpause.addEventListener('click', () => {
             currentlyPlaying.pause();
             mcplay.style.visibility = 'visible';
@@ -48,16 +71,16 @@ audioElements.forEach(audio => {
             totalchecker = '1';
         });
 
+        // music control play button
         mcplay.addEventListener('click', () => {
             currentlyPlaying.play();
             mcplay.style.visibility = 'hidden';
             mcpause.style.visibility = 'visible';
         });
 
-
+        // to check if audio is playing or ended
         if (currentlyPlaying !== null && currentlyPlaying !== audio) {
             currentlyPlaying.pause();
-
             minuter = 0;
             secondr = 1;
             mindiv.innerHTML = "0:";
@@ -65,6 +88,7 @@ audioElements.forEach(audio => {
 
         }
 
+        // for displaying the attributes in the music control panel
         currentlyPlaying = audio;
         const fileName = audio.getAttribute('data-file-name');
         document.getElementById("titletrack").innerHTML = `${fileName}`;
@@ -73,7 +97,6 @@ audioElements.forEach(audio => {
 
 
         // counter
-
         function forsecond() {
 
             if (secondr == 60) {
@@ -97,7 +120,6 @@ audioElements.forEach(audio => {
 
     audio.addEventListener('pause', () => {
         clearInterval(intervalid1);
-
     });
 
     //replay
@@ -113,14 +135,15 @@ audioElements.forEach(audio => {
         loopit = false;
     });
 
-    //on end loop or not
+    //on end to loop or not
 
     audio.addEventListener('ended', () => {
+
         minuter = 0;
         secondr = 1;
 
         if (loopit == true) {
-            iddd.play();
+            currentlyPlaying.play();
             minuter = 0;
             mindiv.innerHTML = "0:";
         }
@@ -128,6 +151,10 @@ audioElements.forEach(audio => {
             mcplay.style.visibility = 'visible';
             mcpause.style.visibility = 'hidden';
         }
+
+        songid = songid + songnumber;
+        var getsong = document.querySelector(songid);
+        getsong.play();
     });
 });
 
@@ -206,3 +233,4 @@ document.querySelector('.sfttrarlpl').addEventListener('click', () => {
         checker4 = '1';
     }
 });
+
