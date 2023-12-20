@@ -6,38 +6,30 @@ let mcpause = document.querySelector('.mcpause')
 let shuffleon = document.querySelector('.shuffleon');
 let shuffleoff = document.querySelector('.shuffleoff');
 
-var songid = "#t";
+var songid;
 var songnumber;
+var getsong;
+var newsongnumber
 
 var totalchecker = '1';
 
 shuffleon.addEventListener('click', () => {
     shuffleon.style.visibility = 'hidden'
     shuffleoff.style.visibility = 'visible';
-
 });
 shuffleoff.addEventListener('click', () => {
     shuffleon.style.visibility = 'visible'
     shuffleoff.style.visibility = 'hidden';
-
 });
 
-// Assuming you have a file named 'data.json' with the content:
-// {
-//   "number of songs": 4
-// }
-
-// Using fetch
+// getting the number of songs for control purposses
 fetch('musicdata.json')
     .then(response => response.json())
     .then(data => {
-        // Access the value using the key
         const noofsongs = data['number of songs'];
         console.log(noofsongs);
     })
-
     .catch(error => console.error('Error reading JSON:', error));
-
 
 audioElements.forEach(audio => {
 
@@ -53,15 +45,14 @@ audioElements.forEach(audio => {
 
     audio.addEventListener('play', () => {
 
+        //gets the id for the current audio playing
         songnumber = audio.getAttribute('id');
-        var newsongnumber = songnumber.charAt(1);
+        newsongnumber = songnumber.charAt(1); // taking the number of the song
         newsongnumber = parseInt(newsongnumber);
         newsongnumber++;
-        console.log(newsongnumber)
 
-        songid = songid + newsongnumber;
-        var getsong = document.querySelector(songid);
-        // console.log(getsong)
+        songid = "#t" + newsongnumber; // setting the id for the next song
+
 
         // music control pause button
         mcpause.addEventListener('click', () => {
@@ -147,14 +138,14 @@ audioElements.forEach(audio => {
             minuter = 0;
             mindiv.innerHTML = "0:";
         }
-        else {
+        if (noofsongs < newsongnumber) {
             mcplay.style.visibility = 'visible';
             mcpause.style.visibility = 'hidden';
         }
-
-        songid = songid + songnumber;
-        var getsong = document.querySelector(songid);
-        getsong.play();
+        else {
+            getsong = document.querySelector(songid);
+            getsong.play();
+        }
     });
 });
 
