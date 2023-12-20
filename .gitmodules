@@ -1,0 +1,3 @@
+[submodule "projects/music/Musictomyears"]
+	path = projects/music/Musictomyears
+	url = git@github.com:pranav1211/Musictomyears.git
