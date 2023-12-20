@@ -35,7 +35,7 @@ fetch('musicdata.json')
     })
     .catch(error => console.error('Error reading JSON:', error));
 
-audioElements.forEach(audio => {
+audioElements.forEach(audio => { 
 
     var minuter = 0; // goes in the minute div
     var secondr = 1; //goes in the second div
