@@ -1,0 +1,94 @@
+<html>
+
+<head>
+    <title>Music To My Ears</title>
+    <link rel="stylesheet" href="music.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nova+Mono&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="Images/favicon.ico">
+</head>
+
+<body>
+    <div id="musiccontrols">
+        <div id="titletrack"></div>
+        <div id="trackartist"></div>
+        <div id="counter">
+            <p id="minuter">0:</p>
+            <p id="seconder">00</p>
+        </div>
+        <img src="Images/prev.jpg" class="prevsong play-circle-img">
+        <img src="Images/mcplay.jpg" class="play-circle-img mcplay">
+        <img src="Images/mcpause.jpg" class="pause-circle-img mcpause">
+        <img src="Images/next.jpg" class="nextsong play-circle-img">
+        <br><br>
+        <span class="material-symbols-outlined">
+            <img src="Images/repeat off.svg" class="replaybutt">
+        </span>
+        <span class="material-symbols-outlined">
+            <img src="Images/repeat on.svg" class="replaystopbutt">
+        </span>
+        <img src="Images/shuffle.svg" class="shuffleoff shuffle play-circle-img">
+        <img src="Images/shuffle on.svg" class="shuffleon shuffle play-circle-img">
+    </div>
+
+    <div id="playbuts">
+
+        <div class="showerbeckyg title">
+            <span class="material-symbols-outlined play">
+                <img src="Images/play_circle.svg" class="play-circle-img showerpl">
+            </span>
+            <p class="sname"><span id="songnamemain">Shower</span><br><span class="artist">Becky G</span></p>
+            <audio id="t1" class="audio-element" data-file-artist="Becky G" data-file-name="Shower" song-id="shower">
+                <source src="shower.opus" type="audio/mpeg">
+            </audio>
+        </div>
+
+
+        <div class="confessions-part-2-usher title">
+            <span class="material-symbols-outlined  play">
+                <img src="Images/play_circle.svg" class="play-circle-img cptupl">
+            </span>
+            <p class="sname"><span id="songnamemain">Confessions part 2</span><br><span class="artist">Usher</span>
+            </p>
+            <audio id="t2" class="audio-element" data-file-artist="Usher" data-file-name="Confessions Part 2"
+                song-id="cptu">
+                <source src="music/Confessions Part 2.opus" type="audio/mpeg">
+            </audio>
+        </div>
+
+
+
+        <div class="seasons-of-love-rent title">
+            <span class="material-symbols-outlined play">
+                <img src="Images/play_circle.svg" class="play-circle-img solrpl">
+            </span>
+            <p class="sname"><span id="songnamemain">Seasons of Love</span><br><span class="artist">Rent</span></p>
+            <audio id="t3" class="audio-element" data-file-artist="Rent" data-file-name="Season of Love" song-id="solr">
+                <source src="music/Seasons of Love.opus" type="audio/mpeg">
+            </audio>
+        </div>
+
+
+
+        <div class="set-fire-to-the-rain-adele-royal-albert title">
+            <span class="material-symbols-outlined  play">
+                <img src="Images/play_circle.svg" class="play-circle-img sfttrarlpl">
+            </span>
+            <p class="sname"><span id="songnamemain">Set Fire to the rain(Royal Albert hall)</span><br><span
+                    class="artist">Adele</span></p>
+            <audio id="t4" class="audio-element" data-file-artist="Adele" data-file-name="Set Fire to the rain"
+                song-id="sfttrarl">
+                <source src="music/Set Fire To The Rain Live at The Royal Albert Hall.opus" type="audio/mpeg">
+            </audio>
+        </div>
+
+    </div>
+    <script src="music.js" type="text/javascript"></script>
+</body>
+
+</html>
