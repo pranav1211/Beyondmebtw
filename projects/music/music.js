@@ -116,6 +116,7 @@ audioElements.forEach(audio => {
 
     audio.addEventListener('pause', () => {
         clearInterval(intervalid1);
+        totalchecker = '1';
     });
 
     // next song button
