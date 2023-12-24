@@ -124,11 +124,19 @@ audioElements.forEach(audio => {
     // next song button
     nextsong.addEventListener('click', () => {
         if (noofsongs < newsongnumber) { // if the number of songs from json file is less than number that is used to get song id it means the end of playlist has been reached
-            audio.currentTime = 3000;
-            mindiv.innerHTML = "0:";
-            secdiv.innerHTML = "00"
-            minuter = 0;
-            secondr = 1;
+            if (loopit == 'whole') {
+                songid = "#t1"
+                getsong = document.querySelector(songid);
+                getsong.play();
+                newsongnumber = 2;
+            }
+            else {
+                audio.currentTime = 3000;
+                mindiv.innerHTML = "0:";
+                secdiv.innerHTML = "00"
+                minuter = 0;
+                secondr = 1;
+            }
         }
 
         clearInterval(intervalid1);
@@ -165,7 +173,7 @@ audioElements.forEach(audio => {
     //on end to loop or not
 
     audio.addEventListener('ended', () => {
-        
+
         minuter = 0;
         secondr = 1;
 
