@@ -15,6 +15,11 @@ var songduration;
 
 var totalchecker = '1';
 
+var replaybut = document.querySelector('.replaybutt') //replay off
+var replayplaylist = document.querySelector('.replayplaylistt') // repeat on
+var mindiv = document.querySelector('#minuter');
+var secdiv = document.querySelector('#seconder');
+
 shuffleon.addEventListener('click', () => {
     shuffleon.style.visibility = 'hidden'
     shuffleoff.style.visibility = 'visible';
@@ -39,12 +44,7 @@ audioElements.forEach(audio => {
 
     var minuter = 0; // goes in the minute div
     var secondr = 1; //goes in the second div
-    var mindiv = document.querySelector('#minuter');
-    var secdiv = document.querySelector('#seconder');
     var intervalid1; // for the second
-    var replaybut = document.querySelector('.replaybutt') //replay off
-    var replayplaylist = document.querySelector('.replayplaylistt') // repeat on
-
     let loopit; // to check if track should be looped
 
     audio.addEventListener('play', () => {
@@ -169,7 +169,7 @@ audioElements.forEach(audio => {
             mcplay.style.visibility = 'visible';
             mcpause.style.visibility = 'hidden';
         }
-        
+
         else {
             getsong = document.querySelector(songid);
             getsong.play();
