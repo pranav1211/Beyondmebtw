@@ -179,10 +179,10 @@ audioElements.forEach(audio => {
             if (noofsongs < newsongnumber) {
                 newsongnumber = 1
                 newsongnumber = parseInt(newsongnumber);
-                newsongnumber++;
                 songid = "#t" + newsongnumber
-                    getsong = document.querySelector(songid);
+                getsong = document.querySelector(songid);
                 getsong.play();
+                newsongnumber++;
             }
 
             else {
