@@ -48,7 +48,7 @@ audioElements.forEach(audio => {
     let loopit; // to check if track should be looped
 
     audio.addEventListener('play', () => {
-
+        console.log("total checker = " + totalchecker)
 
         //gets the id for the current audio playing
         songnumber = audio.getAttribute('id');
@@ -116,6 +116,7 @@ audioElements.forEach(audio => {
 
     audio.addEventListener('pause', () => {
         clearInterval(intervalid1);
+        console.log("total checker = " + totalchecker)
     });
 
     // next song button
