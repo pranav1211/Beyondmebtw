@@ -182,11 +182,10 @@ audioElements.forEach(audio => {
                 getsong.play();
                 newsongnumber++;
             }
-
-            else {
-                mcplay.style.visibility = 'visible';
-                mcpause.style.visibility = 'hidden';
-            }
+        }
+        else if (loopit == 'norepeat') {
+            mcplay.style.visibility = 'visible';
+            mcpause.style.visibility = 'hidden';
         }
 
         else {
