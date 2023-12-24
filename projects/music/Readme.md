@@ -40,6 +40,8 @@ Changelog :-
         V0.5
             -> fixed an issue where if you pause the song using the music control pause and the played a song from the list using its button and then a second song using its button the second was not playing. it was a control varible issue
             -> fixed an issue where the loop button for individual song was not working, had to add an else to another if condition to prevent promise from happenning
+            ->added another loop button for individual song, it can be accessed by clicking through the loop buttons.
+            -> fixed an issue where the next button was not recognizing the loop button, had to add the code in the next button listener for that
 
 
 The Wordchanger file :-\
