@@ -159,7 +159,7 @@ audioElements.forEach(audio => {
         replaybut.style.visibility = 'visible'
         replayplaylist.style.visibility = 'hidden';
         replayonesong.style.visibility = 'hidden'
-        loopit = false;
+        loopit = true;
     });
 
     //on end to loop or not
