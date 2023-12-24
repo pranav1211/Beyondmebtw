@@ -153,13 +153,13 @@ audioElements.forEach(audio => {
         replaybut.style.visibility = 'hidden'
         replayplaylist.style.visibility = 'hidden';
         replayonesong.style.visibility = 'visible'
-        loopit = 'norepeat';
+        loopit = 'onesong';
     });
     replayonesong.addEventListener('click', () => { // on for only one song
         replaybut.style.visibility = 'visible'
         replayplaylist.style.visibility = 'hidden';
         replayonesong.style.visibility = 'hidden'
-        loopit = 'onesong';
+        loopit = 'norepeat';
     });
 
     //on end to loop or not
