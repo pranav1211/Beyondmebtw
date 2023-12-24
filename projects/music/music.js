@@ -17,8 +17,9 @@ var totalchecker = '1';
 
 var replaybut = document.querySelector('.replaybutt') //replay off
 var replayplaylist = document.querySelector('.replayplaylistt') // repeat on
-var mindiv = document.querySelector('#minuter');
-var secdiv = document.querySelector('#seconder');
+var replayonesong = document.querySelector('.replayonesong') // repeat on
+var mindiv = document.querySelector('#minuter'); // minute div
+var secdiv = document.querySelector('#seconder');   // second div
 
 shuffleon.addEventListener('click', () => {
     shuffleon.style.visibility = 'hidden'
