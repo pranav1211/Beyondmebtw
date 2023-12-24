@@ -122,24 +122,11 @@ audioElements.forEach(audio => {
     });
 
     // next song button
-    nextsong.addEventListener('click', () => {
-        if (noofsongs < newsongnumber) { // if the number of songs from json file is less than number that is used to get song id it means the end of playlist has been reached
-            audio.currentTime = 3000;
-            mindiv.innerHTML = "0:";
-            secdiv.innerHTML = "00"
-            minuter = 0;
-            secondr = 1;
-        }
+    nextsong.addEventListener('click', nextsongg());
 
-        clearInterval(intervalid1);
-        getsong = document.querySelector(songid);
-        getsong.play();
-        mcplay.style.visibility = 'hidden';
-        mcpause.style.visibility = 'visible';
+    //on end to loop or not
 
-        minuter = 0;
-        secondr = 1;
-    });
+    audio.addEventListener('ended', loop());
 
     //replay
 
@@ -162,9 +149,7 @@ audioElements.forEach(audio => {
         loopit = 'norepeat';
     });
 
-    //on end to loop or not
 
-    audio.addEventListener('ended', loop());
 
 
     function loop() {
@@ -202,6 +187,24 @@ audioElements.forEach(audio => {
             getsong = document.querySelector(songid);
             getsong.play();
         }
+    }
+    function nextsongg() {
+        if (noofsongs < newsongnumber) { // if the number of songs from json file is less than number that is used to get song id it means the end of playlist has been reached
+            audio.currentTime = 3000;
+            mindiv.innerHTML = "0:";
+            secdiv.innerHTML = "00"
+            minuter = 0;
+            secondr = 1;
+        }
+
+        clearInterval(intervalid1);
+        getsong = document.querySelector(songid);
+        getsong.play();
+        mcplay.style.visibility = 'hidden';
+        mcpause.style.visibility = 'visible';
+
+        minuter = 0;
+        secondr = 1;
     }
 });
 
