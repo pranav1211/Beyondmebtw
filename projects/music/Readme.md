@@ -36,7 +36,10 @@ Changelog :-
             ->created a json file to access 'number of songs' data for control purposess
             ->fixed an issue where you could not pause the song from the play button
             -> fixed an issue of the music control center play button playing another song after being paused
-            ->
+    24/12/23
+        V0.5
+            -> fixed an issue where if you pause the song using the music control pause and the played a song from the list using its button and then a second song using its button the second was not playing. it was a control varible issue
+            -> fixed an issue where the loop button for individual song was not working, had to add an else to another if condition to prevent promise from happenning
 
 
 The Wordchanger file :-\
