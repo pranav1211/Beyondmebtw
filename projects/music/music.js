@@ -178,6 +178,9 @@ audioElements.forEach(audio => {
             mcplay.style.visibility = 'visible';
             mcpause.style.visibility = 'hidden';
         }
+        else if (loopit == "whole") {
+            console.log('whore')
+        }
 
         else {
             getsong = document.querySelector(songid);
