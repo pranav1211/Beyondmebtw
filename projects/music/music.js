@@ -174,12 +174,18 @@ audioElements.forEach(audio => {
             minuter = 0;
             mindiv.innerHTML = "0:";
         }
-        else if (noofsongs < newsongnumber) {
-            mcplay.style.visibility = 'visible';
-            mcpause.style.visibility = 'hidden';
-        }
-        else if (loopit == "whole") {
-            console.log('whore')
+
+        if (loopit == "whole") {
+            if (noofsongs < newsongnumber) {
+                songid = "#t1"
+                getsong = document.querySelector(songid);
+                getsong.play();
+            }
+
+            else {
+                mcplay.style.visibility = 'visible';
+                mcpause.style.visibility = 'hidden';
+            }
         }
 
         else {
