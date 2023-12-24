@@ -41,7 +41,7 @@ body {
     cursor: pointer;
     width: 1.7vw;
     margin-left: -2.6vw !important;
-    /* visibility: hidden; */
+    visibility: hidden;
 }
 .mcpause {
     margin-left: -2.62vw;
