@@ -73,6 +73,7 @@ audioElements.forEach(audio => {
             currentlyPlaying.play();
             mcplay.style.visibility = 'hidden';
             mcpause.style.visibility = 'visible';
+            totalchecker = '0';
         });
 
         // to check if audio is playing or ended
