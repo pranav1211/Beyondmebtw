@@ -143,15 +143,20 @@ audioElements.forEach(audio => {
 
     //replay
 
-    replaybut.addEventListener('click', () => {
+    replaybut.addEventListener('click', () => { // off
         replaybut.style.visibility = 'hidden'
         replayplaylist.style.visibility = 'visible';
         loopit = true;
     });
-    replayplaylist.addEventListener('click', () => {
+    replayplaylist.addEventListener('click', () => { //on for playlist
         replaybut.style.visibility = 'visible'
         replayplaylist.style.visibility = 'hidden';
         loopit = false;
+    });
+    replayonesong.addEventListener('click', () => { // on for only one song
+        replaybut.style.visibility = 'hidden'
+        replayplaylist.style.visibility = 'visible';
+        loopit = true;
     });
 
     //on end to loop or not
