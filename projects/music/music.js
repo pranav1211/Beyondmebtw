@@ -186,12 +186,9 @@ var checker1 = '1';
 document.querySelector('.showerpl').addEventListener("click", () => {
     if (checker1 == '1' || totalchecker == '1') {
         p1.play();
-        
         checker1 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
-        console.log("total checker = " + totalchecker)
-        console.log("checker 1 = " + checker1)
     }
     else if (checker1 == '0') {
         p1.pause();
@@ -199,8 +196,6 @@ document.querySelector('.showerpl').addEventListener("click", () => {
         mcpause.style.visibility = 'hidden';
         checker1 = '1';
         totalchecker = '1';
-        console.log("total checker = " + totalchecker)
-        console.log("checker 1 = " + checker1)
     }
 });
 //////////////////////////////////////////////////////
@@ -209,12 +204,10 @@ var checker2 = '1';
 document.querySelector('.cptupl').addEventListener('click', () => {
     if (checker2 == '1' || totalchecker == '1') {
         p2.play();
-        
+
         checker2 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
-        console.log("total checker = " + totalchecker)
-        console.log("checker 2 = " + checker2)
     }
     else if (checker2 == '0') {
         p2.pause();
@@ -222,8 +215,6 @@ document.querySelector('.cptupl').addEventListener('click', () => {
         mcpause.style.visibility = 'hidden';
         checker2 = '1';
         totalchecker = '1';
-        console.log("total checker = " + totalchecker)
-        console.log("checker 2 = " + checker2)
     }
 });
 //////////////////////////////////////////////////////
@@ -232,12 +223,10 @@ var checker3 = '1';
 document.querySelector('.solrpl').addEventListener('click', () => {
     if (checker3 == '1' || totalchecker == '1') {
         p3.play();
-        
+
         checker3 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
-        console.log("total checker = " + totalchecker)
-        console.log("checker 3 = " + checker3)
     }
     else if (checker3 == '0') {
         p3.pause();
@@ -245,8 +234,6 @@ document.querySelector('.solrpl').addEventListener('click', () => {
         mcpause.style.visibility = 'hidden';
         checker3 = '1';
         totalchecker = '1';
-        console.log("total checker = " + totalchecker)
-        console.log("checker 3 = " + checker3)
     }
 });
 ////////////////////////////////////////////////////////
@@ -255,12 +242,10 @@ var checker4 = '1';
 document.querySelector('.sfttrarlpl').addEventListener('click', () => {
     if (checker4 == '1' || totalchecker == '1') {
         p4.play();
-        
+
         checker4 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
-        console.log("total checker = " + totalchecker)
-        console.log("checker 4 = " + checker4)
     }
     else if (checker4 == '0') {
         p4.pause();
@@ -268,8 +253,6 @@ document.querySelector('.sfttrarlpl').addEventListener('click', () => {
         mcpause.style.visibility = 'hidden';
         checker4 = '1';
         totalchecker = '1';
-        console.log("total checker = " + totalchecker)
-        console.log("checker 4 = " + checker4)
     }
 });
 
