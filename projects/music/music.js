@@ -165,10 +165,11 @@ audioElements.forEach(audio => {
     //on end to loop or not
 
     audio.addEventListener('ended', () => {
+        console.log(loopit)
         minuter = 0;
         secondr = 1;
 
-        if (loopit == "onesong") {
+        if (loopit == 'onesong') {
             currentlyPlaying.play();
             minuter = 0;
             mindiv.innerHTML = "0:";
