@@ -35,7 +35,7 @@ fetch('musicdata.json')
     })
     .catch(error => console.error('Error reading JSON:', error));
 
-audioElements.forEach(audio => { 
+audioElements.forEach(audio => {
 
     var minuter = 0; // goes in the minute div
     var secondr = 1; //goes in the second div
@@ -48,6 +48,7 @@ audioElements.forEach(audio => {
     let loopit; // to check if track should be looped
 
     audio.addEventListener('play', () => {
+
 
         //gets the id for the current audio playing
         songnumber = audio.getAttribute('id');
@@ -186,12 +187,16 @@ document.querySelector('.showerpl').addEventListener("click", () => {
         checker1 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
+        console.log("total checker = " + totalchecker)
+        console.log("checker 1 = " + checker1)
     }
     else if (checker1 == '0') {
         p1.pause();
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
         checker1 = '1';
+        console.log("total checker = " + totalchecker)
+        console.log("checker 1 = " + checker1)
     }
 });
 //////////////////////////////////////////////////////
@@ -204,12 +209,16 @@ document.querySelector('.cptupl').addEventListener('click', () => {
         checker2 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
+        console.log("total checker = " + totalchecker)
+        console.log("checker 2 = " + checker2)
     }
     else if (checker2 == '0') {
         p2.pause();
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
         checker2 = '1';
+        console.log("total checker = " + totalchecker)
+        console.log("checker 2 = " + checker2)
     }
 });
 //////////////////////////////////////////////////////
@@ -222,12 +231,16 @@ document.querySelector('.solrpl').addEventListener('click', () => {
         checker3 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
+        console.log("total checker = " + totalchecker)
+        console.log("checker 3 = " + checker3)
     }
     else if (checker3 == '0') {
         p3.pause();
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
         checker3 = '1';
+        console.log("total checker = " + totalchecker)
+        console.log("checker 3 = " + checker3)
     }
 });
 ////////////////////////////////////////////////////////
@@ -240,12 +253,16 @@ document.querySelector('.sfttrarlpl').addEventListener('click', () => {
         checker4 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
+        console.log("total checker = " + totalchecker)
+        console.log("checker 4 = " + checker4)
     }
     else if (checker4 == '0') {
         p4.pause();
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
         checker4 = '1';
+        console.log("total checker = " + totalchecker)
+        console.log("checker 4 = " + checker4)
     }
 });
 
