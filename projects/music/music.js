@@ -47,28 +47,6 @@ audioElements.forEach(audio => {
 
     let loopit; // to check if track should be looped
 
-    //on end to loop or not
-
-    audio.addEventListener('ended', () => {
-        console.log(loopit)
-        minuter = 0;
-        secondr = 1;
-
-        if (loopit == true) {
-            currentlyPlaying.play();
-            minuter = 0;
-            mindiv.innerHTML = "0:";
-        }
-        if (noofsongs < newsongnumber) {
-            mcplay.style.visibility = 'visible';
-            mcpause.style.visibility = 'hidden';
-        }
-        else {
-            getsong = document.querySelector(songid);
-            getsong.play();
-        }
-    });
-
     audio.addEventListener('play', () => {
 
 
@@ -175,7 +153,27 @@ audioElements.forEach(audio => {
         loopit = false;
     });
 
+    //on end to loop or not
 
+    audio.addEventListener('ended', () => {
+        console.log(loopit)
+        minuter = 0;
+        secondr = 1;
+
+        if (loopit == true) {
+            currentlyPlaying.play();
+            minuter = 0;
+            mindiv.innerHTML = "0:";
+        }
+        else if (noofsongs < newsongnumber) {
+            mcplay.style.visibility = 'visible';
+            mcpause.style.visibility = 'hidden';
+        }
+        else {
+            getsong = document.querySelector(songid);
+            getsong.play();
+        }
+    });
 });
 
 
