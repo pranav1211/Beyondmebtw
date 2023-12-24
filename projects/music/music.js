@@ -43,7 +43,7 @@ audioElements.forEach(audio => {
     var secdiv = document.querySelector('#seconder');
     var intervalid1; // for the second
     var replaybut = document.querySelector('.replaybutt') //replay off
-    var replaystopbut = document.querySelector('.replaystopbutt') // repeat on
+    var replayplaylist = document.querySelector('.replayplaylistt') // repeat on
 
     let loopit; // to check if track should be looped
 
@@ -144,12 +144,12 @@ audioElements.forEach(audio => {
 
     replaybut.addEventListener('click', () => {
         replaybut.style.visibility = 'hidden'
-        replaystopbut.style.visibility = 'visible';
+        replayplaylist.style.visibility = 'visible';
         loopit = true;
     });
-    replaystopbut.addEventListener('click', () => {
+    replayplaylist.addEventListener('click', () => {
         replaybut.style.visibility = 'visible'
-        replaystopbut.style.visibility = 'hidden';
+        replayplaylist.style.visibility = 'hidden';
         loopit = false;
     });
 
