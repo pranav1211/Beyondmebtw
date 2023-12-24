@@ -180,12 +180,12 @@ audioElements.forEach(audio => {
                 songid = "#t1"
                 getsong = document.querySelector(songid);
                 getsong.play();
-                newsongnumber++;
+                newsongnumber = 2;
             }
             else if (noofsongs >= newsongnumber) {
-                newsongnumber = songnumber.charAt(1); // taking the number of the song
+                newsongnumber = 2;
                 newsongnumber = parseInt(newsongnumber);
-                songid = "#t" + newsongnumber
+                songid = "#t" + newsongnumber;
                 getsong = document.querySelector(songid);
                 getsong.play();
                 newsongnumber++;
