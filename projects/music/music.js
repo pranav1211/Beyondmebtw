@@ -169,7 +169,7 @@ audioElements.forEach(audio => {
         else if (noofsongs < newsongnumber) {
             mcplay.style.visibility = 'visible';
             mcpause.style.visibility = 'hidden';
-            clearInterval(intervalid1)
+            
         }
 
         else {
