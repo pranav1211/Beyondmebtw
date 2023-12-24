@@ -161,7 +161,7 @@ audioElements.forEach(audio => {
         secondr = 1;
 
         if (loopit == true) {
-            audio.play();
+            currentlyPlaying.play();
             minuter = 0;
             mindiv.innerHTML = "0:";
         }
