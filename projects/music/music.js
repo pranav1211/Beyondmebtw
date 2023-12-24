@@ -147,7 +147,7 @@ audioElements.forEach(audio => {
         replaybut.style.visibility = 'hidden'
         replayplaylist.style.visibility = 'visible';
         replayonesong.style.visibility = 'hidden'
-        loopit = true;
+        loopit = 'whole';
     });
     replayplaylist.addEventListener('click', () => { //on for playlist
         replaybut.style.visibility = 'hidden'
