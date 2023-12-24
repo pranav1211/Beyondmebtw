@@ -46,7 +46,7 @@ audioElements.forEach(audio => {
     var minuter = 0; // goes in the minute div
     var secondr = 1; //goes in the second div
     var intervalid1; // for the second
-    let loopit; // to check if track should be looped
+    let loopit = 'norepeat'; // to check if track should be looped
 
     audio.addEventListener('play', () => {
 
