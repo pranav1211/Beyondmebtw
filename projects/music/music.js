@@ -169,6 +169,7 @@ audioElements.forEach(audio => {
             mcplay.style.visibility = 'visible';
             mcpause.style.visibility = 'hidden';
         }
+        
         else {
             getsong = document.querySelector(songid);
             getsong.play();
