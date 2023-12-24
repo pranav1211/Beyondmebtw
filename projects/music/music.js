@@ -65,7 +65,6 @@ audioElements.forEach(audio => {
             mcplay.style.visibility = 'visible';
             mcpause.style.visibility = 'hidden';
             totalchecker = '0';
-            
         });
 
         // music control play button
