@@ -176,8 +176,16 @@ audioElements.forEach(audio => {
         }
 
         else if (loopit == "whole") {
-            if (noofsongs == (newsongnumber + 1)) {
+            if (noofsongs < newsongnumber) {
                 songid = "#t1"
+                getsong = document.querySelector(songid);
+                getsong.play();
+                newsongnumber++;
+            }
+            else if (noofsongs >= newsongnumber) {
+                newsongnumber = songnumber.charAt(1); // taking the number of the song
+                newsongnumber = parseInt(newsongnumber);
+                songid = "#t" + newsongnumber
                 getsong = document.querySelector(songid);
                 getsong.play();
                 newsongnumber++;
