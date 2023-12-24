@@ -164,7 +164,10 @@ audioElements.forEach(audio => {
 
     //on end to loop or not
 
-    audio.addEventListener('ended', () => {
+    audio.addEventListener('ended', loop());
+
+
+    function loop() {
         minuter = 0;
         secondr = 1;
 
@@ -199,10 +202,6 @@ audioElements.forEach(audio => {
             getsong = document.querySelector(songid);
             getsong.play();
         }
-    });
-
-    function loop(){
-        
     }
 });
 
