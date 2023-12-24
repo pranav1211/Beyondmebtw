@@ -76,4 +76,9 @@ Dev notes / ideas: (ignore if you want)
 ->have to work on the shuffle button
 ->have to work on the next and previous song previous song button, for previous song button set time to 1 second and also do the clear interval and change content in div for it.
 
+24/12/23
+
+-> loop button works, no issues so far.\
+->
+
 
