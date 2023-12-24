@@ -64,7 +64,7 @@ audioElements.forEach(audio => {
             currentlyPlaying.pause();
             mcplay.style.visibility = 'visible';
             mcpause.style.visibility = 'hidden';
-            totalchecker = '1';
+            totalchecker = '0';
             console.log("total checker = " + totalchecker)
         });
 
@@ -73,7 +73,7 @@ audioElements.forEach(audio => {
             currentlyPlaying.play();
             mcplay.style.visibility = 'hidden';
             mcpause.style.visibility = 'visible';
-            totalchecker = '0';
+            totalchecker = '1';
         });
 
         // to check if audio is playing or ended
