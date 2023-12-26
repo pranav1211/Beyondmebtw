@@ -13,7 +13,7 @@ var getsong;
 var newsongnumber;
 var songduration;
 
-var totalcheck = '0';
+var totalcheck = 0;
 
 var replaybut = document.querySelector('.replaybutt') //replay off
 var replayplaylist = document.querySelector('.replayplaylistt') // repeat on
@@ -65,7 +65,7 @@ audioElements.forEach(audio => {
             currentlyPlaying.pause();
             mcplay.style.visibility = 'visible';
             mcpause.style.visibility = 'hidden';
-            totalcheck = '1'
+            totalcheck = 1
         });
 
         // music control play button
@@ -73,7 +73,7 @@ audioElements.forEach(audio => {
             currentlyPlaying.play();
             mcplay.style.visibility = 'hidden';
             mcpause.style.visibility = 'visible';
-            totalcheck = '0'
+            totalcheck = 0
         });
 
         // to check if audio is playing or ended
