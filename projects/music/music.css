@@ -26,20 +26,21 @@ body {
 
 .replaybutt {
     cursor: pointer;
-    width: 1.7vw;    
-    margin-left: 100%;
+    width: 1.7vw;
+    
+    margin-left: 0.4vw;
 }
 
 .replayplaylistt {
     cursor: pointer;
     width: 1.7vw;
-    margin-left: -29%;
+    margin-left: -2.2vw !important;
     visibility: hidden;
 }
 .replayonesong {
     cursor: pointer;
     width: 1.7vw;
-    margin-left: -256%;
+    margin-left: -2.7vw !important;
     visibility: hidden;
 }
 .mcpause {
