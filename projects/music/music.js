@@ -211,6 +211,7 @@ audioElements.forEach(audio => {
                 mcpause.style.visibility = 'visible';
                 getsong = document.querySelector(songid);
                 getsong.play();
+                totalchecker = '0';
             }
         }
     });
