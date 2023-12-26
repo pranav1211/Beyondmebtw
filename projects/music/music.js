@@ -13,8 +13,6 @@ var getsong;
 var newsongnumber;
 var songduration;
 
-
-
 var replaybut = document.querySelector('.replaybutt') //replay off
 var replayplaylist = document.querySelector('.replayplaylistt') // repeat on
 var replayonesong = document.querySelector('.replayonesong') // repeat on
@@ -49,7 +47,7 @@ audioElements.forEach(audio => {
     let loopit = 'norepeat'; // to check if track should be looped
 
     audio.addEventListener('play', () => {
-
+        
 
         //gets the id for the current audio playing
         songnumber = audio.getAttribute('id');
@@ -59,14 +57,14 @@ audioElements.forEach(audio => {
 
         songid = "#t" + newsongnumber; // setting the id for the next song
 
-
+        
         // music control pause button
         mcpause.addEventListener('click', () => {
             currentlyPlaying.pause();
             mcplay.style.visibility = 'visible';
             mcpause.style.visibility = 'hidden';
-            totalchecker = '1';
-
+            ;
+            
         });
 
         // music control play button
@@ -74,8 +72,8 @@ audioElements.forEach(audio => {
             currentlyPlaying.play();
             mcplay.style.visibility = 'hidden';
             mcpause.style.visibility = 'visible';
-            totalchecker = '0';
-
+            ;
+            
         });
 
         // to check if audio is playing or ended
@@ -85,7 +83,6 @@ audioElements.forEach(audio => {
             secondr = 1;
             mindiv.innerHTML = "0:";
             audio.currentTime = 0;
-            totalchecker = '0';
 
         }
 
@@ -121,19 +118,17 @@ audioElements.forEach(audio => {
 
     audio.addEventListener('pause', () => {
         clearInterval(intervalid1);
-        totalchecker = '1';
+        ;
     });
 
     // next song button
     nextsong.addEventListener('click', () => {
-        
         if (noofsongs < newsongnumber) { // if the number of songs from json file is less than number that is used to get song id it means the end of playlist has been reached
             if (loopit == 'whole') {
                 songid = "#t1"
                 getsong = document.querySelector(songid);
                 getsong.play();
                 newsongnumber = 2;
-                totalchecker = '0';
             }
             else {
                 audio.currentTime = 3000;
@@ -145,7 +140,6 @@ audioElements.forEach(audio => {
         }
 
         clearInterval(intervalid1);
-        totalchecker = '0';
         getsong = document.querySelector(songid);
         getsong.play();
         mcplay.style.visibility = 'hidden';
@@ -179,8 +173,8 @@ audioElements.forEach(audio => {
     //on end to loop or not
 
     audio.addEventListener('ended', () => {
-        totalchecker = '0';
-
+        ;      
+        
         minuter = 0;
         secondr = 1;
 
@@ -215,7 +209,7 @@ audioElements.forEach(audio => {
                 mcplay.style.visibility = 'hidden';
                 mcpause.style.visibility = 'visible';
                 getsong = document.querySelector(songid);
-                getsong.play();
+                getsong.play();                                
             }
         }
     });
@@ -228,82 +222,82 @@ audioElements.forEach(audio => {
 var p1 = document.getElementById("t1")
 var checker1 = '1';
 document.querySelector('.showerpl').addEventListener("click", () => {
-    if (checker1 == '1' || totalchecker == '1') {
+    if (checker1 == '1') {
         p1.play();
         checker1 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
-        totalchecker = '0';
-
+        ;
+        
     }
-    else if (checker1 == '0' || totalchecker == '0') {
+    else if (checker1 == '0') {
         p1.pause();
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
         checker1 = '1';
-        totalchecker = '1';
-
+        ;
+        
     }
 });
 //////////////////////////////////////////////////////
 var p2 = document.getElementById("t2")
 var checker2 = '1';
 document.querySelector('.cptupl').addEventListener('click', () => {
-    if (checker2 == '1' || totalchecker == '1') {
+    if (checker2 == '1') {
         p2.play();
-        totalchecker = '0';
+        ;
         checker2 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
     }
-    else if (checker2 == '0' || totalchecker == '0') {
+    else if (checker2 == '0') {
         p2.pause();
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
         checker2 = '1';
-        totalchecker = '1';
-
+        ;
+        
     }
 });
 //////////////////////////////////////////////////////
 var p3 = document.getElementById("t3")
 var checker3 = '1';
 document.querySelector('.solrpl').addEventListener('click', () => {
-    if (checker3 == '1' || totalchecker == '1') {
+    if (checker3 == '1') {
         p3.play();
-        totalchecker = '0';
+        ;
         checker3 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
     }
-    else if (checker3 == '0' || totalchecker == '0') {
+    else if (checker3 == '0') {
         p3.pause();
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
         checker3 = '1';
-        totalchecker = '1';
-
+        ;
+        
     }
 });
 ////////////////////////////////////////////////////////
 var p4 = document.getElementById('t4')
 var checker4 = '1';
 document.querySelector('.sfttrarlpl').addEventListener('click', () => {
-    if (checker4 == '1' || totalchecker == '1') {
+    if (checker4 == '1') {
         p4.play();
-        totalchecker = '0';
+        ;
         checker4 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
-
+        
     }
-    else if (checker4 == '0' || totalchecker == '0') {
+    else if (checker4 == '0') {
         p4.pause();
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
         checker4 = '1';
-        totalchecker = '1';
-
+        ;
+        
     }
 });
 
