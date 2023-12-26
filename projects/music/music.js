@@ -225,6 +225,7 @@ document.querySelector('.showerpl').addEventListener("click", () => {
     if (checker1 == 1 || totalcheck == 1) {
         p1.play();
         checker1 = 0;
+        totalcheck = 0;
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
     }
@@ -233,6 +234,7 @@ document.querySelector('.showerpl').addEventListener("click", () => {
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
         checker1 = 1;
+        totalcheck = 1;
     }
 });
 //////////////////////////////////////////////////////
@@ -242,6 +244,7 @@ document.querySelector('.cptupl').addEventListener('click', () => {
     if (checker2 == 1 || totalcheck == 1) {
         p2.play();
         checker2 = 0;
+        totalcheck = 0;
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
         console.log("total pl = " + totalcheck)
@@ -262,6 +265,7 @@ document.querySelector('.solrpl').addEventListener('click', () => {
     if (checker3 == 1 || totalcheck == 1) {
         p3.play();
         checker3 = 0;
+        totalcheck = 0;
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
         console.log("total = " + totalcheck)
@@ -282,6 +286,7 @@ document.querySelector('.sfttrarlpl').addEventListener('click', () => {
     if (checker4 == 1 || totalcheck == 1) {
         p4.play();
         checker4 = 0;
+        totalcheck = 0;
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
     }
@@ -290,6 +295,7 @@ document.querySelector('.sfttrarlpl').addEventListener('click', () => {
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
         checker4 = 1;
+        totalcheck = 1;
     }
 });
 
