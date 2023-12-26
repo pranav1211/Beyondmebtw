@@ -133,6 +133,7 @@ audioElements.forEach(audio => {
                 getsong = document.querySelector(songid);
                 getsong.play();
                 newsongnumber = 2;
+                totalchecker = '0';
             }
             else {
                 audio.currentTime = 3000;
@@ -144,6 +145,7 @@ audioElements.forEach(audio => {
         }
 
         clearInterval(intervalid1);
+        totalchecker = '0';
         getsong = document.querySelector(songid);
         getsong.play();
         mcplay.style.visibility = 'hidden';
