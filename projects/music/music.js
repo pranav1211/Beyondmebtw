@@ -85,6 +85,7 @@ audioElements.forEach(audio => {
             secondr = 1;
             mindiv.innerHTML = "0:";
             audio.currentTime = 0;
+            totalchecker = '0';
 
         }
 
