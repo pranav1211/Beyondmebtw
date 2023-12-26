@@ -174,8 +174,7 @@ audioElements.forEach(audio => {
     //on end to loop or not
 
     audio.addEventListener('ended', () => {
-        ;
-
+        console.log("total end = " + totalcheck)
         minuter = 0;
         secondr = 1;
 
