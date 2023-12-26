@@ -59,7 +59,7 @@ audioElements.forEach(audio => {
 
         songid = "#t" + newsongnumber; // setting the id for the next song
 
-        totalchecker = '0';
+        
         // music control pause button
         mcpause.addEventListener('click', () => {
             currentlyPlaying.pause();
