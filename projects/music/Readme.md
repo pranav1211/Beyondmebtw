@@ -83,5 +83,14 @@ Dev notes / ideas: (ignore if you want)
 
 -> loop button works, no issues so far.\
 
+27/12/23
+
+-> having major issues with the play and pause functions of the system when i play one thing and pause one thing, currently using\
+    control variables which is too complicated and clearly not working. for a fix working on an animation that shows what is playing \
+    and that will be clickable therefore bringing back the pause button in another form. it's simpler that way and also reduces the number \
+    of operations needed to be performed regarding global variables functions.
+-> hopefully the new idea works, animation works just need to configure it to the player.
+-> have to figure out the logic in relation to the music control play button.
+
 
 
