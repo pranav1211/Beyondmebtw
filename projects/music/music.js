@@ -200,11 +200,17 @@ audioElements.forEach(audio => {
             }
         }
         else if (loopit == 'norepeat') {
-            mcplay.style.visibility = 'hidden';
-            mcpause.style.visibility = 'visible';
-            getsong = document.querySelector(songid);
-            getsong.play();
-        }        
+            if (newsongnumber == (noofsongs + 1)) {
+                mcplay.style.visibility = 'visible';
+                mcpause.style.visibility = 'hidden';
+            }
+            else {
+                mcplay.style.visibility = 'hidden';
+                mcpause.style.visibility = 'visible';
+                getsong = document.querySelector(songid);
+                getsong.play();
+            }
+        }
     });
 });
 
