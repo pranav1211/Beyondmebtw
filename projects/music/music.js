@@ -175,8 +175,7 @@ audioElements.forEach(audio => {
     //on end to loop or not
 
     audio.addEventListener('ended', () => {
-        totalchecker = '0';
-        console.log("total = " + totalchecker)
+        totalchecker = '0';      
         
         minuter = 0;
         secondr = 1;
@@ -212,8 +211,7 @@ audioElements.forEach(audio => {
                 mcplay.style.visibility = 'hidden';
                 mcpause.style.visibility = 'visible';
                 getsong = document.querySelector(songid);
-                getsong.play();
-                                
+                getsong.play();                                
             }
         }
     });
