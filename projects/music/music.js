@@ -226,7 +226,7 @@ document.querySelector('.showerpl').addEventListener("click", () => {
         checker1 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
-        totalchecker = '0'
+        totalchecker = '0';
     }
     else if (checker1 == '0') {
         p1.pause();
@@ -242,7 +242,7 @@ var checker2 = '1';
 document.querySelector('.cptupl').addEventListener('click', () => {
     if (checker2 == '1' || totalchecker == '1') {
         p2.play();
-
+        totalchecker = '0';
         checker2 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
@@ -261,7 +261,7 @@ var checker3 = '1';
 document.querySelector('.solrpl').addEventListener('click', () => {
     if (checker3 == '1' || totalchecker == '1') {
         p3.play();
-
+        totalchecker = '0';
         checker3 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
@@ -280,7 +280,7 @@ var checker4 = '1';
 document.querySelector('.sfttrarlpl').addEventListener('click', () => {
     if (checker4 == '1' || totalchecker == '1') {
         p4.play();
-
+        totalchecker = '0';
         checker4 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
