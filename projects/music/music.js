@@ -49,7 +49,7 @@ audioElements.forEach(audio => {
     let loopit = 'norepeat'; // to check if track should be looped
 
     audio.addEventListener('play', () => {
-        
+
 
         //gets the id for the current audio playing
         songnumber = audio.getAttribute('id');
@@ -59,14 +59,14 @@ audioElements.forEach(audio => {
 
         songid = "#t" + newsongnumber; // setting the id for the next song
 
-        
+
         // music control pause button
         mcpause.addEventListener('click', () => {
             currentlyPlaying.pause();
             mcplay.style.visibility = 'visible';
             mcpause.style.visibility = 'hidden';
             totalchecker = '1';
-            
+
         });
 
         // music control play button
@@ -75,7 +75,7 @@ audioElements.forEach(audio => {
             mcplay.style.visibility = 'hidden';
             mcpause.style.visibility = 'visible';
             totalchecker = '0';
-            
+
         });
 
         // to check if audio is playing or ended
@@ -175,8 +175,8 @@ audioElements.forEach(audio => {
     //on end to loop or not
 
     audio.addEventListener('ended', () => {
-        totalchecker = '0';      
-        
+        totalchecker = '0';
+
         minuter = 0;
         secondr = 1;
 
@@ -211,7 +211,7 @@ audioElements.forEach(audio => {
                 mcplay.style.visibility = 'hidden';
                 mcpause.style.visibility = 'visible';
                 getsong = document.querySelector(songid);
-                getsong.play();                                
+                getsong.play();
             }
         }
     });
@@ -230,7 +230,7 @@ document.querySelector('.showerpl').addEventListener("click", () => {
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
         totalchecker = '0';
-        console.log("total = " + totalchecker)
+
     }
     else if (checker1 == '0' || totalchecker == '0') {
         p1.pause();
@@ -238,7 +238,7 @@ document.querySelector('.showerpl').addEventListener("click", () => {
         mcpause.style.visibility = 'hidden';
         checker1 = '1';
         totalchecker = '1';
-        console.log("total = " + totalchecker)
+
     }
 });
 //////////////////////////////////////////////////////
@@ -258,7 +258,7 @@ document.querySelector('.cptupl').addEventListener('click', () => {
         mcpause.style.visibility = 'hidden';
         checker2 = '1';
         totalchecker = '1';
-        console.log("total = " + totalchecker)
+
     }
 });
 //////////////////////////////////////////////////////
@@ -278,7 +278,7 @@ document.querySelector('.solrpl').addEventListener('click', () => {
         mcpause.style.visibility = 'hidden';
         checker3 = '1';
         totalchecker = '1';
-        console.log("total = " + totalchecker)
+
     }
 });
 ////////////////////////////////////////////////////////
@@ -291,7 +291,7 @@ document.querySelector('.sfttrarlpl').addEventListener('click', () => {
         checker4 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
-        console.log("total = " + totalchecker)
+
     }
     else if (checker4 == '0' || totalchecker == '0') {
         p4.pause();
@@ -299,7 +299,7 @@ document.querySelector('.sfttrarlpl').addEventListener('click', () => {
         mcpause.style.visibility = 'hidden';
         checker4 = '1';
         totalchecker = '1';
-        console.log("total = " + totalchecker)
+
     }
 });
 
