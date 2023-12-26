@@ -66,6 +66,7 @@ audioElements.forEach(audio => {
             mcplay.style.visibility = 'visible';
             mcpause.style.visibility = 'hidden';
             totalchecker = '1';
+            console.log("total = " + totalchecker)
         });
 
         // music control play button
@@ -74,6 +75,7 @@ audioElements.forEach(audio => {
             mcplay.style.visibility = 'hidden';
             mcpause.style.visibility = 'visible';
             totalchecker = '0';
+            console.log("total = " + totalchecker)
         });
 
         // to check if audio is playing or ended
@@ -227,6 +229,7 @@ document.querySelector('.showerpl').addEventListener("click", () => {
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
         totalchecker = '0';
+        console.log("total = " + totalchecker)
     }
     else if (checker1 == '0'||totalchecker=='0') {
         p1.pause();
@@ -234,6 +237,7 @@ document.querySelector('.showerpl').addEventListener("click", () => {
         mcpause.style.visibility = 'hidden';
         checker1 = '1';
         totalchecker = '1';
+        console.log("total = " + totalchecker)
     }
 });
 //////////////////////////////////////////////////////
@@ -253,6 +257,7 @@ document.querySelector('.cptupl').addEventListener('click', () => {
         mcpause.style.visibility = 'hidden';
         checker2 = '1';
         totalchecker = '1';
+        console.log("total = " + totalchecker)
     }
 });
 //////////////////////////////////////////////////////
@@ -272,6 +277,7 @@ document.querySelector('.solrpl').addEventListener('click', () => {
         mcpause.style.visibility = 'hidden';
         checker3 = '1';
         totalchecker = '1';
+        console.log("total = " + totalchecker)
     }
 });
 ////////////////////////////////////////////////////////
@@ -284,6 +290,7 @@ document.querySelector('.sfttrarlpl').addEventListener('click', () => {
         checker4 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
+        console.log("total = " + totalchecker)
     }
     else if (checker4 == '0'||totalchecker=='0') {
         p4.pause();
@@ -291,6 +298,7 @@ document.querySelector('.sfttrarlpl').addEventListener('click', () => {
         mcpause.style.visibility = 'hidden';
         checker4 = '1';
         totalchecker = '1';
+        console.log("total = " + totalchecker)
     }
 });
 
