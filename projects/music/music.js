@@ -254,7 +254,7 @@ document.querySelector('.cptupl').addEventListener('click', () => {
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
     }
-    else if (checker2 == '0' || totalchecker == '0') {
+    else {
         p2.pause();
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
