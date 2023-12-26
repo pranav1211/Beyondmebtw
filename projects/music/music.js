@@ -85,12 +85,7 @@ audioElements.forEach(audio => {
             audio.currentTime = 0;
         }
 
-        if(audio != null){
-            totalcheck = '0'
-        }
-        else if(audio == null){
-            totalcheck = 1;
-        }
+
 
         // for displaying the attributes in the music control panel
         currentlyPlaying = audio;
