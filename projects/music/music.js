@@ -50,7 +50,7 @@ audioElements.forEach(audio => {
 
     audio.addEventListener('play', () => {
 
-        
+
         //gets the id for the current audio playing
         songnumber = audio.getAttribute('id');
         newsongnumber = songnumber.charAt(1); // taking the number of the song
@@ -228,16 +228,12 @@ document.querySelector('.showerpl').addEventListener("click", () => {
         checker1 = 0;
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
-
-
     }
     else if (checker1 == 0 || totalcheck == 0) {
         p1.pause();
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
         checker1 = 1;
-
-
     }
 });
 //////////////////////////////////////////////////////
@@ -251,7 +247,7 @@ document.querySelector('.cptupl').addEventListener('click', () => {
         mcpause.style.visibility = 'visible';
         console.log("total = " + totalcheck)
     }
-    else if (checker2 == 0|| totalcheck == 0) {
+    else if (checker2 == 0 || totalcheck == 0) {
         p2.pause();
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
