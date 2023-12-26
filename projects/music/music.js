@@ -140,6 +140,7 @@ audioElements.forEach(audio => {
         clearInterval(intervalid1);
         getsong = document.querySelector(songid);
         getsong.play();
+        totalcheck = 0;
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
 
