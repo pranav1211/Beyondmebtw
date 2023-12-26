@@ -26,9 +26,9 @@ body {
 
 .replaybutt {
     cursor: pointer;
-    width: 1.7vw;
-    
+    width: 1.7vw;    
     margin-left: 0.4vw;
+    visibility: hidden;
 }
 
 .replayplaylistt {
