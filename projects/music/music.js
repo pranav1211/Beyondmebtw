@@ -50,7 +50,7 @@ audioElements.forEach(audio => {
 
     audio.addEventListener('play', () => {
 
-        totalcheck = '0'
+        
         //gets the id for the current audio playing
         songnumber = audio.getAttribute('id');
         newsongnumber = songnumber.charAt(1); // taking the number of the song
