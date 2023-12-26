@@ -226,7 +226,7 @@ document.querySelector('.showerpl').addEventListener("click", () => {
         checker1 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
-        totalchecker = '1'
+        totalchecker = '0'
     }
     else if (checker1 == '0') {
         p1.pause();
