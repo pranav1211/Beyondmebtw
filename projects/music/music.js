@@ -214,6 +214,7 @@ audioElements.forEach(audio => {
                 getsong = document.querySelector(songid);
                 getsong.play();
                 totalchecker = '0';
+                console.log("total = " + totalchecker)
             }
         }
     });
