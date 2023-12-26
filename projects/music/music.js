@@ -63,7 +63,7 @@ audioElements.forEach(audio => {
             currentlyPlaying.pause();
             mcplay.style.visibility = 'visible';
             mcpause.style.visibility = 'hidden';
-            ;
+            
             
         });
 
@@ -72,7 +72,7 @@ audioElements.forEach(audio => {
             currentlyPlaying.play();
             mcplay.style.visibility = 'hidden';
             mcpause.style.visibility = 'visible';
-            ;
+            
             
         });
 
