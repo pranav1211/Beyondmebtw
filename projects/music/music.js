@@ -200,8 +200,8 @@ audioElements.forEach(audio => {
             }
         }
         else if (loopit == 'norepeat') {
-            mcplay.style.visibility = 'visible';
-            mcpause.style.visibility = 'hidden';
+            mcplay.style.visibility = 'hidden';
+            mcpause.style.visibility = 'visible';
             getsong = document.querySelector(songid);
             getsong.play();
         }        
