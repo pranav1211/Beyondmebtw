@@ -84,9 +84,6 @@ audioElements.forEach(audio => {
             mindiv.innerHTML = "0:";
             audio.currentTime = 0;
         }
-
-
-
         // for displaying the attributes in the music control panel
         currentlyPlaying = audio;
         const fileName = audio.getAttribute('data-file-name');
