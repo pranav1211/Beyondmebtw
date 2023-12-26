@@ -34,13 +34,13 @@ body {
     cursor: pointer;
     width: 1.7vw;
     margin-left: -10%;
-    visibility: hidden;
+    /* visibility: hidden; */
 }
 .replayonesong {
     cursor: pointer;
     width: 1.7vw;
     margin-left: -256%;
-    /* visibility: hidden; */
+    visibility: hidden;
 }
 .mcpause {
     margin-left: -2.62vw;
