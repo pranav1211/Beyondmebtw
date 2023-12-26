@@ -27,7 +27,7 @@ body {
 .replaybutt {
     cursor: pointer;
     width: 1.7vw;
-    
+    position: fixed;
     margin-left: 0.4vw;
 }
 
@@ -36,7 +36,9 @@ body {
     width: 1.7vw;
     margin-left: -2.2vw !important;
     visibility: hidden;
+    position: fixed;
 }
+
 .replayonesong {
     cursor: pointer;
     width: 1.7vw;
@@ -44,6 +46,7 @@ body {
     visibility: hidden;
     position: fixed;
 }
+
 .mcpause {
     margin-left: -2.62vw;
     visibility: hidden;
@@ -61,24 +64,25 @@ body {
     cursor: pointer;
 }
 
-.prevsong{
+.prevsong {
     margin-right: 1vw;
 }
 
-.nextsong{
+.nextsong {
     margin-left: 1vw;
 }
 
-.shuffle{
+.shuffle {
     width: 1.8vw;
-    cursor: pointer;    
+    cursor: pointer;
 }
 
-.shuffleon{
+.shuffleon {
     visibility: hidden;
     margin-left: -2vw;
 }
-.shuffleoff{
+
+.shuffleoff {
     margin-left: 1.5vw;
 }
 
