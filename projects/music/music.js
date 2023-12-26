@@ -252,6 +252,7 @@ document.querySelector('.cptupl').addEventListener('click', () => {
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
         checker2 = 1;
+        totalcheck = 1;
         console.log("total = " + totalcheck)
     }
 });
@@ -271,6 +272,7 @@ document.querySelector('.solrpl').addEventListener('click', () => {
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
         checker3 = 1;
+        totalcheck = 1;
         console.log("total = " + totalcheck)
     }
 });
