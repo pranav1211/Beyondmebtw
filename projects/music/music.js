@@ -118,7 +118,7 @@ audioElements.forEach(audio => {
 
     audio.addEventListener('pause', () => {
         clearInterval(intervalid1);
-        totalcheck = 1;
+        totalcheck = 0;
         console.log("pause check" + totalcheck)
     });
 
