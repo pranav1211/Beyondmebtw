@@ -33,7 +33,7 @@ body {
 .replayplaylistt {
     cursor: pointer;
     width: 1.7vw;
-    margin-left: -140%;
+    margin-left: -130%;
     /* visibility: hidden; */
 }
 .replayonesong {
