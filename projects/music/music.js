@@ -248,12 +248,14 @@ document.querySelector('.cptupl').addEventListener('click', () => {
         checker2 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
+        console.log("total = " + totalcheck)
     }
     else if (checker2 == '0' || totalcheck == '0') {
         p2.pause();
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
         checker2 = '1';
+        console.log("total = " + totalcheck)
     }
 });
 //////////////////////////////////////////////////////
@@ -265,12 +267,14 @@ document.querySelector('.solrpl').addEventListener('click', () => {
         checker3 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
+        console.log("total = " + totalcheck)
     }
     else if (checker3 == '0' || totalcheck == '0') {
         p3.pause();
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
         checker3 = '1';
+        console.log("total = " + totalcheck)
     }
 });
 ////////////////////////////////////////////////////////
