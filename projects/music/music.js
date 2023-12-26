@@ -59,6 +59,13 @@ audioElements.forEach(audio => {
 
         songid = "#t" + newsongnumber; // setting the id for the next song
 
+        // music control play button
+        mcplay.addEventListener('click', () => {
+            currentlyPlaying.play();
+            mcplay.style.visibility = 'hidden';
+            mcpause.style.visibility = 'visible';
+            totalcheck = 0
+        });
 
         // music control pause button
         mcpause.addEventListener('click', () => {
@@ -66,14 +73,6 @@ audioElements.forEach(audio => {
             mcplay.style.visibility = 'visible';
             mcpause.style.visibility = 'hidden';
             totalcheck = 1
-        });
-
-        // music control play button
-        mcplay.addEventListener('click', () => {
-            currentlyPlaying.play();
-            mcplay.style.visibility = 'hidden';
-            mcpause.style.visibility = 'visible';
-            totalcheck = 0
         });
 
         // to check if audio is playing or ended
