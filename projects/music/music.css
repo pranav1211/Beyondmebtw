@@ -40,8 +40,8 @@ body {
 .replayonesong {
     cursor: pointer;
     width: 1.7vw;
-    margin-left: -2.7vw !important;
-    visibility: hidden;
+    margin-left: -.7vw !important;
+    
 }
 .mcpause {
     margin-left: -2.62vw;
