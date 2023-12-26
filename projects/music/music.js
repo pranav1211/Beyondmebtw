@@ -49,7 +49,7 @@ audioElements.forEach(audio => {
     let loopit = 'norepeat'; // to check if track should be looped
 
     audio.addEventListener('play', () => {
-        console.log("total = " + totalchecker)
+        
 
         //gets the id for the current audio playing
         songnumber = audio.getAttribute('id');
@@ -66,7 +66,7 @@ audioElements.forEach(audio => {
             mcplay.style.visibility = 'visible';
             mcpause.style.visibility = 'hidden';
             totalchecker = '1';
-            console.log("total = " + totalchecker)
+            
         });
 
         // music control play button
@@ -75,7 +75,7 @@ audioElements.forEach(audio => {
             mcplay.style.visibility = 'hidden';
             mcpause.style.visibility = 'visible';
             totalchecker = '0';
-            console.log("total = " + totalchecker)
+            
         });
 
         // to check if audio is playing or ended
