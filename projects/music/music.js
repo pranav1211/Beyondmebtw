@@ -83,7 +83,10 @@ audioElements.forEach(audio => {
             secondr = 1;
             mindiv.innerHTML = "0:";
             audio.currentTime = 0;
+        }
 
+        if(audio != null){
+            totalcheck = '0'
         }
 
         // for displaying the attributes in the music control panel
