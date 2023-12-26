@@ -244,7 +244,7 @@ document.querySelector('.cptupl').addEventListener('click', () => {
         checker2 = 0;
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
-        console.log("total = " + totalcheck)
+        console.log("total pl = " + totalcheck)
     }
     else if (checker2 == 0 || totalcheck == 0) {
         p2.pause();
@@ -252,7 +252,7 @@ document.querySelector('.cptupl').addEventListener('click', () => {
         mcpause.style.visibility = 'hidden';
         checker2 = 1;
         totalcheck = 1;
-        console.log("total = " + totalcheck)
+        console.log("total pa = " + totalcheck)
     }
 });
 //////////////////////////////////////////////////////
