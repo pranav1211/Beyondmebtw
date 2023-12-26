@@ -118,7 +118,7 @@ audioElements.forEach(audio => {
 
     audio.addEventListener('pause', () => {
         clearInterval(intervalid1);
-        console.log("imthere")
+        totalcheck = 1
     });
 
     // next song button
@@ -220,78 +220,78 @@ audioElements.forEach(audio => {
 
 /////////////////////////////////////////////////////////////////
 var p1 = document.getElementById("t1")
-var checker1 = '1';
+var checker1 = 1;
 document.querySelector('.showerpl').addEventListener("click", () => {
-    if (checker1 == '1' || totalcheck == '1') {
+    if (checker1 == 1 || totalcheck == 1) {
         p1.play();
-        checker1 = '0';
+        checker1 = 0;
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
 
 
     }
-    else if (checker1 == '0' || totalcheck == '0') {
+    else if (checker1 == 0 || totalcheck == 0) {
         p1.pause();
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
-        checker1 = '1';
+        checker1 = 1;
 
 
     }
 });
 //////////////////////////////////////////////////////
 var p2 = document.getElementById("t2")
-var checker2 = '1';
+var checker2 = 1;
 document.querySelector('.cptupl').addEventListener('click', () => {
-    if (checker2 == '1' || totalcheck == '1') {
+    if (checker2 == 1 || totalcheck == 1) {
         p2.play();
-        checker2 = '0';
+        checker2 = 0;
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
         console.log("total = " + totalcheck)
     }
-    else if (checker2 == '0' || totalcheck == '0') {
+    else if (checker2 == 0|| totalcheck == 0) {
         p2.pause();
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
-        checker2 = '1';
+        checker2 = 1;
         console.log("total = " + totalcheck)
     }
 });
 //////////////////////////////////////////////////////
 var p3 = document.getElementById("t3")
-var checker3 = '1';
+var checker3 = 1;
 document.querySelector('.solrpl').addEventListener('click', () => {
-    if (checker3 == '1' || totalcheck == '1') {
+    if (checker3 == 1 || totalcheck == 1) {
         p3.play();
-        checker3 = '0';
+        checker3 = 0;
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
         console.log("total = " + totalcheck)
     }
-    else if (checker3 == '0' || totalcheck == '0') {
+    else if (checker3 == 0 || totalcheck == 0) {
         p3.pause();
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
-        checker3 = '1';
+        checker3 = 1;
         console.log("total = " + totalcheck)
     }
 });
 ////////////////////////////////////////////////////////
 var p4 = document.getElementById('t4')
-var checker4 = '1';
+var checker4 = 1;
 document.querySelector('.sfttrarlpl').addEventListener('click', () => {
-    if (checker4 == '1' || totalcheck == '1') {
+    if (checker4 == 1 || totalcheck == 1) {
         p4.play();
-        checker4 = '0';
+        checker4 = 0;
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
     }
-    else if (checker4 == '0' || totalcheck == '0') {
+    else if (checker4 == 0 || totalcheck == 0) {
         p4.pause();
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
-        checker4 = '1';
+        checker4 = 1;
     }
 });
 
