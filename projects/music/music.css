@@ -42,6 +42,7 @@ body {
     width: 1.7vw;
     margin-left: -2.7vw !important;
     visibility: hidden;
+    position: fixed;
 }
 .mcpause {
     margin-left: -2.62vw;
