@@ -49,7 +49,7 @@ audioElements.forEach(audio => {
     let loopit = 'norepeat'; // to check if track should be looped
 
     audio.addEventListener('play', () => {
-        console.log(totalchecker)
+        console.log("total = " + totalchecker)
 
         //gets the id for the current audio playing
         songnumber = audio.getAttribute('id');
