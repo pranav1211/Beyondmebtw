@@ -42,6 +42,9 @@ Changelog :-
             -> fixed an issue where the loop button for individual song was not working, had to add an else to another if condition to prevent promise from happenning
             ->added another loop button for individual song, it can be accessed by clicking through the loop buttons.
             -> fixed an issue where the next button was not recognizing the loop button, had to add the code in the next button listener for that
+    26/12/23
+        V 0.6
+            -> fixed an issue of a song not playing after another song played
 
 
 The Wordchanger file :-\
@@ -79,6 +82,6 @@ Dev notes / ideas: (ignore if you want)
 24/12/23
 
 -> loop button works, no issues so far.\
-->
+
 
 
