@@ -28,20 +28,20 @@ body {
     cursor: pointer;
     width: 1.7vw;    
     margin-left: 0.4vw;
-    visibility: hidden;
+    /* visibility: hidden; */
 }
 
 .replayplaylistt {
     cursor: pointer;
     width: 1.7vw;
     margin-left: -2.2vw !important;
-    /* visibility: hidden; */
+    visibility: hidden;
 }
 .replayonesong {
     cursor: pointer;
     width: 1.7vw;
     margin-left: -2.5vw !important;
-    /* visibility: hidden; */
+    visibility: hidden;
 }
 .mcpause {
     margin-left: -2.62vw;
