@@ -85,6 +85,7 @@ audioElements.forEach(audio => {
             secondr = 1;
             mindiv.innerHTML = "0:";
             audio.currentTime = 0;
+            totalchecker = '0';
 
         }
 
@@ -125,6 +126,7 @@ audioElements.forEach(audio => {
 
     // next song button
     nextsong.addEventListener('click', () => {
+        
         if (noofsongs < newsongnumber) { // if the number of songs from json file is less than number that is used to get song id it means the end of playlist has been reached
             if (loopit == 'whole') {
                 songid = "#t1"
