@@ -34,7 +34,7 @@ body {
     cursor: pointer;
     width: 1.7vw;
     margin-left: -2.2vw !important;
-    
+    visibility: hidden;
 }
 .replayonesong {
     cursor: pointer;
