@@ -49,7 +49,7 @@ audioElements.forEach(audio => {
     let loopit = 'norepeat'; // to check if track should be looped
 
     audio.addEventListener('play', () => {
-        
+
         totalcheck = '0'
         //gets the id for the current audio playing
         songnumber = audio.getAttribute('id');
@@ -59,7 +59,7 @@ audioElements.forEach(audio => {
 
         songid = "#t" + newsongnumber; // setting the id for the next song
 
-        
+
         // music control pause button
         mcpause.addEventListener('click', () => {
             currentlyPlaying.pause();
@@ -173,8 +173,8 @@ audioElements.forEach(audio => {
     //on end to loop or not
 
     audio.addEventListener('ended', () => {
-        ;      
-        
+        ;
+
         minuter = 0;
         secondr = 1;
 
@@ -209,7 +209,7 @@ audioElements.forEach(audio => {
                 mcplay.style.visibility = 'hidden';
                 mcpause.style.visibility = 'visible';
                 getsong = document.querySelector(songid);
-                getsong.play();                                
+                getsong.play();
             }
         }
     });
@@ -222,29 +222,29 @@ audioElements.forEach(audio => {
 var p1 = document.getElementById("t1")
 var checker1 = '1';
 document.querySelector('.showerpl').addEventListener("click", () => {
-    if (checker1 == '1') {
+    if (checker1 == '1' || totalcheck == '1') {
         p1.play();
         checker1 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
-        
-        
+
+
     }
     else if (checker1 == '0') {
         p1.pause();
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
         checker1 = '1';
-        
-        
+
+
     }
 });
 //////////////////////////////////////////////////////
 var p2 = document.getElementById("t2")
 var checker2 = '1';
 document.querySelector('.cptupl').addEventListener('click', () => {
-    if (checker2 == '1') {
-        p2.play();        
+    if (checker2 == '1' || totalcheck == '1') {
+        p2.play();
         checker2 = '0';
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
@@ -253,14 +253,14 @@ document.querySelector('.cptupl').addEventListener('click', () => {
         p2.pause();
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
-        checker2 = '1';        
+        checker2 = '1';
     }
 });
 //////////////////////////////////////////////////////
 var p3 = document.getElementById("t3")
 var checker3 = '1';
 document.querySelector('.solrpl').addEventListener('click', () => {
-    if (checker3 == '1') {
+    if (checker3 == '1' || totalcheck == '1') {
         p3.play();
         checker3 = '0';
         mcplay.style.visibility = 'hidden';
@@ -270,24 +270,24 @@ document.querySelector('.solrpl').addEventListener('click', () => {
         p3.pause();
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
-        checker3 = '1';       
+        checker3 = '1';
     }
 });
 ////////////////////////////////////////////////////////
 var p4 = document.getElementById('t4')
 var checker4 = '1';
 document.querySelector('.sfttrarlpl').addEventListener('click', () => {
-    if (checker4 == '1') {
+    if (checker4 == '1' || totalcheck == '1') {
         p4.play();
         checker4 = '0';
         mcplay.style.visibility = 'hidden';
-        mcpause.style.visibility = 'visible';        
+        mcpause.style.visibility = 'visible';
     }
     else if (checker4 == '0') {
         p4.pause();
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
-        checker4 = '1';        
+        checker4 = '1';
     }
 });
 
