@@ -59,7 +59,7 @@ audioElements.forEach(audio => {
 
         songid = "#t" + newsongnumber; // setting the id for the next song
 
-        
+
         // music control pause button
         mcpause.addEventListener('click', () => {
             currentlyPlaying.pause();
@@ -177,7 +177,7 @@ audioElements.forEach(audio => {
     audio.addEventListener('ended', () => {
         totalchecker = '0';
         console.log("total = " + totalchecker)
-        
+
         minuter = 0;
         secondr = 1;
 
@@ -255,7 +255,7 @@ document.querySelector('.cptupl').addEventListener('click', () => {
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
     }
-    else if (checker2 == '0' || totalchecker == '0') {
+    else if (totalchecker == '0' || checker2 == '0') {
         p2.pause();
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
