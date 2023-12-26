@@ -13,6 +13,8 @@ var getsong;
 var newsongnumber;
 var songduration;
 
+var totalcheck;
+
 var replaybut = document.querySelector('.replaybutt') //replay off
 var replayplaylist = document.querySelector('.replayplaylistt') // repeat on
 var replayonesong = document.querySelector('.replayonesong') // repeat on
