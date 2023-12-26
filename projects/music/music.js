@@ -13,7 +13,7 @@ var getsong;
 var newsongnumber;
 var songduration;
 
-var totalcheck = 0;
+var totalcheck = '0';
 
 var replaybut = document.querySelector('.replaybutt') //replay off
 var replayplaylist = document.querySelector('.replayplaylistt') // repeat on
@@ -50,7 +50,7 @@ audioElements.forEach(audio => {
 
     audio.addEventListener('play', () => {
 
-
+        
         //gets the id for the current audio playing
         songnumber = audio.getAttribute('id');
         newsongnumber = songnumber.charAt(1); // taking the number of the song
@@ -59,13 +59,6 @@ audioElements.forEach(audio => {
 
         songid = "#t" + newsongnumber; // setting the id for the next song
 
-        // music control play button
-        mcplay.addEventListener('click', () => {
-            currentlyPlaying.play();
-            mcplay.style.visibility = 'hidden';
-            mcpause.style.visibility = 'visible';
-            totalcheck = 0
-        });
 
         // music control pause button
         mcpause.addEventListener('click', () => {
@@ -73,6 +66,14 @@ audioElements.forEach(audio => {
             mcplay.style.visibility = 'visible';
             mcpause.style.visibility = 'hidden';
             totalcheck = 1
+        });
+
+        // music control play button
+        mcplay.addEventListener('click', () => {
+            currentlyPlaying.play();
+            mcplay.style.visibility = 'hidden';
+            mcpause.style.visibility = 'visible';
+            totalcheck = 0
         });
 
         // to check if audio is playing or ended
@@ -117,13 +118,11 @@ audioElements.forEach(audio => {
 
     audio.addEventListener('pause', () => {
         clearInterval(intervalid1);
-        totalcheck = 0;
-        console.log("pause check" + totalcheck)
+        totalcheck = 1
     });
 
     // next song button
     nextsong.addEventListener('click', () => {
-        console.log("next check" + totalcheck)
         if (noofsongs < newsongnumber) { // if the number of songs from json file is less than number that is used to get song id it means the end of playlist has been reached
             if (loopit == 'whole') {
                 songid = "#t1"
@@ -174,7 +173,8 @@ audioElements.forEach(audio => {
     //on end to loop or not
 
     audio.addEventListener('ended', () => {
-        console.log("total end = " + totalcheck)
+        ;
+
         minuter = 0;
         secondr = 1;
 
@@ -225,16 +225,18 @@ document.querySelector('.showerpl').addEventListener("click", () => {
     if (checker1 == 1 || totalcheck == 1) {
         p1.play();
         checker1 = 0;
-        totalcheck = 0;
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
+
+
     }
     else if (checker1 == 0 || totalcheck == 0) {
         p1.pause();
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
         checker1 = 1;
-        totalcheck = 1;
+
+
     }
 });
 //////////////////////////////////////////////////////
@@ -244,18 +246,16 @@ document.querySelector('.cptupl').addEventListener('click', () => {
     if (checker2 == 1 || totalcheck == 1) {
         p2.play();
         checker2 = 0;
-        totalcheck = 0;
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
-        console.log("total pl = " + totalcheck)
+        console.log("total = " + totalcheck)
     }
-    else if (checker2 == 0 || totalcheck == 0) {
+    else if (checker2 == 0|| totalcheck == 0) {
         p2.pause();
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
         checker2 = 1;
-        totalcheck = 1;
-        console.log("total pa = " + totalcheck)
+        console.log("total = " + totalcheck)
     }
 });
 //////////////////////////////////////////////////////
@@ -265,7 +265,6 @@ document.querySelector('.solrpl').addEventListener('click', () => {
     if (checker3 == 1 || totalcheck == 1) {
         p3.play();
         checker3 = 0;
-        totalcheck = 0;
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
         console.log("total = " + totalcheck)
@@ -275,7 +274,6 @@ document.querySelector('.solrpl').addEventListener('click', () => {
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
         checker3 = 1;
-        totalcheck = 1;
         console.log("total = " + totalcheck)
     }
 });
@@ -286,7 +284,6 @@ document.querySelector('.sfttrarlpl').addEventListener('click', () => {
     if (checker4 == 1 || totalcheck == 1) {
         p4.play();
         checker4 = 0;
-        totalcheck = 0;
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
     }
@@ -295,7 +292,6 @@ document.querySelector('.sfttrarlpl').addEventListener('click', () => {
         mcplay.style.visibility = 'visible';
         mcpause.style.visibility = 'hidden';
         checker4 = 1;
-        totalcheck = 1;
     }
 });
 
