@@ -1,4 +1,4 @@
-SITE IS CURRENTLY DOWN, PLEASE STANDBY ADD I FIX IT. 
+SITE IS CURRENTLY DOWN, PLEASE STANDBY As I FIX IT. 
 
 Hey, this is the repositroy containing the HTML,CSS and Javascript designs for my website Beyondmebtw.com.
 
