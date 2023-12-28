@@ -1,8 +1,8 @@
 **Site Status : **Active****
 
-Hey, this is the repositroy containing the HTML,CSS and Javascript designs for my website Beyondmebtw.com.
+Hey, this is the repositroy containing the HTML,CSS and Javascript code for my website Beyondmebtw.com.
 
-Feel free to use the designs but kindly do not use my name or personal information without my consent.
+Feel free to use the designs but kindly do not use my name or personal information.
 
 Here is the site : www.Beyondmebtw.com
 
