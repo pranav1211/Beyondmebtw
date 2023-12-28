@@ -1,4 +1,4 @@
-Site Status : <button>Active</button>
+Site Status : **Active**
 
 Hey, this is the repositroy containing the HTML,CSS and Javascript designs for my website Beyondmebtw.com.
 
