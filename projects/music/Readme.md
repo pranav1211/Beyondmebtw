@@ -1,5 +1,3 @@
-Site Status : Active
-
 Hello there, This site is a music player site, this site is made with the intention of listening to my favourite music without the ads and unwanted sugesstions and also for me to learn about various topics like databases, node js, dynamic webpages and dynamic data.
 
 You can check this site out at : www.beyondmebtw.com/projects/music
