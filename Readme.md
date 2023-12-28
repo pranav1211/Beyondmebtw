@@ -1,4 +1,4 @@
-Site Status : **Active**
+Site Status : <span style="background-color:green">Active</span>
 
 Hey, this is the repositroy containing the HTML,CSS and Javascript designs for my website Beyondmebtw.com.
 
