@@ -230,6 +230,7 @@ document.querySelector('.showerbeckyg').addEventListener("click", () => {
 });
 //////////////////////////////////////////////////////
 var p2 = document.getElementById("t2")
+var musicbars = document.querySelectorAll('.thebars')
 document.querySelector('.confessions-part-2-usher').addEventListener('click', () => {
     p2.play();
     mcplay.style.visibility = 'hidden';
