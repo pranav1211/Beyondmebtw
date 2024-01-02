@@ -116,7 +116,6 @@ audioElements.forEach(audio => {
 
     audio.addEventListener('pause', () => {
         clearInterval(intervalid1);
-        totalcheck = 0;
     });
 
     // next song button
@@ -140,7 +139,7 @@ audioElements.forEach(audio => {
         clearInterval(intervalid1);
         getsong = document.querySelector(songid);
         getsong.play();
-        totalcheck = 0;
+
         mcplay.style.visibility = 'hidden';
         mcpause.style.visibility = 'visible';
 
@@ -172,7 +171,7 @@ audioElements.forEach(audio => {
     //on end to loop or not
 
     audio.addEventListener('ended', () => {
-        ;
+
 
         minuter = 0;
         secondr = 1;
@@ -227,7 +226,7 @@ document.querySelector('.showerpl').addEventListener("click", () => {
 //////////////////////////////////////////////////////
 var p2 = document.getElementById("t2")
 document.querySelector('.cptupl').addEventListener('click', () => {
-    p2.play();    
+    p2.play();
     mcplay.style.visibility = 'hidden';
     mcpause.style.visibility = 'visible';
 });
