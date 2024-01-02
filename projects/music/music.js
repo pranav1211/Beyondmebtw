@@ -228,7 +228,7 @@ document.querySelector('.showerbeckyg').addEventListener("click", () => {
     minuter = 0;
     secondr = 1;
     clearInterval(intervalid1);
-    alert("test")
+    alert("test");
 });
 //////////////////////////////////////////////////////
 var p2 = document.getElementById("t2")
