@@ -232,6 +232,7 @@ document.querySelector('.showerbeckyg').addEventListener("click", () => {
     musicbars.style.visibility = 'visible'
     musicbars.style.animation = 'bounce 4s ease infinite'
     bar1.style.marginLeft = '1.5%'
+    bar2.style.marginLeft = '3%'
 });
 //////////////////////////////////////////////////////
 var p2 = document.getElementById("t2")
