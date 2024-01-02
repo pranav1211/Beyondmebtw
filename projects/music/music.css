@@ -194,7 +194,7 @@ body {
     background-color: black;
     position: fixed;
     transform-origin: bottom;
-    
+    animation : bounce;
     &:nth-of-type(2) {
         animation-delay: -2s;
     }
