@@ -185,7 +185,7 @@ body {
 .animationaud{
     display: flex;
     position: inherit;
-    
+    visibility: hidden;
 }
 
 .thebars {
@@ -193,6 +193,9 @@ body {
     height: 60px;
     background-color: black;
     position: fixed;
+    transform-origin: bottom;
+    
+
     &:nth-of-type(2) {
         animation-delay: -2s;
     }
