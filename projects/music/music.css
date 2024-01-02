@@ -204,6 +204,7 @@ body {
         animation-delay: -1s;
     }
 }
+
 @keyframes bounce {
     10% {
         transform: scaleY(0.3);
