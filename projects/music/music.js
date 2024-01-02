@@ -230,8 +230,7 @@ document.querySelector('.showerbeckyg').addEventListener("click", () => {
     minuter = 0;
     secondr = 1;
     musicbars.style.visibility = 'visible'
-    bar1.style.marginLeft = '1.5%'
-    bar2.style.marginLeft = '3%'
+    
 });
 //////////////////////////////////////////////////////
 var p2 = document.getElementById("t2")
