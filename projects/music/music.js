@@ -32,6 +32,9 @@ shuffleoff.addEventListener('click', () => {
 
 var noofsongs;
 
+var minuter = 0; // goes in the minute div
+var secondr = 1; //goes in the second div
+
 // getting the number of songs for control purposses
 fetch('musicdata.json')
     .then(response => response.json())
@@ -43,8 +46,6 @@ fetch('musicdata.json')
 
 audioElements.forEach(audio => {
 
-    var minuter = 0; // goes in the minute div
-    var secondr = 1; //goes in the second div
     var intervalid1; // for the second
     let loopit = 'norepeat'; // to check if track should be looped
 
