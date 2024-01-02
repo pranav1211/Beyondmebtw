@@ -193,9 +193,6 @@ body {
     height: 60px;
     background-color: black;
     position: fixed;
-    
-    
-
     &:nth-of-type(2) {
         animation-delay: -2s;
     }
