@@ -205,7 +205,12 @@ body {
     }
 }
 
-
+.bar1{
+    margin-left: 0.6%;
+}
+.bar2{
+    margin-left: 1.2%;
+}
 
 @keyframes bounce {
     10% {
