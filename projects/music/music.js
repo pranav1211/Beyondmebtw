@@ -227,7 +227,7 @@ document.querySelector('.showerbeckyg').addEventListener("click", () => {
     secdiv.innerHTML = "00"
     minuter = 0;
     secondr = 1;
-    clearInterval(intervalid1);
+    
     console.log("test");
 });
 //////////////////////////////////////////////////////
@@ -240,7 +240,7 @@ document.querySelector('.confessions-part-2-usher').addEventListener('click', ()
     secdiv.innerHTML = "00"
     minuter = 0;
     secondr = 1;
-    clearInterval(intervalid1);    
+    
 });
 //////////////////////////////////////////////////////
 var p3 = document.getElementById("t3")
@@ -252,7 +252,7 @@ document.querySelector('.seasons-of-love-rent').addEventListener('click', () => 
     secdiv.innerHTML = "00"
     minuter = 0;
     secondr = 1;
-    clearInterval(intervalid1);
+    
 });
 ////////////////////////////////////////////////////////
 var p4 = document.getElementById('t4')
@@ -265,6 +265,6 @@ document.querySelector('.set-fire-to-the-rain-adele-royal-albert').addEventListe
     secdiv.innerHTML = "00"
     minuter = 0;
     secondr = 1;
-    clearInterval(intervalid1);
+    
 });
 
