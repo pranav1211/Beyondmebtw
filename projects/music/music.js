@@ -221,6 +221,8 @@ document.querySelector('.showerpl').addEventListener("click", () => {
     p1.currentTime = 0;
     mcplay.style.visibility = 'hidden';
     mcpause.style.visibility = 'visible';
+    mindiv.innerHTML = "0:";
+    secdiv.innerHTML = "00"
     minuter = 0;
     secondr = 1;
     clearInterval(intervalid1);
@@ -231,6 +233,8 @@ document.querySelector('.cptupl').addEventListener('click', () => {
     p2.play();
     mcplay.style.visibility = 'hidden';
     mcpause.style.visibility = 'visible';
+    mindiv.innerHTML = "0:";
+    secdiv.innerHTML = "00"
     minuter = 0;
     secondr = 1;
     clearInterval(intervalid1);
@@ -241,6 +245,8 @@ document.querySelector('.solrpl').addEventListener('click', () => {
     p3.play();
     mcplay.style.visibility = 'hidden';
     mcpause.style.visibility = 'visible';
+    mindiv.innerHTML = "0:";
+    secdiv.innerHTML = "00"
     minuter = 0;
     secondr = 1;
     clearInterval(intervalid1);
@@ -252,6 +258,8 @@ document.querySelector('.sfttrarlpl').addEventListener('click', () => {
     p4.play();
     mcplay.style.visibility = 'hidden';
     mcpause.style.visibility = 'visible';
+    mindiv.innerHTML = "0:";
+    secdiv.innerHTML = "00"
     minuter = 0;
     secondr = 1;
     clearInterval(intervalid1);
