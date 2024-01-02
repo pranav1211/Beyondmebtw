@@ -193,7 +193,7 @@ body {
     height: 60px;
     background-color: black;
     position: fixed;
-    
+    visibility: hidden;
     animation : bounce 4s ease infinite;
     &:nth-of-type(2) {
         animation-delay: -2s;
