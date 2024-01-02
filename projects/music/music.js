@@ -218,8 +218,9 @@ audioElements.forEach(audio => {
 var p1 = document.getElementById("t1")
 document.querySelector('.showerpl').addEventListener("click", () => {
     p1.play();
+    currentTime = 0;
     mcplay.style.visibility = 'hidden';
-    mcpause.style.visibility = 'visible';
+    mcpause.style.visibility = 'visible';    
 });
 //////////////////////////////////////////////////////
 var p2 = document.getElementById("t2")
@@ -230,7 +231,6 @@ document.querySelector('.cptupl').addEventListener('click', () => {
 });
 //////////////////////////////////////////////////////
 var p3 = document.getElementById("t3")
-
 document.querySelector('.solrpl').addEventListener('click', () => {
     p3.play();
     mcplay.style.visibility = 'hidden';
