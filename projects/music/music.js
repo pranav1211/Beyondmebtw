@@ -228,7 +228,7 @@ document.querySelector('.showerbeckyg').addEventListener("click", () => {
     minuter = 0;
     secondr = 1;
     clearInterval(intervalid1);
-    mcpause.style.visibility = 'hidden';
+    shuffleoff.style.visibility = 'hidden';
 });
 //////////////////////////////////////////////////////
 var p2 = document.getElementById("t2")
