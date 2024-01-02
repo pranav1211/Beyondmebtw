@@ -193,7 +193,7 @@ body {
     height: 60px;
     background-color: black;
     position: fixed;
-    transform-origin: top;
+    
     
 
     &:nth-of-type(2) {
