@@ -220,7 +220,9 @@ document.querySelector('.showerpl').addEventListener("click", () => {
     p1.play();
     p1.currentTime = 0;
     mcplay.style.visibility = 'hidden';
-    mcpause.style.visibility = 'visible';    
+    mcpause.style.visibility = 'visible';
+    minuter = 0;
+    secondr = 1;
 });
 //////////////////////////////////////////////////////
 var p2 = document.getElementById("t2")
@@ -228,6 +230,8 @@ document.querySelector('.cptupl').addEventListener('click', () => {
     p2.play();
     mcplay.style.visibility = 'hidden';
     mcpause.style.visibility = 'visible';
+    minuter = 0;
+    secondr = 1;
 });
 //////////////////////////////////////////////////////
 var p3 = document.getElementById("t3")
@@ -235,6 +239,8 @@ document.querySelector('.solrpl').addEventListener('click', () => {
     p3.play();
     mcplay.style.visibility = 'hidden';
     mcpause.style.visibility = 'visible';
+    minuter = 0;
+    secondr = 1;
 });
 ////////////////////////////////////////////////////////
 var p4 = document.getElementById('t4')
@@ -243,5 +249,7 @@ document.querySelector('.sfttrarlpl').addEventListener('click', () => {
     p4.play();
     mcplay.style.visibility = 'hidden';
     mcpause.style.visibility = 'visible';
+    minuter = 0;
+    secondr = 1;
 });
 
