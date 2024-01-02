@@ -218,7 +218,7 @@ audioElements.forEach(audio => {
 var p1 = document.getElementById("t1")
 document.querySelector('.showerpl').addEventListener("click", () => {
     p1.play();
-    currentTime = 0;
+    p1.currentTime = 0;
     mcplay.style.visibility = 'hidden';
     mcpause.style.visibility = 'visible';    
 });
