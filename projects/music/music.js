@@ -217,6 +217,7 @@ audioElements.forEach(audio => {
 
 /////////////////////////////////////////////////////////////////
 var p1 = document.getElementById("t1")
+var bar0 = document.querySelector('.bar0')
 var bar1 = document.querySelector('.bar1')
 var bar2 = document.querySelector('.bar2')
 document.querySelector('.showerbeckyg').addEventListener("click", () => {
