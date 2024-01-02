@@ -191,7 +191,7 @@ body {
     width: 10px;
     height: 60px;
     background-color: black;
-    position: inherit;
+    position: fixed;
     transform-origin: bottom;
     animation: bounce 4s ease infinite;
 
