@@ -217,6 +217,7 @@ audioElements.forEach(audio => {
 
 /////////////////////////////////////////////////////////////////
 var p1 = document.getElementById("t1")
+var musicbars = document.querySelectorAll('.thebars')
 document.querySelector('.showerbeckyg').addEventListener("click", () => {
     p1.play();
     p1.currentTime = 0;
@@ -227,10 +228,10 @@ document.querySelector('.showerbeckyg').addEventListener("click", () => {
     minuter = 0;
     secondr = 1;
     clearInterval(intervalid1);
+    musicbars.style.visibility = 'hidden'
 });
 //////////////////////////////////////////////////////
 var p2 = document.getElementById("t2")
-var musicbars = document.querySelectorAll('.thebars')
 document.querySelector('.confessions-part-2-usher').addEventListener('click', () => {
     p2.play();
     mcplay.style.visibility = 'hidden';
@@ -239,8 +240,7 @@ document.querySelector('.confessions-part-2-usher').addEventListener('click', ()
     secdiv.innerHTML = "00"
     minuter = 0;
     secondr = 1;
-    clearInterval(intervalid1);
-    
+    clearInterval(intervalid1);    
 });
 //////////////////////////////////////////////////////
 var p3 = document.getElementById("t3")
