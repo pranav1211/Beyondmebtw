@@ -221,76 +221,36 @@ audioElements.forEach(audio => {
 var p1 = document.getElementById("t1")
 var checker1 = 1;
 document.querySelector('.showerpl').addEventListener("click", () => {
-    if (checker1 == 1 || totalcheck == 1) {
-        p1.play();
-        checker1 = 0;
-        mcplay.style.visibility = 'hidden';
-        mcpause.style.visibility = 'visible';
-
-
-    }
-    else if (checker1 == 0 || totalcheck == 0) {
-        p1.pause();
-        mcplay.style.visibility = 'visible';
-        mcpause.style.visibility = 'hidden';
-        checker1 = 1;
-
-
-    }
+    p1.play();
+    checker1 = 0;
+    mcplay.style.visibility = 'hidden';
+    mcpause.style.visibility = 'visible';
 });
 //////////////////////////////////////////////////////
 var p2 = document.getElementById("t2")
 var checker2 = 1;
 document.querySelector('.cptupl').addEventListener('click', () => {
-    if (checker2 == 1 || totalcheck == 1) {
-        p2.play();
-        checker2 = 0;
-        mcplay.style.visibility = 'hidden';
-        mcpause.style.visibility = 'visible';
-
-    }
-    else if (checker2 == 0 || totalcheck == 0) {
-        p2.pause();
-        mcplay.style.visibility = 'visible';
-        mcpause.style.visibility = 'hidden';
-        checker2 = 1;
-
-    }
+    p2.play();
+    checker2 = 0;
+    mcplay.style.visibility = 'hidden';
+    mcpause.style.visibility = 'visible';
 });
 //////////////////////////////////////////////////////
 var p3 = document.getElementById("t3")
 var checker3 = 1;
 document.querySelector('.solrpl').addEventListener('click', () => {
-    if (checker3 == 1 || totalcheck == 1) {
-        p3.play();
-        checker3 = 0;
-        mcplay.style.visibility = 'hidden';
-        mcpause.style.visibility = 'visible';
-
-    }
-    else if (checker3 == 0 || totalcheck == 0) {
-        p3.pause();
-        mcplay.style.visibility = 'visible';
-        mcpause.style.visibility = 'hidden';
-        checker3 = 1;
-
-    }
+    p3.play();
+    checker3 = 0;
+    mcplay.style.visibility = 'hidden';
+    mcpause.style.visibility = 'visible';
 });
 ////////////////////////////////////////////////////////
 var p4 = document.getElementById('t4')
 var checker4 = 1;
 document.querySelector('.sfttrarlpl').addEventListener('click', () => {
-    if (checker4 == 1 || totalcheck == 1) {
-        p4.play();
-        checker4 = 0;
-        mcplay.style.visibility = 'hidden';
-        mcpause.style.visibility = 'visible';
-    }
-    else if (checker4 == 0 || totalcheck == 0) {
-        p4.pause();
-        mcplay.style.visibility = 'visible';
-        mcpause.style.visibility = 'hidden';
-        checker4 = 1;
-    }
+    p4.play();
+    checker4 = 0;
+    mcplay.style.visibility = 'hidden';
+    mcpause.style.visibility = 'visible';
 });
 
