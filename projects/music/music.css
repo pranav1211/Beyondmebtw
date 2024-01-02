@@ -193,7 +193,7 @@ body {
 .bar2{
     margin-left: 1.2%;
 }
-.showerbeckyg {
+.showerbeckyg:hover {
     .thebars {
         width: 10px;
         height: 60px;
