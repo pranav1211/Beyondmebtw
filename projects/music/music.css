@@ -184,7 +184,7 @@ body {
 
 .animationaud {
     display: flex;
-    position: absolute;
+    position: inherit;
 }
 
 .thebars {
