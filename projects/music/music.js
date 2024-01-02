@@ -230,7 +230,7 @@ document.querySelector('.showerbeckyg').addEventListener("click", () => {
 });
 //////////////////////////////////////////////////////
 var p2 = document.getElementById("t2")
-document.querySelector('.cptupl').addEventListener('click', () => {
+document.querySelector('.confessions-part-2-usher').addEventListener('click', () => {
     p2.play();
     mcplay.style.visibility = 'hidden';
     mcpause.style.visibility = 'visible';
@@ -242,7 +242,7 @@ document.querySelector('.cptupl').addEventListener('click', () => {
 });
 //////////////////////////////////////////////////////
 var p3 = document.getElementById("t3")
-document.querySelector('.solrpl').addEventListener('click', () => {
+document.querySelector('.seasons-of-love-rent').addEventListener('click', () => {
     p3.play();
     mcplay.style.visibility = 'hidden';
     mcpause.style.visibility = 'visible';
@@ -255,7 +255,7 @@ document.querySelector('.solrpl').addEventListener('click', () => {
 ////////////////////////////////////////////////////////
 var p4 = document.getElementById('t4')
 var checker4 = 1;
-document.querySelector('.sfttrarlpl').addEventListener('click', () => {
+document.querySelector('.set-fire-to-the-rain-adele-royal-albert').addEventListener('click', () => {
     p4.play();
     mcplay.style.visibility = 'hidden';
     mcpause.style.visibility = 'visible';
