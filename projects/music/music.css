@@ -185,14 +185,17 @@ body {
 .animationaud {
     display: flex;
     position: inherit;
-    
+
 }
-.bar1{
+
+.bar1 {
     margin-left: 0.6%;
 }
-.bar2{
+
+.bar2 {
     margin-left: 1.2%;
 }
+
 .showerbeckyg:hover {
     .thebars {
         width: 10px;
