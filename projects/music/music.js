@@ -240,6 +240,7 @@ document.querySelector('.confessions-part-2-usher').addEventListener('click', ()
     minuter = 0;
     secondr = 1;
     clearInterval(intervalid1);
+    musicbars.style.animation = "bounce 4s ease infinite"
 });
 //////////////////////////////////////////////////////
 var p3 = document.getElementById("t3")
