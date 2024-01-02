@@ -230,7 +230,7 @@ document.querySelector('.showerbeckyg').addEventListener("click", () => {
     minuter = 0;
     secondr = 1;  
     musicbars.style.animation = 'bounce 4s ease infinite'
-    bar1.style.marginLeft = '3.6%;'   
+    bar1.innerHTML = '(marginLeft: 0.6%)'
 });
 //////////////////////////////////////////////////////
 var p2 = document.getElementById("t2")
