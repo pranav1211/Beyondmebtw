@@ -219,28 +219,23 @@ audioElements.forEach(audio => {
 
 /////////////////////////////////////////////////////////////////
 var p1 = document.getElementById("t1")
-var checker1 = 1;
 document.querySelector('.showerpl').addEventListener("click", () => {
     p1.play();
-    checker1 = 0;
     mcplay.style.visibility = 'hidden';
     mcpause.style.visibility = 'visible';
 });
 //////////////////////////////////////////////////////
 var p2 = document.getElementById("t2")
-var checker2 = 1;
 document.querySelector('.cptupl').addEventListener('click', () => {
-    p2.play();
-    checker2 = 0;
+    p2.play();    
     mcplay.style.visibility = 'hidden';
     mcpause.style.visibility = 'visible';
 });
 //////////////////////////////////////////////////////
 var p3 = document.getElementById("t3")
-var checker3 = 1;
+
 document.querySelector('.solrpl').addEventListener('click', () => {
     p3.play();
-    checker3 = 0;
     mcplay.style.visibility = 'hidden';
     mcpause.style.visibility = 'visible';
 });
@@ -249,7 +244,6 @@ var p4 = document.getElementById('t4')
 var checker4 = 1;
 document.querySelector('.sfttrarlpl').addEventListener('click', () => {
     p4.play();
-    checker4 = 0;
     mcplay.style.visibility = 'hidden';
     mcpause.style.visibility = 'visible';
 });
