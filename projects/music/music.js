@@ -231,7 +231,7 @@ document.querySelector('.showerbeckyg').addEventListener("click", () => {
     secondr = 1;
     musicbars.style.visibility = 'visible'
     musicbars.style.animation = 'bounce 4s ease infinite'
-    // musicbars.style = 'transform-origin: bottom';
+    musicbars.style.transformOrigin = 'bottom';
     bar1.style.marginLeft = '1.5%'
     bar2.style.marginLeft = '3%'
 });
@@ -245,7 +245,7 @@ document.querySelector('.confessions-part-2-usher').addEventListener('click', ()
     secdiv.innerHTML = "00"
     minuter = 0;
     secondr = 1;
-
+    
 });
 //////////////////////////////////////////////////////
 var p3 = document.getElementById("t3")
@@ -257,7 +257,7 @@ document.querySelector('.seasons-of-love-rent').addEventListener('click', () => 
     secdiv.innerHTML = "00"
     minuter = 0;
     secondr = 1;
-
+    
 });
 ////////////////////////////////////////////////////////
 var p4 = document.getElementById('t4')
@@ -270,6 +270,6 @@ document.querySelector('.set-fire-to-the-rain-adele-royal-albert').addEventListe
     secdiv.innerHTML = "00"
     minuter = 0;
     secondr = 1;
-
+    
 });
 
