@@ -181,3 +181,7 @@ body {
     margin-top: -1%;
     margin-left: 8.6vw;
 }
+
+.animationaud{
+    display: flex;
+}
