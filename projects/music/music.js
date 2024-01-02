@@ -217,7 +217,7 @@ audioElements.forEach(audio => {
 
 /////////////////////////////////////////////////////////////////
 var p1 = document.getElementById("t1")
-var musicbars = document.querySelector('.animationaud')
+var musicbars = document.querySelector('.mcpause')
 document.querySelector('.showerbeckyg').addEventListener("click", () => {
     p1.play();
     p1.currentTime = 0;
