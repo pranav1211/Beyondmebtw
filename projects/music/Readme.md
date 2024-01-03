@@ -61,7 +61,7 @@ The Wordchanger file :-\
 
 ******************************************
 
-Dev notes / ideas: (ignore if you want)
+Dev notes / ideas: 
 
 5/12/23 
 ->removed the interval for the minute part, made it a part of the second timer.\
