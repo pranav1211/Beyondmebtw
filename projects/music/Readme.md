@@ -45,6 +45,11 @@ Changelog :-
     26/12/23
         V 0.6
             -> fixed an issue of a song not playing after another song played
+    3/1/2024
+        V 0.7
+            -> removed the ability to pause from the playlist part, that just plays now, made it so anywhere you click on the container it plays
+            -> made the text in the music controller a responsive font so that the whole does not keep shifting if a song has more words
+
 
 
 The Wordchanger file :-\
@@ -92,5 +97,9 @@ Dev notes / ideas: (ignore if you want)
 -> hopefully the new idea works, animation works just need to configure it to the player.
 -> have to figure out the logic in relation to the music control play button.
 
+3/1/24
+
+-> removed the pause and the whole control variable thing, life is easier without it\
+-> working on an animation for the song that is playing so that the user knows what is playing
 
 
