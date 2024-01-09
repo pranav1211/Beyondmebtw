@@ -190,7 +190,7 @@ audioElements.forEach(audio => {
                 getsong.play();
             }
         }
-        else if (secondr > 4) { // this is to go to the starting of the song after 3 second leeway 
+        else if (secondr > 4 || loopit=="onesong") { // this is to go to the starting of the song after 3 second leeway 
             audio.currentTime = 0;
         }
         setTimeout(() => {
