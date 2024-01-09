@@ -56,9 +56,8 @@ audioElements.forEach(audio => {
         //gets the id for the current audio playing
         songnumber = audio.getAttribute('id');
         nextsongnumber = songnumber.charAt(1); // taking the number of the song
-        nextsongnumber = parseInt(nextsongnumber);
+        nextsongnumber = parseInt(nextsongnumber); 
         nextsongnumber++;
-
         songid = "#t" + nextsongnumber; // setting the id for the next song
 
 
@@ -158,8 +157,8 @@ audioElements.forEach(audio => {
             secondr = 1;
         }
     })
-    prevsong.addEventListener('dblclick',()=>{
-        alert("works");
+    prevsong.addEventListener('dblclick', () => {
+        console.log()
     })
 
     //replay checker
