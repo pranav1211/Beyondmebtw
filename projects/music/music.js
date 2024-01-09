@@ -16,6 +16,7 @@ var nextsongnumber;
 var prevsongnumber;
 var currentsongnumber;
 var songduration;
+var samesong;
 
 var totalcheck = '0';
 
@@ -164,6 +165,7 @@ audioElements.forEach(audio => {
     prevsong.addEventListener('click', () => {
         if (secondr >= 5) {
             getsong = document.querySelector(songid);
+            getsong
             getsong.currentTime = 0;
             minuter = 0;
             secondr = 1;
@@ -172,7 +174,7 @@ audioElements.forEach(audio => {
         else {
             getsong = document.querySelector(prevsongid);
             getsong.play();
-            getsong.currentTime = 0;
+            
             minuter = 0;
             secondr = 1;            
         }
