@@ -167,7 +167,7 @@ audioElements.forEach(audio => {
         loopit = 'norepeat';
     });
 
-    //on end to loop or not
+    //looping section
 
     audio.addEventListener('ended', () => {
 
