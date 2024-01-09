@@ -59,6 +59,8 @@ audioElements.forEach(audio => {
 
     audio.addEventListener('play', () => {
 
+        minuter = 0;
+        secondr = 1;
 
         //gets the id for the current audio playing
         songnumber = audio.getAttribute('id');
@@ -171,7 +173,8 @@ audioElements.forEach(audio => {
             getsong.play();            
         }
         else if (secondr > 4) {
-            audio.currentTime = 0;            
+            audio.currentTime = 0;
+
         }
     })
 
