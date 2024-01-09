@@ -49,6 +49,7 @@ Changelog :-
         V 0.7
             -> removed the ability to pause from the playlist part, that just plays now, made it so anywhere you click on the container it plays
             -> made the text in the music controller a responsive font so that the whole does not keep shifting if a song has more words
+            ->also the play and pause thing works just as it should, its simple.
     10/1/2024
         V 0.8
             -> the previous song button is now functional, there is a 3 second leeway to go back to the previous song in the list. If the button is pressed after\
@@ -109,5 +110,13 @@ Dev notes / ideas:
 
 -> removed the pause and the whole control variable thing, life is easier without it\
 -> working on an animation for the song that is playing so that the user knows what is playing
+
+10/1/24
+
+-> gonna work on the shuffle button once i have the database up and running.\
+-> have to trim down the javascript code its too long and lot of same things. essentially a slight optimization.\
+-> working on the JSON database, had some success as to what needs to be done.\
+-> i want to add the song cover to the thing. also if it could be a little smaller.\
+-> almost done with the final code for the html and js but gonna start updating the word changer to the latest version.
 
 
