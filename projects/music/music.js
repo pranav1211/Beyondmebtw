@@ -159,11 +159,11 @@ audioElements.forEach(audio => {
 
     prevsong.addEventListener('click', () => {
         if (secondr > 1) {
-            audio.play();
+            currentlyPlaying.currentTime = 0;
             minuter = 0;
             secondr = 1;
         }
-        if (secondr < 1) {
+        else if (secondr < 1) {
 
             if (prevsongnumber == 0) { // checking if there exists a song before the current song
                 audio.pause();
