@@ -9,6 +9,7 @@ var nextsong = document.querySelector(".nextsong");
 var prevsong = document.querySelector(".prevsong");
 
 var nextsongid;
+var prevsongid;
 var songnumber;
 var getsong;
 var nextsongnumber;
