@@ -176,7 +176,7 @@ audioElements.forEach(audio => {
                     prevsongid = "#t" + fromback
                     getsong = document.querySelector(prevsongid)
                     getsong.play()
-
+                    fromback--;
                 }
                 else {
                     audio.pause()
