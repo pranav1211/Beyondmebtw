@@ -14,6 +14,7 @@ var songnumber;
 var getsong;
 var nextsongnumber;
 var prevsongnumber;
+var currentsongnumber;
 var songduration;
 
 var totalcheck = '0';
@@ -171,7 +172,7 @@ audioElements.forEach(audio => {
             mcpause.style.visibility = 'hidden';
         }
         if (secondr >= 5) {
-            currentlyPlaying.currentTime = 0;
+            getsong.currentTime = 0;
             minuter = 0;
             secondr = 1;
         }
