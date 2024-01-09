@@ -174,7 +174,7 @@ audioElements.forEach(audio => {
         }
         else {
             if (secondr >= 5) {
-                p2.currentTime = 0;
+                // p2.currentTime = 0;
                 minuter = 0;
                 secondr = 1;
                 console.log("yass")
