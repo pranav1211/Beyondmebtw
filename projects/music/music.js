@@ -166,7 +166,7 @@ audioElements.forEach(audio => {
     })
     prevsong.addEventListener('dblclick', () => {
         if (prevsongnumber == 0) { // checking if there exists a song before the current song
-            audio.currentTime = 3000;
+            audio.pause();
             mindiv.innerHTML = "0:";
             secdiv.innerHTML = "00"
             minuter = 0;
