@@ -160,19 +160,19 @@ audioElements.forEach(audio => {
     //previous song button
 
     prevsong.addEventListener('click', () => {
-        if (secondr <= 4) {
-            getsong = document.querySelector(prevsongid);
-            getsong.play();
-            minuter = 0;
-            secondr = 1;
-        }
-        // else {
-        //     samesong = document.querySelector(songnumber);
-        //     samesong.play();
-        //     samesong.currentTime = 0;
+        // if (secondr <= 4) {
+        //     getsong = document.querySelector(prevsongid);
+        //     getsong.play();
         //     minuter = 0;
         //     secondr = 1;
         // }
+        else {
+            samesong = document.querySelector(songnumber);
+            samesong.play();
+            samesong.currentTime = 0;
+            minuter = 0;
+            secondr = 1;
+        }
 
     })
 
