@@ -178,15 +178,15 @@ audioElements.forEach(audio => {
                     getsong.play()
                     fromback--;
                 }
-                else if (loopit == "onesong") {
-                    audio.currentTime = 0;
-                }
                 else {
                     audio.pause()
                     audio.currentTime = 0;
                     mcplay.style.visibility = 'visible';
                     mcpause.style.visibility = 'hidden';
                 }
+            }
+            else if (loopit == "onesong") {
+                audio.currentTime = 0;
             }
             else {
                 getsong = document.querySelector(prevsongid);
