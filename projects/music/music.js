@@ -151,6 +151,10 @@ audioElements.forEach(audio => {
 
     //previous song button
 
+    prevsong.addEventListener('click',()=>{
+        alert("works");
+    })
+
     //replay checker
 
     replaybut.addEventListener('click', () => { // off
