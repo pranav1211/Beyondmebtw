@@ -55,6 +55,8 @@ Changelog :-
                 3 second leeway it restarts the song
             ->removed the shuffle button
             ->The previous song button also works with regards to the loopiing features.
+            ->also to give credit where credit is due, Chat-GPT 3.5 helped me with a playback issue as it was conflicting with the second variable\
+                it suggested to use a delay and it works just as a i wanted it to.
 
 
 
