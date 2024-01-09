@@ -163,7 +163,7 @@ audioElements.forEach(audio => {
             minuter = 0;
             secondr = 1;
         }
-        else if (secondr < 2) {
+        if (secondr < 2) {
 
             if (prevsongnumber == 0) { // checking if there exists a song before the current song
                 audio.pause();
