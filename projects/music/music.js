@@ -217,9 +217,9 @@ audioElements.forEach(audio => {
 
 /////////////////////////////////////////////////////////////////
 var p1 = document.getElementById("t1")
-var bar0 = document.querySelector('.bar0')
-var bar1 = document.querySelector('.bar1')
-var bar2 = document.querySelector('.bar2')
+// var bar0 = document.querySelector('.bar0')
+// var bar1 = document.querySelector('.bar1')
+// var bar2 = document.querySelector('.bar2')
 document.querySelector('.showerbeckyg').addEventListener("click", () => {
     p1.play();
     p1.currentTime = 0;
@@ -229,11 +229,11 @@ document.querySelector('.showerbeckyg').addEventListener("click", () => {
     secdiv.innerHTML = "00"
     minuter = 0;
     secondr = 1;
-    bar1.style.visibility = 'visible'
-    musicbars.style.animation = 'bounce 4s ease infinite'
-    musicbars.style.transformOrigin = 'bottom';
-    bar1.style.marginLeft = '1.5%'
-    bar2.style.marginLeft = '3%'
+    // bar1.style.visibility = 'visible'
+    // musicbars.style.animation = 'bounce 4s ease infinite'
+    // musicbars.style.transformOrigin = 'bottom';
+    // bar1.style.marginLeft = '1.5%'
+    // bar2.style.marginLeft = '3%'
 });
 //////////////////////////////////////////////////////
 var p2 = document.getElementById("t2")
