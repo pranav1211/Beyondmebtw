@@ -115,10 +115,10 @@ audioElements.forEach(audio => {
                 secdiv.innerHTML = secondr;
                 secondr++;
             }
-            
+
         }
         intervalid1 = setInterval(forsecond, 1000);
-        
+
     });
 
     //pause
@@ -160,11 +160,7 @@ audioElements.forEach(audio => {
     //previous song button
 
     prevsong.addEventListener('click', () => {
-        if (secondr >= 5) {
-            currentlyPlaying.currentTime = 0;
-            minuter = 0;
-            secondr = 1;
-        }
+
         if (prevsongnumber == 0) { // checking if there exists a song before the current song
             audio.pause();
             mindiv.innerHTML = "0:";
@@ -174,7 +170,12 @@ audioElements.forEach(audio => {
             mcplay.style.visibility = 'visible';
             mcpause.style.visibility = 'hidden';
         }
-        if (secondr <= 4) {
+        if (secondr >= 5) {
+            currentlyPlaying.currentTime = 0;
+            minuter = 0;
+            secondr = 1;
+        }
+        else if (secondr <= 4) {
             getsong = document.querySelector(prevsongid);
             getsong.play();
             minuter = 0;
