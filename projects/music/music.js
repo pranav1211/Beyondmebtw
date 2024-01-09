@@ -171,7 +171,7 @@ audioElements.forEach(audio => {
             secondr = 1;
         }
         else if (secondr > 4) {
-            console.log("its after")
+            audio.currentTime = 0;
             
         }
 
