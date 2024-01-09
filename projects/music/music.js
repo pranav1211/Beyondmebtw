@@ -13,6 +13,7 @@ var prevsongid;
 var songnumber;
 var getsong;
 var nextsongnumber;
+var prevsongnumber;
 var songduration;
 
 var totalcheck = '0';
