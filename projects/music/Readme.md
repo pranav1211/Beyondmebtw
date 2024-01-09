@@ -117,6 +117,6 @@ Dev notes / ideas:
 -> have to trim down the javascript code its too long and lot of same things. essentially a slight optimization.\
 -> working on the JSON database, had some success as to what needs to be done.\
 -> i want to add the song cover to the thing. also if it could be a little smaller.\
--> almost done with the final code for the html and js but gonna start updating the word changer to the latest version.
+-> almost done with the final code for the html and js but gonna start updating the word changer to the latest version.****
 
 
