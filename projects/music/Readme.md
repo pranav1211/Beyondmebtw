@@ -38,7 +38,8 @@ Changelog :-
             -> fixed an issue of the music control center play button playing another song after being paused
     24/12/23
         V0.5
-            -> fixed an issue where if you pause the song using the music control pause and the played a song from the list using its button and then a second song using its button the second was not playing. it was a control varible issue
+            -> fixed an issue where if you pause the song using the music control pause and the played a song from the list using its button and then a second\
+             song using its button the second was not playing. it was a control varible issue
             -> fixed an issue where the loop button for individual song was not working, had to add an else to another if condition to prevent promise from happenning
             ->added another loop button for individual song, it can be accessed by clicking through the loop buttons.
             -> fixed an issue where the next button was not recognizing the loop button, had to add the code in the next button listener for that
@@ -117,6 +118,6 @@ Dev notes / ideas:
 -> have to trim down the javascript code its too long and lot of same things. essentially a slight optimization.\
 -> working on the JSON database, had some success as to what needs to be done.\
 -> i want to add the song cover to the thing. also if it could be a little smaller.\
--> almost done with the final code for the html and js but gonna start updating the word changer to the latest version.****
+-> almost done with the final code for the html and js but gonna start updating the word changer to the latest version.
 
 
