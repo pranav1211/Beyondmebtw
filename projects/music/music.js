@@ -164,17 +164,15 @@ audioElements.forEach(audio => {
 
     prevsong.addEventListener('click', () => {
         if (secondr >= 5) {
-            getsong = document.querySelector(songid);
-            getsong
-            getsong.currentTime = 0;
+            samesong = document.querySelector(songid);
+            samesong.currentTime = 0;
             minuter = 0;
             secondr = 1;
             clearInterval(intervalid1);
         }
         else {
             getsong = document.querySelector(prevsongid);
-            getsong.play();
-            
+            getsong.play();            
             minuter = 0;
             secondr = 1;            
         }
