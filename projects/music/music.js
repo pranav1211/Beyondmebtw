@@ -173,15 +173,15 @@ audioElements.forEach(audio => {
         // }
         if (secondr >= 5) {
             console.log("bigger")
-            minuter = 0;
-            secondr = 1;
+            // minuter = 0;
+            // secondr = 1;
         }
         if (secondr <= 4) {
             // getsong = document.querySelector(prevsongid);
             // getsong.play();
             console.log("smaller")
-            minuter = 0;
-            secondr = 1;
+            // minuter = 0;
+            // secondr = 1;
         }
     })
 
