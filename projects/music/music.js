@@ -40,8 +40,8 @@ shuffleoff.addEventListener('click', () => {
 
 var noofsongs;
 
-var minuter = 0; // goes in the minute div
-var secondr = 1; //goes in the second div
+let minuter = 0; // goes in the minute div
+let secondr = 1; //goes in the second div
 
 // getting the number of songs for control purposses
 fetch('musicdata.json')
