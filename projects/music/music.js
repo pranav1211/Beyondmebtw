@@ -175,7 +175,7 @@ audioElements.forEach(audio => {
                 getsong = document.querySelector(songid);
                 getsong.currentTime = 0;
                 minuter = 0;
-                secondr = 1;                
+                secondr = 1;        
             }
             // else {
             //     getsong = document.querySelector(prevsongid);
