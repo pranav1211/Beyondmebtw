@@ -178,6 +178,9 @@ audioElements.forEach(audio => {
                     getsong.play()
                     fromback--;
                 }
+                else if (loopit == "onesong") {
+                    audio.currentTime = 0;
+                }
                 else {
                     audio.pause()
                     audio.currentTime = 0;
