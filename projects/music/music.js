@@ -163,21 +163,18 @@ audioElements.forEach(audio => {
             minuter = 0;
             secondr = 1;
         }
+        if (prevsongnumber == 0) { // checking if there exists a song before the current song
+            audio.pause();
+            mindiv.innerHTML = "0:";
+            secdiv.innerHTML = "00"
+            minuter = 0;
+            secondr = 1;
+        }
         if (secondr < 2) {
-
-            if (prevsongnumber == 0) { // checking if there exists a song before the current song
-                audio.pause();
-                mindiv.innerHTML = "0:";
-                secdiv.innerHTML = "00"
-                minuter = 0;
-                secondr = 1;
-            }
-            else {
-                getsong = document.querySelector(prevsongid);
-                getsong.play();
-                minuter = 0;
-                secondr = 1;
-            }
+            getsong = document.querySelector(prevsongid);
+            getsong.play();
+            minuter = 0;
+            secondr = 1;
         }
     })
 
