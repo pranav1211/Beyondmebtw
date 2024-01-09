@@ -164,6 +164,7 @@ audioElements.forEach(audio => {
         clearInterval(intervalid1);
         if (prevsongnumber == 0) { // checking if there exists a song before the current song
             audio.pause()
+            audio.currentTime = 0;
             mindiv.innerHTML = "0:";
             secdiv.innerHTML = "00"
             minuter = 0;
