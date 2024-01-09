@@ -176,7 +176,7 @@ audioElements.forEach(audio => {
             minuter = 0;
             secondr = 1;
         }
-        if (secondr <= 4) {
+        else if (secondr <= 4) {
             getsong = document.querySelector(prevsongid);
             getsong.play();
             minuter = 0;
