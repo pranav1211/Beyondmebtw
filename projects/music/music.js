@@ -170,10 +170,15 @@ audioElements.forEach(audio => {
     prevsong.addEventListener('click', () => {
         if (secondr <= 4) { // this is to go back to the previous song, 3 second leeway
             if (songid == "#t1") {
-                audio.pause()
-                audio.currentTime = 0;
-                mcplay.style.visibility = 'visible';
-                mcpause.style.visibility = 'hidden';
+                if (loopit == 'whole') {
+
+                }
+                else {
+                    audio.pause()
+                    audio.currentTime = 0;
+                    mcplay.style.visibility = 'visible';
+                    mcpause.style.visibility = 'hidden';
+                }
             }
             else {
                 getsong = document.querySelector(prevsongid);
