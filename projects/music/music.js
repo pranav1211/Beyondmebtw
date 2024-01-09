@@ -158,6 +158,9 @@ audioElements.forEach(audio => {
             secondr = 1;
         }
     })
+    prevsong.addEventListener('dbclick',()=>{
+        alert("works");
+    })
 
     //replay checker
 
