@@ -152,7 +152,7 @@ audioElements.forEach(audio => {
     //previous song button
 
     prevsong.addEventListener('click', () => {
-        if (minuter > 1 || secondr > 1) {
+        if (minuter > 1 || secondr > 2) {
             audio.currentTime = 0;
         }
     })
