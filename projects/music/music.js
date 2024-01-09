@@ -161,7 +161,7 @@ audioElements.forEach(audio => {
     //previous song button
 
     prevsong.addEventListener('click', () => {
-
+        clearInterval(intervalid1);
         if (prevsongnumber == 0) { // checking if there exists a song before the current song
             audio.currentTime = 3000;
             mindiv.innerHTML = "0:";
