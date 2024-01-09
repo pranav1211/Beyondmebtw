@@ -18,6 +18,7 @@ var currentsongnumber;
 var songduration;
 var samesong;
 var songid;
+var fuck = 0;
 
 var prevswitcher
 
@@ -174,7 +175,7 @@ audioElements.forEach(audio => {
         }
         else if (secondr > 4) {
             audio.currentTime = 0;
-            var fuck = 0;
+            fuck = 0;
         }
     })
     secondr = fuck;
