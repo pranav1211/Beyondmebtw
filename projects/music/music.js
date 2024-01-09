@@ -169,8 +169,7 @@ audioElements.forEach(audio => {
             getsong.play();
         }
         else if (secondr > 4) {
-            audio.currentTime = 0;
-            
+            audio.currentTime = 0;            
         }
 
 
