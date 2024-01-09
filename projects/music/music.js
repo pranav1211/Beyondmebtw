@@ -156,7 +156,7 @@ audioElements.forEach(audio => {
             audio.currentTime = 0;
             minuter = 0;
             secondr = 1;
-            clearInterval(intervalid1)
+            
         }
     })
 
