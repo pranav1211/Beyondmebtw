@@ -167,11 +167,12 @@ audioElements.forEach(audio => {
         if (secondr <= 4) {
             getsong = document.querySelector(prevsongid);
             getsong.play();
+            fssfs();
         }
         else if (secondr > 4) {
             audio.currentTime = 0;
         }
-        fssfs();
+
     })
 
     function fssfs() {
