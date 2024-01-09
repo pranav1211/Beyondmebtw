@@ -166,23 +166,14 @@ audioElements.forEach(audio => {
     //previous song button
 
     prevsong.addEventListener('click', () => {
-        if (secondr <= 4 || prevswitcher == 1) {
+        if (secondr <= 4) {
             getsong = document.querySelector(prevsongid);
-            getsong.play();
-            fssfs();
+            getsong.play();            
         }
         else if (secondr > 4) {
-            audio.currentTime = 0;
-            prevswitcher = 1
+            audio.currentTime = 0;            
         }
-
     })
-
-    function fssfs() {
-        clearInterval(intervalid1);
-        minuter = 0;
-        secondr = 1;
-    }
 
     //replay checker
 
