@@ -162,26 +162,26 @@ audioElements.forEach(audio => {
 
     prevsong.addEventListener('click', () => {
 
-        // if (prevsongnumber == 0) { // checking if there exists a song before the current song
-        //     audio.pause();
-        //     mindiv.innerHTML = "0:";
-        //     secdiv.innerHTML = "00"
-        //     minuter = 0;
-        //     secondr = 1;
-        //     mcplay.style.visibility = 'visible';
-        //     mcpause.style.visibility = 'hidden';
-        // }
-        if (secondr >= 5) {
-            console.log("bigger")
-            // minuter = 0;
-            // secondr = 1;
+        if (prevsongnumber == 0) { // checking if there exists a song before the current song
+            audio.pause();
+            mindiv.innerHTML = "0:";
+            secdiv.innerHTML = "00"
+            minuter = 0;
+            secondr = 1;
+            mcplay.style.visibility = 'visible';
+            mcpause.style.visibility = 'hidden';
         }
-        if (secondr <= 4) {
-            // getsong = document.querySelector(prevsongid);
-            // getsong.play();
-            console.log("smaller")
-            // minuter = 0;
-            // secondr = 1;
+        if (secondr > 4) {
+            getsong = document.querySelector(songid);
+            getsong.play()
+            minuter = 0;
+            secondr = 1;
+        }
+        else if (secondr <= 4) {
+            getsong = document.querySelector(prevsongid);
+            getsong.play();
+            minuter = 0;
+            secondr = 1;
         }
     })
 
