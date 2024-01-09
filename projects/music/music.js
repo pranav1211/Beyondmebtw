@@ -167,7 +167,7 @@ audioElements.forEach(audio => {
             secondr = 1;
         }
         else {
-            samesong = document.querySelector("t1");
+            samesong = document.querySelector(songnumber);
             samesong.play();
             samesong.currentTime = 0;
             minuter = 0;
