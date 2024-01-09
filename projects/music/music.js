@@ -76,6 +76,7 @@ audioElements.forEach(audio => {
         });
 
         // to check if audio is playing or ended
+        
         if (currentlyPlaying !== null && currentlyPlaying !== audio) {
             currentlyPlaying.pause();
             minuter = 0;
