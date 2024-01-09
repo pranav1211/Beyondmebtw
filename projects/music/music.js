@@ -173,7 +173,7 @@ audioElements.forEach(audio => {
         }
         if (secondr >= 5) {
             getsong = document.querySelector(songid);
-            getsong.currentTime = 0;
+            getsong.play();
             minuter = 0;
             secondr = 1;
         }
