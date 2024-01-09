@@ -17,6 +17,7 @@ var prevsongnumber;
 var currentsongnumber;
 var songduration;
 var samesong;
+var songid;
 
 var totalcheck = '0';
 
