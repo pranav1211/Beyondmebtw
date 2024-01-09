@@ -180,10 +180,11 @@ audioElements.forEach(audio => {
                 console.log("yass")
             }
             else {
-                getsong = document.querySelector(prevsongid);
-                getsong.play();
-                minuter = 0;
-                secondr = 1;
+                // getsong = document.querySelector(prevsongid);
+                // getsong.play();
+                // minuter = 0;
+                // secondr = 1;
+                console.log("naaaa")
             }
         }
     })
