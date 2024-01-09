@@ -68,8 +68,8 @@ audioElements.forEach(audio => {
         prevsongnumber = nextsongnumber - 2
         prevsongid = "#t" + prevsongnumber;
 
-        currentsongnumber = nextsongnumber-1
-        songid= "#t" + currentsongnumber
+        currentsongnumber = nextsongnumber - 1
+        songid = "#t" + currentsongnumber
 
         // music control PAUSE button
         mcpause.addEventListener('click', () => {
@@ -170,7 +170,7 @@ audioElements.forEach(audio => {
             minuter = 0;
             secondr = 1;
         }
-        else {
+        else if (secondr > 4) {
             samesong = document.querySelector(songid);
             samesong.play()
             samesong.currentTime = 0;
