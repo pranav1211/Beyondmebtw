@@ -65,6 +65,8 @@ audioElements.forEach(audio => {
         prevsongnumber = nextsongnumber - 2
         prevsongid = "#t" + prevsongnumber;
 
+        console.log("prevsongnumber",prevsongnumber)
+
 
         // music control PAUSE button
         mcpause.addEventListener('click', () => {
