@@ -172,10 +172,10 @@ audioElements.forEach(audio => {
         }
         else {
             if (secondr >= 5) {
-                p2.currentTime = 0;
+                getsong = document.querySelector(songid);
+                getsong.currentTime = 0;
                 minuter = 0;
-                secondr = 1;
-                console.log("yass")
+                secondr = 1;                
             }
             // else {
             //     getsong = document.querySelector(prevsongid);
