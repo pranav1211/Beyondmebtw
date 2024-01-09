@@ -172,12 +172,12 @@ audioElements.forEach(audio => {
             mcplay.style.visibility = 'visible';
             mcpause.style.visibility = 'hidden';
         }
-        // if (secondr < 3) {
-        //     getsong = document.querySelector(prevsongid);
-        //     getsong.play();
-        //     minuter = 0;
-        //     secondr = 1;
-        // }
+        if (secondr < 1) {
+            getsong = document.querySelector(prevsongid);
+            getsong.play();
+            minuter = 0;
+            secondr = 1;
+        }
     })
 
     //replay checker
