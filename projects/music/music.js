@@ -171,9 +171,7 @@ audioElements.forEach(audio => {
             secondr = 1;
         }
         else if (secondr > 4) {
-            samesong = document.querySelector(songid);
-            samesong.play()
-            samesong.currentTime = 0;
+            audio,pause()
             minuter = 0;
             secondr = 1;
         }
