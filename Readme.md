@@ -1,6 +1,6 @@
 **Site Status : **Active****
 
-Hey, this is the repositroy containing the HTML,CSS and Javascript code for my website Beyondmebtw.com.
+Hey, this is the repository containing the HTML,CSS and Javascript code for my website Beyondmebtw.com.
 
 Feel free to use the designs but kindly do not use my name or personal information.
 
@@ -89,6 +89,6 @@ Here is the changelog :
       ->added a different gradient background to bout page .
     
     V 1.2 10/12/2023
-      -> added my other projects to the site, can be viewed using Beyondmebtw.com/projects
-      ->The projects are my Music and Grocery site. Beyondmebtw.com/projects/music and Beyondmebtw.com/projects/grocery
-      ->Also made it so when you type Beyondmebtw.com/home or /about or /blog it redirects to the sites.
+      -> added my other projects to the site, can be viewed using https://Beyondmebtw.com/projects
+      ->The projects are my Music and Grocery site. https://Beyondmebtw.com/projects/music and https://Beyondmebtw.com/projects/grocery
+      ->Also made it so when you type https://Beyondmebtw.com/about or /blog it redirects to the sites.
