@@ -158,7 +158,7 @@ audioElements.forEach(audio => {
     //previous song button
 
     prevsong.addEventListener('click', () => {
-        if (secondr > 3) {
+        if (secondr > 4) {
             currentlyPlaying.currentTime = 0;
             minuter = 0;
             secondr = 1;
@@ -172,7 +172,7 @@ audioElements.forEach(audio => {
             mcplay.style.visibility = 'visible';
             mcpause.style.visibility = 'hidden';
         }
-        if (secondr < 2) {
+        if (secondr < 3) {
             getsong = document.querySelector(prevsongid);
             getsong.play();
             minuter = 0;
