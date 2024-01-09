@@ -161,13 +161,12 @@ audioElements.forEach(audio => {
     //previous song button
 
     prevsong.addEventListener('click', () => {
-        clearInterval(intervalid1);
-
         if (secondr >= 5) {
             getsong = document.querySelector(songid);
             getsong.currentTime = 0;
             minuter = 0;
             secondr = 1;
+            clearInterval(intervalid1);
         }
         // else {
         //     getsong = document.querySelector(prevsongid);
