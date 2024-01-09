@@ -3,8 +3,8 @@ let currentlyPlaying = null;
 
 let mcplay = document.querySelector('.mcplay')
 let mcpause = document.querySelector('.mcpause')
-let shuffleon = document.querySelector('.shuffleon');
-let shuffleoff = document.querySelector('.shuffleoff');
+// let shuffleon = document.querySelector('.shuffleon');
+// let shuffleoff = document.querySelector('.shuffleoff');
 var nextsong = document.querySelector(".nextsong");
 var prevsong = document.querySelector(".prevsong");
 
@@ -29,14 +29,14 @@ var replayonesong = document.querySelector('.replayonesong') // repeat on
 var mindiv = document.querySelector('#minuter'); // minute div
 var secdiv = document.querySelector('#seconder');   // second div
 
-shuffleon.addEventListener('click', () => {
-    shuffleon.style.visibility = 'hidden'
-    shuffleoff.style.visibility = 'visible';
-});
-shuffleoff.addEventListener('click', () => {
-    shuffleon.style.visibility = 'visible'
-    shuffleoff.style.visibility = 'hidden';
-});
+// shuffleon.addEventListener('click', () => {
+//     shuffleon.style.visibility = 'hidden'
+//     shuffleoff.style.visibility = 'visible';
+// });
+// shuffleoff.addEventListener('click', () => {
+//     shuffleon.style.visibility = 'visible'
+//     shuffleoff.style.visibility = 'hidden';
+// });
 
 var noofsongs;
 
