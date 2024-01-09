@@ -115,7 +115,7 @@ audioElements.forEach(audio => {
                 secondr++;
             }
             console.log(secondr)
-            
+
         }
         intervalid1 = setInterval(forsecond, 1000);
 
@@ -168,7 +168,6 @@ audioElements.forEach(audio => {
         }
         else {
             samesong = document.querySelector(songnumber);
-            samesong.play();
             samesong.currentTime = 0;
             minuter = 0;
             secondr = 1;
