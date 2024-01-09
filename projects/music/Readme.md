@@ -49,6 +49,12 @@ Changelog :-
         V 0.7
             -> removed the ability to pause from the playlist part, that just plays now, made it so anywhere you click on the container it plays
             -> made the text in the music controller a responsive font so that the whole does not keep shifting if a song has more words
+    10/1/2024
+        V 0.8
+            -> the previous song button is now functional, there is a 3 second leeway to go back to the previous song in the list. If the button is pressed after\
+                3 second leeway it restarts the song
+            ->removed the shuffle button
+            ->
 
 
 
