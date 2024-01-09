@@ -54,7 +54,7 @@ Changelog :-
             -> the previous song button is now functional, there is a 3 second leeway to go back to the previous song in the list. If the button is pressed after\
                 3 second leeway it restarts the song
             ->removed the shuffle button
-            ->
+            ->The previous song button also works with regards to the loopiing features.
 
 
 
