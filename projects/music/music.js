@@ -290,7 +290,7 @@ document.querySelector('.confessions-part-2-usher').addEventListener('click', ()
 var p3 = document.getElementById("t3")
 document.querySelector('.seasons-of-love-rent').addEventListener('click', () => {
     p3.play();
-    p3currentTime = 0;
+    p3.currentTime = 0;
     mcplay.style.visibility = 'hidden';
     mcpause.style.visibility = 'visible';
     mindiv.innerHTML = "0:";
