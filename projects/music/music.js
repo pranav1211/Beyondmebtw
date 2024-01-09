@@ -172,6 +172,8 @@ audioElements.forEach(audio => {
             mcpause.style.visibility = 'hidden';
         }
         if (secondr >= 5) {
+            getsong = document.querySelector(songid);
+
             getsong.currentTime = 0;
             minuter = 0;
             secondr = 1;
