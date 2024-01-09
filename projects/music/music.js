@@ -154,9 +154,9 @@ audioElements.forEach(audio => {
     prevsong.addEventListener('click', () => {
         if (secondr > 1) {
             audio.currentTime = 0;
-            minuter = 0;
-            secondr = 1;
-            clearInterval(intervalid1)
+            // minuter = 0;
+            // secondr = 1;
+            // clearInterval(intervalid1)
         }
     })
 
