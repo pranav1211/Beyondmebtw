@@ -118,7 +118,7 @@ audioElements.forEach(audio => {
     });
 
     // next song button
-    
+
     nextsong.addEventListener('click', () => {
         if (noofsongs < newsongnumber) { // if the number of songs from json file is less than number that is used to get song id it means the end of playlist has been reached
             if (loopit == 'whole') {
@@ -246,7 +246,7 @@ document.querySelector('.confessions-part-2-usher').addEventListener('click', ()
     secdiv.innerHTML = "00"
     minuter = 0;
     secondr = 1;
-    
+
 });
 //////////////////////////////////////////////////////
 var p3 = document.getElementById("t3")
@@ -258,7 +258,7 @@ document.querySelector('.seasons-of-love-rent').addEventListener('click', () => 
     secdiv.innerHTML = "00"
     minuter = 0;
     secondr = 1;
-    
+
 });
 ////////////////////////////////////////////////////////
 var p4 = document.getElementById('t4')
@@ -271,6 +271,6 @@ document.querySelector('.set-fire-to-the-rain-adele-royal-albert').addEventListe
     secdiv.innerHTML = "00"
     minuter = 0;
     secondr = 1;
-    
+
 });
 
