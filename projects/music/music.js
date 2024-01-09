@@ -177,8 +177,9 @@ audioElements.forEach(audio => {
             secondr = 1;
         }
         else if (secondr <= 4) {
-            getsong = document.querySelector(prevsongid);
-            getsong.play();
+            // getsong = document.querySelector(prevsongid);
+            // getsong.play();
+            console.log("smaller")
             minuter = 0;
             secondr = 1;
         }
