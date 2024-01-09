@@ -19,7 +19,7 @@ var songduration;
 var samesong;
 var songid;
 
-var prevsqitcher
+var prevswitcher
 
 var totalcheck = '0';
 
@@ -166,14 +166,14 @@ audioElements.forEach(audio => {
     //previous song button
 
     prevsong.addEventListener('click', () => {
-        if (secondr <= 4) {
+        if (secondr <= 4 || prevswitcher == 1) {
             getsong = document.querySelector(prevsongid);
             getsong.play();
             fssfs();
         }
         else if (secondr > 4) {
             audio.currentTime = 0;
-            
+            prevswitcher = 1
         }
 
     })
