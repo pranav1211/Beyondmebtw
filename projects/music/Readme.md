@@ -54,8 +54,8 @@ Changelog :-
             ->also the play and pause thing works just as it should, its simple.
     10/1/2024
         V 0.8
-            -> the previous song button is now functional, there is a 3 second leeway to go back to the previous song in the list. If the button is pressed after\
-                3 second leeway it restarts the song
+            -> the previous song button is now functional, there is a 3 second leeway to go back to the previous song in the list.
+             If the button is pressed after 3 second leeway it restarts the song.
             ->removed the shuffle button
             ->The previous song button also works with regards to the loopiing features.
             ->also to give credit where credit is due, Chat-GPT 3.5 helped me with a playback issue as it was conflicting with the second variable\
