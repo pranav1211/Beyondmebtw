@@ -115,7 +115,7 @@ audioElements.forEach(audio => {
                 secdiv.innerHTML = secondr;
                 secondr++;
             }
-            console.log("second",secondr)
+            console.log(currentlyPlaying)
         }
         intervalid1 = setInterval(forsecond, 1000);
         
