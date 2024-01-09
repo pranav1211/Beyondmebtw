@@ -167,8 +167,6 @@ audioElements.forEach(audio => {
             audio.currentTime = 0;
             mindiv.innerHTML = "0:";
             secdiv.innerHTML = "00"
-            minuter = 0;
-            secondr = 1;
             mcplay.style.visibility = 'visible';
             mcpause.style.visibility = 'hidden';
         }
