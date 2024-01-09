@@ -175,6 +175,8 @@ audioElements.forEach(audio => {
             else {
                 getsong = document.querySelector(prevsongid);
                 getsong.play();
+                minuter = 0;
+                secondr = 1;
             }
         }
     })
