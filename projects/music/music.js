@@ -60,8 +60,9 @@ audioElements.forEach(audio => {
         nextsongnumber = parseInt(nextsongnumber); 
         nextsongnumber++;
         nextsongid = "#t" + nextsongnumber; // setting the id for the next song
-        console.log("next song : " + nextsongid)
-        console.log("newsongnumber : " + nextsongnumber)
+        
+        prevsongnumber = nextsongnumber-2
+        prevsongid= "#t" + prevsongnumber
 
 
         // music control PAUSE button
