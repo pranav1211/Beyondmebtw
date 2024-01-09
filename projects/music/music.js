@@ -171,7 +171,7 @@ audioElements.forEach(audio => {
             secondr = 1;
         }
         else if (secondr > 4) {
-            audio,pause()
+            audio, pause()
             minuter = 0;
             secondr = 1;
         }
