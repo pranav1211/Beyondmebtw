@@ -167,14 +167,15 @@ audioElements.forEach(audio => {
         if (secondr <= 4) {
             getsong = document.querySelector(prevsongid);
             getsong.play();
-            minuter = 0;
-            secondr = 1;
         }
         else if (secondr > 4) {
             audio.currentTime = 0;
         }
-        
 
+        
+        clearInterval(intervalid1);
+        minuter = 0;
+        secondr = 1;
     })
 
     //replay checker
