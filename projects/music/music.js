@@ -169,7 +169,7 @@ audioElements.forEach(audio => {
             getsong.play();
         }
         else if (secondr > 4) {
-            audio.currentTime = 0;            
+            audio.currentTime = 0;
         }
 
 
@@ -177,6 +177,12 @@ audioElements.forEach(audio => {
         // minuter = 0;
         // secondr = 1;
     })
+
+    function fssfs() {
+        clearInterval(intervalid1);
+        minuter = 0;
+        secondr = 1;
+    }
 
     //replay checker
 
