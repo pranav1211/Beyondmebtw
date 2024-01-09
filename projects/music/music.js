@@ -115,7 +115,7 @@ audioElements.forEach(audio => {
                 secondr++;
             }
             console.log(secondr)
-            console.log(songid)
+            
         }
         intervalid1 = setInterval(forsecond, 1000);
 
