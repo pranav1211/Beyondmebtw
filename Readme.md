@@ -79,9 +79,9 @@ Here is the changelog :
     V 1.10 05/11/2023
       ->added contact bar to about page
       ->added contact bar to blog page
-      ->spaced header in blog page
-      ->added a new horizontal line in blog page visible only to small devices
-      ->made the icons source local
+      ->spaced header in blog and about page
+      ->added a new horizontal line in about page visible only to small devices
+      ->made the icons source local but still via a link.
 
     V 1.11 06/11/2023
       ->added a css media query for the contact bar to make it hidden in smaller devices.
