@@ -177,7 +177,7 @@ audioElements.forEach(audio => {
         //     getsong.play();
         //     minuter = 0;
         //     secondr = 1;
-        // 
+        // }
     })
 
     //replay checker
