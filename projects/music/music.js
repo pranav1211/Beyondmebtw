@@ -171,11 +171,7 @@ audioElements.forEach(audio => {
         else if (secondr > 4) {
             audio.currentTime = 0;
         }
-
-
-        // clearInterval(intervalid1);
-        // minuter = 0;
-        // secondr = 1;
+        fssfs();
     })
 
     function fssfs() {
