@@ -171,6 +171,9 @@ audioElements.forEach(audio => {
         if (secondr <= 4) { // this is to go back to the previous song, 3 second leeway
             if (songid == "#t1") {
                 if (loopit == 'whole') {
+                    prevsongid = "#t" + noofsongs
+                    getsong = document.querySelector(prevsong)
+                    getsong.play()
 
                 }
                 else {
