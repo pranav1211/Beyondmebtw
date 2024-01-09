@@ -116,7 +116,7 @@ audioElements.forEach(audio => {
                 secdiv.innerHTML = secondr;
                 secondr++;
             }
-            
+
         }
         intervalid1 = setInterval(forsecond, 1000);
 
@@ -162,29 +162,21 @@ audioElements.forEach(audio => {
 
     prevsong.addEventListener('click', () => {
         clearInterval(intervalid1);
-        if (prevsongnumber == 0) { // checking if there exists a song before the current song
-            audio.pause()
-            audio.currentTime = 0;
-            mindiv.innerHTML = "0:";
-            secdiv.innerHTML = "00"
-            mcplay.style.visibility = 'visible';
-            mcpause.style.visibility = 'hidden';
+
+        if (secondr >= 5) {
+            getsong = document.querySelector(songid);
+            getsong.currentTime = 0;
+            minuter = 0;
+            secondr = 1;
         }
-        else {
-            if (secondr >= 5) {
-                getsong = document.querySelector(songid);
-                getsong.currentTime = 0;
-                minuter = 0;
-                secondr = 1;        
-            }
-            // else {
-            //     getsong = document.querySelector(prevsongid);
-            //     getsong.play();
-            //     minuter = 0;
-            //     secondr = 1;
-            //     console.log("naaaa")
-            // }
-        }
+        // else {
+        //     getsong = document.querySelector(prevsongid);
+        //     getsong.play();
+        //     minuter = 0;
+        //     secondr = 1;
+        //     console.log("naaaa")
+        // }
+
     })
 
     //replay checker
