@@ -117,6 +117,7 @@ audioElements.forEach(audio => {
             }
         }
         intervalid1 = setInterval(forsecond, 1000);
+        console.log("second",secondr)
     });
 
     //pause
