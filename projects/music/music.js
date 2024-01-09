@@ -122,7 +122,7 @@ audioElements.forEach(audio => {
                 secdiv.innerHTML = secondr;
                 secondr++;
             }
-            
+
 
         }
         intervalid1 = setInterval(forsecond, 1000);
@@ -169,8 +169,16 @@ audioElements.forEach(audio => {
 
     prevsong.addEventListener('click', () => {
         if (secondr <= 4) { // this is to go back to the previous song, 3 second leeway
-            getsong = document.querySelector(prevsongid);
-            getsong.play();            
+            if (songid == "#t1") {
+                audio.pause()
+                audio.currentTime = 0;
+                mcplay.style.visibility = 'visible';
+                mcpause.style.visibility = 'hidden';
+            }
+            else {
+                getsong = document.querySelector(prevsongid);
+                getsong.play();
+            }
         }
         else if (secondr > 4) { // this is to go to the starting of the song after 3 second leeway 
             audio.currentTime = 0;
