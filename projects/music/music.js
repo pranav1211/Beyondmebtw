@@ -146,7 +146,7 @@ audioElements.forEach(audio => {
         secondr = 1;
     });
 
-    //replay section
+    //replay checker
 
     replaybut.addEventListener('click', () => { // off
         replaybut.style.visibility = 'hidden'
