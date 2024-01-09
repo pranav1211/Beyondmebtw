@@ -158,22 +158,25 @@ audioElements.forEach(audio => {
     //previous song button
 
     prevsong.addEventListener('click', () => {
-        if (secondr > 0) {
+        if (secondr > 2) {
             audio.currentTime = 0;
             minuter = 0;
             secondr = 1;
         }
 
-        if (prevsongnumber == 0) { // checking if there exists a song before the current song
-            audio.pause();
-            mindiv.innerHTML = "0:";
-            secdiv.innerHTML = "00"
-            minuter = 0;
-            secondr = 1;
-        }
-        else {
-            getsong = document.querySelector(prevsongid);
-            getsong.play();
+        else if (secondr < 2) {
+
+            if (prevsongnumber == 0) { // checking if there exists a song before the current song
+                audio.pause();
+                mindiv.innerHTML = "0:";
+                secdiv.innerHTML = "00"
+                minuter = 0;
+                secondr = 1;
+            }
+            else {
+                getsong = document.querySelector(prevsongid);
+                getsong.play();
+            }
         }
     })
 
