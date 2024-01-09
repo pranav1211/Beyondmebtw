@@ -65,7 +65,7 @@ audioElements.forEach(audio => {
         prevsongnumber = nextsongnumber - 2
         prevsongid = "#t" + prevsongnumber;
 
-        console.log("prevsongnumber",prevsongnumber)
+        console.log("prevsongnumber", prevsongnumber)
 
 
         // music control PAUSE button
@@ -171,6 +171,10 @@ audioElements.forEach(audio => {
             secdiv.innerHTML = "00"
             minuter = 0;
             secondr = 1;
+        }
+        else {
+            getsong = document.querySelector(prevsongid);
+            getsong.play();
         }
     })
 
