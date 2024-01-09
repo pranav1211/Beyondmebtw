@@ -171,16 +171,18 @@ audioElements.forEach(audio => {
             mcplay.style.visibility = 'visible';
             mcpause.style.visibility = 'hidden';
         }
-        if (secondr > 4) {
-            currentlyPlaying.currentTime = 0;
-            minuter = 0;
-            secondr = 1;
-        }
-        else if (secondr <= 4) {
-            getsong = document.querySelector(prevsongid);
-            getsong.play();
-            minuter = 0;
-            secondr = 1;
+        else {
+            if (secondr > 4) {
+                currentlyPlaying.currentTime = 0;
+                minuter = 0;
+                secondr = 1;
+            }
+            else if (secondr <= 4) {
+                getsong = document.querySelector(prevsongid);
+                getsong.play();
+                minuter = 0;
+                secondr = 1;
+            }
         }
     })
 
