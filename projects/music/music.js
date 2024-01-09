@@ -168,13 +168,13 @@ audioElements.forEach(audio => {
             secondr = 1;
             clearInterval(intervalid1);
         }
-        // else {
-        //     getsong = document.querySelector(prevsongid);
-        //     getsong.play();
-        //     minuter = 0;
-        //     secondr = 1;
-        //     console.log("naaaa")
-        // }
+        else {
+            getsong = document.querySelector(prevsongid);
+            getsong.play();
+            minuter = 0;
+            secondr = 1;
+            console.log("naaaa")
+        }
 
     })
 
