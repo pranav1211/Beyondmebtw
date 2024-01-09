@@ -172,10 +172,10 @@ audioElements.forEach(audio => {
             audio.currentTime = 0;
         }
 
-        
-        clearInterval(intervalid1);
-        minuter = 0;
-        secondr = 1;
+
+        // clearInterval(intervalid1);
+        // minuter = 0;
+        // secondr = 1;
     })
 
     //replay checker
