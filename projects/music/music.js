@@ -170,7 +170,6 @@ audioElements.forEach(audio => {
             secondr = 1;
         }
         else {
-            clearInterval(intervalid1);
             samesong = document.querySelector(songid);
             samesong.play();
             samesong.currentTime = 0;
