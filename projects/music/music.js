@@ -168,16 +168,16 @@ audioElements.forEach(audio => {
     //previous song button
 
     prevsong.addEventListener('click', () => {
-        if (secondr <= 4) {
+        if (secondr <= 4) { // this is to go back to the previous song, 3 second leeway
             getsong = document.querySelector(prevsongid);
             getsong.play();            
         }
-        else if (secondr > 4) {
+        else if (secondr > 4) { // this is to go to the starting of the song after 3 second leeway 
             audio.currentTime = 0;
         }
         setTimeout(() => {
             secondr = 0;
-        }, 100);       
+        }, 100);
     })
 
     //replay checker
