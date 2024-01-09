@@ -163,8 +163,7 @@ audioElements.forEach(audio => {
             minuter = 0;
             secondr = 1;
         }
-    })
-    prevsong.addEventListener('dblclick', () => {
+
         if (prevsongnumber == 0) { // checking if there exists a song before the current song
             audio.pause();
             mindiv.innerHTML = "0:";
