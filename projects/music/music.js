@@ -10,7 +10,7 @@ var nextsong = document.querySelector(".nextsong");
 var songid;
 var songnumber;
 var getsong;
-var newsongnumber;
+var nextsongnumber;
 var songduration;
 
 var totalcheck = '0';
@@ -54,11 +54,11 @@ audioElements.forEach(audio => {
 
         //gets the id for the current audio playing
         songnumber = audio.getAttribute('id');
-        newsongnumber = songnumber.charAt(1); // taking the number of the song
-        newsongnumber = parseInt(newsongnumber);
-        newsongnumber++;
+        nextsongnumber = songnumber.charAt(1); // taking the number of the song
+        nextsongnumber = parseInt(nextsongnumber);
+        nextsongnumber++;
 
-        songid = "#t" + newsongnumber; // setting the id for the next song
+        songid = "#t" + nextsongnumber; // setting the id for the next song
 
 
         // music control PAUSE button
@@ -121,12 +121,12 @@ audioElements.forEach(audio => {
     // next song button
 
     nextsong.addEventListener('click', () => {
-        if (noofsongs < newsongnumber) { // if the number of songs from json file is less than number that is used to get song id it means the end of playlist has been reached
+        if (noofsongs < nextsongnumber) { // if the number of songs from json file is less than number that is used to get song id it means the end of playlist has been reached
             if (loopit == 'whole') {
                 songid = "#t1"
                 getsong = document.querySelector(songid);
                 getsong.play();
-                newsongnumber = 2;
+                nextsongnumber = 2;
             }
             else {
                 audio.currentTime = 3000;
@@ -184,23 +184,23 @@ audioElements.forEach(audio => {
         }
 
         else if (loopit == "whole") {
-            if (noofsongs < newsongnumber) {
+            if (noofsongs < nextsongnumber) {
                 songid = "#t1"
                 getsong = document.querySelector(songid);
                 getsong.play();
-                newsongnumber = 2;
+                nextsongnumber = 2;
             }
-            else if (noofsongs >= newsongnumber) {
-                newsongnumber = 2;
-                newsongnumber = parseInt(newsongnumber);
-                songid = "#t" + newsongnumber;
+            else if (noofsongs >= nextsongnumber) {
+                nextsongnumber = 2;
+                nextsongnumber = parseInt(nextsongnumber);
+                songid = "#t" + nextsongnumber;
                 getsong = document.querySelector(songid);
                 getsong.play();
-                newsongnumber++;
+                nextsongnumber++;
             }
         }
         else if (loopit == 'norepeat') {
-            if (newsongnumber == (noofsongs + 1)) {
+            if (nextsongnumber == (noofsongs + 1)) {
                 mcplay.style.visibility = 'visible';
                 mcpause.style.visibility = 'hidden';
             }
