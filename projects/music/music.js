@@ -158,7 +158,7 @@ audioElements.forEach(audio => {
             secondr = 1;
         }
     })
-    prevsong.addEventListener('dbclick',()=>{
+    prevsong.addEventListener('dblclick',()=>{
         alert("works");
     })
 
