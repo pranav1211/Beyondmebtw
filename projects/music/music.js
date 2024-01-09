@@ -19,6 +19,8 @@ var songduration;
 var samesong;
 var songid;
 
+var prevsqitcher
+
 var totalcheck = '0';
 
 var replaybut = document.querySelector('.replaybutt') //replay off
