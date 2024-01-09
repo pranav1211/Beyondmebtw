@@ -170,14 +170,14 @@ audioElements.forEach(audio => {
     prevsong.addEventListener('click', () => {
         if (secondr <= 4) {
             getsong = document.querySelector(prevsongid);
-            getsong.play();            
+            getsong.play();
         }
         else if (secondr > 4) {
             audio.currentTime = 0;
-
+            var fuck = 0;
         }
     })
-
+    secondr = fuck;
     //replay checker
 
     replaybut.addEventListener('click', () => { // off
