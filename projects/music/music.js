@@ -167,7 +167,7 @@ audioElements.forEach(audio => {
         loopit = 'norepeat';
     });
 
-    //looping section
+    //looping based on replay checker and also operations of playing next song when song ends
 
     audio.addEventListener('ended', () => {
 
