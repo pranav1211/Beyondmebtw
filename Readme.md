@@ -89,6 +89,8 @@ Here is the changelog :
       ->added a different gradient background to bout page .
     
     V 1.2 10/12/2023
-      -> added my other projects to the site, can be viewed using https://Beyondmebtw.com/projects
-      ->The projects are my Music and Grocery site. https://Beyondmebtw.com/projects/music and https://Beyondmebtw.com/projects/grocery
+      -> added my other projects to the site, can be viewed using
+      https://Beyondmebtw.com/projects
+      ->The projects are my Music and Grocery site.
+      https://Beyondmebtw.com/projects/music and https://Beyondmebtw.com/projects/grocery
       ->Also made it so when you type https://Beyondmebtw.com/about or /blog it redirects to the sites.
