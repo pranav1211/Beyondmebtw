@@ -152,7 +152,10 @@ audioElements.forEach(audio => {
     //previous song button
 
     prevsong.addEventListener('click', () => {
-        alert("works");
+        if(minuter>2 ||secondr>1)
+        {
+            audio.currentTime = 1;
+        }
     })
 
     //replay checker
