@@ -8,7 +8,7 @@ let shuffleoff = document.querySelector('.shuffleoff');
 var nextsong = document.querySelector(".nextsong");
 var prevsong = document.querySelector(".prevsong");
 
-var songid;
+var nextsongid;
 var songnumber;
 var getsong;
 var nextsongnumber;
@@ -58,7 +58,7 @@ audioElements.forEach(audio => {
         nextsongnumber = songnumber.charAt(1); // taking the number of the song
         nextsongnumber = parseInt(nextsongnumber); 
         nextsongnumber++;
-        songid = "#t" + nextsongnumber; // setting the id for the next song
+        nextsongid = "#t" + nextsongnumber; // setting the id for the next song
 
 
         // music control PAUSE button
@@ -123,8 +123,8 @@ audioElements.forEach(audio => {
     nextsong.addEventListener('click', () => {
         if (noofsongs < nextsongnumber) { // if the number of songs from json file is less than number that is used to get song id it means the end of playlist has been reached
             if (loopit == 'whole') {
-                songid = "#t1"
-                getsong = document.querySelector(songid);
+                nextsongid = "#t1"
+                getsong = document.querySelector(nextsongid);
                 getsong.play();
                 nextsongnumber = 2;
             }
@@ -138,7 +138,7 @@ audioElements.forEach(audio => {
         }
 
         clearInterval(intervalid1);
-        getsong = document.querySelector(songid);
+        getsong = document.querySelector(nextsongid);
         getsong.play();
 
         mcplay.style.visibility = 'hidden';
@@ -198,16 +198,16 @@ audioElements.forEach(audio => {
 
         else if (loopit == "whole") {
             if (noofsongs < nextsongnumber) {
-                songid = "#t1"
-                getsong = document.querySelector(songid);
+                nextsongid = "#t1"
+                getsong = document.querySelector(nextsongid);
                 getsong.play();
                 nextsongnumber = 2;
             }
             else if (noofsongs >= nextsongnumber) {
                 nextsongnumber = 2;
                 nextsongnumber = parseInt(nextsongnumber);
-                songid = "#t" + nextsongnumber;
-                getsong = document.querySelector(songid);
+                nextsongid = "#t" + nextsongnumber;
+                getsong = document.querySelector(nextsongid);
                 getsong.play();
                 nextsongnumber++;
             }
@@ -220,7 +220,7 @@ audioElements.forEach(audio => {
             else {
                 mcplay.style.visibility = 'hidden';
                 mcpause.style.visibility = 'visible';
-                getsong = document.querySelector(songid);
+                getsong = document.querySelector(nextsongid);
                 getsong.play();
             }
         }
