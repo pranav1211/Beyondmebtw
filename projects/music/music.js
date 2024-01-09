@@ -58,12 +58,12 @@ audioElements.forEach(audio => {
         //gets the id for the current audio playing
         songnumber = audio.getAttribute('id');
         nextsongnumber = songnumber.charAt(1); // taking the number of the song
-        nextsongnumber = parseInt(nextsongnumber); 
+        nextsongnumber = parseInt(nextsongnumber);
         nextsongnumber++;
         nextsongid = "#t" + nextsongnumber; // setting the id for the next song
-        
-        prevsongnumber = nextsongnumber-2
-        prevsongid= "#t" + prevsongnumber;
+
+        prevsongnumber = nextsongnumber - 2
+        prevsongid = "#t" + prevsongnumber;
 
 
         // music control PAUSE button
@@ -163,7 +163,13 @@ audioElements.forEach(audio => {
         }
     })
     prevsong.addEventListener('dblclick', () => {
-        console.log()
+        if (prevsongnumber == 0) { // checking if there exists a song before the current song
+            audio.currentTime = 3000;
+            mindiv.innerHTML = "0:";
+            secdiv.innerHTML = "00"
+            minuter = 0;
+            secondr = 1;
+        }
     })
 
     //replay checker
