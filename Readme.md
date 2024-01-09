@@ -74,7 +74,7 @@ Here is the changelog :
       ->removed a feature that displayed email address when mouse hovered over email icon
         due to link clickable issues
       ->fixed hamburger button menu issue on phones that made content overlap
-      ->removed the contact bar for smaller devices while i develop a replacement
+      ->removed the contact bar for smaller devices while i develop an alternate
     
     V 1.10 05/11/2023
       ->added contact bar to about page
