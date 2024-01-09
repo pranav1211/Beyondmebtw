@@ -169,8 +169,8 @@ audioElements.forEach(audio => {
             secdiv.innerHTML = "00"
             minuter = 0;
             secondr = 1;
-            mcplay.style.visibility = 'hidden';
-            mcpause.style.visibility = 'visible';
+            mcplay.style.visibility = 'visible';
+            mcpause.style.visibility = 'hidden';
         }
         if (secondr < 2) {
             getsong = document.querySelector(prevsongid);
