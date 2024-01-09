@@ -174,8 +174,9 @@ audioElements.forEach(audio => {
         }
         else if (secondr > 4) {
             audio.currentTime = 0;
+                secondr = 0;
         }
-        secondr = 0;
+        
     })
 
     //replay checker
