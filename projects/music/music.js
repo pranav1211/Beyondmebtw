@@ -278,6 +278,7 @@ document.querySelector('.showerbeckyg').addEventListener("click", () => {
 var p2 = document.getElementById("t2")
 document.querySelector('.confessions-part-2-usher').addEventListener('click', () => {
     p2.play();
+    p2.currentTime = 0;
     mcplay.style.visibility = 'hidden';
     mcpause.style.visibility = 'visible';
     mindiv.innerHTML = "0:";
@@ -290,6 +291,7 @@ document.querySelector('.confessions-part-2-usher').addEventListener('click', ()
 var p3 = document.getElementById("t3")
 document.querySelector('.seasons-of-love-rent').addEventListener('click', () => {
     p3.play();
+    p3currentTime = 0;
     mcplay.style.visibility = 'hidden';
     mcpause.style.visibility = 'visible';
     mindiv.innerHTML = "0:";
@@ -303,6 +305,7 @@ var p4 = document.getElementById('t4')
 var checker4 = 1;
 document.querySelector('.set-fire-to-the-rain-adele-royal-albert').addEventListener('click', () => {
     p4.play();
+    p4.currentTime = 0;
     mcplay.style.visibility = 'hidden';
     mcpause.style.visibility = 'visible';
     mindiv.innerHTML = "0:";
