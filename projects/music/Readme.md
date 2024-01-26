@@ -67,6 +67,8 @@ Changelog :-
             ->also to give credit where credit is due, Chat-GPT 3.5 helped me with a playback issue as it
             was conflicting with the second variable it suggested to use a delay and it works just
             as a i wanted it to.
+        V 0.9
+            -> fixed issue of timer resetting if the music was paused and then played again.
 
 
 

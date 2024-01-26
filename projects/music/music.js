@@ -10,19 +10,17 @@ var prevsong = document.querySelector(".prevsong");
 
 var nextsongid;
 var prevsongid;
+
 var songnumber;
 var getsong;
 var nextsongnumber;
 var prevsongnumber;
 var currentsongnumber;
-var songduration;
-var samesong;
+
+
+
 var songid;
 var fromback;
-
-var prevswitcher
-
-var totalcheck = '0';
 
 var replaybut = document.querySelector('.replaybutt') //replay off
 var replayplaylist = document.querySelector('.replayplaylistt') // repeat on
@@ -59,9 +57,6 @@ audioElements.forEach(audio => {
     let loopit = 'norepeat'; // to check if track should be looped
 
     audio.addEventListener('play', () => {
-
-        minuter = 0;
-        secondr = 1;
 
         //gets the id for the current audio playing
         songnumber = audio.getAttribute('id');
