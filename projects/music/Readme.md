@@ -140,4 +140,6 @@ Dev notes / ideas:
 -> i want to add the song cover to the thing. also if it could be a little smaller.\
 -> almost done with the final code for the html and js but gonna start updating the word changer to the latest version.
 
-
+27/1/24
+-> cleaned the js and css code to allow for better readablity
+->
