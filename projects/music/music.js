@@ -73,8 +73,7 @@ audioElements.forEach(audio => {
         songid = "#t" + currentsongnumber
 
         songidname = audio.getAttribute('song-id')
-        barschecker = songidname + "bars"
-        console.log(songidname)
+        barschecker = songidname + "bars"        
 
         // music control PAUSE button
         mcpause.addEventListener('click', () => {
@@ -230,15 +229,6 @@ audioElements.forEach(audio => {
 
     audio.addEventListener('ended', () => {
 
-        for (i = 1; i <= 4; i++) {
-            var bar = "." + songidname + "bar" + i
-            document.querySelector(bar).style.animation = '0s'
-            var newbar = "." + songidname + "bars"
-            document.querySelector(newbar).style.visibility = 'hidden';
-
-        }
-
-
         minuter = 0;
         secondr = 1;
 
@@ -246,6 +236,8 @@ audioElements.forEach(audio => {
             currentlyPlaying.play();
             minuter = 0;
             mindiv.innerHTML = "0:";
+
+
         }
 
         else if (loopit == "whole") {
@@ -263,6 +255,12 @@ audioElements.forEach(audio => {
                 getsong.play();
                 nextsongnumber++;
             }
+            for (i = 1; i <= 4; i++) {
+                var bar = "." + songidname + "bar" + i
+                document.querySelector(bar).style.animation = '0s'
+                var newbar = "." + songidname + "bars"
+                document.querySelector(newbar).style.visibility = 'hidden';
+            }
         }
         else if (loopit == 'norepeat') {
             if (nextsongnumber == (noofsongs + 1)) {
@@ -274,6 +272,13 @@ audioElements.forEach(audio => {
                 mcpause.style.visibility = 'visible';
                 getsong = document.querySelector(nextsongid);
                 getsong.play();
+            }
+
+            for (i = 1; i <= 4; i++) {
+                var bar = "." + songidname + "bar" + i
+                document.querySelector(bar).style.animation = '0s'
+                var newbar = "." + songidname + "bars"
+                document.querySelector(newbar).style.visibility = 'hidden';
             }
         }
     });
@@ -293,7 +298,7 @@ document.querySelector('.showerbeckyg').addEventListener("click", () => {
     secdiv.innerHTML = "00"
     minuter = 0;
     secondr = 1;
-    document.querySelector('.animationaud').style.visibility = 'visible'
+    document.querySelector('.showerbars').style.visibility = 'visible'
     for (i = 1; i <= 4; i++) {
         var bar = ".showerbar" + i
         document.querySelector(bar).style.animation = 'bounce 4s ease infinite'
@@ -324,6 +329,23 @@ document.querySelector('.confessions-part-2-usher').addEventListener('click', ()
     secdiv.innerHTML = "00"
     minuter = 0;
     secondr = 1;
+    document.querySelector('.cptubars').style.visibility = 'visible'
+    for (i = 1; i <= 4; i++) {
+        var bar = ".cptubar" + i
+        document.querySelector(bar).style.animation = 'bounce 4s ease infinite'
+        if (i == 2) {
+            document.querySelector(bar).style.animationDelay = '-2s'
+            document.querySelector(bar).style.marginLeft = '14px'
+        }
+        else if (i == 3) {
+            document.querySelector(bar).style.animationDelay = '-1s'
+            document.querySelector(bar).style.marginLeft = '28px'
+        }
+        else if (i == 4) {
+            document.querySelector(bar).style.animationDelay = '-4s'
+            document.querySelector(bar).style.marginLeft = '42px'
+        }
+    }
 
 });
 //////////////////////////////////////////////////////
