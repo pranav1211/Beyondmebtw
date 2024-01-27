@@ -206,19 +206,6 @@ body {
         animation-delay: -4s;
     }
 }
-
-.sbgbar2 {
-    margin-left: 14px;
-}
-
-.sbgbar3 {
-    margin-left: 28px;
-}
-
-.sbgbar4 {
-    margin-left: 42px;
-}
-
 @keyframes bounce {
     10% {
         transform: scaleY(0.3);
