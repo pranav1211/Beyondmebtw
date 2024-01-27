@@ -145,5 +145,6 @@ Dev notes / ideas:
 -> almost done with the final code for the html and js but gonna start updating the word changer to the latest version.
 
 27/1/24
--> cleaned the js and css code to allow for better readablity
--> added the audio visualizers, need to connect them with the other fucntions of next song, prev song and loop
+-> cleaned the js and css code to allow for better readablity\
+-> added the audio visualizers, need to connect them with the other fucntions of next song, prev song and loop\
+-> might have to make the control center sligtly bigger or make default size bigger, its coz CAGYL is changing it
