@@ -73,6 +73,8 @@ audioElements.forEach(audio => {
         songid = "#t" + currentsongnumber
 
         songidname = audio.getAttribute('song-id')
+        barschecker = songidname + "bars"
+        console.log(songidname)
 
         // music control PAUSE button
         mcpause.addEventListener('click', () => {
@@ -228,8 +230,9 @@ audioElements.forEach(audio => {
 
     audio.addEventListener('ended', () => {
 
-        barschecker = songidname + "bars"
-        document.querySelector(barschecker).style.animation = '';
+        console.log(songidname)
+        
+        document.querySelector(barschecker).style.visibility = 'hidden';
 
 
         minuter = 0;
