@@ -280,6 +280,22 @@ document.querySelector('.showerbeckyg').addEventListener("click", () => {
     secdiv.innerHTML = "00"
     minuter = 0;
     secondr = 1;
+    document.querySelector('.animationaud').style.visibility = 'visible'
+            for (i = 1; i <= 4; i++) {
+                var bar= ".sbgbar" +  i
+                document.querySelector(bar).style.animation = 'bounce 4s ease infinite'
+                if(i==2){
+                    document.querySelector(bar).style.animationDelay  = '-2s'
+                }
+                else if(i==3){
+                    document.querySelector(bar).style.animationDelay  = '-1s'
+                }
+                else if(i==4){
+                    document.querySelector(bar).style.animationDelay  = '-4s'
+                }
+            }
+
+
 });
 //////////////////////////////////////////////////////
 var p2 = document.getElementById("t2")
