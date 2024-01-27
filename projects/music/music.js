@@ -84,15 +84,15 @@ audioElements.forEach(audio => {
             document.querySelector(bar).style.animation = 'bounce 4s ease infinite'
             if (i == 2) {
                 document.querySelector(bar).style.animationDelay = '-2s'
-                document.querySelector(bar).style.marginLeft = '14px'
+                document.querySelector(bar).style.marginLeft = '1.5vh'
             }
             else if (i == 3) {
                 document.querySelector(bar).style.animationDelay = '-1s'
-                document.querySelector(bar).style.marginLeft = '28px'
+                document.querySelector(bar).style.marginLeft = '3vh'
             }
             else if (i == 4) {
                 document.querySelector(bar).style.animationDelay = '-4s'
-                document.querySelector(bar).style.marginLeft = '42px'
+                document.querySelector(bar).style.marginLeft = '4.5vh'
             }
         }
 

@@ -186,8 +186,8 @@ body {
 }
 
 .thebars {
-    width: 13px;
-    height: 80px;
+    width: 0.7vw;
+    height: 4vw;
     background-image: linear-gradient(to top, #f43b47 0%, #453a94 100%);
     position: fixed;
     border-radius: 50px;
