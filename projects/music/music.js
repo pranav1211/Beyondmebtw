@@ -230,7 +230,11 @@ audioElements.forEach(audio => {
 
     audio.addEventListener('ended', () => {
 
-        document.querySelector('.animationaud').style.animation = '0s';
+        for (i = 1; i <= 4; i++) {
+            var bar = "."+songidname+"bar" + i
+            document.querySelector(bar).style.animation = '0s'
+            
+        }
 
 
         minuter = 0;
