@@ -230,9 +230,7 @@ audioElements.forEach(audio => {
 
     audio.addEventListener('ended', () => {
 
-        console.log(songidname)
-        
-        document.querySelector(barschecker).style.visibility = 'hidden';
+        document.querySelector('.animationaud').style.animation = '0s';
 
 
         minuter = 0;
@@ -290,22 +288,22 @@ document.querySelector('.showerbeckyg').addEventListener("click", () => {
     minuter = 0;
     secondr = 1;
     document.querySelector('.animationaud').style.visibility = 'visible'
-            for (i = 1; i <= 4; i++) {
-                var bar= ".sbgbar" +  i
-                document.querySelector(bar).style.animation = 'bounce 4s ease infinite'
-                if(i==2){
-                    document.querySelector(bar).style.animationDelay  = '-2s'
-                    document.querySelector(bar).style.marginLeft  = '14px'
-                }
-                else if(i==3){
-                    document.querySelector(bar).style.animationDelay  = '-1s'
-                    document.querySelector(bar).style.marginLeft  = '28px'
-                }
-                else if(i==4){
-                    document.querySelector(bar).style.animationDelay  = '-4s'
-                    document.querySelector(bar).style.marginLeft  = '42px'
-                }
-            }
+    for (i = 1; i <= 4; i++) {
+        var bar = ".showerbar" + i
+        document.querySelector(bar).style.animation = 'bounce 4s ease infinite'
+        if (i == 2) {
+            document.querySelector(bar).style.animationDelay = '-2s'
+            document.querySelector(bar).style.marginLeft = '14px'
+        }
+        else if (i == 3) {
+            document.querySelector(bar).style.animationDelay = '-1s'
+            document.querySelector(bar).style.marginLeft = '28px'
+        }
+        else if (i == 4) {
+            document.querySelector(bar).style.animationDelay = '-4s'
+            document.querySelector(bar).style.marginLeft = '42px'
+        }
+    }
 
 
 });
