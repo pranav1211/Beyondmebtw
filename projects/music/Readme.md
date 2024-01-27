@@ -75,6 +75,10 @@ Changelog :-
             ->added a new song to the list
             ->removed the play button icon
             ->updated the word changer file
+            ->added audio visualizers
+            ->moved the text to the left of the div
+            ->fixed the alignment and overflow of the divs
+            ->changed the color of the song list box to make it pop more
 
 
 
