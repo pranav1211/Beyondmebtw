@@ -21,6 +21,7 @@ var currentsongnumber;
 
 var songid;
 var fromback;
+var songidname;
 
 var replaybut = document.querySelector('.replaybutt') //replay off
 var replayplaylist = document.querySelector('.replayplaylistt') // repeat on
@@ -70,6 +71,8 @@ audioElements.forEach(audio => {
 
         currentsongnumber = nextsongnumber - 1
         songid = "#t" + currentsongnumber
+
+        songidname = audio.getAttribute('song-id')
 
         // music control PAUSE button
         mcpause.addEventListener('click', () => {
@@ -224,6 +227,9 @@ audioElements.forEach(audio => {
     //looping based on replay checker and also operations of playing next song when song ends
 
     audio.addEventListener('ended', () => {
+
+        barschecker = songidname + "bars"
+        document.querySelector(barschecker).style.animation = '';
 
 
         minuter = 0;
