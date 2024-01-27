@@ -231,9 +231,11 @@ audioElements.forEach(audio => {
     audio.addEventListener('ended', () => {
 
         for (i = 1; i <= 4; i++) {
-            var bar = "."+songidname+"bar" + i
+            var bar = "." + songidname + "bar" + i
             document.querySelector(bar).style.animation = '0s'
-            
+            var newbar = "." + songidname + "bars"
+            document.querySelector(newbar).style.visibility = 'hidden';
+
         }
 
 
