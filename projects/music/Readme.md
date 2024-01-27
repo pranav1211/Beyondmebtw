@@ -67,8 +67,14 @@ Changelog :-
             ->also to give credit where credit is due, Chat-GPT 3.5 helped me with a playback issue as it
             was conflicting with the second variable it suggested to use a delay and it works just
             as a i wanted it to.
+    26/01/2024
         V 0.9
             -> fixed issue of timer resetting if the music was paused and then played again.
+    27/01/2024
+        V 1.0
+            ->added a new song to the list
+            ->removed the play button icon
+            ->updated the word changer file
 
 
 
@@ -78,6 +84,10 @@ The Wordchanger file :-\
         -> The second version i wrote code that was able to grab the first letter of each word that helped in creating the id for the elements.\
         -> The third and latest version is where i input the name of the file, the audio number and how many words is the title of the song.\
         -> I plan to keep upgrading features to make the process seamless, I plan to make it so that with only 1 input it can help generate the code.
+    
+    27/01/2024
+        -> the Word changer code has been updated to support the latest version of the html and js code
+
 
 ******************************************
 
