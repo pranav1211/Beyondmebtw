@@ -2,14 +2,21 @@ body {
     background-image: linear-gradient(120deg, #a6c0fe 0%, #f68084 100%);
 }
 
-.play,
-.pause {
-    margin-left: 25px;
-    margin-right: 25px;
-    margin-top: 25px;
-    border-radius: 35px;
-
+#playbuts {
+    margin-top: 4vw;
+    display: flex;
+    flex-direction: column;
+    overflow: scroll;
+    height: 40vw;
+    overflow-x: hidden;
+    border: 1px solid black;
+    margin-right: 28vw;
+    margin-left: 28vw;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+    border-radius: 20px;
 }
+
+/*music controls*/
 
 .play-circle-img {
     visibility: visible;
@@ -83,65 +90,6 @@ body {
     margin-left: 1.5vw;
 }
 
-
-
-.title {
-    border-bottom: 1px solid black;
-    margin-bottom: 0.4vw;
-    padding-bottom: 1.vw;
-    padding-right: 1vw;
-    margin-top: -0.6vw;
-    cursor: pointer;
-
-}
-
-.sname {
-    float: right;
-    font-family: 'Nova Mono', monospace;
-    font-size: 1.2vw;
-    font-weight: bold;
-}
-
-.artist {
-    font-size: 0.9vw;
-    float: right;
-}
-
-#songnamemain {
-    float: right;
-}
-
-#playbuts {
-    margin-top: 4vw;
-    display: flex;
-    flex-direction: column;
-    overflow: scroll;
-    height: 40vw;
-    overflow-x: hidden;
-    border: 1px solid black;
-    margin-right: 28vw;
-    margin-left: 28vw;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
-    border-radius: 20px;
-}
-
-::-webkit-scrollbar {
-    width: 10px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-    box-shadow: 0.8 0 0 5px grey;
-    border-radius: 10px;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-    background: black;
-    border-radius: 10px;
-
-}
-
 #musiccontrols {
     background-color: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
@@ -152,6 +100,34 @@ body {
     padding: 1vw;
     width: 20vw;
     border-radius: 20px;
+}
+
+/* text in the song center*/
+
+.title {
+    border-bottom: 1px solid black;
+    cursor: pointer;
+}
+
+.sname {
+    float: left;
+    font-family: 'Nova Mono', monospace;
+    font-size: 1.1vw;
+    font-weight: bold;
+    margin-left: 1.2vw;
+}
+
+.artist {
+    font-size: 0.9vw;
+    float: left;
+}
+
+#songnamemain {
+    float: left;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
 }
 
 #titletrack,
@@ -182,53 +158,19 @@ body {
     margin-left: 8.6vw;
 }
 
-.animationaud{
-    display: flex;
-    position: inherit;
-    visibility: hidden;
+
+/* scrollbar */
+::-webkit-scrollbar-track {
+    box-shadow: 0.8 0 0 5px grey;
+    border-radius: 10px;
 }
 
-.thebars {
-    width: 10px;
-    height: 60px;
-    background-color: black;
-    position: fixed;
-    visibility: hidden;
-    animation : bounce 4s ease infinite;
-    &:nth-of-type(2) {
-        animation-delay: -2s;
-    }
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: black;
+    border-radius: 10px;
 
-    &:nth-of-type(3) {
-        animation-delay: -1s;
-    }
 }
 
-.bar1{
-    margin-left: 0.6%;
-}
-.bar2{
-    margin-left: 1.2%;
-}
 
-@keyframes bounce {
-    10% {
-        transform: scaleY(0.3);
-        /* start by scaling to 30% */
-    }
 
-    30% {
-        transform: scaleY(1);
-        /* scale up to 100% */
-    }
-
-    60% {
-        transform: scaleY(0.5);
-        /* scale down to 50% */
-    }
-
-    80% {
-        transform: scaleY(0.75);
-        /* scale up to 75% */
-    }
-}

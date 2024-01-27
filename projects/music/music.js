@@ -271,9 +271,6 @@ audioElements.forEach(audio => {
 
 /////////////////////////////////////////////////////////////////
 var p1 = document.getElementById("t1")
-// var bar0 = document.querySelector('.bar0')
-// var bar1 = document.querySelector('.bar1')
-// var bar2 = document.querySelector('.bar2')
 document.querySelector('.showerbeckyg').addEventListener("click", () => {
     p1.play();
     p1.currentTime = 0;
@@ -283,11 +280,6 @@ document.querySelector('.showerbeckyg').addEventListener("click", () => {
     secdiv.innerHTML = "00"
     minuter = 0;
     secondr = 1;
-    // bar1.style.visibility = 'visible'
-    // musicbars.style.animation = 'bounce 4s ease infinite'
-    // musicbars.style.transformOrigin = 'bottom';
-    // bar1.style.marginLeft = '1.5%'
-    // bar2.style.marginLeft = '3%'
 });
 //////////////////////////////////////////////////////
 var p2 = document.getElementById("t2")
@@ -317,7 +309,6 @@ document.querySelector('.seasons-of-love-rent').addEventListener('click', () => 
 });
 ////////////////////////////////////////////////////////
 var p4 = document.getElementById('t4')
-var checker4 = 1;
 document.querySelector('.set-fire-to-the-rain-adele-royal-albert').addEventListener('click', () => {
     p4.play();
     p4.currentTime = 0;
@@ -328,5 +319,17 @@ document.querySelector('.set-fire-to-the-rain-adele-royal-albert').addEventListe
     minuter = 0;
     secondr = 1;
 
+});
+////////////////////////////////////////////
+var p5 = document.getElementById("t5")
+document.querySelector(".Come-and-Get-Your-Love-Redbone").addEventListener("click", () => {
+    p5.play();
+    p5.currentTime = 0;
+    mcplay.style.visibility = "hidden";
+    mcpause.style.visibility = "visible";
+    mindiv.innerHTML = "0:";
+    secdiv.innerHTML = "00";
+    minuter = 0;
+    secondr = 1;
 });
 

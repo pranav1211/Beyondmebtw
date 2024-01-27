@@ -14,100 +14,129 @@
     <button onclick="doits()" id="butss">do it</button>
 
     <br>
-    <p>////////////////////////////////////////////</p>
-    <div id="vnum"></div>
-
-    <div id="pl"></div>
-
-
-
-    <div id="pa"></div>
-
+    <p>javascript</p>
+    <div>////////////////////////////////////////////</div>
+    <div id="javascriptcode"></div>
     <br>
-
-    <div id="epl"></div>
-
-
-
-    <div id="epa"></div>
-
-    <br>
-
-    <div id="filna"></div>
-
-
+    <div id="htmlcode"></div>
     <script>
 
-        var vnum = document.getElementById('vnum')
-        var pl = document.getElementById('pl');
-        var pa = document.getElementById('pa');
-        var epl = document.getElementById('epl');
-        var epa = document.getElementById('epa');
+        var js = document.getElementById('javascriptcode')
+        var htmlc = document.getElementById('htmlcode')
 
-        var filna = document.getElementById('filna');
-
-
-
-
+        var noofsongs = 5;
 
         function doits() {
-            var v1 = prompt('Song Title');
-            var v3 = localStorage.getItem('noofsongs')
-            var v4 = v1.replace(/ /g, "-");
-            var v5 = prompt("number of words in the song title")
-            var v6;
-            var v7;
-            var vk;
+            var i = 0
+            var full_with_space = "";
 
-            const arr = v1.split("");
-            var nme = arr[0];
-            var spacecount;
-            let arr2 = v1.split("");
-            var tinme = arr[0]
-            var ind;
+            var songtitle = prompt('Song Title');
+            var songid;
+            var track = "";
+            var artist = "";
 
-            for (i = 1; i < arr.length; i++) {
-                if (arr2[i] == " ") {
-                    spacecount++;
+
+            var arrayofnames = songtitle.split(" ")
+            var artistposition;
+            for (i = 0; i < arrayofnames.length; i++) {
+                if (arrayofnames[i] == "-") {
+                    var artistposition = i
                 }
             }
 
-            var nspacecount = 0;
-            
-            for (i = 1; i < arr2.length; i++) {
-                tinme = tinme + arr2[i]
-                if (arr2[i] == " ") {
-                    nspacecount++;
-                    if (nspacecount == v5) {
-                        ind = i;
+            for (i = 0; i < arrayofnames.length; i++) {
+                if (artistposition == i) {
+                    continue
+                }
+                else {
+                    if (i == arrayofnames.length - 1) {
+                        full_with_space = full_with_space + arrayofnames[i]
+                    }
+                    else {
+                        full_with_space = full_with_space + arrayofnames[i] + " "
                     }
                 }
             }
-            arr2[ind] = " - "
-            var tinme = arr[0]
-            for (i = 1; i < arr2.length; i++) {
-                tinme = tinme + arr2[i];
+            var dashed_song_name = full_with_space.replace(/ /g, "-");
+            console.log(dashed_song_name)
+
+
+            const array_for_id = full_with_space.split("");
+            songid = array_for_id[0];
+            for (i = 0; i < array_for_id.length; i++) {
+                if (array_for_id[i] == " ") {
+                    songid = songid + array_for_id[i + 1]
+                }
+
             }
-            v6 = tinme;
-            v7 = v6;
+            console.log(songid)
 
-            for (i = 1; i < arr.length; i++) {
-                if (arr[i] == " ") {
-                    nme = nme + arr[i + 1];
+            var title_done = "false"
+            for (i = 0; i < arrayofnames.length; i++) {
+                if (arrayofnames[i] == "-") {
+                    title_done = "true"
                 }
-                else {
-                    nme = nme;
+                else if (title_done == "false") {
+                    if (i == arrayofnames.length - 1) {
+                        track = track + arrayofnames[i]
+                    }
+                    else{
+                        track = track + arrayofnames[i] + " "
+                    }
                 }
-            } v1 = nme;
+                else if (title_done = "true") {
+                    if (i == arrayofnames.length - 1) {
+                        artist = artist + arrayofnames[i]
+                    }
+                    else {
+                        artist = artist + arrayofnames[i] + " "
+                    }
+                }
+            }
+            console.log(track)
+            console.log(artist)
 
-            document.getElementById("vnum").innerHTML = "var p" + v3 + " = document.getElementById('t" + v3 + "')";
-            document.getElementById("pl").innerHTML = "var " + v1 + "pl = document.querySelector('." + v1 + "pl');";
-            document.getElementById("pa").innerHTML = "var " + v1 + "pa = document.querySelector('." + v1 + "pa');";
+            // javascript generator
 
-            document.getElementById("epl").innerHTML = "document.querySelector('." + v1 + "pl').addEventListener('click', () => {<br>p" + v3 + ".play();<br>" + v1 + "pl.style.visibility = 'hidden';<br>" + v1 + "pa.style.visibility = 'visible';});";
-            document.getElementById("epa").innerHTML = "document.querySelector('." + v1 + "pa').addEventListener('click', () => {<br>p" + v3 + ".pause();<br>" + v1 + "pl.style.visibility = 'visible';<br>" + v1 + "pa.style.visibility = 'hidden';});";
+            line1 = 'var p' + noofsongs + ' =document.getElementById("t' + noofsongs + '")'
+            line2 = 'document.querySelector(".' + dashed_song_name + '").addEventListener("click", () => {'
+            line3 = 'p' + noofsongs + '.play();'
+            line4 = 'p' + noofsongs + '.currentTime = 0;'
+            line5 = 'mcplay.style.visibility = "hidden";'
+            line6 = 'mcpause.style.visibility = "visible";'
+            line7 = 'mindiv.innerHTML = "0:";'
+            line8 = 'secdiv.innerHTML = "00";'
+            line9 = 'minuter = 0;'
+            line10 = 'secondr = 1;'
+            line11 = '});'
 
-            console.log('<br>\n\n<div class="' + v4 + ' title">\n<span class="material-symbols-outlined ' + v1 + 'pl play">\nplay_circle\n</span>\n<span class="material-symbols-outlined ' + v1 + 'pa pause">\npause_circle\n</span>\n<p class="' + v1 + ' sname">' + v6 + '</p>\n</div>\n<audio id=t' + v3 + ' class="audio-element" data-file-name="' + v7 + '" >\n<source src="music/' + v7 + '.opus" type="audio/mpeg">\n</audio>');
+            var arr = [line1, line2, line3, line4, line5, line6, line7, line8, line9, line10, line11]
+
+            for (i = 0; i < 11; i++) {
+                var p = document.createElement('div')
+                p.textContent = arr[i]
+                js.appendChild(p)
+            }
+
+
+            // HTML generator
+
+            hline1 = '<div class="' + dashed_song_name + ' title">'
+            hline2 = '<p class="sname"><span id="songnamemain">' + track + '</span><br><span class="artist">' + artist + '</span></p>'
+            hline3 = '<audio id="t' + noofsongs + '" class="audio-element" data-file-artist="' + artist + '" data-file-name="' + track + '" song-id="' + songid + '">'
+            hline4 = '<source src="music/' + songtitle + '.opus" type="audio/mpeg">'
+            hline5 = '</audio>'
+            hline6 = '</div>'
+
+
+            var harr = [hline1, hline2, hline3, hline4, hline5, hline6]
+
+            for (i = 0; i < 7; i++) {
+                var p = document.createElement('div')
+                p.textContent = harr[i]
+                htmlc.appendChild(p)
+            }
+
 
 
         }
