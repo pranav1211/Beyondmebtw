@@ -142,4 +142,4 @@ Dev notes / ideas:
 
 27/1/24
 -> cleaned the js and css code to allow for better readablity
-->
+-> added the audio visualizers, need to connect them with the other fucntions of next song, prev song and loop
