@@ -73,7 +73,29 @@ audioElements.forEach(audio => {
         songid = "#t" + currentsongnumber
 
         songidname = audio.getAttribute('song-id')
-        barschecker = songidname + "bars"        
+        barschecker = songidname + "bars"
+
+        // audio visualizer
+
+        
+        var newbar = "." + songidname + "bars"
+        document.querySelector(newbar).style.visibility = 'visible'
+        for (i = 1; i <= 4; i++) {
+            var bar = "." + songidname + "bar" + i    
+            document.querySelector(bar).style.animation = 'bounce 4s ease infinite'
+            if (i == 2) {
+                document.querySelector(bar).style.animationDelay = '-2s'
+                document.querySelector(bar).style.marginLeft = '14px'
+            }
+            else if (i == 3) {
+                document.querySelector(bar).style.animationDelay = '-1s'
+                document.querySelector(bar).style.marginLeft = '28px'
+            }
+            else if (i == 4) {
+                document.querySelector(bar).style.animationDelay = '-4s'
+                document.querySelector(bar).style.marginLeft = '42px'
+            }
+        }
 
         // music control PAUSE button
         mcpause.addEventListener('click', () => {
@@ -298,25 +320,6 @@ document.querySelector('.showerbeckyg').addEventListener("click", () => {
     secdiv.innerHTML = "00"
     minuter = 0;
     secondr = 1;
-    document.querySelector('.showerbars').style.visibility = 'visible'
-    for (i = 1; i <= 4; i++) {
-        var bar = ".showerbar" + i
-        document.querySelector(bar).style.animation = 'bounce 4s ease infinite'
-        if (i == 2) {
-            document.querySelector(bar).style.animationDelay = '-2s'
-            document.querySelector(bar).style.marginLeft = '14px'
-        }
-        else if (i == 3) {
-            document.querySelector(bar).style.animationDelay = '-1s'
-            document.querySelector(bar).style.marginLeft = '28px'
-        }
-        else if (i == 4) {
-            document.querySelector(bar).style.animationDelay = '-4s'
-            document.querySelector(bar).style.marginLeft = '42px'
-        }
-    }
-
-
 });
 //////////////////////////////////////////////////////
 var p2 = document.getElementById("t2")
@@ -329,24 +332,6 @@ document.querySelector('.confessions-part-2-usher').addEventListener('click', ()
     secdiv.innerHTML = "00"
     minuter = 0;
     secondr = 1;
-    document.querySelector('.cptubars').style.visibility = 'visible'
-    for (i = 1; i <= 4; i++) {
-        var bar = ".cptubar" + i
-        document.querySelector(bar).style.animation = 'bounce 4s ease infinite'
-        if (i == 2) {
-            document.querySelector(bar).style.animationDelay = '-2s'
-            document.querySelector(bar).style.marginLeft = '14px'
-        }
-        else if (i == 3) {
-            document.querySelector(bar).style.animationDelay = '-1s'
-            document.querySelector(bar).style.marginLeft = '28px'
-        }
-        else if (i == 4) {
-            document.querySelector(bar).style.animationDelay = '-4s'
-            document.querySelector(bar).style.marginLeft = '42px'
-        }
-    }
-
 });
 //////////////////////////////////////////////////////
 var p3 = document.getElementById("t3")
