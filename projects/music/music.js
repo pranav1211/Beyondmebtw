@@ -76,12 +76,11 @@ audioElements.forEach(audio => {
         barschecker = songidname + "bars"
 
         // audio visualizer
-
         
-        var newbar = "." + songidname + "bars"
+        var newbar = "." + songidname + "bars" //gets the main container
         document.querySelector(newbar).style.visibility = 'visible'
         for (i = 1; i <= 4; i++) {
-            var bar = "." + songidname + "bar" + i    
+            var bar = "." + songidname + "bar" + i    // gets the individual spans
             document.querySelector(bar).style.animation = 'bounce 4s ease infinite'
             if (i == 2) {
                 document.querySelector(bar).style.animationDelay = '-2s'
