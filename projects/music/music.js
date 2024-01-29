@@ -76,7 +76,7 @@ audioElements.forEach(audio => {
         barschecker = songidname + "bars"
 
         // audio visualizer
-        
+
         var newbar = "." + songidname + "bars" //gets the main container
         document.querySelector(newbar).style.visibility = 'visible'
         for (i = 1; i <= 4; i++) {
@@ -371,14 +371,14 @@ document.querySelector(".Come-and-Get-Your-Love-Redbone").addEventListener("clic
     secondr = 1;
 });
 ////////////////////////////////////////////
-var p6 =document.getElementById("t6")
+var p6 = document.getElementById("t6")
 document.querySelector(".Million-Years-Ago-Adele").addEventListener("click", () => {
-p6.play();
-p6.currentTime = 0;
-mcplay.style.visibility = "hidden";
-mcpause.style.visibility = "visible";
-mindiv.innerHTML = "0:";
-secdiv.innerHTML = "00";
-minuter = 0;
-secondr = 1;
+    p6.play();
+    p6.currentTime = 0;
+    mcplay.style.visibility = "hidden";
+    mcpause.style.visibility = "visible";
+    mindiv.innerHTML = "0:";
+    secdiv.innerHTML = "00";
+    minuter = 0;
+    secondr = 1;
 });
