@@ -24,7 +24,8 @@
         var js = document.getElementById('javascriptcode')
         var htmlc = document.getElementById('htmlcode')
 
-        var noofsongs = 5;
+        var noofsongs = localStorage.getItem(noofsongs);
+        noofsongs = noofsongs + 1
 
         function doits() {
             var i = 0
