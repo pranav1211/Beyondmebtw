@@ -370,4 +370,15 @@ document.querySelector(".Come-and-Get-Your-Love-Redbone").addEventListener("clic
     minuter = 0;
     secondr = 1;
 });
-
+////////////////////////////////////////////
+var p6 =document.getElementById("t6")
+document.querySelector(".Million-Years-Ago-Adele").addEventListener("click", () => {
+p6.play();
+p6.currentTime = 0;
+mcplay.style.visibility = "hidden";
+mcpause.style.visibility = "visible";
+mindiv.innerHTML = "0:";
+secdiv.innerHTML = "00";
+minuter = 0;
+secondr = 1;
+});
