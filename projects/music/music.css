@@ -99,6 +99,8 @@ body {
 .mcpause{    
     width: 60px; 
     margin-left: -3.15vw;
+    visibility: hidden;
+
 }
 
 .mcplay{    
@@ -107,22 +109,19 @@ body {
     
 }
 
-.prevsong{
-    
+.prevsong{    
     width: 60px; 
     
 }
 
-.nextsong{
-    
+.nextsong{    
     width: 60px; 
     
 }
 .replayonesong{
     width: 60px; 
     margin-left: -3.1vw;
-    
-    
+    visibility: hidden;
 }
 .replayplaylistt{  
     width: 60px;
