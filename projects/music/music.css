@@ -136,6 +136,8 @@ body {
 }
 .shuffleon{
     width: 60px;
+    margin-left: -3.15vw;
+    visibility: hidden;
 }
 #musiccontrolicons{
     display: flex;
