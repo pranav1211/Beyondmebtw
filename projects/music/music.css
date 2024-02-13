@@ -125,10 +125,8 @@ body {
     width: 60px; 
     
 }
-.replayplaylist{
-    
-    width: 90px; 
-    
+.replayplaylist{  
+    visibility: hidden;    
 }
 .replaybutt{    
     width: 60px;     
