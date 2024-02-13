@@ -91,7 +91,7 @@ body {
     
 }
 
-.play-circle-img{
+.play-circle-img,.pause-circle-img,.replaybutt{
     visibility: hidden;
 }
 
