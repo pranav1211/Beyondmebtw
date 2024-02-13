@@ -111,10 +111,6 @@ body {
     position: absolute;   
 }
 
-.nextsong,.prevsong,.replaybutt,.replayplaylistt,.replayonesong{
-    visibility: hidden;
-    position: absolute;
-}
 
 /* scrollbar */
 ::-webkit-scrollbar-track {
