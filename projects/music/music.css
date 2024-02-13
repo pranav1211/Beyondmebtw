@@ -19,7 +19,7 @@ body {
 
 /*music controls*/
 
-.play-circle-img {
+/* .play-circle-img {
     visibility: visible;
     width: 2.5vw;
 
@@ -89,7 +89,7 @@ body {
 
 .shuffleoff {
     margin-left: 1.5vw;
-}
+} */
 
 #musiccontrols {
     background-color: white;
