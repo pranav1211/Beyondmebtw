@@ -135,10 +135,11 @@ body {
     width: 60px; 
     
 }
-.shuffle{
-    
-    width: 60px; 
-    
+.shuffle{    
+    width: 60px;     
+}
+.shuffleon{
+    width: 60px;
 }
 #musiccontrolicons{
     display: flex;
