@@ -1,6 +1,5 @@
 body {
     background-image: linear-gradient(120deg, #a6c0fe 0%, #f68084 100%);
-    
     margin: 0;
 }
 
@@ -96,13 +95,12 @@ body {
 #musiccontrols {
     background-color: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
-    text-align: center;
-    margin: 0;
+    text-align: center;    
     width: 100%;
-    height: 4vw;    
+    height: 10%;    
     position: fixed;
     bottom: 0;
-    padding: 0;
+    
     
 }
 
