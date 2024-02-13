@@ -73,8 +73,8 @@ body {
 #titletrack,
 #trackartist {
     float: left;
-    font-family: "Delius Unicase", cursive;
-    font-weight: 700;
+    font-family: "Frijole", system-ui;
+    font-weight: 400;
     font-style: normal;
 }
 
