@@ -73,10 +73,9 @@ body {
 #titletrack,
 #trackartist {
     float: left;
-    font-family: "Codystar", sans-serif;
-    font-weight: 400;
+    font-family: "Delius Unicase", cursive;
+    font-weight: 700;
     font-style: normal;
-    font-weight: bolder;
 }
 
 /* scrollbar */
