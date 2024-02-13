@@ -126,16 +126,16 @@ body {
 
 .replayonesong {
     width: 60px;
-    margin-left: -3.1vw;
+    margin-left: -59px;
     visibility: hidden;
     position: sticky;
 }
 
 .replayplaylistt {
     width: 60px;
-    margin-left: -3.2vw;
+    margin-left: -59px;
     visibility: hidden;
-    position: sticky;
+    
 }
 
 .replaybutt {
