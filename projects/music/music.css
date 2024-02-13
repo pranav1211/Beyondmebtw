@@ -127,13 +127,11 @@ body {
 }
 .replayplaylist{
     
-    width: 60px; 
+    width: 90px; 
     
 }
-.replaybutt{
-    
-    width: 60px; 
-    
+.replaybutt{    
+    width: 60px;     
 }
 .shuffle{    
     width: 60px;     
