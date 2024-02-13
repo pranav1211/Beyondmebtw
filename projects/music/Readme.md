@@ -153,3 +153,9 @@ Dev notes / ideas:
 -> cleaned the js and css code to allow for better readablity\
 -> added the audio visualizers, need to connect them with the other fucntions of next song, prev song and loop\
 -> might have to make the control center sligtly bigger or make default size bigger, its coz CAGYL is changing it
+
+14/02/24
+-> planning to add a seek bar for the music instead of just keeping the timer coz it looks fugly
+->gonna change background colors as it does not make sense rn
+-> have to figure out how to make the animation audio bars stick to the song div, because its scrolling with the playlist right now
+-> also planning a revamp for www.Beyondmebtw.com
