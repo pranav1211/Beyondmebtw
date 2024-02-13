@@ -16,7 +16,7 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
     border-radius: 20px;
     background-image: linear-gradient(-20deg, #ddd6f3 0%, #faaca8 100%, #faaca8 100%);
-    align-items: center;
+    
 }
 
 /*music controls*/
@@ -30,6 +30,7 @@ body {
     height: 10%;    
     position: fixed;
     bottom: 0;    
+    align-items: center;
     
 }
 
