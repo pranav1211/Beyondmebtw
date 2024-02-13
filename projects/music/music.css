@@ -126,8 +126,8 @@ body {
 
 .replayonesong {
     width: 60px;
-    margin-left: -61px;
-    /* visibility: hidden; */
+    margin-left: -62px;
+    visibility: hidden;
     position: sticky;
 }
 
