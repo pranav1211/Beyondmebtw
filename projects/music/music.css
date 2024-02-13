@@ -121,12 +121,15 @@ body {
     
 }
 .replayonesong{
-    
     width: 60px; 
+    margin-left: -3.1vw;
+    
     
 }
 .replayplaylistt{  
-    width: 60px;  
+    width: 60px;
+    margin-left: -3.2vw;
+    visibility: hidden;
 }
 .replaybutt{    
     width: 60px;     
@@ -141,6 +144,7 @@ body {
     display: flex;
     margin-left: 40%;
     margin-top: -3.1%;
+    
 }
 
 /* scrollbar */
