@@ -97,52 +97,53 @@ body {
 }
 
 .mcpause{    
-    margin-top: -3.1%;
+    
     width: 60px; 
     
     
 }
 
 .mcplay{    
-    margin-top: -3.1%;
+    
     width: 60px; 
     
 }
 
 .prevsong{
-    margin-top: -3.1%;
+    
     width: 60px; 
     
 }
 
 .nextsong{
-    margin-top: -3.1%;
+    
     width: 60px; 
     
 }
 .replayonesong{
-    margin-top: -3.1%;
+    
     width: 60px; 
     
 }
 .replayplaylist{
-    margin-top: -3.1%;
+    
     width: 60px; 
     
 }
 .replaybutt{
-    margin-top: -3.1%;
+    
     width: 60px; 
     
 }
 .shuffle{
-    margin-top: -3.1%;
+    
     width: 60px; 
     
 }
 #musiccontrolicons{
     display: flex;
-    margin-left: 20%;
+    margin-left: 40%;
+    margin-top: -3.1%;
 }
 
 /* scrollbar */
