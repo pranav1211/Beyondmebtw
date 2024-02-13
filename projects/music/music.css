@@ -96,11 +96,13 @@ body {
     
 }
 
-.mcplay{
-    margin-left: 50vw;
+.mcpause{
+    margin-left: 50%;
+    
+    
 }
 
-.play-circle-img,.pause-circle-img,.replaybutt,.replayplaylistt,.replayonesong{
+.mcplay,.nextsong,.prevsong,.replaybutt,.replayplaylistt,.replayonesong{
     visibility: hidden;
     position: absolute;
 }
