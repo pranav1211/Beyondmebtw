@@ -68,81 +68,97 @@ body {
     display: flex;
     margin-top: -0.6%;
     margin-left: 20%;
-    font-size: 3vh;   
-    
-    
+    font-size: 3vh;
+
+
 }
 
-#centertext{
+#centertext {
     display: flex;
     flex-direction: column;
-    float: left;    
+    float: left;
     font-family: "Playfair Display", serif;
-    font-optical-sizing: auto;    
-    font-style:normal;
+    font-optical-sizing: auto;
+    font-style: normal;
     font-weight: bolder;
-    margin-left: 2%; 
+    margin-left: 2%;
     text-align: left;
     position: absolute;
 }
 
-#titletrack{
+#titletrack {
     font-size: 25px;
     padding-top: 10px;
 
 }
-#trackartist{
+
+#trackartist {
     font-size: 20px;
-    
+
 }
 
-.mcpause{    
-    width: 60px; 
+.mcpause {
+    width: 60px;
     margin-left: -3.15vw;
     visibility: hidden;
+    position: sticky;
 
 }
 
-.mcplay{    
-    
-    width: 60px; 
-    
+.mcplay {
+
+    width: 60px;
+    position: sticky;
+
 }
 
-.prevsong{    
-    width: 60px; 
-    
+.prevsong {
+    width: 60px;
+    position: sticky;
+
 }
 
-.nextsong{    
-    width: 60px; 
-    
+.nextsong {
+    width: 60px;
+    position: sticky;
+
 }
-.replayonesong{
-    width: 60px; 
+
+.replayonesong {
+    width: 60px;
     margin-left: -3.1vw;
     visibility: hidden;
+    position: sticky;
 }
-.replayplaylistt{  
+
+.replayplaylistt {
     width: 60px;
     margin-left: -3.2vw;
     visibility: hidden;
+    position: sticky;
 }
-.replaybutt{    
-    width: 60px;     
+
+.replaybutt {
+    width: 60px;
+    position: sticky;
 }
-.shuffle{    
-    width: 60px;     
+
+.shuffle {
+    width: 60px;
+    position: sticky;
 }
-.shuffleon{
+
+.shuffleon {
     width: 60px;
     margin-left: -3.15vw;
     visibility: hidden;
+    position: sticky;
 }
-#musiccontrolicons{
+
+#musiccontrolicons {
     display: flex;
     margin-left: 40%;
-    margin-top: -3.1%;    
+    margin-top: -3.1%;
 }
 
 /* scrollbar */
