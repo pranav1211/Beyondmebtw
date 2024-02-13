@@ -59,16 +59,16 @@ body {
     position: fixed;
     bottom: 0;    
     justify-content: center;
-    
+    margin: 0;
+    padding: 0;  
+
 }
 
-#titletrack,
-
-#counter {
+#counter{
     display: flex;
-    align-self: center;
+    justify-content: center;
+    font-size: 2vh;
 }
-
 
 /* scrollbar */
 ::-webkit-scrollbar-track {
