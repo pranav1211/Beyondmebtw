@@ -68,6 +68,7 @@ body {
     display: flex;
     justify-content: center;
     font-size: 3vh;
+    position: fixed;
 }
 
 #titletrack,
@@ -82,7 +83,7 @@ body {
 }
 #titletrack{
     font-size: 25px;
-    padding-top: 0.1%;
+    padding-top: 0.8%;
 
 }
 #trackartist{
