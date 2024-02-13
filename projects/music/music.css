@@ -82,12 +82,16 @@ body {
 }
 #titletrack{
     font-size: 25px;
-    margin-top: 0.2%;
+    
 
 }
 #trackartist{
     font-size: 20px;
     
+}
+
+#prevsong,#nextsong,#mcpause,#mcplay{
+    visibility: hidden;
 }
 
 /* scrollbar */
