@@ -70,6 +70,7 @@ body {
     margin-left: 50%;
     font-size: 3vh;   
     
+    
 }
 
 #centertext{
@@ -82,6 +83,7 @@ body {
     font-weight: bolder;
     margin-left: 2%; 
     text-align: left;
+    position: absolute;
 }
 
 #titletrack{
