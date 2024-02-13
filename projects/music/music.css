@@ -99,49 +99,50 @@ body {
 .mcpause{    
     margin-top: -3.1%;
     width: 60px; 
-    position: absolute;
+    
     
 }
 
 .mcplay{    
     margin-top: -3.1%;
     width: 60px; 
-    position: absolute;   
+    
 }
 
 .prevsong{
     margin-top: -3.1%;
     width: 60px; 
-    position: absolute;   
+    
 }
 
 .nextsong{
     margin-top: -3.1%;
     width: 60px; 
-    position: absolute;   
+    
 }
 .replayonesong{
     margin-top: -3.1%;
     width: 60px; 
-    position: absolute;   
+    
 }
 .replayplaylist{
     margin-top: -3.1%;
     width: 60px; 
-    position: absolute;   
+    
 }
 .replaybutt{
     margin-top: -3.1%;
     width: 60px; 
-    position: absolute;   
+    
 }
 .shuffle{
     margin-top: -3.1%;
     width: 60px; 
-    position: absolute;   
+    
 }
 #musiccontrolicons{
     display: flex;
+    margin-left: 20%;
 }
 
 /* scrollbar */
