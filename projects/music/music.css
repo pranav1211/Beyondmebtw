@@ -104,14 +104,33 @@ body {
     
 }
 
-.mcplay{
-    
+.mcplay{    
     margin-top: -3.1%;
     width: 60px; 
     position: absolute;   
 }
 
+.prevsong{
+    margin-top: -3.1%;
+    width: 60px; 
+    position: absolute;   
+}
 
+.nextsong{
+    margin-top: -3.1%;
+    width: 60px; 
+    position: absolute;   
+}
+.replayonesong{
+    margin-top: -3.1%;
+    width: 60px; 
+    position: absolute;   
+}
+.replayplaylist{
+    margin-top: -3.1%;
+    width: 60px; 
+    position: absolute;   
+}
 /* scrollbar */
 ::-webkit-scrollbar-track {
     box-shadow: 0.8 0 0 5px grey;
