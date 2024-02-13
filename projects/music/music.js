@@ -78,6 +78,7 @@ audioElements.forEach(audio => {
         // audio visualizer
 
         var newbar = "." + songidname + "bars" //gets the main container
+        
         document.querySelector(newbar).style.visibility = 'visible'
         for (i = 1; i <= 4; i++) {
             var bar = "." + songidname + "bar" + i    // gets the individual spans
