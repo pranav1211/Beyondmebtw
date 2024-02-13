@@ -91,7 +91,7 @@ body {
     
 }
 
-#prevsong,#nextsong,#mcpause,#mcplay{
+.play-circle-img{
     visibility: hidden;
 }
 
