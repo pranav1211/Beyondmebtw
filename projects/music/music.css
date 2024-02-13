@@ -72,16 +72,18 @@ body {
     
 }
 
-#titletrack,
-#trackartist {
+#centertext{
+    display: flex;
+    flex-direction: column;
     float: left;
+    
     font-family: "Playfair Display", serif;
     font-optical-sizing: auto;    
     font-style:normal;
     font-weight: bolder;
-    margin-left: 2%;    
-
+    margin-left: 2%; 
 }
+
 #titletrack{
     font-size: 25px;
     padding-top: 0.8%;
