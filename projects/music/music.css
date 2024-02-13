@@ -128,13 +128,13 @@ body {
 ::-webkit-scrollbar {
     width: 10px;
 }
-
+/* 
 #titletrack,
 #trackartist {
     font-family: 'Nova Mono';
     margin-left: 0.4vw;
-}
-
+} */
+/* 
 #titletrack {
     font-weight: bolder;
 }
@@ -155,7 +155,7 @@ body {
     display: flex;
     margin-top: -1%;
     margin-left: 8.6vw;
-}
+} */
 
 
 /* scrollbar */
@@ -165,11 +165,11 @@ body {
 }
 
 /* Handle */
-::-webkit-scrollbar-thumb {
+/* ::-webkit-scrollbar-thumb {
     background: black;
-    border-radius: 10px;
+    border-radius: 10px;   
 
-}
+} */
 
 /* music bars */
 
