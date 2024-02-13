@@ -73,10 +73,10 @@ body {
 #titletrack,
 #trackartist {
     float: left;
-    font-family: "Vast Shadow", serif;
-    font-weight: 400;
+    font-family: "Playfair Display", serif;
+    font-optical-sizing: auto;    
     font-style: normal;
-    font-size: 20px;
+    font-size: 30px;
 }
 
 /* scrollbar */
