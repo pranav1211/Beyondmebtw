@@ -63,26 +63,6 @@ body {
 }
 
 #titletrack,
-#trackartist {
-    font-family: 'Nova Mono';
-    
-}
-
-#titletrack {
-    font-weight: bolder;
-}
-
-#trackartist {
-    font-size: 1.2vw;
-}
-
-#titletrack,
-#counter {
-
-    color: black;
-    font-size: 1.6vw;
-
-}
 
 #counter {
     display: flex;
