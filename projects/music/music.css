@@ -28,8 +28,7 @@ body {
     width: 100%;
     height: 10%;    
     position: fixed;
-    bottom: 0;
-    
+    bottom: 0;    
     
 }
 
@@ -85,8 +84,7 @@ body {
 
 #counter {
     display: flex;
-    margin-top: -1%;
-    margin-left: 8.6vw;
+    align-self: center;
 }
 
 
