@@ -79,6 +79,11 @@ Changelog :-
             ->moved the text to the left of the div
             ->fixed the alignment and overflow of the divs
             ->changed the color of the song list box to make it pop more
+    14/02/2024
+        V 1.1
+            ->moved the music control center to the footer
+            ->new icons for the replay,play,next and previous buttons
+            ->shuffle button is back but not functional
 
 
 
