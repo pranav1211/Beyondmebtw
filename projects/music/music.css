@@ -67,7 +67,7 @@ body {
 #counter{
     display: flex;
     justify-content: center;
-    font-size: 2vh;
+    font-size: 3vh;
 }
 
 /* scrollbar */
