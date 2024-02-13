@@ -7,7 +7,7 @@ body {
     display: flex;
     flex-direction: column;
     overflow: scroll;
-    height: 40vw;
+    height: 30vw;
     overflow-x: hidden;
     border: 1px solid black;
     margin-right: 28vw;
