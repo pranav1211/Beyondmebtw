@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
         function hide() {
             butt.style.visibility = 'hidden'
             photobutton.style.visibility = 'visible'
-            photobutton.style.marginBottom = '80px'
+            
         }
         setTimeout(hide, 1500)
 
@@ -33,6 +33,9 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     photobutton.addEventListener('click', () => {
+        
+        photobutton.style.visibility = 'hidden'
+
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         context.drawImage(video, 0, 0, canvas.width, canvas.height)
