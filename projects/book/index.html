@@ -84,10 +84,10 @@
                         locate: true
                     }, function (result) {
                         if (result && result.codeResult) {
-                            console.log("Barcode detected and decoded: " + result.codeResult.code);
+                            alert("Barcode detected and decoded: " + result.codeResult.code);
                             alert("Barcode detected and decoded: " + result.codeResult.code);
                         } else {
-                            console.log("No barcode detected");
+                            alert("No barcode detected");
                             alert("No barcode detected");
                         }
                     });
