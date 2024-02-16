@@ -22,6 +22,7 @@
         <video id="vid"></video>
         <br><br>
         <button id="butt" autoplay>Scan Code</button>
+        <button id="photo" autoplay>Take Photo</button>
     </div>
     <script>
         
@@ -30,8 +31,13 @@
         document.addEventListener('DOMContentLoaded', () => {
             let butt = document.querySelector('#butt')
             let video = document.querySelector('#vid')
+            let canvas = document.createElement('canvas')
+            let context = canvas.getContext('2d')
+            
             let mediaDevices = navigator.mediaDevices;
+                        
             vid.muted = true
+
             butt.addEventListener('click', () => {
                 mediaDevices.getUserMedia({
                     video: { facingMode: 'environment' }, audio: false,
