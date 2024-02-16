@@ -23,14 +23,14 @@
         document.addEventListener('DOMContentLoaded', () => {
             let butt = document.querySelector('#butt')
             let video = document.querySelector('#vid')
-            let mediaDevices = navigator.mediaDevices;
+            let mediaDevices = navigator.mediaDevices.getUserMedia;
             vid.muted = true
-            butt.addEventListener('click',()=>{
+            butt.addEventListener('click', () => {
                 mediaDevices.getUserMedia({
-                    video : true,audio :false,                    
-                }).then((stream)=>{
+                    video: { facingMode: 'environment' }, audio: false,
+                }).then((stream) => {
                     video.srcObject = stream;
-                    video.addEventListener("loadedmetadata",()=>{
+                    video.addEventListener("loadedmetadata", () => {
                         video.play()
                     })
                 }).catch(alert)
