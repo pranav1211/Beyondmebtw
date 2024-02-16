@@ -67,7 +67,33 @@
             getcode.addEventListener('click',()=>{
                 imageurl = document.querySelector('#qrimage')
                 urls = imageurl.getAttribute('src')
-                console.log(urls)
+                const imageURL = urls
+
+                const imgg = new Image()
+                imgg.crossOrigin = 'anonymus'
+                imgg.onload = function(){
+                    Quagga.decodeSingle({
+                        src: img.src,
+                        numOfWorkers: 0,
+                        inputStream: {
+                            size: 800
+                        },
+                        decoder: {
+                            readers: ["ean_reader"] // Specify barcode reader type
+                        },
+                        locate: true
+                    }, function (result) {
+                        if (result && result.codeResult) {
+                            console.log("Barcode detected and decoded: " + result.codeResult.code);
+                            alert("Barcode detected and decoded: " + result.codeResult.code);
+                        } else {
+                            console.log("No barcode detected");
+                            alert("No barcode detected");
+                        }
+                    });
+                };
+                img.src = imageURL;
+                
             })
 
         })
