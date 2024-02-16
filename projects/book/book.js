@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     photobutton.addEventListener('click', () => {
         
         photobutton.style.visibility = 'hidden'
+        getcode.style.visibility = 'visible'
 
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
