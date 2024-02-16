@@ -15,26 +15,28 @@
             width: 45.4vh;
             height: 20vh;
             font-size: 6vh;
-            
+
         }
 
-        #photo,#etext{
+        #photo,
+        #etext {
             visibility: hidden;
         }
-        #buttons{
+
+        #buttons {
             display: flex;
             flex-direction: column;
-            justify-content: center;            
+            justify-content: center;
             margin-top: 80px;
-            
+
         }
 
-        #butt{
+        #butt {
             border: 0px white;
             background-color: dodgerblue;
             border-radius: 40px;
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
         }
-
     </style>
 </head>
 
@@ -84,14 +86,14 @@
                 document.body.appendChild(img)
             })
 
-            getcode.addEventListener('click',()=>{
+            getcode.addEventListener('click', () => {
                 imageurl = document.querySelector('#qrimage')
                 urls = imageurl.getAttribute('src')
                 const imageURL = urls
 
                 const imgg = new Image()
                 imgg.crossOrigin = 'anonymus'
-                imgg.onload = function(){
+                imgg.onload = function () {
                     Quagga.decodeSingle({
                         src: imgg.src,
                         numOfWorkers: 0,
@@ -104,14 +106,14 @@
                         locate: true
                     }, function (result) {
                         if (result && result.codeResult) {
-                            alert("Barcode detected and decoded: " + result.codeResult.code);                            
-                        } else {                            
+                            alert("Barcode detected and decoded: " + result.codeResult.code);
+                        } else {
                             alert("No barcode detected");
                         }
                     });
                 };
                 imgg.src = imageURL;
-                
+
             })
 
         })
