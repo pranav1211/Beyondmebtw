@@ -1,0 +1,42 @@
+<html>
+
+<head>
+    <style>
+        #id {
+            border: 2px solid black;
+            width: 500px;
+            height: 500px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div>
+        <video id="vid"></video>
+        <br><br>
+        <button id="butt" autoplay>Scan Code</button>
+    </div>
+    <script>
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            let butt = document.querySelector('#butt')
+            let video = document.querySelector('#vid')
+            let mediaDevices = navigator.mediaDevices;
+            vid.muted = true
+            butt.addEventListener('click',()=>{
+                mediaDevices.getUserMedia({
+                    video : true,audio :false,                    
+                }).then((stream)=>{
+                    video.srcObject = stream;
+                    video.addEventListener("loadedmetadata",()=>{
+                        video.play()
+                    })
+                }).catch(alert)
+            })
+        })
+    </script>
+</body>
+
+</html>
