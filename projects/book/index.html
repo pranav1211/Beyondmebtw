@@ -69,7 +69,7 @@
 
             butt.addEventListener('click', () => {
 
-                butt.style.visibility = 'hidden'
+                after(3000,butt.style.visibility = 'hidden')
 
                 mediaDevices.getUserMedia({
                     video: { facingMode: 'environment' }, audio: false,
