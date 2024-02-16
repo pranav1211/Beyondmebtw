@@ -50,8 +50,8 @@
             })
 
             photobutton.addEventListener('click',()=>{
-                canvas.width = '200px'
-                canvas.height = '200px'
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
                 context.drawImage(video,0,0,canvas.width,canvas.height)
                 let img = document.createElement('img')
                 img.src = canvas.toDataURL()
