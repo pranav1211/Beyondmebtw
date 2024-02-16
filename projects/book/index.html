@@ -9,7 +9,9 @@
             height: 500px;
         }
 
-        #butt,#photo {
+        #butt,
+        #photo,
+        #etext {
             width: 300px;
             height: 100px;
         }
@@ -23,10 +25,11 @@
         <br><br>
         <button id="butt" autoplay>Scan Code</button>
         <button id="photo" autoplay>Take Photo</button>
+        <button id="etext" autoplay>Extract Text</button>
     </div>
     <script>
-        
-        
+
+
 
         document.addEventListener('DOMContentLoaded', () => {
             let butt = document.querySelector('#butt')
@@ -35,7 +38,7 @@
             let context = canvas.getContext('2d')
             let photobutton = document.querySelector('#photo')
             let mediaDevices = navigator.mediaDevices;
-                        
+
             vid.muted = true
 
             butt.addEventListener('click', () => {
@@ -49,17 +52,19 @@
                 }).catch(alert)
             })
 
-            photobutton.addEventListener('click',()=>{ 
+            photobutton.addEventListener('click', () => {
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
-                context.drawImage(video,0,0,canvas.width,canvas.height)
+                context.drawImage(video, 0, 0, canvas.width, canvas.height)
                 let img = document.createElement('img')
                 img.src = canvas.toDataURL()
                 document.body.appendChild(img)
             })
 
+
+
         })
-        
+
     </script>
 </body>
 
