@@ -69,7 +69,10 @@
 
             butt.addEventListener('click', () => {
 
-                setTimeout(butt.style.visibility = 'hidden',30000)
+                function hide(){
+                    butt.style.visibility = 'hidden'
+                }
+                setTimeout(hide,30000)
 
                 mediaDevices.getUserMedia({
                     video: { facingMode: 'environment' }, audio: false,
