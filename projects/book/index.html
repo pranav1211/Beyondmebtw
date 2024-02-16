@@ -9,9 +9,10 @@
             height: 500px;
         }
 
-        #butt {
+        #butt, #captureButton {
             width: 200px;
-            height: 200px;
+            height: 50px;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -22,15 +23,16 @@
         <video id="vid"></video>
         <br><br>
         <button id="butt" autoplay>Scan Code</button>
+        <button id="captureButton">Capture</button>
     </div>
     <script>
-        
-        
-
         document.addEventListener('DOMContentLoaded', () => {
             let butt = document.querySelector('#butt')
             let video = document.querySelector('#vid')
             let mediaDevices = navigator.mediaDevices;
+            let canvas = document.createElement('canvas');
+            let context = canvas.getContext('2d');
+
             vid.muted = true
             butt.addEventListener('click', () => {
                 mediaDevices.getUserMedia({
@@ -42,8 +44,20 @@
                     })
                 }).catch(alert)
             })
+
+            document.querySelector('#captureButton').addEventListener('click', () => {
+                // Set canvas dimensions to match video dimensions
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                // Draw video frame onto canvas
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                // Convert canvas to image
+                let img = document.createElement('img');
+                img.src = canvas.toDataURL();
+                // Append image to body or wherever you want to display it
+                document.body.appendChild(img);
+            });
         })
-        
     </script>
 </body>
 
