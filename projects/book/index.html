@@ -61,11 +61,16 @@
             let photobutton = document.querySelector('#photo')
             let getcode = document.querySelector('#etext')
 
+
+
             let mediaDevices = navigator.mediaDevices;
 
             vid.muted = true
 
             butt.addEventListener('click', () => {
+
+                butt.style.visiblity = 'hidden'
+
                 mediaDevices.getUserMedia({
                     video: { facingMode: 'environment' }, audio: false,
                 }).then((stream) => {
