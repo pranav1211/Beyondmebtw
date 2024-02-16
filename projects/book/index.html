@@ -9,8 +9,7 @@
             height: 500px;
         }
 
-        #butt,
-        #photo {
+        #butt {
             width: 200px;
             height: 200px;
         }
@@ -22,24 +21,16 @@
     <div>
         <video id="vid"></video>
         <br><br>
-        <img id="taken">
         <button id="butt" autoplay>Scan Code</button>
-        <button id="photo" autoplay>Take photo</button>
     </div>
     <script>
-
-
+        
+        
 
         document.addEventListener('DOMContentLoaded', () => {
-
             let butt = document.querySelector('#butt')
             let video = document.querySelector('#vid')
-            let photo = document.querySelector('#photo')
-            let taken = document.querySelector('#taken')
-
             let mediaDevices = navigator.mediaDevices;
-
-
             vid.muted = true
             butt.addEventListener('click', () => {
                 mediaDevices.getUserMedia({
@@ -51,13 +42,8 @@
                     })
                 }).catch(alert)
             })
-
-            
+        })
         
-
-        })     
-
-
     </script>
 </body>
 
