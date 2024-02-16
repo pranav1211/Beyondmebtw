@@ -31,7 +31,7 @@
             vid.muted = true
             butt.addEventListener('click', () => {
                 mediaDevices.getUserMedia({
-                    video: { facingMode: 'user' }, audio: false,
+                    video: { facingMode: 'environment' }, audio: false,
                 }).then((stream) => {
                     video.srcObject = stream;
                     video.addEventListener("loadedmetadata", () => {
