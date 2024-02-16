@@ -2,6 +2,9 @@
 
 <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Khand:wght@600&display=swap" rel="stylesheet">
     <style>
         #id {
             border: 2px solid black;
@@ -69,10 +72,10 @@
 
             butt.addEventListener('click', () => {
                 butt.innerHTML = "Loading . . ."
-                function hide(){
+                function hide() {
                     butt.style.visibility = 'hidden'
                 }
-                setTimeout(hide,1500)
+                setTimeout(hide, 1500)
 
                 mediaDevices.getUserMedia({
                     video: { facingMode: 'environment' }, audio: false,
