@@ -1,4 +1,4 @@
-<html>
+<!-- <html>
 
 <head>
     <script src="https://unpkg.com/html5-qrcode"></script>
@@ -65,6 +65,82 @@
 
         })
 
+    </script>
+</body>
+
+</html> -->
+
+
+
+<html>
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <style>
+        #id {
+            border: 2px solid black;
+            width: 500px;
+            height: 500px;
+        }
+
+        #butt, #captureButton {
+            width: 200px;
+            height: 50px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div>
+        <video id="vid" style="display: none;"></video>
+        <input type="file" id="fileInput" accept="image/*">
+        <br><br>
+        <button id="scanButton">Scan Barcode</button>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let scanButton = document.querySelector('#scanButton');
+            let fileInput = document.querySelector('#fileInput');
+
+            scanButton.addEventListener('click', () => {
+                fileInput.click(); // Trigger file input click event
+            });
+
+            fileInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const img = new Image();
+                        img.onload = function () {
+                            Quagga.decodeSingle({
+                                src: img.src,
+                                numOfWorkers: 0,
+                                inputStream: {
+                                    size: 800
+                                },
+                                decoder: {
+                                    readers: ["ean_reader"] // Specify barcode reader type
+                                },
+                                locate: true
+                            }, function (result) {
+                                if (result && result.codeResult) {
+                                    console.log("Barcode detected and decoded: " + result.codeResult.code);
+                                    alert("Barcode detected and decoded: " + result.codeResult.code);
+                                } else {
+                                    console.log("No barcode detected");
+                                    alert("No barcode detected");
+                                }
+                            });
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
     </script>
 </body>
 
