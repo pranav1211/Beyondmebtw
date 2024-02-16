@@ -27,7 +27,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             let butt = document.querySelector('#butt')
             let video = document.querySelector('#vid')
-            let mediaDevices = navigator.mediaDevices.getUserMedia;
+            let mediaDevices = navigator.mediaDevices;
             vid.muted = true
             butt.addEventListener('click', () => {
                 mediaDevices.getUserMedia({
