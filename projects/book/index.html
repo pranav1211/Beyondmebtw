@@ -1,13 +1,15 @@
 <html>
 
 <head>
+    <script src="ocrad.js"></script>
     <style>
         #id {
             border: 2px solid black;
             width: 500px;
             height: 500px;
         }
-        #butt{
+
+        #butt {
             width: 200px;
             height: 200px;
         }
@@ -22,7 +24,8 @@
         <button id="butt" autoplay>Scan Code</button>
     </div>
     <script>
-
+        var string = OCRAD(image);
+        alert(string);
 
         document.addEventListener('DOMContentLoaded', () => {
             let butt = document.querySelector('#butt')
