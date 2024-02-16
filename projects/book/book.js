@@ -1,6 +1,3 @@
-
-
-
 document.addEventListener('DOMContentLoaded', () => {
     let butt = document.querySelector('#butt')
     let video = document.querySelector('#vid')
