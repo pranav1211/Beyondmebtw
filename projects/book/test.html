@@ -26,6 +26,7 @@
 <script type="text/javascript">
     function onScanSuccess(qrCodeMessage) {
         document.getElementById('result').innerHTML = qrCodeMessage;
+        result.href = qrCodeMessage
     }
 
     function onScanError(errorMessage) {
