@@ -5,30 +5,80 @@
 </head>
 
 <body>
-    <button id="check">Check</button>
+
+    <div id="buttons">
+        <div id="compat"></div>
+        <video id="vid"></video>
+        <br><br>
+        <button id="butt" autoplay>Scan Code</button>
+        <button id="photo" autoplay>Take Photo</button>
+        <button id="etext" autoplay>Extract Text</button>
+    </div>
 </body>
 <script>
-    var check = document.querySelector('#check')
-    check.addEventListener('click', () => {
+    let butt = document.querySelector('#butt')
+    let video = document.querySelector('#vid')
+    let canvas = document.createElement('canvas')
+    let context = canvas.getContext('2d')
+    let photobutton = document.querySelector('#photo')
+    let getcode = document.querySelector('#etext')
+    let compat = document.querySelector('#compat')
+
+    let check = document.querySelector('#check')
+
+    let mediaDevices = navigator.mediaDevices;
+    
+    vid.muted = true
+
+    document.addEventListener('DOMContentLoaded', () => {
         if (!("BarcodeDetector" in globalThis)) {
-            alert("Barcode Detector is not supported by this browser.");
+            compat.innerHTML = "Barcode Detector is not supported by this browser.";
         } else {
-            alert("Barcode Detector supported!");
+            compat.innerHTML = "Barcode Detector supported!";
 
             // create new detector
-            const barcodeDetector = new BarcodeDetector({
+            let barcodeDetector = new BarcodeDetector({
                 formats: ["code_128", "code_39", "code_93", "codabar", "ean_13", "ean_8", "itf", "upc_a", "upc_e"],
             });
         }
 
-        barcodeDetector
-            .detect(imageEl)
-            .then((barcodes) => {
-                barcodes.forEach((barcode) => console.log(barcode.rawValue));
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+
+        butt.addEventListener('click', () => {
+
+            // butt.innerHTML = "Loading . . ."
+            // function hide() {
+            //     butt.style.visibility = 'hidden'
+            //     photobutton.style.visibility = 'visible'
+
+            // }
+            // setTimeout(hide, 1500)
+
+            // mediaDevices.getUserMedia({
+            //     video: {
+            //         facingMode: 'environment'
+            //     }, audio: false,
+            // }).then((stream) => {
+            //     video.srcObject = stream;
+            //     video.addEventListener("loadedmetadata", () => {
+            //         video.play()
+            //     })
+            // }).catch(alert)
+
+            barcodeDetector
+                .detect(imageEl)
+                .then((barcodes) => {
+                    barcodes.forEach((barcode) => console.log(barcode.rawValue));
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+
+
+
+
+        })
+
+
 
     })
 </script>
