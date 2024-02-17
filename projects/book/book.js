@@ -46,12 +46,12 @@ document.addEventListener('DOMContentLoaded', () => {
         img.id = ('qrimage')
         img.src = canvas.toDataURL()
         document.body.appendChild(img)
-    })
 
-    getcode.addEventListener('click', () => {
         imageurl = document.querySelector('#qrimage')
         urls = imageurl.getAttribute('src')
         const imageURL = urls
+
+        alert("clicked")
 
         const imgg = new Image()
         imgg.crossOrigin = 'anonymus'
