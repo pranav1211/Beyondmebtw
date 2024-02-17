@@ -131,41 +131,7 @@
 
                 // Detect barcode
                 Quagga.onDetected(function (result) {
-                    canvas.width = video.videoWidth;
-                    canvas.height = video.videoHeight;
-                    context.drawImage(video, 0, 0, canvas.width, canvas.height)
-                    let img = document.createElement('img')
-                    img.id = ('qrimage')
-                    img.src = canvas.toDataURL()
-                    document.body.appendChild(img)
-
-                    imageurl = document.querySelector('#qrimage')
-                    urls = imageurl.getAttribute('src')
-                    const imageURL = urls
-
-                    const imgg = new Image()
-                    imgg.crossOrigin = 'anonymus'
-                    imgg.onload = function () {
-                        Quagga.decodeSingle({
-                            src: imgg.src,
-                            numOfWorkers: 0,
-                            inputStream: {
-                                size: 800
-                            },
-                            decoder: {
-                                readers: ["ean_reader"] // Specify barcode reader type
-                            },
-                            locate: true
-                        }, function (result) {
-                            if (result && result.codeResult) {
-                                alert("Barcode detected and decoded: " + result.codeResult.code);
-                            } else {
-                                alert("No barcode detected");
-                            }
-                        });
-                    };
-                    imgg.src = imageURL;
-                    
+                    alert("detected")
                     Quagga.stop();
                 });
             });
