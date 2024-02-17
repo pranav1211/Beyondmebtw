@@ -16,11 +16,6 @@
 
 }
 
-#photo,
-#etext {
-    visibility: hidden;
-}
-
 #buttons {
     display: flex;
     flex-direction: column;
@@ -88,9 +83,9 @@
                 console.log("Quagga initialization succeeded");
 
                 // Start QuaggaJS when the "Scan Barcode" button is clicked
-                scanButton.addEventListener('click', function () {
+                
                     Quagga.start();
-                });
+                
 
                 // Detect barcode
                 Quagga.onDetected(function (result) {
@@ -99,9 +94,9 @@
 
                     // Perform actions based on the detected barcode
                     // Example: Redirect to a URL based on the barcode value
-                    if (result.codeResult.code === "SOME_BARCODE_VALUE") {
-                        window.location.href = "https://example.com/" + result.codeResult.code;
-                    }
+                    // if (result.codeResult.code === "SOME_BARCODE_VALUE") {
+                    //     window.location.href = "https://example.com/" + result.codeResult.code;
+                    // }
 
                     // Stop QuaggaJS after a barcode is detected
                     Quagga.stop();
