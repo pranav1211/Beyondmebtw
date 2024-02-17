@@ -1,21 +1,18 @@
 <html>
 
 <head>
-    <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
     <style>
-        #vid {
-            display: none;
+        #id {
+            border: 2px solid black;
+            width: 500px;
+            height: 500px;
         }
 
-        #scanButton {
+        #butt, #captureButton, #scanButton {
             width: 200px;
             height: 50px;
             margin-top: 10px;
-        }
-
-        #barcodeResult {
-            margin-top: 10px;
-            font-weight: bold;
         }
     </style>
 </head>
@@ -23,52 +20,69 @@
 <body>
 
     <div>
-        <video id="vid" autoplay></video>
+        <video id="vid" style="display: none;"></video>
+        <input type="file" id="fileInput" accept="image/*">
+        <br><br>
+        <button id="butt" autoplay>Scan Code</button>
+        <button id="captureButton">Capture</button>
         <button id="scanButton">Scan Barcode</button>
-        <div id="barcodeResult"></div>
     </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            let scanButton = document.querySelector('#scanButton');
+            let butt = document.querySelector('#butt');
             let video = document.querySelector('#vid');
-            let barcodeResult = document.querySelector('#barcodeResult');
+            let mediaDevices = navigator.mediaDevices;
+            let canvas = document.createElement('canvas');
+            let context = canvas.getContext('2d');
 
-            // Configure QuaggaJS
-            Quagga.init({
-                inputStream: {
-                    name: "Live",
-                    type: "LiveStream",
-                    target: video
-                },
-                decoder: {
-                    readers: ["ean_reader", "ean_8_reader", "upc_reader", "upc_e_reader"] // List of barcode formats to scan
-                }
-            }, function (err) {
-                if (err) {
-                    console.error("Quagga initialization failed: ", err);
-                    return;
-                }
-                console.log("Quagga initialization succeeded");
+            butt.addEventListener('click', () => {
+                mediaDevices.getUserMedia({
+                    video: { facingMode: 'environment' },
+                    audio: false,
+                }).then((stream) => {
+                    video.srcObject = stream;
+                    video.addEventListener("loadedmetadata", () => {
+                        video.play();
+                    });
+                }).catch(alert);
+            });
 
-                // Start QuaggaJS when the "Scan Barcode" button is clicked
-                scanButton.addEventListener('click', function () {
+            document.querySelector('#captureButton').addEventListener('click', () => {
+                // Set canvas dimensions to match video dimensions
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                // Draw video frame onto canvas
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                // Convert canvas to image
+                let img = document.createElement('img');
+                img.src = canvas.toDataURL();
+                // Append image to body or wherever you want to display it
+                document.body.appendChild(img);
+            });
+
+            document.querySelector('#scanButton').addEventListener('click', () => {
+                Quagga.init({
+                    inputStream: {
+                        name: "Live",
+                        type: "LiveStream",
+                        target: document.querySelector('#vid'), // or '#yourElement' (optional)
+                    },
+                    decoder: {
+                        readers: ["ean_reader", "ean_8_reader", "code_39_reader", "code_39_vin_reader", "codabar_reader", "upc_reader", "upc_e_reader", "i2of5_reader", "2of5_reader", "code_93_reader", "code_128_reader", "s25_reader", "qrcode_reader", "datamatrix_reader", "pdf417_reader"],
+                    },
+                }, function (err) {
+                    if (err) {
+                        console.log(err);
+                        return
+                    }
+                    console.log("Initialization finished. Ready to start");
                     Quagga.start();
                 });
 
-                // Detect barcode
-                Quagga.onDetected(function (result) {
-                    console.log("Barcode detected and decoded: ", result.codeResult.code);
-                    barcodeResult.textContent = "Barcode detected and decoded: " + result.codeResult.code;
-
-                    // Stop QuaggaJS after a barcode is detected
-                    Quagga.stop();
+                Quagga.onDetected(function (data) {
+                    console.log("Barcode detected and decoded: ", data.codeResult.code);
+                    alert("Barcode detected and decoded: " + data.codeResult.code);
                 });
-            });
-
-            // Stop QuaggaJS and release camera when leaving the page
-            window.addEventListener('beforeunload', function () {
-                Quagga.stop();
             });
         });
     </script>
