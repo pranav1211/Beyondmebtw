@@ -24,7 +24,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         mediaDevices.getUserMedia({
             video: {
-                facingMode: 'environment'
+                facingMode: 'environment',
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
+                zoom: 1.0 // Set initial zoom level to 1.0
             }, audio: false,
         }).then((stream) => {
             video.srcObject = stream;
@@ -51,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
         urls = imageurl.getAttribute('src')
         const imageURL = urls
 
-        
+
 
         const imgg = new Image()
         imgg.crossOrigin = 'anonymus'
