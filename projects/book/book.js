@@ -25,8 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
         mediaDevices.getUserMedia({
             video: {
                 facingMode:{exact: 'environment'},
-                width: { ideal: 1280 },
-                height: { ideal: 720 },
+                width: { ideal: videoWidth },
+                height: { ideal: videoHeight },
                 zoom: 1.0 // Set initial zoom level to 1.0
             }, audio: false,
         }).then((stream) => {
