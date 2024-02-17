@@ -1,113 +1,36 @@
 <html>
 
 <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Khand:wght@600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
     <style>
-        body {
-            overflow-x: hidden;
+        #scanButton {
+            width: 200px;
+            height: 50px;
+            margin-top: 10px;
         }
 
-        #butt,
-        #photo,
-        #etext {
-            width: 36vh;
-            height: 10vh;
-            font-size: 4vh;
-            margin-left: 95px;
-
-        }
-
-        #photo,
-        #etext {
-            visibility: hidden;
-        }
-
-        #buttons {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-
-
-        }
-
-        #photo {
-            margin-top: -400px;
-        }
-
-
-
-        #butt,
-        #photo,
-        #etext {
-            border: 0px white;
-            background-color: dodgerblue;
-            border-radius: 40px;
-            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-            font-family: "Khand", sans-serif;
-            font-weight: 600;
-            font-style: normal;
-
-        }
-
-        #barcoderesult {
-            font-family: "Khand", sans-serif;
-            font-size: 5vh;
+        #barcodeResult {
+            margin-top: 10px;
+            font-weight: bold;
         }
     </style>
 </head>
 
 <body>
 
-    <div id="buttons">
-        <video id="vid"></video>
-        <br><br>
-        <button id="butt" autoplay>Scan Code</button><br><br>
-        <button id="etext" autoplay>Scan Again</button>
+    <div>
+        <video id="vid" autoplay></video>
+        <button id="scanButton">Scan Barcode</button>
         <div id="barcodeResult"></div>
-
     </div>
-    <script>document.addEventListener('DOMContentLoaded', () => {
-            let butt = document.querySelector('#butt')
-            let video = document.querySelector('#vid')
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let scanButton = document.querySelector('#scanButton');
+            let video = document.querySelector('#vid');
             let barcodeResult = document.querySelector('#barcodeResult');
-            let getcodeagain = document.querySelector('#etext')
 
-
-            let mediaDevices = navigator.mediaDevices;
-
-            video.muted = true
-
-            butt.addEventListener('click', () => {
-
-                butt.innerHTML = "Loading . . ."
-                function hide() {
-                    butt.style.visibility = 'hidden'
-                    getcodeagain.style.visibility = 'visible'
-
-                }
-                setTimeout(hide, 500)
-
-
-                mediaDevices.getUserMedia({
-                    video: {
-                        facingMode: 'environment'
-                    }, audio: false,
-                }).then((stream) => {
-                    video.srcObject = stream;
-                    video.addEventListener("loadedmetadata", () => {
-                        video.play()
-                    })
-                }).catch(alert)
-            })
-
-            getcodeagain.addEventListener('click', () => {
-                window.location = 'https://beyondmebtw.com/projects/book/v2.html'
-            })
-
-
+            // Configure QuaggaJS
             Quagga.init({
                 inputStream: {
                     name: "Live",
@@ -125,51 +48,22 @@
                 console.log("Quagga initialization succeeded");
 
                 // Start QuaggaJS when the "Scan Barcode" button is clicked
-                butt.addEventListener('click', function () {
+                scanButton.addEventListener('click', function () {
                     Quagga.start();
                 });
 
                 // Detect barcode
                 Quagga.onDetected(function (result) {
+                    console.log("Barcode detected and decoded: ", result.codeResult.code);
+                    barcodeResult.textContent = "Barcode detected and decoded: " + result.codeResult.code;
 
-                    canvas.width = video.videoWidth;
-                    canvas.height = video.videoHeight;
-                    context.drawImage(video, 0, 0, canvas.width, canvas.height)
-                    let img = document.createElement('img')
-                    img.id = ('qrimage')
-                    img.src = canvas.toDataURL()
-                    document.body.appendChild(img)
+                    // Perform actions based on the detected barcode
+                    // Example: Redirect to a URL based on the barcode value
+                    if (result.codeResult.code === "SOME_BARCODE_VALUE") {
+                        window.location.href = "https://example.com/" + result.codeResult.code;
+                    }
 
-                    imageurl = document.querySelector('#qrimage')
-                    urls = imageurl.getAttribute('src')
-                    const imageURL = urls
-
-                    window.location = 'https://beyondmebtw.com'
-
-
-                    const imgg = new Image()
-                    imgg.crossOrigin = 'anonymus'
-                    imgg.onload = function () {
-                        Quagga.decodeSingle({
-                            src: imgg.src,
-                            numOfWorkers: 0,
-                            inputStream: {
-                                size: 800
-                            },
-                            decoder: {
-                                readers: ["ean_reader"] // Specify barcode reader type
-                            },
-                            locate: true
-                        }, function (result) {
-                            if (result && result.codeResult) {
-                                alert("Barcode detected and decoded: " + result.codeResult.code);
-                            } else {
-                                alert("No barcode detected");
-                            }
-                        });
-                    };
-                    imgg.src = imageURL;
-
+                    // Stop QuaggaJS after a barcode is detected
                     Quagga.stop();
                 });
             });
@@ -178,8 +72,7 @@
             window.addEventListener('beforeunload', function () {
                 Quagga.stop();
             });
-
-        })
+        });
     </script>
 </body>
 
