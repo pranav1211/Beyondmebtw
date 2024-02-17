@@ -131,7 +131,7 @@
 
                 // Detect barcode
                 Quagga.onDetected(function (result) {
-                    alert('detected')
+                    alert(result.coderesult.code)
                     Quagga.stop();
                 });
             });
