@@ -6,12 +6,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Khand:wght@600&display=swap" rel="stylesheet">
     <style>
+        body {
+            overflow-x: hidden;
+        }
+
         #butt,
         #photo,
         #etext {
-            width: 45.4vh;
-            height: 20vh;
-            font-size: 6vh;
+            width: 36vh;
+            height: 10vh;
+            font-size: 4vh;
+            margin-left: 95px;
 
         }
 
@@ -32,10 +37,7 @@
             margin-top: -400px;
         }
 
-        #etext {
-            margin-top: -400px;
-            margin-bottom: 30px;
-        }
+
 
         #butt,
         #photo,
@@ -49,6 +51,11 @@
             font-style: normal;
 
         }
+
+        #barcoderesult {
+            font-family: "Khand", sans-serif;
+            font-size: 5vh;
+        }
     </style>
 </head>
 
@@ -57,7 +64,8 @@
     <div id="buttons">
         <video id="vid"></video>
         <br><br>
-        <button id="butt" autoplay>Scan Code</button>
+        <button id="butt" autoplay>Scan Code</button><br><br>
+        <button id="etext" autoplay>Scan Again</button>
         <div id="barcodeResult"></div>
 
     </div>
@@ -65,7 +73,7 @@
             let butt = document.querySelector('#butt')
             let video = document.querySelector('#vid')
             let barcodeResult = document.querySelector('#barcodeResult');
-
+            let getcodeagain = document.querySelector('#etext')
 
 
             let mediaDevices = navigator.mediaDevices;
@@ -74,6 +82,14 @@
 
             butt.addEventListener('click', () => {
 
+                butt.innerHTML = "Loading . . ."
+                function hide() {
+                    butt.style.visibility = 'hidden'
+                    getcodeagain.style.visibility = 'visible'
+
+                }
+                setTimeout(hide,500)
+                
 
                 mediaDevices.getUserMedia({
                     video: {
@@ -85,6 +101,10 @@
                         video.play()
                     })
                 }).catch(alert)
+            })
+
+            getcodeagain.addEventListener('click',()=>{
+                window.location = 'https://beyondmebtw.com/projects/book/v2.html'
             })
             Quagga.init({
                 inputStream: {
