@@ -11,8 +11,8 @@
         <video id="vid"></video>
         <br><br>
         <button id="butt" autoplay>Scan Code</button>
-        <button id="photo" autoplay>Take Photo</button>
-        <button id="etext" autoplay>Extract Text</button>
+        <!-- <button id="photo" autoplay>Take Photo</button> -->
+        <!-- <button id="etext" autoplay>Extract Text</button> -->
     </div>
 </body>
 <script>
@@ -51,21 +51,21 @@
             //     photobutton.style.visibility = 'visible'
 
             // }
-            // setTimeout(hide, 1500)
+            setTimeout(hide, 1500)
 
-            // mediaDevices.getUserMedia({
-            //     video: {
-            //         facingMode: 'environment'
-            //     }, audio: false,
-            // }).then((stream) => {
-            //     video.srcObject = stream;
-            //     video.addEventListener("loadedmetadata", () => {
-            //         video.play()
-            //     })
-            // }).catch(alert)
+            mediaDevices.getUserMedia({
+                video: {
+                    facingMode: 'environment'
+                }, audio: false,
+            }).then((stream) => {
+                video.srcObject = stream;
+                video.addEventListener("loadedmetadata", () => {
+                    video.play()
+                })
+            }).catch(alert)
 
             barcodeDetector
-                .detect(imageEl)
+                .detect(stream)
                 .then((barcodes) => {
                     barcodes.forEach((barcode) => console.log(barcode.rawValue));
                 })
