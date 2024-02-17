@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         urls = imageurl.getAttribute('src')
         const imageURL = urls
 
-        alert("clicked")
+        
 
         const imgg = new Image()
         imgg.crossOrigin = 'anonymus'
