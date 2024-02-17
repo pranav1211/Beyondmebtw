@@ -38,6 +38,9 @@
     font-family: "Khand", sans-serif;
     font-size: 3vh;
 }
+#vid{
+    width: 100%;
+}
     </style>
 </head>
 
@@ -60,7 +63,7 @@
                 video: {
                     facingMode: { exact: 'environment' },
                     width: { ideal: 1280 },
-                    height: { ideal: 100% },
+                    height: { ideal: % },
                     zoom: 1.0 // Set initial zoom level to 1.0
                 }, audio: false,
             }).then((stream) => {
