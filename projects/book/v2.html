@@ -1,7 +1,10 @@
 <html>
 
 <head>
-    <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Khand:wght@600&display=swap" rel="stylesheet">
     <style>
         #qrimage {
             width: 90%;
@@ -59,6 +62,8 @@
             mediaDevices.getUserMedia({
                 video: {
                     facingMode: { exact: 'environment' },
+                    width: { ideal: videoWidth },
+                    height: { ideal: videoHeight },
                     zoom: 2.0 // Set initial zoom level to 1.0
                 }, audio: false,
             }).then((stream) => {
