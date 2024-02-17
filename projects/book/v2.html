@@ -46,8 +46,8 @@
 
     <div>
         <video id="vid" autoplay></video>
-        <!-- <button id="scanButton">Scan Barcode</button> -->
-        <div id="barcodeResult">abs</div>
+         <button id="scanButton">Scan Again</button> 
+        <div id="barcodeResult"></div>
     </div>
 
     <script>
@@ -110,6 +110,10 @@
                     Quagga.stop();
                 });
             });
+
+            scanButton.addEventListener('click',()=>{
+                startcan()
+            })
 
             // Stop QuaggaJS and release camera when leaving the page
             window.addEventListener('beforeunload', function () {
