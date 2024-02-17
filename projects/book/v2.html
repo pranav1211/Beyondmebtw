@@ -33,6 +33,11 @@
     font-style: normal;
     
 }
+
+#barcoderesult{
+    font-family: "Khand", sans-serif;
+    font-size: 3vh;
+}
     </style>
 </head>
 
@@ -40,8 +45,8 @@
 
     <div>
         <video id="vid" autoplay></video>
-        <button id="scanButton">Scan Barcode</button>
-        <div id="barcodeResult"></div>
+        <!-- <button id="scanButton">Scan Barcode</button> -->
+        <div id="barcodeResult">abs</div>
     </div>
 
     <script>
@@ -55,7 +60,7 @@
                 video: {
                     facingMode: { exact: 'environment' },
                     width: { ideal: 1280 },
-                    height: { ideal: 720 },
+                    height: { ideal: 1080 },
                     zoom: 1.0 // Set initial zoom level to 1.0
                 }, audio: false,
             }).then((stream) => {
