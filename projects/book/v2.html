@@ -1,86 +1,77 @@
 <html>
 
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
+    <style>
+        #vid {
+            display: none;
+        }
 
+        #scanButton {
+            width: 200px;
+            height: 50px;
+            margin-top: 10px;
+        }
+
+        #barcodeResult {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
 
-    <div id="buttons">
-        <div id="compat"></div>
-        <video id="vid"></video>
-        <br><br>
-        <button id="butt" autoplay>Scan Code</button>
-        <!-- <button id="photo" autoplay>Take Photo</button> -->
-        <!-- <button id="etext" autoplay>Extract Text</button> -->
+    <div>
+        <video id="vid" autoplay></video>
+        <button id="scanButton">Scan Barcode</button>
+        <div id="barcodeResult"></div>
     </div>
-</body>
-<script>
-    let butt = document.querySelector('#butt')
-    let video = document.querySelector('#vid')
-    let canvas = document.createElement('canvas')
-    let context = canvas.getContext('2d')
-    let photobutton = document.querySelector('#photo')
-    let getcode = document.querySelector('#etext')
-    let compat = document.querySelector('#compat')
 
-    let check = document.querySelector('#check')
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let scanButton = document.querySelector('#scanButton');
+            let video = document.querySelector('#vid');
+            let barcodeResult = document.querySelector('#barcodeResult');
 
-    let mediaDevices = navigator.mediaDevices;
-    
-    vid.muted = true
+            // Configure QuaggaJS
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: video
+                },
+                decoder: {
+                    readers: ["ean_reader", "ean_8_reader", "upc_reader", "upc_e_reader"] // List of barcode formats to scan
+                }
+            }, function (err) {
+                if (err) {
+                    console.error("Quagga initialization failed: ", err);
+                    return;
+                }
+                console.log("Quagga initialization succeeded");
 
-    document.addEventListener('DOMContentLoaded', () => {
-        if (!("BarcodeDetector" in globalThis)) {
-            compat.innerHTML = "Barcode Detector is not supported by this browser.";
-        } else {
-            compat.innerHTML = "Barcode Detector supported!";
-
-            // create new detector
-            let barcodeDetector = new BarcodeDetector({
-                formats: ["code_128", "code_39", "code_93", "codabar", "ean_13", "ean_8", "itf", "upc_a", "upc_e"],
-            });
-        }
-
-
-        butt.addEventListener('click', () => {
-
-            // butt.innerHTML = "Loading . . ."
-            // function hide() {
-            //     butt.style.visibility = 'hidden'
-            //     photobutton.style.visibility = 'visible'
-
-            // }
-            // setTimeout(hide, 1500)
-
-            mediaDevices.getUserMedia({
-                video: {
-                    facingMode: 'environment'
-                }, audio: false,
-            }).then((stream) => {
-                video.srcObject = stream;
-                video.addEventListener("loadedmetadata", () => {
-                    video.play()
-                })
-            }).catch(alert)
-
-            barcodeDetector
-                .detect(stream)
-                .then((barcodes) => {
-                    barcodes.forEach((barcode) => console.log(barcode.rawValue));
-                })
-                .catch((err) => {
-                    console.log(err);
+                // Start QuaggaJS when the "Scan Barcode" button is clicked
+                scanButton.addEventListener('click', function () {
+                    Quagga.start();
                 });
 
+                // Detect barcode
+                Quagga.onDetected(function (result) {
+                    console.log("Barcode detected and decoded: ", result.codeResult.code);
+                    barcodeResult.textContent = "Barcode detected and decoded: " + result.codeResult.code;
 
+                    // Stop QuaggaJS after a barcode is detected
+                    Quagga.stop();
+                });
+            });
 
-
-        })
-
-
-
-    })
-</script>
+            // Stop QuaggaJS and release camera when leaving the page
+            window.addEventListener('beforeunload', function () {
+                Quagga.stop();
+            });
+        });
+    </script>
+</body>
 
 </html>
