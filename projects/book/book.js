@@ -18,12 +18,18 @@ document.addEventListener('DOMContentLoaded', () => {
         function hide() {
             butt.style.visibility = 'hidden'
             photobutton.style.visibility = 'visible'
-            
+
         }
         setTimeout(hide, 1500)
 
         mediaDevices.getUserMedia({
-            video: { facingMode: 'environment' }, audio: false,
+            video: {
+                facingMode: 'environment', zoom: {
+                    min: 1.0,
+                    max: 2.0,
+                    ideal: 1.0
+                }
+            }, audio: false,
         }).then((stream) => {
             video.srcObject = stream;
             video.addEventListener("loadedmetadata", () => {
@@ -33,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     photobutton.addEventListener('click', () => {
-        
+
         photobutton.style.visibility = 'hidden'
         getcode.style.visibility = 'visible'
 
