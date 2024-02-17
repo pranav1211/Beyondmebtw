@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         mediaDevices.getUserMedia({
             video: {
-                facingMode: 'environment',
+                facingMode:{exact: 'environment'},
                 width: { ideal: 1280 },
                 height: { ideal: 720 },
                 zoom: 1.0 // Set initial zoom level to 1.0
