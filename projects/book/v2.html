@@ -1,0 +1,27 @@
+<html>
+
+<head>
+
+</head>
+
+<body>
+    <button id="check">Check</button>
+</body>
+<script>
+    var check = document.querySelector('#check')
+    check.addEventListener('click', () => {        
+        if (!("BarcodeDetector" in globalThis)) {
+            alert("Barcode Detector is not supported by this browser.");
+        } else {
+            alert("Barcode Detector supported!");
+
+            // create new detector
+            const barcodeDetector = new BarcodeDetector({
+                formats: ["code_128", "code_39", "code_93","codabar","ean_13","ean_8","itf","upc_a","upc_e"],
+            });
+        }
+
+    })
+</script>
+
+</html>
