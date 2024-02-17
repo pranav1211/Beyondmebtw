@@ -24,11 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         mediaDevices.getUserMedia({
             video: {
-                facingMode: 'environment', zoom: {
-                    min: 1.0,
-                    max: 2.0,
-                    ideal: 1.0
-                }
+                facingMode: 'environment'
             }, audio: false,
         }).then((stream) => {
             video.srcObject = stream;
