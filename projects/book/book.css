@@ -1,39 +1,22 @@
-#qrimage{
-    width: 90%;
-    margin-left: 45px;
-    
+body {
+    margin: 0;
 }
 
-#butt,
-#photo,
-#etext {
+#scanButton {
     width: 45.4vh;
-    height: 20vh;
+    height: 10vh;
     font-size: 6vh;
-
-}
-
-#photo,
-#etext {
-    visibility: hidden;
+    margin-left: 10px;
 }
 
 #buttons {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    
 
 }
-#photo{
-    margin-top: -400px;
-}
-#etext{
-    margin-top: -400px;
-    margin-bottom: 30px;
-}
 
-#butt,#photo,#etext {
+#scanButton {
     border: 0px white;
     background-color: dodgerblue;
     border-radius: 40px;
@@ -41,5 +24,10 @@
     font-family: "Khand", sans-serif;
     font-weight: 600;
     font-style: normal;
-    
+
+}
+
+#barcoderesult {
+    font-family: "Khand", sans-serif;
+    font-size: 3vh;
 }
