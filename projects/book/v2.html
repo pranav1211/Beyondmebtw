@@ -3,44 +3,41 @@
 <head>
     <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
     <style>
-        #qrimage{
-    width: 90%;
-    margin-left: 45px;
-    
-}
+        #qrimage {
+            width: 90%;
+            margin-left: 45px;
 
-#scanButton {
-    width: 45.4vh;
-    height: 20vh;
-    font-size: 6vh;
+        }
 
-}
+        #scanButton {
+            width: 45.4vh;
+            height: 20vh;
+            font-size: 6vh;
 
-#buttons {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;   
+        }
 
-}
+        #buttons {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
 
-#scanButton {
-    border: 0px white;
-    background-color: dodgerblue;
-    border-radius: 40px;
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    font-family: "Khand", sans-serif;
-    font-weight: 600;
-    font-style: normal;
-    
-}
+        }
 
-#barcoderesult{
-    font-family: "Khand", sans-serif;
-    font-size: 3vh;
-}
-#vid{
-    width: 100%;
-}
+        #scanButton {
+            border: 0px white;
+            background-color: dodgerblue;
+            border-radius: 40px;
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            font-family: "Khand", sans-serif;
+            font-weight: 600;
+            font-style: normal;
+
+        }
+
+        #barcoderesult {
+            font-family: "Khand", sans-serif;
+            font-size: 3vh;
+        }
     </style>
 </head>
 
@@ -62,9 +59,7 @@
             mediaDevices.getUserMedia({
                 video: {
                     facingMode: { exact: 'environment' },
-                    width: { ideal: 1280 },
-                    height: { ideal: % },
-                    zoom: 1.0 // Set initial zoom level to 1.0
+                    zoom: 2.0 // Set initial zoom level to 1.0
                 }, audio: false,
             }).then((stream) => {
                 video.srcObject = stream;
@@ -91,11 +86,11 @@
                 console.log("Quagga initialization succeeded");
 
                 // Start QuaggaJS when the "Scan Barcode" button is clicked
-                function startcan(){
+                function startcan() {
                     Quagga.start();
                 }
 
-                setInterval(startcan,3000)
+                setInterval(startcan, 3000)
 
                 // Detect barcode
                 Quagga.onDetected(function (result) {
