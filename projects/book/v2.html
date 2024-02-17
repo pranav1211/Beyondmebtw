@@ -1,20 +1,20 @@
 <html>
 
 <head>
-    <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>    
+    <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Khand:wght@600&display=swap" rel="stylesheet">
     <style>
-        body{
+        body {
             margin: 0;
         }
 
         #scanButton {
             width: 45.4vh;
-            height: 20vh;
+            height: 10vh;
             font-size: 6vh;
-
+            margin-left: 10px;
         }
 
         #buttons {
@@ -46,7 +46,7 @@
 
     <div>
         <video id="vid" autoplay></video>
-         <button id="scanButton">Scan Again</button> 
+        <button id="scanButton">Scan Again</button><br>
         <div id="barcodeResult"></div>
     </div>
 
@@ -72,48 +72,56 @@
             }).catch(alert)
 
             // Configure QuaggaJS
-            Quagga.init({
-                inputStream: {
-                    name: "Live",
-                    type: "LiveStream",
-                    target: video
-                },
-                decoder: {
-                    readers: ["ean_reader", "ean_8_reader", "upc_reader", "upc_e_reader"] // List of barcode formats to scan
-                }
-            }, function (err) {
-                if (err) {
-                    console.error("Quagga initialization failed: ", err);
-                    return;
-                }
-                console.log("Quagga initialization succeeded");
 
-                // Start QuaggaJS when the "Scan Barcode" button is clicked
-                function startcan() {
-                    Quagga.start();
-                }
+            function quaggajss() {
+                Quagga.init({
+                    inputStream: {
+                        name: "Live",
+                        type: "LiveStream",
+                        target: video
+                    },
+                    decoder: {
+                        readers: ["ean_reader", "ean_8_reader", "upc_reader", "upc_e_reader"] // List of barcode formats to scan
+                    }
+                }, function (err) {
+                    if (err) {
+                        console.error("Quagga initialization failed: ", err);
+                        return;
+                    }
+                    console.log("Quagga initialization succeeded");
 
-                setInterval(startcan, 3000)
+                    // Start QuaggaJS when the "Scan Barcode" button is clicked
+                    function startcan() {
+                        Quagga.start();
+                    }
 
-                // Detect barcode
-                Quagga.onDetected(function (result) {
-                    console.log("Barcode detected and decoded: ", result.codeResult.code);
-                    barcodeResult.textContent = "Barcode detected and decoded: " + result.codeResult.code;
+                    setInterval(startcan, 3000)
 
-                    // Perform actions based on the detected barcode
-                    // Example: Redirect to a URL based on the barcode value
-                    // if (result.codeResult.code === "SOME_BARCODE_VALUE") {
-                    //     window.location.href = "https://example.com/" + result.codeResult.code;
-                    // }
+                    // Detect barcode
+                    Quagga.onDetected(function (result) {
+                        console.log("Barcode detected and decoded: ", result.codeResult.code);
+                        barcodeResult.textContent = "Barcode detected and decoded: " + result.codeResult.code;
+                        var p = document.createElement('p')
+                        p.id = ('barcoderesult')
+                        barcodeResult.appendChild(p)
 
-                    // Stop QuaggaJS after a barcode is detected
-                    Quagga.stop();
+                        // Perform actions based on the detected barcode
+                        // Example: Redirect to a URL based on the barcode value
+                        // if (result.codeResult.code === "SOME_BARCODE_VALUE") {
+                        //     window.location.href = "https://example.com/" + result.codeResult.code;
+                        // }
+
+                        // Stop QuaggaJS after a barcode is detected
+                        Quagga.stop();
+                    });
+
                 });
-            });
-
-            scanButton.addEventListener('click',()=>{
-                startcan()
+            }
+            quaggajss()
+            scanButton.addEventListener('click', () => {
+                quaggajss()
             })
+
 
             // Stop QuaggaJS and release camera when leaving the page
             window.addEventListener('beforeunload', function () {
