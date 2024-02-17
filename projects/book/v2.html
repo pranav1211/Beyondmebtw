@@ -29,6 +29,21 @@
             let scanButton = document.querySelector('#scanButton');
             let video = document.querySelector('#vid');
             let barcodeResult = document.querySelector('#barcodeResult');
+            let mediaDevices = navigator.mediaDevices;
+
+            mediaDevices.getUserMedia({
+                video: {
+                    facingMode: { exact: 'environment' },
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                    zoom: 1.0 // Set initial zoom level to 1.0
+                }, audio: false,
+            }).then((stream) => {
+                video.srcObject = stream;
+                video.addEventListener("loadedmetadata", () => {
+                    video.play()
+                })
+            }).catch(alert)
 
             // Configure QuaggaJS
             Quagga.init({
