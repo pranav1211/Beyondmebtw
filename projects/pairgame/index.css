@@ -1,0 +1,120 @@
+body {
+    background-image: linear-gradient(45deg, #874da2 0%, #c43a30 100%);
+}
+
+#begintext {
+    color: white;
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+
+    font-size: 2vw;
+
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+@keyframes fadein {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+
+}
+
+@keyframes frombottom {
+    0% {
+        transform: translateY(100px);
+    }
+
+    60% {
+        transform: scaleY(0px)
+    }
+}
+
+@keyframes fromtop {
+    0% {
+        transform: translateY(-300px);
+    }
+}
+
+@keyframes fromleft {
+    0% {
+        transform: translateX(-300px);
+    }
+}
+
+@keyframes fromright {
+    0% {
+        transform: translateX(300px);
+    }
+}
+
+@keyframes fromunder {
+    0% {}
+
+}
+
+
+#pairgame {
+    font-size: 70px;
+    font-weight: bold;
+}
+
+#arrow-down {
+    width: 40px;
+    margin-bottom: -5px;
+}
+
+#download {
+    font-size: 30px;
+    border-radius: 20px;
+    padding: 20px;
+    border: 0;
+    cursor: pointer;
+    box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+
+}
+
+#name {
+    display: flex;
+    font-size: 40px;
+}
+#by{
+    font-size: 40px;
+}
+
+#download:active {
+    transform: translateY(2px);
+}
+
+#about {
+    color: white;
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    justify-content: center;
+    text-align: center;
+    font-size: 27px;
+    font-weight: bolder;
+}
+
+#imagesgame {
+    color: white;
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    justify-content: center;
+    text-align: center;
+    font-size: 27px;
+    font-weight: bolder;
+}

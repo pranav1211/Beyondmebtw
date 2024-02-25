@@ -96,5 +96,8 @@ Here is the changelog :
       ->Also made it so when you type https://Beyondmebtw.com/about or /blog it redirects to the sites.
 
     V 1.13 17/02/2024
-      -> started a new project Mylibrary.life read about it here :
+      -> started a new project Mylibrary.life read about it here : https://beyondmebtw.wixsite.com/beyond-btw/post/another-new-project
       -> music site can now be accessed using https://beyondmebtw.com/music
+    
+    V 1.14 26/02/2024
+      -> pairgame site is up : https:beyondmebtw.com/pairgame
