@@ -100,4 +100,4 @@ Here is the changelog :
       -> music site can now be accessed using https://beyondmebtw.com/music
     
     V 1.14 26/02/2024
-      -> pairgame site is up : https:beyondmebtw.com/pairgame
+      -> pairgame site is up : https://beyondmebtw.com/pairgame
