@@ -43,7 +43,7 @@ def startgame():
     level1text.pack(side=TOP,anchor='n')
     
     hide_stuff(start)
-    hide_stuff(howto)
+    
     hide_stuff(quitgame)
     
     show_stuff(howtotext)
