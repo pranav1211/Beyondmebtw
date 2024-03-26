@@ -43,7 +43,7 @@ def homepage():
 
     show_stuff(start)
     start.pack(padx=20,pady=20)
-    show_stuff(howto)    
+    
     show_stuff(quitgame)
     quitgame.pack(padx=20,pady=20)
     
