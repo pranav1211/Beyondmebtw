@@ -517,7 +517,7 @@ def prize():
 
 
 root  = Tk(className="Pair Game")
-root.geometry('400x900')
+root.geometry('500x900')
 root.configure(bg='violet')
 root.title("Match The Pair By Pranav Veeraghanta")
 
