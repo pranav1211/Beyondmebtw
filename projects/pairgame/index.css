@@ -118,3 +118,13 @@ body {
     font-size: 27px;
     font-weight: bolder;
 }
+
+#level1,#level2{
+    width: 20%;
+}
+
+#imagediv{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
