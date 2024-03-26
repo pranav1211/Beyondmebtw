@@ -499,9 +499,9 @@ def checker2(value,cellname,cellstr):
                                 
         root.after(1000,delay)   
         
-def prize():
-    prize_button.invoke()
+def prize():    
     prize_button.config(text="NOTHING",bg="blue",fg='white')
+    prize_button.invoke()
     
 
 ##########################################################################
