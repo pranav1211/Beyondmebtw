@@ -48,6 +48,7 @@ def homepage():
     quitgame.pack(padx=20,pady=20)
     
 def startgame():
+    root.geometry('600x900')
     show_stuff(level1text)
     level1text.pack(side=TOP,anchor='n')
     
