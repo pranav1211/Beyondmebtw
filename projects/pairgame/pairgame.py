@@ -571,7 +571,7 @@ start = Button(root,text="Start Game",
                padx=42,
                fg='white',
                command=lambda:startgame())
-start.pack(padx=24,pady=10)
+start.pack(padx=24,pady=20)
 
 # howto = Button(root,text="How to Play",
 #                font=("Times",25),
