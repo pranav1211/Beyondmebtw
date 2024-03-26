@@ -287,7 +287,7 @@ def checker(value,cellname,cellstr):
             # hide_stuff(score)
     
             hide_stuff(frame1)
-            hide_stuff(frame2)
+            hide_stuff(frame2) 
             hide_stuff(frame3)
             
             hide_stuff(level1text)
