@@ -574,13 +574,13 @@ start = Button(root,text="Start Game",
                command=lambda:startgame())
 start.pack(padx=24)
 
-# howto = Button(root,text="How to Play",
-#                font=("Times",25),
-#                bg="black",
-#                fg='white',
-#                padx=35,
-#                command=lambda:howtoplayinst(start,quitgame,howto))
-# howto.pack(padx=20)
+howto = Button(root,text="How to Play",
+               font=("Times",25),
+               bg="black",
+               fg='white',
+               padx=35,
+               command=lambda:howtoplayinst(start,quitgame,howto))
+howto.pack(padx=20)
 
 
 quitgame = Button(root,text="Exit",
