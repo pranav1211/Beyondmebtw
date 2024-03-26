@@ -341,7 +341,7 @@ def displaylevel2():
 
 def checker2(value,cellname,cellstr):
     cellname.config(text=value,bg='blue')
-    #solvedvar.set(10)
+    solvedvar.set(10)
     if countvar.get() == 1:
         storevar1.set(value)
         cellname.config(command=())
