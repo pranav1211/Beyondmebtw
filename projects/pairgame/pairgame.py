@@ -48,7 +48,7 @@ def startgame():
     
     show_stuff(howtotext)
     howtotext.pack(side=BOTTOM,anchor="s")    
-    howtotext.config(font=('Times',15,'bold'),bg='orange')
+    howtotext.config(font=('Times',18,'bold'),bg='orange')
     
     hide_stuff(topfiller)
     topfiller.config(bg='orange')
@@ -79,6 +79,12 @@ def playagain():
     storevar2.set(0)
     scorevar.set(0)
     nooftries.set(0)
+    
+    prize_button.config(text="PRIZE",font=("Times",25),
+               bg="violet",
+               fg='black',
+               padx=5,
+               command=lambda:prize())
     
     
     score.config(text="Score : 0")
@@ -139,7 +145,7 @@ def show_stuff(widget):
     widget.pack()
     
 def checker(value,cellname,cellstr):
-    solvedvar.set(6)
+    #solvedvar.set(6)
     cellname.config(text=value,bg='blue')
 
     if countvar.get() == 1:
@@ -322,7 +328,7 @@ def displaylevel2():
     
     show_stuff(howtotext)
     howtotext.pack(side=BOTTOM,anchor="s")
-    howtotext.config(font=('Times',15,'bold'),bg='orange')
+    howtotext.config(font=('Times',16,'bold'),bg='orange')
     
     show_stuff(score)
     
@@ -341,7 +347,7 @@ def displaylevel2():
 
 def checker2(value,cellname,cellstr):
     cellname.config(text=value,bg='blue')
-    solvedvar.set(10)
+    #solvedvar.set(10)
     if countvar.get() == 1:
         storevar1.set(value)
         cellname.config(command=())
@@ -496,11 +502,13 @@ def checker2(value,cellname,cellstr):
             hide_stuff(howtotext)
             hide_stuff(nooftriestext)
             hide_stuff(level2text)
+            prize_button.after(1000,prize_button.invoke)
                                 
         root.after(1000,delay)   
         
 def prize():    
     prize_button.config(text="NOTHING",bg="blue",fg='white')
+    
     
     
 
@@ -575,11 +583,12 @@ quitgame.pack(padx=20,pady=20)
 
 # how to play section
 
-howtotext = Label(root,text="\t        HOW TO PLAY\n\n  1. Click on any 2 squares to reveal a number.\n\n  2. If the numbers match you get 100 points.\n\n  3. If the numbers don't match the squares\n\n      will be hidden and you can try again.\n\n  4. You have infinite number of tries!!!\n\n",
+howtotext = Label(root,text="\t     HOW TO PLAY\n\nClick on any 2 squares to reveal a number,\n\nIf the numbers match you get 100 points,\n\nIf the numbers don't match the squares\n\nwill be hidden and you can try again,\n\nYou have infinite number of tries!!!\n\n",
                   font=('Times',20,'bold'),
                   bg='violet',
                   fg='black',
-                  justify=LEFT)
+                  justify=LEFT,
+                  )
 howtotext.pack(side=TOP)
 
 
@@ -790,6 +799,7 @@ prize_text.pack()
 prize_button = Button(root,text="PRIZE",font=("Times",25),
                bg="violet",
                fg='black',
+               padx=5,
                command=lambda:prize())
 prize_button.pack()
 

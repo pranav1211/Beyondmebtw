@@ -5,6 +5,8 @@ var pairgame = document.querySelector("#pairgame")
 var veerag = document.querySelector("#veerag")
 var pranav = document.querySelector("#pranav")
 var about = document.querySelector("#about")
+var imagesgame = document.querySelector("#imagesgame")
+
 
 
 download.addEventListener('click', () => {
@@ -19,5 +21,6 @@ document.addEventListener("DOMContentLoaded",()=>{
     pranav.style.animation = 'fromleft 3s ease'
     veerag.style.animation = 'fromright 3s ease'
     about.style.animation = 'fadein 5s ease'
+    imagesgame.style.animation = 'fadein 5s ease'
     
 })
