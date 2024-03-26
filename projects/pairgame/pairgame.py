@@ -27,14 +27,14 @@ def filler():
 def quitthegame():
     root.destroy()
 
-def howtoplayinst(startt,quit,howtoo):
-    hide_stuff(startt)
-    hide_stuff(quit)
-    hide_stuff(howtoo)
-    
-        
-    show_stuff(howtotext)
-    show_stuff(backhome)
+# def howtoplayinst(startt,quit,howtoo):
+#     hide_stuff(startt)
+#     hide_stuff(quit)
+#     hide_stuff(howtoo)
+#     
+#         
+#     show_stuff(howtotext)
+#     show_stuff(backhome)
 
 
 def homepage():
@@ -573,13 +573,13 @@ start = Button(root,text="Start Game",
                command=lambda:startgame())
 start.pack(padx=24,pady=20)
 
-howto = Button(root,text="How to Play",
-               font=("Times",25),
-               bg="black",
-               fg='white',
-               padx=35,
-               command=lambda:howtoplayinst(start,quitgame,howto))
-howto.pack(padx=20)
+# howto = Button(root,text="How to Play",
+#                font=("Times",25),
+#                bg="black",
+#                fg='white',
+#                padx=35,
+#                command=lambda:howtoplayinst(start,quitgame,howto))
+# howto.pack(padx=20)
 
 
 quitgame = Button(root,text="Exit",
