@@ -57,6 +57,7 @@ def startgame():
     
     show_stuff(howtotext)
     howtotext.pack(side=BOTTOM,anchor="s")
+    howtotext.pack(pady=20)
     howtotext.config(font=('Times',15,'bold'),bg='orange')
     
     hide_stuff(topfiller)
