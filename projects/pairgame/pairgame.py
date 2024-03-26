@@ -27,14 +27,14 @@ def filler():
 def quitthegame():
     root.destroy()
 
-# def howtoplayinst(startt,quit,howtoo):
-#     hide_stuff(startt)
-#     hide_stuff(quit)
-#     hide_stuff(howtoo)
-#     
-#         
-#     show_stuff(howtotext)
-#     show_stuff(backhome)
+def howtoplayinst(startt,quit,howtoo):
+    hide_stuff(startt)
+    hide_stuff(quit)
+    hide_stuff(howtoo)
+    
+        
+    show_stuff(howtotext)
+    show_stuff(backhome)
 
 
 def homepage():
