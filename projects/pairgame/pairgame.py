@@ -56,8 +56,7 @@ def startgame():
     hide_stuff(quitgame)
     
     show_stuff(howtotext)
-    howtotext.pack(side=BOTTOM,anchor="s")
-    howtotext.pack(pady=20)
+    howtotext.pack(side=BOTTOM,anchor="s")    
     howtotext.config(font=('Times',15,'bold'),bg='orange')
     
     hide_stuff(topfiller)
@@ -331,7 +330,7 @@ def displaylevel2():
     show_stuff(level2text)
     
     show_stuff(howtotext)
-    howtotext.pack(side=LEFT,anchor="nw")
+    howtotext.pack(side=BOTTOM,anchor="s")
     howtotext.config(font=('Times',15,'bold'),bg='orange')
     
     show_stuff(score)
