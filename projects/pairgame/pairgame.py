@@ -786,7 +786,7 @@ nooftriestext.pack()
 prize_text = Label(root,text="\n\n\n\n\n\n  Congratulations!!!\n\n      You've Won:\n",font=('Times',25,'bold'),bg='orange',fg='white',padx=95,justify=LEFT)
 prize_text.pack()
 
-prize_button = Button(root,text="CLICK ME",font=("Times",25),
+prize_button = Button(root,text="PRIZE",font=("Times",25),
                bg="violet",
                fg='black',
                command=lambda:prize())
