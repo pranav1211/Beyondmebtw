@@ -501,7 +501,7 @@ def checker2(value,cellname,cellstr):
         
 def prize():    
     prize_button.config(text="NOTHING",bg="blue",fg='white')
-    
+    prize_button.after(2000,prize_button.invoke)
     
 
 ##########################################################################
