@@ -66,7 +66,6 @@ if (screen.width < 854){
     level2.style.width = '100%';
 
     level1.style.marginLeft = '0px';
-    level2.style.marginLeft = '0px';    
-    body.style.overflowX = 'hidden';
+    level2.style.marginLeft = '0px';        
 }
 

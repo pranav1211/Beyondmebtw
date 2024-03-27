@@ -185,3 +185,9 @@ body {
     justify-content: center;
     margin: 0;
 }
+
+@media screen and (max-width:675px) {
+    .breakers{
+        overflow-x: hidden;
+    }
+}
