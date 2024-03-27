@@ -128,3 +128,7 @@ body {
     flex-direction: row;
     justify-content: center;
 }
+
+#level2{
+    margin-left: 25px;
+}
