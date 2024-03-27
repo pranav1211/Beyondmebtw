@@ -16,6 +16,8 @@ var blackones = document.querySelectorAll(".blackones")
 
 var imagediv = document.querySelector("#imagediv")
 
+var body = document.querySelector("#body")
+
 
 download.addEventListener('click', () => {
     link.click()
@@ -60,9 +62,13 @@ if (screen.width < 896){
 
 if (screen.width < 855){
     imagediv.style.flexDirection = 'column'
-    level2.style.marginLeft = '0px';    
-    level1.style.width = '100%';
+    
+    level1.style.width = '100%';    
     level2.style.width = '100%';
-    begintext.style.fontSize = '100%';
+
+    level1.style.marginLeft = '0px'
+    level2.style.marginLeft = '0px'
+    
+    body.style.overflowx = 'hidden'
 }
 
