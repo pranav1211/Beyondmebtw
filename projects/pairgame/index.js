@@ -61,7 +61,8 @@ if (screen.width < 896){
 if (screen.width < 855){
     imagediv.style.flexDirection = 'column'
     level2.style.marginLeft = '0px';    
-    level1.style.width = '98%';
-    level2.style.width = '98%';
+    level1.style.width = '100%';
+    level2.style.width = '100%';
+    begintext.style.fontSize = '100%';
 }
 
