@@ -108,6 +108,29 @@ body {
     font-weight: bolder;
 }
 
+#journey{
+    color: black;
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    justify-content: center;
+    text-align: center;
+    font-size: 35px;
+    font-weight: bolder;
+}
+
+#journeylink{
+    color: blue;
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    justify-content: center;
+    text-align: center;
+    font-size: 35px;
+    font-weight: bolder;
+    display: flex;
+}
+
 #imagesgame {
     color: black;
     font-family: "Quicksand", sans-serif;
@@ -131,4 +154,10 @@ body {
 
 #level2{
     margin-left: 25px;
+}
+
+#footer{
+    display: flex;
+    justify-content: center;
+    margin: 0;
 }

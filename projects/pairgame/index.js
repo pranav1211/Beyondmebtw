@@ -6,6 +6,8 @@ var veerag = document.querySelector("#veerag")
 var pranav = document.querySelector("#pranav")
 var about = document.querySelector("#about")
 var imagesgame = document.querySelector("#imagesgame")
+var level1 = document.querySelector("#level1")
+var level2 = document.querySelector("#level2")
 
 
 
@@ -22,5 +24,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     veerag.style.animation = 'fromright 3s ease'
     about.style.animation = 'fadein 5s ease'
     imagesgame.style.animation = 'fadein 5s ease'
+    level1.style.animation = 'fadein 5s ease'
+    level2.style.animation = 'fadein 5s ease'
     
 })
