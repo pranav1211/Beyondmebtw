@@ -59,16 +59,14 @@ document.addEventListener("DOMContentLoaded",()=>{
 if (screen.width < 896){
     about.style.fontSize = '21px';     
 }
-
-if (screen.width < 855){
+if (screen.width < 854){
     imagediv.style.flexDirection = 'column'
     
     level1.style.width = '100%';    
     level2.style.width = '100%';
 
-    level1.style.marginLeft = '0px'
-    level2.style.marginLeft = '0px'
-    
-    body.style.overflowx = 'hidden'
+    level1.style.marginLeft = '0px';
+    level2.style.marginLeft = '0px';    
+    body.style.overflowX = 'hidden';
 }
 
