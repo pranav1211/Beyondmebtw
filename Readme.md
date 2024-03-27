@@ -101,3 +101,8 @@ Here is the changelog :
     
     V 1.14 26/02/2024
       -> pairgame site is up : https://beyondmebtw.com/pairgame
+
+    V 1.15 28/03/2024
+      -> pairgame site is fully up, includes images.
+      -> pairgame site is now responsive and can be viewed on any device.
+      -> https://beyondmebtw.com/pairgame
