@@ -2,8 +2,6 @@
 
 Hey, this is the repository containing the HTML,CSS and Javascript code for my website Beyondmebtw.com.
 
-Feel free to use the designs but kindly do not use my name or personal information.
-
 Here is the site : www.Beyondmebtw.com
 
 Here is an image of the Home page :
