@@ -3,6 +3,8 @@ Hello There.
 This is an application designed to create a library of you books just by scanning the barcodes on them.\
 Check it out on https://Mylibrary.life
 
+This currently works only on devies with a rear camera.
+
 Changelog:
 
    ## V 0.1 :
@@ -18,3 +20,7 @@ Changelog:
             happens automatically for the first time
         -> added a scan again button that will scan a new barcode once the button is clicked
 
+   ## V 0.3:
+      16/4/2024 :
+         -> created a landing page
+         -> API call to get book name enabled

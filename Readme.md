@@ -104,3 +104,9 @@ Here is the changelog :
       -> pairgame site is fully up, includes images.
       -> pairgame site is now responsive and can be viewed on any device.
       -> https://beyondmebtw.com/pairgame
+
+    V 1.16 27/04/2024
+      -> site revamp started - https://Beyondmebtw.com/beyondme-newversion
+        read about it - https://medium.com/@beyondmebtw/a-new-version-6bb53338a4e5s
+      -> library site new version checkout - https://github.com/pranav1211/My-Library
+      -> made the wix site less laggy
