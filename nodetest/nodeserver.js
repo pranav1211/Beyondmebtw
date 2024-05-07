@@ -5,7 +5,7 @@ const app = express();
 const port = 6123;
 
 app.get('/', (req, res) => {
-    fetch('http://64.227.143.61:6123', {
+    fetch('https://64.227.143.61:6123', {
         method: 'POST',
         body: JSON.stringify({ /* Your POST data */ }),
         headers: { 'Content-Type': 'application/json' },
