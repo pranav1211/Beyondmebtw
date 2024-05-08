@@ -1,23 +1,31 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Button Click</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Example</title>
 </head>
 <body>
-    <button id="myButton">Click Me</button>
+  <script>
+    // Connect to the WebSocket server over HTTPS (wss)
+    const socket = new WebSocket('wss://beyondmebtw.com/websocket');
 
-    <script>
-        document.getElementById('myButton').addEventListener('click', function() {
-            fetch('https://64.227.143.61:6123', {
-                method: 'GET'
-            })
-            .then(response => {
-                console.log('GET request sent');
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
-    </script>
+    socket.addEventListener('open', () => {
+      console.log('Connected to WebSocket server');
+    });
+
+    socket.addEventListener('message', (event) => {
+      console.log('Message from server:', event.data);
+    });
+
+    function sendMessageToServer(message) {
+      socket.send(message);
+    }
+
+    // Example: Triggering an event to send a message to the server
+    document.getElementById('triggerButton').addEventListener('click', () => {
+      sendMessageToServer('Hello from client!');
+    });
+  </script>
 </body>
 </html>
