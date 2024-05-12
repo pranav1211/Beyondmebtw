@@ -4,16 +4,69 @@ You can check this site out at : www.beyondmebtw.com/projects/music
 
 Changelog :-
 
-    27/10/23 : 
-        V 0.1
-            -> made a change to the word changer to add a class and data-file-name value to the audio
-            -> made the audio of the previous set to zero when another track starts playing
-            -> added 3 songs.
-    18/12/23 :
-        V 0.2
-            -> removed 16 songs
-            -> the music timer works now properly.
-            -> the pause button and the play button reset to original position after the song ends
+    14/02/2024
+        V 1.1
+            ->moved the music control center to the footer
+            ->new icons for the replay,play,next and previous buttons
+            ->shuffle button is back but not functional
+    
+    27/01/2024
+        V 1.0
+            ->added a new song to the list
+            ->removed the play button icon
+            ->updated the word changer file
+            ->added audio visualizers
+            ->moved the text to the left of the div
+            ->fixed the alignment and overflow of the divs
+            ->changed the color of the song list box to make it pop more
+    
+    26/01/2024
+        V 0.9
+            -> fixed issue of timer resetting if the music was paused and then played again.
+    
+    10/1/2024
+        V 0.8
+            -> the previous song button is now functional, there is a 3 second leeway to go back to the
+             previous song in the list.If the button is pressed after 3 second leeway it restarts the song.
+            ->removed the shuffle button
+            ->The previous song button also works with regards to the loopiing features.
+            ->also to give credit where credit is due, Chat-GPT 3.5 helped me with a playback issue as it
+            was conflicting with the second variable it suggested to use a delay and it works just
+            as a i wanted it to.
+    
+    3/1/2024
+        V 0.7
+            -> removed the ability to pause from the playlist part, that just plays now, made it so
+            anywhere you click on the container it plays
+            -> made the text in the music controller a responsive font so that the whole does not keep
+             shifting if a song has more words
+            ->also the play and pause thing works just as it should, its simple.
+    
+    26/12/23
+        V 0.6
+            -> fixed an issue of a song not playing after another song played
+    
+    24/12/23
+        V0.5
+            -> fixed an issue where if you pause the song using the music control pause and the played a
+            song from the list using its button and then a second song using its button the second was.
+            not playing. it was a control varible issue 
+            -> fixed an issue where the loop button for individual song was not working, had to add an
+            else to another if condition to prevent promise from happenning
+            ->added another loop button for individual song, it can be accessed by clicking through the
+            loop buttons.
+            -> fixed an issue where the next button was not recognizing the loop button, had to add the
+            code in the next button listener for that
+    
+    20/12/23:
+        V0.4
+            ->added next song, previous song, shuffle button (in development)
+            ->made it so when a song ends it plays the next one as seen on screen
+            ->created a json file to access 'number of songs' data for control purposess
+            ->fixed an issue where you could not pause the song from the play button
+            ->fixed an issue of the music control center play button playing another
+              song after being paused
+    
     19/12/23:
         V 0.3
             -> music timer still works properly
@@ -29,61 +82,18 @@ Changelog :-
             ->changed the html wherin i removed the pause span tag.
             -> added a background gradient to the whole page
             -> added a 3d effect to the song list and the music controls
-    20/12/23:
-        V0.4
-            ->added next song, previous song, shuffle button (in development)
-            ->made it so when a song ends it plays the next one as seen on screen
-            ->created a json file to access 'number of songs' data for control purposess
-            ->fixed an issue where you could not pause the song from the play button
-            ->fixed an issue of the music control center play button playing another
-              song after being paused
-    24/12/23
-        V0.5
-            -> fixed an issue where if you pause the song using the music control pause and the played a
-            song from the list using its button and then a second song using its button the second was.
-            not playing. it was a control varible issue 
-            -> fixed an issue where the loop button for individual song was not working, had to add an
-            else to another if condition to prevent promise from happenning
-            ->added another loop button for individual song, it can be accessed by clicking through the
-            loop buttons.
-            -> fixed an issue where the next button was not recognizing the loop button, had to add the
-            code in the next button listener for that
-    26/12/23
-        V 0.6
-            -> fixed an issue of a song not playing after another song played
-    3/1/2024
-        V 0.7
-            -> removed the ability to pause from the playlist part, that just plays now, made it so
-            anywhere you click on the container it plays
-            -> made the text in the music controller a responsive font so that the whole does not keep
-             shifting if a song has more words
-            ->also the play and pause thing works just as it should, its simple.
-    10/1/2024
-        V 0.8
-            -> the previous song button is now functional, there is a 3 second leeway to go back to the
-             previous song in the list.If the button is pressed after 3 second leeway it restarts the song.
-            ->removed the shuffle button
-            ->The previous song button also works with regards to the loopiing features.
-            ->also to give credit where credit is due, Chat-GPT 3.5 helped me with a playback issue as it
-            was conflicting with the second variable it suggested to use a delay and it works just
-            as a i wanted it to.
-    26/01/2024
-        V 0.9
-            -> fixed issue of timer resetting if the music was paused and then played again.
-    27/01/2024
-        V 1.0
-            ->added a new song to the list
-            ->removed the play button icon
-            ->updated the word changer file
-            ->added audio visualizers
-            ->moved the text to the left of the div
-            ->fixed the alignment and overflow of the divs
-            ->changed the color of the song list box to make it pop more
-    14/02/2024
-        V 1.1
-            ->moved the music control center to the footer
-            ->new icons for the replay,play,next and previous buttons
-            ->shuffle button is back but not functional
+    
+    18/12/23 :
+        V 0.2
+            -> removed 16 songs
+            -> the music timer works now properly.
+            -> the pause button and the play button reset to original position after the song ends
+    
+    27/10/23 : 
+        V 0.1
+            -> made a change to the word changer to add a class and data-file-name value to the audio
+            -> made the audio of the previous set to zero when another track starts playing
+            -> added 3 songs.
 
 
 
@@ -102,60 +112,57 @@ The Wordchanger file :-\
 
 Dev notes / ideas: 
 
-5/12/23 
-->removed the interval for the minute part, made it a part of the second timer.\
-->an issue is there where the minute changes when the minute changes 1 second before it's supposed to.\
-->removed 16 songs from the main list because it became too much to handle with the amount of changes i am making.\
-->there are 4 songs with which i am testing right now and once i reach a stable version where i can easily change all the stuff without going through each one of them.\
-->i dont want it to be perfect i just need it to be efficient.\
-->have to change the word changer document to make it compatible with new format.
-
-18/12/23
-
-->made the fix of the minute part starting on 59 seconds, realised that it was a scope issue.\
-->added some empty buttons, will need a way to iterate in the future for next and shuffle.\
-->maybe JSON or a JS object can use the song-id part.
-
-20/12/23 
-
-->have to work on the loop button to make it loop for either the whole playlist or just and individual song. \
-->have to enter song data into json file. look into SQLlite.\
-->have to work on the shuffle button
-->have to work on the next and previous song previous song button, for previous song button set time to 1 second and also do the clear interval and change content in div for it.
-
-24/12/23
-
--> loop button works, no issues so far.\
-
-27/12/23
-
--> having major issues with the play and pause functions of the system when i play one thing and pause one thing, currently using\
-    control variables which is too complicated and clearly not working. for a fix working on an animation that shows what is playing \
-    and that will be clickable therefore bringing back the pause button in another form. it's simpler that way and also reduces the number \
-    of operations needed to be performed regarding global variables functions.
--> hopefully the new idea works, animation works just need to configure it to the player.
--> have to figure out the logic in relation to the music control play button.
-
-3/1/24
-
--> removed the pause and the whole control variable thing, life is easier without it\
--> working on an animation for the song that is playing so that the user knows what is playing
-
-10/1/24
-
--> gonna work on the shuffle button once i have the database up and running.\
--> have to trim down the javascript code its too long and lot of same things. essentially a slight optimization.\
--> working on the JSON database, had some success as to what needs to be done.\
--> i want to add the song cover to the thing. also if it could be a little smaller.\
--> almost done with the final code for the html and js but gonna start updating the word changer to the latest version.
-
-27/1/24
--> cleaned the js and css code to allow for better readablity\
--> added the audio visualizers, need to connect them with the other fucntions of next song, prev song and loop\
--> might have to make the control center sligtly bigger or make default size bigger, its coz CAGYL is changing it
-
 14/02/24
 -> planning to add a seek bar for the music instead of just keeping the timer coz it looks fugly
 ->gonna change background colors as it does not make sense rn
 -> have to figure out how to make the animation audio bars stick to the song div, because its scrolling with the playlist right now
 -> also planning a revamp for www.Beyondmebtw.com
+
+27/1/24
+-> cleaned the js and css code to allow for better readablity
+-> added the audio visualizers, need to connect them with the other fucntions of next song, prev song and loop
+-> might have to make the control center sligtly bigger or make default size bigger, its coz CAGYL is changing it
+
+10/1/24
+-> gonna work on the shuffle button once i have the database up and running.
+-> have to trim down the javascript code its too long and lot of same things. essentially a slight optimization.
+-> working on the JSON database, had some success as to what needs to be done.
+-> i want to add the song cover to the thing. also if it could be a little smaller.
+-> almost done with the final code for the html and js but gonna start updating the word changer to the latest version.
+
+3/1/24
+-> removed the pause and the whole control variable thing, life is easier without it
+-> working on an animation for the song that is playing so that the user knows what is playing
+
+27/12/23
+-> having major issues with the play and pause functions of the system when i play one thing and pause one thing, currently using
+    control variables which is too complicated and clearly not working. for a fix working on an animation that shows what is playing
+    and that will be clickable therefore bringing back the pause button in another form. it's simpler that way and also reduces the number
+    of operations needed to be performed regarding global variables functions.
+-> hopefully the new idea works, animation works just need to configure it to the player.
+-> have to figure out the logic in relation to the music control play button.
+
+24/12/23
+
+-> loop button works, no issues so far.
+
+20/12/23 
+
+->have to work on the loop button to make it loop for either the whole playlist or just and individual song. 
+->have to enter song data into json file. look into SQLlite.
+->have to work on the shuffle button
+->have to work on the next and previous song previous song button, for previous song button set time to 1 second and also do the clear interval and change content in div for it.
+
+18/12/23
+
+->made the fix of the minute part starting on 59 seconds, realised that it was a scope issue.
+->added some empty buttons, will need a way to iterate in the future for next and shuffle.
+->maybe JSON or a JS object can use the song-id part.
+
+5/12/23 
+->removed the interval for the minute part, made it a part of the second timer.
+->an issue is there where the minute changes when the minute changes 1 second before it's supposed to.
+->removed 16 songs from the main list because it became too much to handle with the amount of changes i am making.
+->there are 4 songs with which i am testing right now and once i reach a stable version where i can easily change all the stuff without going through each one of them.
+->i dont want it to be perfect i just need it to be efficient.
+->have to change the word changer document to make it compatible with new format.

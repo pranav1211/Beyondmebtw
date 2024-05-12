@@ -12,7 +12,7 @@ Here is an image of the Home page :
 Changelog :
 
     V 1.16 27/04/2024
-      -> site revamp started - www.beyondmebtw.com
+      -> site revamp started - https://Beyondmebtw.com/beyondme%20newversion
         read about it - https://medium.com/@beyondmebtw/a-new-version-6bb53338a4e5s
       -> library site new version checkout - https://github.com/pranav1211/My-Library
       -> made the wix site less laggy
