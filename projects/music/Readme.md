@@ -4,6 +4,12 @@ You can check this site out at : www.beyondmebtw.com/projects/music
 
 Changelog :-
 
+    23/06/2024
+        V 1.2
+            -> removed the minute and second counter, felt redundant
+            -> changed background colors and fonts
+            -> repositioned music controls
+
     14/02/2024
         V 1.1
             ->moved the music control center to the footer

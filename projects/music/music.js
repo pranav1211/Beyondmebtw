@@ -17,6 +17,7 @@ var nextsongnumber;
 var prevsongnumber;
 var currentsongnumber;
 
+var timer;
 
 
 var songid;
@@ -26,8 +27,6 @@ var songidname;
 var replaybut = document.querySelector('.replaybutt') //replay off
 var replayplaylist = document.querySelector('.replayplaylistt') // repeat on
 var replayonesong = document.querySelector('.replayonesong') // repeat on
-var mindiv = document.querySelector('#minuter'); // minute div
-var secdiv = document.querySelector('#seconder');   // second div
 
 shuffleon.addEventListener('click', () => {
     shuffleon.style.visibility = 'hidden'
@@ -40,9 +39,6 @@ shuffleoff.addEventListener('click', () => {
 
 var noofsongs;
 
-let minuter = 0; // goes in the minute div
-let secondr = 1; //goes in the second div
-
 // getting the number of songs for control purposses
 fetch('musicdata.json')
     .then(response => response.json())
@@ -54,11 +50,9 @@ fetch('musicdata.json')
 
 audioElements.forEach(audio => {
 
-    var intervalid1; // for the second
     let loopit = 'norepeat'; // to check if track should be looped
 
     audio.addEventListener('play', () => {
-
         //gets the id for the current audio playing
         songnumber = audio.getAttribute('id');
         nextsongnumber = songnumber.charAt(1); // taking the number of the song
@@ -75,27 +69,30 @@ audioElements.forEach(audio => {
         songidname = audio.getAttribute('song-id')
         barschecker = songidname + "bars"
 
+        mcplay.style.visibility = 'hidden';
+        mcpause.style.visibility = 'visible';
+
         // audio visualizer
 
-        var newbar = "." + songidname + "bars" //gets the main container
+        // var newbar = "." + songidname + "bars" //gets the main container
 
-        document.querySelector(newbar).style.visibility = 'visible'
-        for (i = 1; i <= 4; i++) {
-            var bar = "." + songidname + "bar" + i    // gets the individual spans
-            document.querySelector(bar).style.animation = 'bounce 4s ease infinite'
-            if (i == 2) {
-                document.querySelector(bar).style.animationDelay = '-2s'
-                document.querySelector(bar).style.marginLeft = '1.5vh'
-            }
-            else if (i == 3) {
-                document.querySelector(bar).style.animationDelay = '-1s'
-                document.querySelector(bar).style.marginLeft = '3vh'
-            }
-            else if (i == 4) {
-                document.querySelector(bar).style.animationDelay = '-4s'
-                document.querySelector(bar).style.marginLeft = '4.5vh'
-            }
-        }
+        // document.querySelector(newbar).style.visibility = 'visible'
+        // for (i = 1; i <= 4; i++) {
+        //     var bar = "." + songidname + "bar" + i    // gets the individual spans
+        //     document.querySelector(bar).style.animation = 'bounce 4s ease infinite'
+        //     if (i == 2) {
+        //         document.querySelector(bar).style.animationDelay = '-2s'
+        //         document.querySelector(bar).style.marginLeft = '1.5vh'
+        //     }
+        //     else if (i == 3) {
+        //         document.querySelector(bar).style.animationDelay = '-1s'
+        //         document.querySelector(bar).style.marginLeft = '3vh'
+        //     }
+        //     else if (i == 4) {
+        //         document.querySelector(bar).style.animationDelay = '-4s'
+        //         document.querySelector(bar).style.marginLeft = '4.5vh'
+        //     }
+        // }
 
         // music control PAUSE button
         mcpause.addEventListener('click', () => {
@@ -115,11 +112,9 @@ audioElements.forEach(audio => {
 
         if (currentlyPlaying !== null && currentlyPlaying !== audio) {
             currentlyPlaying.pause();
-            minuter = 0;
-            secondr = 1;
-            mindiv.innerHTML = "0:";
             audio.currentTime = 0;
         }
+
         // for displaying the attributes in the music control panel
         currentlyPlaying = audio;
         const fileName = audio.getAttribute('data-file-name');
@@ -127,70 +122,15 @@ audioElements.forEach(audio => {
         const artfileName = audio.getAttribute('data-file-artist');
         document.getElementById("trackartist").innerHTML = `${artfileName}`;
 
-
-        // counter
-        function forsecond() {
-
-            if (secondr == 60) {
-                secondr = 0;
-                minuter++;
-                mindiv.innerHTML = minuter + ":";
-            }
-            if (secondr < 10) {
-                secdiv.innerHTML = "0" + secondr;
-                secondr++;
-            }
-            else {
-                secdiv.innerHTML = secondr;
-                secondr++;
-            }
-
-
-        }
-        intervalid1 = setInterval(forsecond, 1000);
-
     });
 
-    //pause
-
-    audio.addEventListener('pause', () => {
-        clearInterval(intervalid1);
-    });
-
-    // next song button
-
-    nextsong.addEventListener('click', () => {
-        if (noofsongs < nextsongnumber) { // if the number of songs from json file is less than number that is used to get song id it means the end of playlist has been reached
-            if (loopit == 'whole') {
-                nextsongid = "#t1"
-                getsong = document.querySelector(nextsongid);
-                getsong.play();
-                nextsongnumber = 2;
-            }
-            else {
-                audio.currentTime = 3000;
-                mindiv.innerHTML = "0:";
-                secdiv.innerHTML = "00"
-                minuter = 0;
-                secondr = 1;
-            }
-        }
-
-        clearInterval(intervalid1);
-        getsong = document.querySelector(nextsongid);
-        getsong.play();
-
-        mcplay.style.visibility = 'hidden';
-        mcpause.style.visibility = 'visible';
-
-        minuter = 0;
-        secondr = 1;
-    });
-
-    //previous song button
+    // previous song button
 
     prevsong.addEventListener('click', () => {
-        if (secondr <= 4) { // this is to go back to the previous song, 3 second leeway
+
+        timer = audio.currentTime
+
+        if (timer <= 4) { // this is to go back to the previous song, 3 second leeway
             if (songid == "#t1") {
                 if (loopit == 'whole') {
                     fromback = noofsongs
@@ -214,17 +154,35 @@ audioElements.forEach(audio => {
                 getsong.play();
             }
         }
-        else if (secondr > 4) { // this is to go to the starting of the song after 3 second leeway 
+        else if (timer > 4) { // this is to go to the starting of the song after 3 second leeway 
             audio.currentTime = 0;
         }
 
         if (loopit == "onesong") {
             audio.currentTime = 0;
-        }
-        setTimeout(() => {
-            secondr = 0;
-        }, 100);
+        }        
     })
+
+
+    // next song button
+
+    nextsong.addEventListener('click', () => {
+        if (noofsongs < nextsongnumber) { // if the number of songs from json file is less than number that is used to get song id it means the end of playlist has been reached
+            if (loopit == 'whole') {
+                nextsongid = "#t1"
+                getsong = document.querySelector(nextsongid);
+                getsong.play();
+                nextsongnumber = 2;
+            }
+            else {
+                audio.currentTime = 3000;
+            }
+        }
+        getsong = document.querySelector(nextsongid);
+        getsong.play();
+        mcplay.style.visibility = 'hidden';
+        mcpause.style.visibility = 'visible';
+    });
 
     //replay checker
 
@@ -251,15 +209,8 @@ audioElements.forEach(audio => {
 
     audio.addEventListener('ended', () => {
 
-        minuter = 0;
-        secondr = 1;
-
         if (loopit == 'onesong') {
             currentlyPlaying.play();
-            minuter = 0;
-            mindiv.innerHTML = "0:";
-
-
         }
 
         else if (loopit == "whole") {
@@ -277,12 +228,12 @@ audioElements.forEach(audio => {
                 getsong.play();
                 nextsongnumber++;
             }
-            for (i = 1; i <= 4; i++) {
-                var bar = "." + songidname + "bar" + i
-                document.querySelector(bar).style.animation = '0s'
-                var newbar = "." + songidname + "bars"
-                document.querySelector(newbar).style.visibility = 'hidden';
-            }
+            // for (i = 1; i <= 4; i++) {
+            //     var bar = "." + songidname + "bar" + i
+            //     document.querySelector(bar).style.animation = '0s'
+            //     var newbar = "." + songidname + "bars"
+            //     document.querySelector(newbar).style.visibility = 'hidden';
+            // }
         }
         else if (loopit == 'norepeat') {
             if (nextsongnumber == (noofsongs + 1)) {
@@ -296,19 +247,15 @@ audioElements.forEach(audio => {
                 getsong.play();
             }
 
-            for (i = 1; i <= 4; i++) {
-                var bar = "." + songidname + "bar" + i
-                document.querySelector(bar).style.animation = '0s'
-                var newbar = "." + songidname + "bars"
-                document.querySelector(newbar).style.visibility = 'hidden';
-            }
+            // for (i = 1; i <= 4; i++) {
+            //     var bar = "." + songidname + "bar" + i
+            //     document.querySelector(bar).style.animation = '0s'
+            //     var newbar = "." + songidname + "bars"
+            //     document.querySelector(newbar).style.visibility = 'hidden';
+            // }
         }
     });
 });
-
-
-
-
 /////////////////////////////////////////////////////////////////
 var p1 = document.getElementById("t1")
 document.querySelector('.showerbeckyg').addEventListener("click", () => {
@@ -316,10 +263,6 @@ document.querySelector('.showerbeckyg').addEventListener("click", () => {
     p1.currentTime = 0;
     mcplay.style.visibility = 'hidden';
     mcpause.style.visibility = 'visible';
-    mindiv.innerHTML = "0:";
-    secdiv.innerHTML = "00"
-    minuter = 0;
-    secondr = 1;
 });
 //////////////////////////////////////////////////////
 var p2 = document.getElementById("t2")
@@ -328,10 +271,6 @@ document.querySelector('.confessions-part-2-usher').addEventListener('click', ()
     p2.currentTime = 0;
     mcplay.style.visibility = 'hidden';
     mcpause.style.visibility = 'visible';
-    mindiv.innerHTML = "0:";
-    secdiv.innerHTML = "00"
-    minuter = 0;
-    secondr = 1;
 });
 //////////////////////////////////////////////////////
 var p3 = document.getElementById("t3")
@@ -340,11 +279,6 @@ document.querySelector('.seasons-of-love-rent').addEventListener('click', () => 
     p3.currentTime = 0;
     mcplay.style.visibility = 'hidden';
     mcpause.style.visibility = 'visible';
-    mindiv.innerHTML = "0:";
-    secdiv.innerHTML = "00"
-    minuter = 0;
-    secondr = 1;
-
 });
 ////////////////////////////////////////////////////////
 var p4 = document.getElementById('t4')
@@ -353,11 +287,6 @@ document.querySelector('.set-fire-to-the-rain-adele-royal-albert').addEventListe
     p4.currentTime = 0;
     mcplay.style.visibility = 'hidden';
     mcpause.style.visibility = 'visible';
-    mindiv.innerHTML = "0:";
-    secdiv.innerHTML = "00"
-    minuter = 0;
-    secondr = 1;
-
 });
 ////////////////////////////////////////////
 var p5 = document.getElementById("t5")
@@ -366,10 +295,6 @@ document.querySelector(".Come-and-Get-Your-Love-Redbone").addEventListener("clic
     p5.currentTime = 0;
     mcplay.style.visibility = "hidden";
     mcpause.style.visibility = "visible";
-    mindiv.innerHTML = "0:";
-    secdiv.innerHTML = "00";
-    minuter = 0;
-    secondr = 1;
 });
 ////////////////////////////////////////////
 var p6 = document.getElementById("t6")
@@ -378,8 +303,4 @@ document.querySelector(".Million-Years-Ago-Adele").addEventListener("click", () 
     p6.currentTime = 0;
     mcplay.style.visibility = "hidden";
     mcpause.style.visibility = "visible";
-    mindiv.innerHTML = "0:";
-    secdiv.innerHTML = "00";
-    minuter = 0;
-    secondr = 1;
 });

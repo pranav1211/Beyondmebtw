@@ -1,5 +1,5 @@
-body {
-    background-image: linear-gradient(120deg, #a6c0fe 0%, #f68084 100%);
+body {    
+    background-image: linear-gradient(to top, #6a85b6 0%, #bac8e0 100%);
     margin: 0;
 }
 
@@ -15,7 +15,7 @@ body {
     margin-left: 28vw;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
     border-radius: 20px;
-    background-image: linear-gradient(-20deg, #ddd6f3 0%, #faaca8 100%, #faaca8 100%);
+    background-image: linear-gradient(to right, #74ebd5 0%, #9face6 100%);
 
 }
 
@@ -63,21 +63,11 @@ body {
     padding: 0;
 
 }
-
-#counter {
-    display: flex;
-    margin-top: -0.6%;
-    margin-left: 20%;
-    font-size: 3vh;
-
-
-}
-
 #centertext {
     display: flex;
     flex-direction: column;
     float: left;
-    font-family: "Playfair Display", serif;
+    font-family: 'Nova Mono', monospace;
     font-optical-sizing: auto;
     font-style: normal;
     font-weight: bolder;
@@ -99,80 +89,106 @@ body {
 
 .mcpause {
     width: 60px;
-    margin-left: -59.9px;
+    margin-left: -60px;
     visibility: hidden;
     position: sticky;
+    cursor: pointer;
 
 }
 
 .mcplay {
-
+    margin-right: -4px;
     width: 60px;
     position: sticky;
+    cursor: pointer;
 
 }
 
 .prevsong {
     width: 60px;
     position: sticky;
+    cursor: pointer;
 
 }
 
 .nextsong {
     width: 60px;
     position: sticky;
+    cursor: pointer;
 
 }
 
 .replayonesong {
-    width: 60px;
-    margin-left: -62px;
+    width: 60px;    
+    margin-left: -78px;
     visibility: hidden;
     position: sticky;
+    cursor: pointer;
 }
 
 .replayplaylistt {
     width: 60px;
-    margin-left: -59px;
+    margin-left: -70px;
     visibility: hidden;
+    cursor: pointer;
     
 }
 
 .replaybutt {
     width: 60px;
     position: sticky;
+    cursor: pointer;
 }
 
 .shuffle {
     width: 60px;
     position: sticky;
+    cursor: pointer;
 }
 
 .shuffleon {
     width: 60px;
-    margin-left: -59.8px;
+    margin-left: -69px;
     visibility: hidden;
     position: sticky;
+    cursor: pointer;
 }
 
 #musiccontrolicons {
-    display: flex;
-    margin-left: 40%;
-    margin-top: -60px
+    display: flex;    
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 18px;
+}
+
+#repeaters{
+    margin-right: 2.5px;
+}
+.prevnext{
+    margin-right: 2.5px;
+    margin-left: 2.5px;
+}
+
+#shufflers{
+    margin-left: 2.5px;
+}
+#playpause{
+    margin-right: 2.5px;
+    margin-left: 3px;
 }
 
 /* scrollbar */
-::-webkit-scrollbar-track {
+/* ::-webkit-scrollbar-track {
     box-shadow: 0.8 0 0 5px grey;
     border-radius: 10px;
-}
+} */
 
 /* Handle */
-::-webkit-scrollbar-thumb {
+/* ::-webkit-scrollbar-thumb {
     background: black;
     border-radius: 10px;
 
-}
+} */
 
 /* music bars */
 
