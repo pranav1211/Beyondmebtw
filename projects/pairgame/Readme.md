@@ -14,6 +14,10 @@ it's not a project that is going to die.
    </details>
 
 ## Changelog
+
+   ## V 1.1 - 23/06/2024
+      -> changed formatting and desgins of the landing page
+
    ## V 1.0
       -> pairgame version 2
          -> removed how to play section from start screen.
