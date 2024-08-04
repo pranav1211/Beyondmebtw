@@ -1,49 +1,55 @@
 body {
-    background-image: linear-gradient(to top, #a8edea 0%, #fed6e3 100%);
+    background-image: linear-gradient(-20deg, #e9defa 0%, #fbfcdb 100%);
     margin: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-#welcome {    
-    font-size: 80px;
-    font-family: "Farsan", cursive;
+#welcome {
+    font-size: 40px;
+
+    font-family: "PT Sans Narrow", sans-serif;
     font-weight: 400;
     font-style: normal;
+
     position: relative;
     text-align: center;
     padding: 50px;
 
 }
-#startit{    
+
+#startit {
     font-size: 40px;
     border-radius: 20px;
     padding: 15px;
 
-    background-color: lightblue;    
+    background-color: lightblue;
     border: 1px solid grey;
     box-shadow: 5px 5px 5px lightblue;
-    font-family: "Farsan", cursive;
+
+    font-family: "PT Sans Narrow", sans-serif;
     font-weight: 400;
-    font-style: normal;    
-    cursor: pointer;    
+    font-style: normal;
+
+    cursor: pointer;
 
     margin-bottom: 40px;
-    
+
 }
 
 #startit:active {
     transform: translateY(2px);
 }
 
-#note{
-    font-family: "Farsan", cursive;
+#note {
+
+    font-family: "PT Sans Narrow", sans-serif;
     font-weight: 400;
     font-style: normal;
+
     font-size: 25px;
     text-align: center;
 
-    
-}
 
+}
