@@ -1,4 +1,4 @@
-var apiKey = ''
+var apiKey = 'AIzaSyA04MfGxy'+'cBuwJ0Oq'+'IL2x_6JsKoJCDU7gk'
 let scanButton = document.querySelector('#scanButton');
 let video = document.querySelector('#vid');
 let barcodeResult = document.querySelector('#barcodeResult');
@@ -9,9 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
     mediaDevices.getUserMedia({
         video: {
             facingMode: { exact: 'environment' },
-            width: { ideal: 1280 },
-            height: { ideal: 980 },
-            zoom: 0.5 
+            width: { ideal: 1920 },  // Increase resolution
+            height: { ideal: 1080 }, // Increase resolution
+            zoom: 1                  // Set zoom to 1x
         }, audio: false,
     }).then((stream) => {
         video.srcObject = stream;
@@ -37,20 +37,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             console.log("Quagga initialization succeeded");
 
-
             function startcan() {
                 Quagga.start();
             }
 
             setInterval(startcan, 3000)
 
-
             Quagga.onDetected(function (result) {
                 console.log("Barcode detected and decoded: ", result.codeResult.code);
                 
                 var thecode = result.codeResult.code 
 
-                localStorage.setItem('isbn',thecode)
+                localStorage.setItem('isbn', thecode)
 
                 barcodeResult.innerHTML = localStorage.getItem('isbn')
                 
@@ -73,16 +71,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-
-
 var confirm = document.querySelector('#confirm')
 
 var isbn = localStorage.getItem('isbn')
 const apiUrl = `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&key=${apiKey}`;
 
-
 confirm.addEventListener('click', () => {
-
     var node = document.getElementById('barcodeResult')
     codess = node.textContent
     var apiUrl = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + codess + '&key=' + apiKey;
@@ -104,27 +98,23 @@ confirm.addEventListener('click', () => {
         });
 });
 
-
 var bookname = document.querySelector('#bookname')
 var authorname = document.querySelector('#authorname')
 var genrename = document.querySelector('#genrename')
 var yearofpublish = document.querySelector('#yearofpublish')
 
-
-
-function bookdata(data){
-    window.scrollTo(0,document.body.scrollHeight)
+function bookdata(data) {
+    window.scrollTo(0, document.body.scrollHeight)
     const book = data.items[0]
     bookname.innerHTML = book.volumeInfo.title    
     
     const authors = book.volumeInfo.authors
-    var authortext = authors ? authors.join(','): 'unknown'
+    var authortext = authors ? authors.join(',') : 'unknown'
     authorname.innerHTML = authortext
 
     const categories = book.volumeInfo.categories
-    var category = categories ? categories.join(','): 'unknown'
+    var category = categories ? categories.join(',') : 'unknown'
     genrename.innerHTML = category
 
     yearofpublish.innerHTML = book.volumeInfo.publishedDate
-    
 }
