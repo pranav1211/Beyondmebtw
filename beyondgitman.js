@@ -9,7 +9,7 @@ const GITHUB_SECRET = process.env.beyondmegitkey;
 
 const app = express();
 
-app.use(express.json());
+app.use(express.json()); 
 
 app.use((req, res, next) => {
     const signature = req.headers['x-hub-signature-256'];
