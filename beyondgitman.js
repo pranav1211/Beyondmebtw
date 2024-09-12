@@ -53,22 +53,16 @@
 // npm install express node-fetch
 
 const express = require('express');
-const fetch = require('node-fetch'); // or use global fetch in Node.js v18+
-
 const app = express();
-const PORT = 6005;
 
-app.get('/beyondg', (req, res) => {
-  const data = { message: 'Hello from Node.js!' };
-  res.json(data);
+// Define the /mylibg route that will handle the fetch request
+app.get('/mylibg', (req, res) => {
+  // Send a JSON response
+  res.status(200).json({ message: 'Hello, world!', timestamp: new Date() });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+// Start the server on port 3000
+app.listen(6005, () => {
+  console.log('Server is running on port 6005');
 });
 
-// Fetching data from an external API (optional):
-fetch('https://jsonplaceholder.typicode.com/todos/1')
-  .then(res => res.json())
-  .then(data => console.log(data))
-  .catch(err => console.error('Error:', err));
