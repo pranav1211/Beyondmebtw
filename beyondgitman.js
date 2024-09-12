@@ -3,13 +3,13 @@ const crypto = require('crypto');
 const { exec } = require('child_process');
 const path = require('path');
 require('dotenv').config();
- 
+
 const scriptPath = '/shellfiles/beyond.sh';
 const GITHUB_SECRET = process.env.beyondmegitkey;
 
 const app = express();
 
-app.use(express.json()); 
+app.use(express.json());
 
 app.use((req, res, next) => {
     const signature = req.headers['x-hub-signature-256'];
