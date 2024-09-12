@@ -62,7 +62,7 @@ app.get('/beyondg', (req, res) => {
 });
 
 // Start the server on port 3000
-app.listen(6005, () => {
-  console.log('Server is running on port 6005');
+app.listen(6007, () => {
+  console.log('Server is running on port 6007');
 });
 
