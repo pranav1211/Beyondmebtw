@@ -58,7 +58,7 @@ const fetch = require('node-fetch'); // or use global fetch in Node.js v18+
 const app = express();
 const PORT = 6005;
 
-app.get('/data', (req, res) => {
+app.get('/beyondg', (req, res) => {
   const data = { message: 'Hello from Node.js!' };
   res.json(data);
 });
