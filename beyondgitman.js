@@ -56,7 +56,7 @@ const express = require('express');
 const app = express();
 
 // Define the /mylibg route that will handle the fetch request
-app.get('/beyondg', (req, res) => {
+app.get('/bmbg', (req, res) => {
   // Send a JSON response
   res.status(200).json({ message: 'Hello, world!', timestamp: new Date() });
 });
