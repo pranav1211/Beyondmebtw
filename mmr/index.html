@@ -3,12 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Link</title>
+    <title>Fullscreen Image</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: url('fullscreen.png') no-repeat center center;
+            background-size: cover;
+        }
+    </style>
 </head>
 <body>
-    <!-- Link to open the image in a new page -->
-    <a href="fullscreen.png" target="_blank">
-        <img src="fullscreen.png" alt="Click to view fullscreen image" style="width:200px; height:auto;">
-    </a>
+    <script>
+        window.onload = () => {
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            } else if (document.documentElement.webkitRequestFullscreen) { // For Safari
+                document.documentElement.webkitRequestFullscreen();
+            } else if (document.documentElement.msRequestFullscreen) { // For IE11
+                document.documentElement.msRequestFullscreen();
+            }
+        };
+    </script>
 </body>
 </html>
