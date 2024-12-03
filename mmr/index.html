@@ -20,13 +20,15 @@
 <body>
     <script>
         window.onload = () => {
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen();
-            } else if (document.documentElement.webkitRequestFullscreen) { // For Safari
-                document.documentElement.webkitRequestFullscreen();
-            } else if (document.documentElement.msRequestFullscreen) { // For IE11
-                document.documentElement.msRequestFullscreen();
-            }
+            setTimeout(() => {
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.webkitRequestFullscreen) { // For Safari
+                    document.documentElement.webkitRequestFullscreen();
+                } else if (document.documentElement.msRequestFullscreen) { // For IE11
+                    document.documentElement.msRequestFullscreen();
+                }
+            }, 1500); // 3-second delay
         };
     </script>
 </body>
