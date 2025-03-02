@@ -11,6 +11,11 @@ Here is an image of the Home page :
 
 Changelog :
 
+    V 2.0 3/3/24
+      -> Actual site revamp started at (Version 2)[https://Beyondmebtw.com/V2]
+      -> existing version still present, will be archived once V2 is ready
+      -> Stopped updating Wix site due to too many bugs, blogs posted only on (Medium)[https://blog.beyondmebtw.com]
+
     V 1.16 27/04/2024
       -> site revamp started - https://Beyondmebtw.com/beyondme%20newversion
         read about it - https://medium.com/@beyondmebtw/a-new-version-6bb53338a4e5s
