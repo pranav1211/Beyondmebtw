@@ -39,9 +39,15 @@ if (profilePic) {
 const readMoreBtn = document.querySelector('.read-more');
 if (readMoreBtn) {
     readMoreBtn.addEventListener('click', () => {
-        window.location = "blog/the-day-of-the-jackal-review.html";
+        window.location = "https://medium.com/@beyondmebtw/beyond-me-btw-a-new-chapter-6268aa22a706";
     });
 }
+
+var latest = document.querySelector(".latest-post")
+
+latest.addEventListener('click',()=>{
+    window.location = 'https://medium.com/@beyondmebtw/beyond-me-btw-a-new-chapter-6268aa22a706'
+})
 
 // Project cards hover effects
 const projectCards = document.querySelectorAll('.project-card');
@@ -82,6 +88,3 @@ function showToast(message) {
     }, 3000);
 }
 
-document.querySelector(".latest-post").addEventListener('click',()=>{
-    window.location = 'https://medium.com/@beyondmebtw/beyond-me-btw-a-new-chapter-6268aa22a706'
-})
