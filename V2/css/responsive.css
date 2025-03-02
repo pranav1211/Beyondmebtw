@@ -12,6 +12,16 @@
     .latest-post-header {
         font-size: 22px;
     }
+
+    #links {
+        font-size: 16px;
+        /* Reduce font size a bit */
+    }
+
+    .link {
+        padding: 8px 30px;
+        /* Reduce padding */
+    }
 }
 
 /* Small Screens (max-width: 992px) */
@@ -56,6 +66,57 @@
 
     .projects-grid {
         grid-template-columns: 1fr;
+    }
+
+    #name {
+        font-size: 30px;
+        /* Reduce font size */
+        margin-left: 20px;
+        /* Less margin */
+    }
+
+    #links {
+        font-size: 14px;
+        /* Smaller font */
+        padding: 5px;
+        /* Smaller padding */
+        width: auto;
+        /* Allow width to be determined by content */
+    }
+
+    .link {
+        padding: 8px 20px;
+        /* Reduce padding further */
+    }
+
+    header {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    #name {
+        font-size: 28px;
+        margin: 20px 0 15px 0; /* Center it and add space below */
+        text-align: center;
+        position: relative; /* Ensure it's visible */
+        width: 100%;
+        z-index: 1; /* Give it a higher z-index */
+        display: block; /* Force display */
+        color: #4a3f35; /* Ensure color contrast */
+    }
+    
+    #links {
+        position: relative; /* Change from absolute positioning */
+        left: auto;
+        transform: none;
+        width: 90%; /* Give it a width relative to the screen */
+        margin: 0 auto 20px auto;
+        font-size: 12px;
+    }
+    
+    .link {
+        padding: 6px 12px; /* Much smaller padding */
+        white-space: nowrap; /* Prevent text wrapping */
     }
 }
 
@@ -110,5 +171,23 @@
     .latest-post-img {
         width: 100%;
         margin-bottom: 15px;
+    }
+
+    #links {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        text-align: center;
+        grid-gap: 5px;
+        border-radius: 15px;
+    }
+    
+    .link {
+        display: flex;
+        justify-content: center;
+        padding: 8px 5px;
+    }
+    
+    .link:hover {
+        border-radius: 10px;
     }
 }
