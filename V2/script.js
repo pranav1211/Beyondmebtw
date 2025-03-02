@@ -57,10 +57,27 @@ projectCards.forEach(card => {
     });
 });
 
-// Initialize Twitter widget if available
-window.onload = function() {
-    // Check if Twitter widgets script is loaded
-    if (typeof twttr !== 'undefined') {
-        twttr.widgets.load();
-    }
-};
+
+document.getElementById('copy-email').addEventListener('click', function (event) {
+    event.preventDefault(); // Prevent the default link behavior
+
+    const email = document.getElementById('email-address').innerText; // Get the email address
+    navigator.clipboard.writeText(email) // Copy to clipboard
+        .then(() => {
+            showToast('Email copied to clipboard!'); // Show toast notification
+        })
+        .catch((err) => {
+            console.error('Failed to copy email: ', err); // Handle errors
+        });
+});
+
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.innerText = message; // Set the toast message
+    toast.classList.add('show'); // Make the toast visible
+
+    // Hide the toast after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
