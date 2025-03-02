@@ -81,3 +81,7 @@ function showToast(message) {
         toast.classList.remove('show');
     }, 3000);
 }
+
+document.querySelector(".latest-post").addEventListener('click',()=>{
+    window.location = 'https://medium.com/@beyondmebtw/beyond-me-btw-a-new-chapter-6268aa22a706'
+})
