@@ -1,0 +1,32 @@
+/* profile-card.css */
+.profile-card {
+    grid-column: 1 / 2;
+    grid-row: 1 / 3;
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+    background: linear-gradient(145deg, #e0d0be, #f0e6dd);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    height: 100%;
+}
+
+.profile-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 15px;
+}
+
+.profile-pic {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.profile-pic:hover {
+    transform: scale(1.03);
+}

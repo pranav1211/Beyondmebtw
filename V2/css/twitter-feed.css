@@ -1,0 +1,16 @@
+/* twitter-feed.css */
+.twitter-feed {
+    grid-column: 3 / 4;
+    grid-row: 3 / 5;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.tweet-container {
+    flex: 1;
+    overflow: hidden;
+    border-radius: 15px;
+    margin-top: 5px;
+}
