@@ -20,14 +20,15 @@ header {
 }
 
 #name {
-    font-optical-sizing: auto;
-    font-size: 36px; /* Changed from vw to px for better control */
-    font-weight: 500;
+    font-family: "Permanent Marker", cursive;
+    font-weight: 400;
     font-style: normal;
-    margin-top: 30px;
+    font-optical-sizing: auto;
+    font-size: 42px;
+    margin-top: 25px;
     margin-left: 40px;
-    display: block; /* Ensure visibility */
-    color: #4a3f35; /* Added color to ensure visibility */
+    display: block;
+    color: #3b342d;
 }
 
 #links {
@@ -35,11 +36,11 @@ header {
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    margin-top: 30px;
+    margin-top: 27px;
     font-optical-sizing: auto;
-    font-size: 18px; /* Changed from vw to px */
+    font-size: 21px; /* Changed from vw to px */
     font-style: normal;
-    font-weight: 300;
+    font-weight: 400;
     background-color: #E8D9CD;
     padding: 7.5px;
     border-radius: 60px;
