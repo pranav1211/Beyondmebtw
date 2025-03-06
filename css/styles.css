@@ -16,7 +16,7 @@ header {
     position: relative;
     display: flex;
     align-items: flex-start;
-    margin-bottom: 30px;
+    margin-bottom: 30px;    
 }
 
 #name {
@@ -26,9 +26,10 @@ header {
     font-optical-sizing: auto;
     font-size: 42px;
     margin-top: 25px;
-    margin-left: 40px;
+    margin-left: 95px;
     display: block;
     color: #3b342d;
+
 }
 
 #links {
