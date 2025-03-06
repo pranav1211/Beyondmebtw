@@ -46,7 +46,7 @@ function updateData(name, date, excerpt, thumbnail) {
     }
     console.log("Data updated successfully");
   });
-}
+} 
 
 http.createServer((request, response) => {
   const url = new URL(request.url, `http://${request.headers.host}`);
