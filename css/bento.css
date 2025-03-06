@@ -1,7 +1,6 @@
-/* bento-grid.css */
 .bento-grid {
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr; /* Change to 4 equal columns */
     grid-auto-rows: minmax(200px, auto);
     grid-gap: 15px;
     padding: 0 40px;

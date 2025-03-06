@@ -2,9 +2,11 @@
 <html lang="en">
 
 <head>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Explore insightful articles by Pranav Veeraghanta, diving into personal experiences, and in-depth reviews of movies, TV shows, technology and Formula 1. Beyond Me Btw celebrates storytelling and innovation. This blog aims to Connect, Grow and Have Fun.">
+    <meta name="description"
+        content="Explore insightful articles by Pranav Veeraghanta, diving into personal experiences, and in-depth reviews of movies, TV shows, technology and Formula 1. Beyond Me Btw celebrates storytelling and innovation. This blog aims to Connect, Grow and Have Fun.">
 
     <title>Home | BeyondMeBtw</title>
 
@@ -23,6 +25,7 @@
     <link rel="stylesheet" href="css/get-in-touch.css">
     <link rel="stylesheet" href="css/projects-showcase.css">
     <link rel="stylesheet" href="css/twitter-feed.css">
+    <link rel="stylesheet" href="css/featured-posts.css">
     <link rel="stylesheet" href="css/responsive.css">
 </head>
 
@@ -49,7 +52,8 @@
         <div class="bento-item welcome-section">
             <h2 class="section-title">Hello There!</h2>
             <p class="welcome-text">
-                I'm <b>Pranav Veeraghanta</b>, a college student with a passion for movies, music and living life to the fullest.
+                I'm <b>Pranav Veeraghanta</b>, a college student with a passion for movies, music and living life to the
+                fullest.
                 Welcome to my blog, where you can get to know me and explore the world <b><i>Beyond Me</i></b>.
             </p>
             <a href="about.html" class="learn-more-btn">Learn more about me</a>
@@ -170,6 +174,39 @@
             </div>
         </div>
 
+        <!-- Featured Posts -->
+        <div class="bento-item featured-posts">
+            <h2 class="section-title">Featured Posts</h2>
+            <div class="featured-posts-container">
+                <div class="featured-post">
+                    <img src="assets/images/placeholder-post1.jpg" alt="Featured post" class="featured-post-img">
+                    <div class="featured-post-details">
+                        <h3 class="featured-post-title">The Art of Film Critique</h3>
+                        <p class="featured-post-date">February 15, 2025</p>
+                        <p class="featured-post-excerpt">Exploring the elements that make a meaningful film analysis...
+                        </p>
+                    </div>
+                </div>
+                <div class="featured-post">
+                    <img src="assets/images/placeholder-post2.jpg" alt="Featured post" class="featured-post-img">
+                    <div class="featured-post-details">
+                        <h3 class="featured-post-title">Formula 1: Season Review</h3>
+                        <p class="featured-post-date">January 28, 2025</p>
+                        <p class="featured-post-excerpt">Looking back at the highlights and key moments...</p>
+                    </div>
+                </div>
+                <div class="featured-post">
+                    <img src="assets/images/placeholder-post3.jpg" alt="Featured post" class="featured-post-img">
+                    <div class="featured-post-details">
+                        <h3 class="featured-post-title">Tech Review: Latest Gadgets</h3>
+                        <p class="featured-post-date">January 10, 2025</p>
+                        <p class="featured-post-excerpt">Hands-on experience with the newest technology releases...</p>
+                    </div>
+                </div>
+            </div>
+            <a href="blog.html" class="view-all-btn">View All Posts</a>
+        </div>
+
         <!-- Projects Grid -->
         <div class="bento-item projects-showcase">
             <h2 class="section-title">Featured Projects</h2>
@@ -200,15 +237,33 @@
 
         <!-- Twitter Feed -->
         <div class="bento-item twitter-feed">
-            <h2 class="section-title">Twitter Feed</h2>
+            <h2 class="section-title">Latest Tweets</h2>
             <div class="tweet-container">
-                <a class="twitter-timeline" data-height="400" data-theme="light"
-                    href="https://twitter.com/beyondmebtw">Tweets by beyondmebtw</a>
+                <a class="twitter-timeline" href="https://twitter.com/pranavisda1" data-tweet-limit="3"
+                   data-chrome="noheader nofooter noborders transparent" data-width="300" data-height="300">
+                    Tweets by @pranavisda1
+                </a>
             </div>
         </div>
-    </div>
-    <script src="script.js"></script>
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        
+        <!-- Twitter Widget Script -->
+        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        
+        <!-- Custom CSS for Horizontal Layout -->
+        <style>
+            .tweet-container {
+                overflow-x: auto; /* Enable horizontal scrolling */
+                white-space: nowrap; /* Keep tweets in a single line */
+            }
+            .twitter-timeline {
+                display: inline-block; /* Display tweets inline */
+                width: auto !important; /* Override default width */
+                height: 300px !important; /* Set height */
+            }
+        </style>
+
+        <script src="script.js"></script>
+        
 </body>
 
 </html>

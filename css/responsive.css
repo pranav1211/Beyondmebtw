@@ -2,8 +2,8 @@
 
 /* Medium Screens (max-width: 1200px) */
 @media (max-width: 1200px) {
-    .bento-grid {
-        grid-template-columns: 1fr 2fr 1fr;
+     .bento-grid {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
         padding: 0 20px;
     }
 
@@ -33,7 +33,6 @@
     .profile-card {
         grid-column: 1 / 2;
         grid-row: 1 / 3;
-        /* Span 2 rows */
     }
 
     .welcome-section {
@@ -49,23 +48,21 @@
     .get-in-touch {
         grid-column: 1 / 2;
         grid-row: 3 / 5;
-        /* Keep as is for responsive view */
     }
 
     .projects-showcase {
+        grid-column: 2 / 3;
+        grid-row: 3 / 5;
+    }
+
+    .featured-posts {
         grid-column: 1 / 3;
         grid-row: 5 / 7;
-        /* Adjusted row span */
     }
 
     .twitter-feed {
         grid-column: 1 / 3;
-        grid-row: 7 / 9;
-        /* Adjusted row span */
-    }
-
-    .projects-grid {
-        grid-template-columns: 1fr;
+        grid-row: 7 / 8;
     }
 
     #name {
@@ -111,12 +108,12 @@
         transform: none;
         width: 90%; /* Give it a width relative to the screen */
         margin: 0 auto 20px auto;
-        font-size: 12px;
+        font-size: 18px;        
     }
     
     .link {
         padding: 6px 12px; /* Much smaller padding */
-        white-space: nowrap; /* Prevent text wrapping */
+        white-space: nowrap; /* Prevent text wrapping */        
     }
 }
 
@@ -124,7 +121,6 @@
 @media (max-width: 768px) {
     .bento-grid {
         grid-template-columns: 1fr;
-        padding: 0 15px;
     }
 
     .profile-card,
@@ -132,13 +128,13 @@
     .welcome-section,
     .latest-post,
     .projects-showcase,
+    .featured-posts,
     .twitter-feed {
         grid-column: 1 / 2;
     }
 
     .profile-card {
         grid-row: 1 / 3;
-        /* Span 2 rows */
     }
 
     .welcome-section {
@@ -151,17 +147,18 @@
 
     .get-in-touch {
         grid-row: 5 / 7;
-        /* Span 2 rows */
     }
 
     .projects-showcase {
         grid-row: 7 / 8;
-        /* Adjusted row span */
+    }
+
+    .featured-posts {
+        grid-row: 8 / 9;
     }
 
     .twitter-feed {
-        grid-row: 8 / 9;
-        /* Adjusted row span */
+        grid-row: 9 / 10;
     }
 
     .latest-post-content {
@@ -184,7 +181,7 @@
     .link {
         display: flex;
         justify-content: center;
-        padding: 8px 5px;
+        padding: 8px 5px;        
     }
     
     .link:hover {
