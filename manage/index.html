@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="index.js"></script>
+</head>
+<body>
+    <form action="/update" method="GET">
+        <label for="name">Post Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="date">Publish Date:</label>
+        <input type="date" id="date" name="date" required>
+
+        <label for="excerpt">Excerpt:</label>
+        <input type="text" id="excerpt" name="excerpt" required>
+
+        <label for="thumbnail">Thumbnail Image name:</label>
+        <input type="text" id="thumbnail" name="thumbnail" required>
+
+        <label for="key">Password:</label>
+        <input type="password" id="key" name="key" required>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
