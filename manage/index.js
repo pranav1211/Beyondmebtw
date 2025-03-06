@@ -15,10 +15,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         const formattedDate = dateObject.toLocaleDateString('en-US', options);
 
-        // Include the port in the URL
-        const url = `http://64.227.143.61:7000/latestdata?name=${encodeURIComponent(name)}&date=${encodeURIComponent(formattedDate)}&excerpt=${encodeURIComponent(excerpt)}&thumbnail=${encodeURIComponent(thumbnail)}&key=${encodeURIComponent(key)}`;
+        // Use domain name instead of IP address
+        const url = `https://manage.beyondmebtw.com/latestdata?name=${encodeURIComponent(name)}&date=${encodeURIComponent(formattedDate)}&excerpt=${encodeURIComponent(excerpt)}&thumbnail=${encodeURIComponent(thumbnail)}&key=${encodeURIComponent(key)}`;
         
-        // Use fetch instead of window.location to prevent page navigation
         fetch(url)
             .then(response => {
                 if (!response.ok) {
