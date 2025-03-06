@@ -9,7 +9,7 @@
 }
 
 .latest-post-header {
-    font-size: 24px;
+    font-size: 28px;
     font-weight: 600;
     margin-bottom: 15px;
     color: #3b342d;
@@ -41,19 +41,21 @@
 }
 
 .latest-post-title {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 500;
     color: #3b342d;
+    font-weight: bold;
 }
 
 .latest-post-date {
     font-size: 14px;
     color: #3b342d;
     margin: 5px 0 10px;
+    font-style: italic;
 }
 
 .latest-post-excerpt {
-    font-size: 16px;
+    font-size: 18px;
     line-height: 1.5;
     color: #3b342d;
 }
