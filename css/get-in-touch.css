@@ -21,7 +21,7 @@
 .social-links {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 3px;
     flex: 1;
 }
 
@@ -69,7 +69,7 @@
 
 .social-name {
     font-weight: 700;
-    font-size: 18px;
+    font-size: 16px;
     color: #5a4a3a;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -77,7 +77,7 @@
 
 .social-username {
     font-weight: 400; /* Bolder font weight */
-    font-size: 20px; /* Larger font size */
+    font-size: 18px; /* Larger font size */
     color: #000000; /* Darker color for more focus */
     margin-top: 4px; /* Slight spacing from the name */
 }
