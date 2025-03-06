@@ -78,20 +78,7 @@ http.createServer((request, response) => {
     if (key === thepasskey) {
       updateData(name, date, excerpt, thumbnail);
       response.writeHead(200, { 'Content-Type': 'text/html' });
-      response.end("<html><body><h1>Data updated successfully.</h1><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>");
-      exec(`sh /shellfiles/beyondmanage.sh`, (error, stdout, stderr) => {
-        if (error) {
-          console.error(`Error executing script: ${error}`);
-          return res.status(500).json({ message: 'Error executing script', error: error.message });
-        }
-
-        console.log(`Script output: ${stdout}`);
-        if (stderr) {
-          console.error(`Script stderr: ${stderr}`);
-        }
-
-        res.status(200).json({ message: 'Script executed successfully', timestamp: new Date() });
-      });
+      response.end("<html><body><h1>Data updated successfully.</h1><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>");      
     } else {
       console.log('Authorization failed. Provided key:', key, 'Expected key:', thepasskey);
       response.statusCode = 403;
