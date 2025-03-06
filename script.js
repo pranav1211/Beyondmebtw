@@ -46,8 +46,9 @@ if (readMoreBtn) {
 var latest = document.querySelector(".latest-post")
 
 latest.addEventListener('click', () => {
-    window.location = 'https://medium.com/@beyondmebtw/beyond-me-btw-a-new-chapter-6268aa22a706'
-})
+    window.open('https://medium.com/@beyondmebtw/beyond-me-btw-a-new-chapter-6268aa22a706', '_blank');
+});
+
 
 // Project cards hover effects
 const projectCards = document.querySelectorAll('.project-card');
