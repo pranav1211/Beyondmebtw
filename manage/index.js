@@ -15,9 +15,28 @@ document.addEventListener("DOMContentLoaded", () => {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         const formattedDate = dateObject.toLocaleDateString('en-US', options);
 
-        // Construct the URL with all parameters
-        const url = `http://64.227.143.61/latestdata?name=${encodeURIComponent(name)}&date=${encodeURIComponent(formattedDate)}&excerpt=${encodeURIComponent(excerpt)}&thumbnail=${encodeURIComponent(thumbnail)}&key=${encodeURIComponent(key)}`;
-        window.location = url
-
+        // Include the port in the URL
+        const url = `http://64.227.143.61:7000/latestdata?name=${encodeURIComponent(name)}&date=${encodeURIComponent(formattedDate)}&excerpt=${encodeURIComponent(excerpt)}&thumbnail=${encodeURIComponent(thumbnail)}&key=${encodeURIComponent(key)}`;
+        
+        // Use fetch instead of window.location to prevent page navigation
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 403) {
+                        throw new Error("Authentication failed. Check your API key.");
+                    }
+                    throw new Error(`Server responded with status: ${response.status}`);
+                }
+                return response.text();
+            })
+            .then(data => {
+                alert("Data updated successfully!");
+                // Optionally clear the form
+                form.reset();
+            })
+            .catch(error => {
+                alert(`Error: ${error.message}`);
+                console.error(error);
+            });
     });
 });
