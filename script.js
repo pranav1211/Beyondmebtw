@@ -29,7 +29,7 @@ if (profilePic) {
     profilePic.addEventListener('mouseover', () => {
         profilePic.style.transform = 'scale(1.03)';
     });
-    
+
     profilePic.addEventListener('mouseout', () => {
         profilePic.style.transform = 'scale(1)';
     });
@@ -45,7 +45,7 @@ if (readMoreBtn) {
 
 var latest = document.querySelector(".latest-post")
 
-latest.addEventListener('click',()=>{
+latest.addEventListener('click', () => {
     window.location = 'https://medium.com/@beyondmebtw/beyond-me-btw-a-new-chapter-6268aa22a706'
 })
 
@@ -56,7 +56,7 @@ projectCards.forEach(card => {
         card.style.transform = 'translateY(-3px)';
         card.style.boxShadow = '0 5px 10px rgba(0, 0, 0, 0.1)';
     });
-    
+
     card.addEventListener('mouseout', () => {
         card.style.transform = 'translateY(0)';
         card.style.boxShadow = 'none';
@@ -88,3 +88,32 @@ function showToast(message) {
     }, 3000);
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+    fetch('/latest.json') // Make sure the path matches the server's location for the file
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`Failed to fetch JSON: ${response.statusText}`);
+            }
+            return response.json(); // Parse the JSON
+        })
+        .then((data) => {
+            // Access the variables
+            const title = data.title;
+            const date = data.date;
+            const excerpt = data.excerpt;
+            const thumbnail = data.thumbnail;
+
+            console.log("Title:", title);
+            console.log("Date:", date);
+            console.log("Excerpt:", excerpt);
+            console.log("Thumbnail:", thumbnail);
+
+            document.querySelector('.latest-post-title').innerText = title;
+            document.querySelector('.latest-post-date').innerText = date;
+            document.querySelector('.latest-post-excerpt').innerText = excerpt;
+            document.querySelector('.latest-post-img').src = "https://beyondmebtw.com/images/thumbnails/"+thumbnail;
+        })
+        .catch((error) => {
+            console.error("Error fetching JSON data:", error);
+        });
+});
