@@ -12,7 +12,7 @@
     font-size: 24px;
     font-weight: 600;
     margin-bottom: 15px;
-    color: #4a3f35;
+    color: #3b342d;
 }
 
 .latest-post-content {
@@ -43,19 +43,19 @@
 .latest-post-title {
     font-size: 20px;
     font-weight: 500;
-    color: #4a3f35;
+    color: #3b342d;
 }
 
 .latest-post-date {
     font-size: 14px;
-    color: #6a5a4a;
+    color: #3b342d;
     margin: 5px 0 10px;
 }
 
 .latest-post-excerpt {
     font-size: 16px;
     line-height: 1.5;
-    color: #6a5a4a;
+    color: #3b342d;
 }
 
 .read-more {
@@ -68,7 +68,7 @@
     cursor: pointer;
     font-family: "Kreon", serif;
     font-weight: 500;
-    font-size: 16px;
+    font-size: 18px;
     transition: background-color 0.3s, transform 0.3s;
 }
 
