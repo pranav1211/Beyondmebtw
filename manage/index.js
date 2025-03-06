@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.querySelector("form");
 
     form.addEventListener("submit", (event) => {
-        event.preventDefault(); // Prevent form submission
+        event.preventDefault();
 
         const name = document.getElementById("name").value;
         const dateInput = document.getElementById("date").value;
@@ -10,19 +10,16 @@ document.addEventListener("DOMContentLoaded", () => {
         const thumbnail = document.getElementById("thumbnail").value;
         const key = document.getElementById("key").value;
 
+        // Format the date
         const dateObject = new Date(dateInput);
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         const formattedDate = dateObject.toLocaleDateString('en-US', options);
 
-        const params = new URLSearchParams({
-            name,
-            date: formattedDate, // Use the formatted date
-            excerpt,
-            thumbnail,
-            key,
-        });
+        // Construct the URL with all parameters
+        const url = `http://64.227.143.61/latestdata?name=${encodeURIComponent(name)}&date=${encodeURIComponent(formattedDate)}&excerpt=${encodeURIComponent(excerpt)}&thumbnail=${encodeURIComponent(thumbnail)}&key=${encodeURIComponent(key)}`;
 
-        fetch(`/latestdata?${params.toString()}`)
+        // Send the GET request to the server
+        fetch(url)
             .then((response) => {
                 if (response.ok) {
                     return response.text();
