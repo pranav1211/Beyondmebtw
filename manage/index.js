@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const formattedDate = dateObject.toLocaleDateString('en-US', options);
 
         // Construct the URL with all parameters
-        const url = `http://64.227.143.61/latestdata?name=${encodeURIComponent(name)}&date=${encodeURIComponent(formattedDate)}&excerpt=${encodeURIComponent(excerpt)}&thumbnail=${encodeURIComponent(thumbnail)}&key=${encodeURIComponent(key)}`;
+        const url = `https://64.227.143.61/latestdata?name=${encodeURIComponent(name)}&date=${encodeURIComponent(formattedDate)}&excerpt=${encodeURIComponent(excerpt)}&thumbnail=${encodeURIComponent(thumbnail)}&key=${encodeURIComponent(key)}`;
 
         // Send the GET request to the server
         fetch(url)
