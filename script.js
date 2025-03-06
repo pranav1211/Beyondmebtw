@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelector('.latest-post-title').innerText = title;
             document.querySelector('.latest-post-date').innerText = date;
             document.querySelector('.latest-post-excerpt').innerText = excerpt;
-            document.querySelector('.latest-post-img').src = "https://beyondmebtw.com/images/thumbnails/"+thumbnail;
+            document.querySelector('.latest-post-img').src = "https://beyondmebtw.com/assets/images/thumbnails/"+thumbnail;
         })
         .catch((error) => {
             console.error("Error fetching JSON data:", error);
