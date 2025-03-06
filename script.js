@@ -5,7 +5,6 @@ const projlink = document.querySelector('#projects');
 const aboutlink = document.querySelector('#about');
 
 homelink.style.backgroundColor = '#F4F2EF';
-homelink.style.borderRadius = '60px';
 
 homelink.addEventListener('click', () => {
     window.location = "index.html";

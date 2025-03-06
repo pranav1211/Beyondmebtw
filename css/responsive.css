@@ -1,8 +1,38 @@
 /* Responsive Styles */
 
+/* Desktop to Tablet Transition (max-width: 1385px) */
+@media (max-width: 1385px) {
+    header {
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    #name {
+        font-size: 46px;
+        margin: 20px 0 15px 0; /* Center it and add space below */
+        text-align: center;
+        width: 100%;
+        display: block;
+    }
+    
+    #links {
+        position: relative; /* Change from absolute positioning */
+        left: auto;
+        transform: none;
+        width: auto; /* Let it size naturally */
+        margin: 0 auto 15px auto;
+        font-size: 18px;
+    }
+    
+    .link {
+        padding: 8px 30px;
+    }
+}
+
 /* Medium Screens (max-width: 1200px) */
 @media (max-width: 1200px) {
-     .bento-grid {
+    .bento-grid {
         grid-template-columns: 1fr 1fr 1fr 1fr;
         padding: 0 20px;
     }
@@ -15,12 +45,10 @@
 
     #links {
         font-size: 16px;
-        /* Reduce font size a bit */
     }
 
     .link {
-        padding: 8px 30px;
-        /* Reduce padding */
+        padding: 8px 25px;
     }
 }
 
@@ -67,58 +95,51 @@
 
     #name {
         font-size: 30px;
-        /* Reduce font size */
-        margin-left: 20px;
-        /* Less margin */
     }
 
     #links {
         font-size: 14px;
-        /* Smaller font */
         padding: 5px;
-        /* Smaller padding */
-        width: auto;
-        /* Allow width to be determined by content */
     }
 
     .link {
         padding: 8px 20px;
-        /* Reduce padding further */
-    }
-
-    header {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    #name {
-        font-size: 28px;
-        margin: 20px 0 15px 0; /* Center it and add space below */
-        text-align: center;
-        position: relative; /* Ensure it's visible */
-        width: 100%;
-        z-index: 1; /* Give it a higher z-index */
-        display: block; /* Force display */
-        color: #4a3f35; /* Ensure color contrast */
-    }
-    
-    #links {
-        position: relative; /* Change from absolute positioning */
-        left: auto;
-        transform: none;
-        width: 90%; /* Give it a width relative to the screen */
-        margin: 0 auto 20px auto;
-        font-size: 18px;        
-    }
-    
-    .link {
-        padding: 6px 12px; /* Much smaller padding */
-        white-space: nowrap; /* Prevent text wrapping */        
     }
 }
 
-/* Extra Small Screens (max-width: 768px) */
+/* Mobile Screens (max-width: 768px) */
 @media (max-width: 768px) {
+    header {
+        margin-bottom: 0px;
+    }
+    
+    #name {
+        font-size: 36px;
+        margin: 20px 0 15px 0;
+    }
+    
+    #links {
+        width: 90%;
+        margin: 0 auto 20px auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        text-align: center;
+        grid-gap: 5px;
+        border-radius: 15px;
+        font-size: 20px;
+    }
+    
+    .link {
+        display: flex;
+        justify-content: center;
+        padding: 8px 5px;
+        border-radius: 15px;
+    }
+    
+    .link:hover {
+        border-radius: 10px;
+    }
+    
     .bento-grid {
         grid-template-columns: 1fr;
     }
@@ -168,23 +189,5 @@
     .latest-post-img {
         width: 100%;
         margin-bottom: 15px;
-    }
-
-    #links {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        text-align: center;
-        grid-gap: 5px;
-        border-radius: 15px;
-    }
-    
-    .link {
-        display: flex;
-        justify-content: center;
-        padding: 8px 5px;        
-    }
-    
-    .link:hover {
-        border-radius: 10px;
     }
 }
