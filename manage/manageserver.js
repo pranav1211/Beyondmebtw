@@ -34,7 +34,7 @@ try {
 }
 
 function updateData(name, date, excerpt, thumbnail) {
-  jsdata.name = name;
+  jsdata.title = name;
   jsdata.date = date;
   jsdata.excerpt = excerpt;
   jsdata.thumbnail = thumbnail;
