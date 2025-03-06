@@ -29,17 +29,10 @@ function updateData(name, date, excerpt, thumbnail) {
 }
 
 http.createServer((request, response) => {
-    if (request.method === 'GET' && request.url === '/') {
-        fs.readFile('index.html', 'utf8', (err, data) => {
-            if (err) {
-                response.statusCode = 500;
-                response.end('Error loading HTML file');
-                return;
-            }
-            response.writeHead(200, { 'Content-Type': 'text/html' });
-            response.end(data);
-        });
-    } else if (request.method === 'GET' && request.url.startsWith('/latestdata')) {
+    const path = request.url;
+    const substr = '/latestdata';
+
+    if (path.includes(substr)) {
         const querystring = request.url.split('?')[1];
         const parameters = new URLSearchParams(querystring);
 

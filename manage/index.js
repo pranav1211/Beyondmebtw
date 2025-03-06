@@ -16,23 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const formattedDate = dateObject.toLocaleDateString('en-US', options);
 
         // Construct the URL with all parameters
-        const url = `https://64.227.143.61/latestdata?name=${encodeURIComponent(name)}&date=${encodeURIComponent(formattedDate)}&excerpt=${encodeURIComponent(excerpt)}&thumbnail=${encodeURIComponent(thumbnail)}&key=${encodeURIComponent(key)}`;
+        const url = `http://64.227.143.61/latestdata?name=${encodeURIComponent(name)}&date=${encodeURIComponent(formattedDate)}&excerpt=${encodeURIComponent(excerpt)}&thumbnail=${encodeURIComponent(thumbnail)}&key=${encodeURIComponent(key)}`;
+        window.location = url
 
-        // Send the GET request to the server
-        fetch(url)
-            .then((response) => {
-                if (response.ok) {
-                    return response.text();
-                } else {
-                    throw new Error("Failed to send data");
-                }
-            })
-            .then((message) => {
-                alert(message); // Show success or error message
-            })
-            .catch((error) => {
-                console.error(error);
-                alert("An error occurred while sending the data.");
-            });
     });
 });
