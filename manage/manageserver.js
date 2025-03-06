@@ -9,7 +9,7 @@ try {
     .split('\n')
     .find(line => line.startsWith('managekey='))
     ?.split('=')[1]?.trim();
-    
+
   if (!thepasskey) {
     console.error('Warning: managekey not found in environment or file');
     thepasskey = 'default-secure-key'; // Use a default key or exit process
@@ -51,12 +51,12 @@ function updateData(name, date, excerpt, thumbnail) {
 http.createServer((request, response) => {
   const url = new URL(request.url, `http://${request.headers.host}`);
   const path = url.pathname;
-  
+
   // Add CORS headers to allow cross-origin requests
   response.setHeader('Access-Control-Allow-Origin', '*');
   response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  
+
   // Handle preflight requests
   if (request.method === 'OPTIONS') {
     response.statusCode = 204;
@@ -74,11 +74,24 @@ http.createServer((request, response) => {
     const key = parameters.get('key');
 
     console.log('Received update request with key:', key);
-    
+
     if (key === thepasskey) {
       updateData(name, date, excerpt, thumbnail);
-      response.writeHead(200, {'Content-Type': 'text/html'});
+      response.writeHead(200, { 'Content-Type': 'text/html' });
       response.end("<html><body><h1>Data updated successfully.</h1><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>");
+      exec(`sh /shellfiles/beyondmanage.sh`, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Error executing script: ${error}`);
+          return res.status(500).json({ message: 'Error executing script', error: error.message });
+        }
+
+        console.log(`Script output: ${stdout}`);
+        if (stderr) {
+          console.error(`Script stderr: ${stderr}`);
+        }
+
+        res.status(200).json({ message: 'Script executed successfully', timestamp: new Date() });
+      });
     } else {
       console.log('Authorization failed. Provided key:', key, 'Expected key:', thepasskey);
       response.statusCode = 403;
@@ -86,7 +99,7 @@ http.createServer((request, response) => {
     }
   } else if (path === '/') {
     // Serve a simple status page
-    response.writeHead(200, {'Content-Type': 'text/html'});
+    response.writeHead(200, { 'Content-Type': 'text/html' });
     response.end("<html><body><h1>Server is running</h1><p>The data update service is active.</p></body></html>");
   } else {
     response.statusCode = 404;
