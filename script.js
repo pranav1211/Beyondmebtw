@@ -89,7 +89,7 @@ function showToast(message) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    fetch('/latest.json') // Make sure the path matches the server's location for the file
+    fetch('https://beoyndmebtw.com/manage/latest.json') // Make sure the path matches the server's location for the file
         .then((response) => {
             if (!response.ok) {
                 throw new Error(`Failed to fetch JSON: ${response.statusText}`);
