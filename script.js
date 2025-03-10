@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.querySelector("." + divid + "date").innerText = featuredPosts[i].date;
                 document.querySelector("." + divid + "excerpt").innerText = featuredPosts[i].excerpt;
                 document.querySelector("." + divid + "img").src = "https://beyondmebtw.com/assets/images/thumbnails/" + featuredPosts[i].thumbnail;
-                document.querySelector("." + divid).onclick = () => window.open(featuredPosts[i].link, '_blank');
+                document.querySelector("#" + divid).onclick = () => window.open(featuredPosts[i].link, '_blank');
             }
 
             console.log("\nFeatured Posts:");
