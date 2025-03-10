@@ -5,33 +5,23 @@ document.addEventListener("DOMContentLoaded", () => {
         event.preventDefault(); // Prevent form submission
 
         const formData = new FormData(form);
-        const queryStringParams = new URLSearchParams();
+        const queryStringParams = [];
+
+        // Add default key
+        queryStringParams.push(`key=${encodeURIComponent("default")}`);
 
         formData.forEach((value, key) => {
-            if (value.trim() !== "") {
-                queryStringParams.append(key, value.trim());
+            const trimmedValue = value.trim();
+            if (trimmedValue !== "") {
+                queryStringParams.push(`${encodeURIComponent(key)}=${encodeURIComponent(trimmedValue)}`);
             }
         });
 
-        const queryString = queryStringParams.toString();
-        const url = queryString ? `/api?${queryString}` : "/api";
+        const baseUrl = "https://manage.beyondmebtw.com/latestdata";
+        const queryString = queryStringParams.join("&");
+        const url = `${baseUrl}?${queryString}`;
 
         console.log("Constructed URL:", url);
 
-        fetch(url)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`Server responded with status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then((data) => {
-                console.log("Response Data:", data);
-                // You can display the fetched data on the page or process it further
-            })
-            .catch((error) => {
-                console.error("Error fetching data:", error.message);
-                alert(error.message);
-            });
     });
 });
