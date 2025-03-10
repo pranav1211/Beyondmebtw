@@ -119,10 +119,12 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelector('.latest-post-date').innerText = mainDate;
             document.querySelector('.latest-post-excerpt').innerText = mainExcerpt;
             document.querySelector('.latest-post-img').src = "https://beyondmebtw.com/assets/images/thumbnails/" + mainThumbnail;
-            document.querySelector('latest-post-content').setAttribute('data-url', mainLink);
+            document.querySelector('.latest-post-content').onclick = () => window.location.href = mainLink;
             
             console.log("Main Post:");
             console.log({ mainTitle, mainDate, mainExcerpt, mainThumbnail, mainLink });
+
+            
 
             console.log("\nFeatured Posts:");
             featuredDetails.forEach((post, index) => {
