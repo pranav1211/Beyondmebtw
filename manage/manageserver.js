@@ -42,53 +42,53 @@ function loadJSON(callback) {
 }
 
 function updateData(name, date, excerpt, thumbnail, link, formId) {
-  const instanceMap = {
-    latest: () => {
-      jsdata.mainPost.title = name;
-      jsdata.mainPost.date = date;
-      jsdata.mainPost.excerpt = excerpt;
-      jsdata.mainPost.thumbnail = thumbnail;
-      jsdata.mainPost.link = link;
-    },
-    featured1: () => {
-      jsdata.featured[0].title = name;
-      jsdata.featured[0].date = date;
-      jsdata.featured[0].excerpt = excerpt;
-      jsdata.featured[0].thumbnail = thumbnail;
-      jsdata.featured[0].link = link;
-    },
-    featured2: () => {
-      jsdata.featured[1].title = name;
-      jsdata.featured[1].date = date;
-      jsdata.featured[1].excerpt = excerpt;
-      jsdata.featured[1].thumbnail = thumbnail;
-      jsdata.featured[1].link = link;
-    },
-    featured3: () => {
-      jsdata.featured[2].title = name;
-      jsdata.featured[2].date = date;
-      jsdata.featured[2].excerpt = excerpt;
-      jsdata.featured[2].thumbnail = thumbnail;
-      jsdata.featured[2].link = link;
-    },
-    featured4: () => {
-      jsdata.featured[3].title = name;
-      jsdata.featured[3].date = date;
-      jsdata.featured[3].excerpt = excerpt;
-      jsdata.featured[3].thumbnail = thumbnail;
-      jsdata.featured[3].link = link;
-    },
-  };
-
-  if (instanceMap[formId]) {
-    instanceMap[formId]();
-  } else {
-    console.error("Invalid formId:", formId);
-    return;
+  if (formId === "latest") {
+    jsdata.mainPost.title = name;
+    jsdata.mainPost.date = date;
+    jsdata.mainPost.excerpt = excerpt;
+    jsdata.mainPost.thumbnail = thumbnail;
+    jsdata.mainPost.link = link;
   }
+  if (formId === "featured1") {
+    jsdata.featured[0].title = name;
+    jsdata.featured[0].date = date;
+    jsdata.featured[0].excerpt = excerpt;
+    jsdata.featured[0].thumbnail = thumbnail;
+    jsdata.featured[0].link = link;
+  }
+  if (formId === "featured2") {
+    jsdata.featured[1].title = name;
+    jsdata.featured[1].date = date;
+    jsdata.featured[1].excerpt = excerpt;
+    jsdata.featured[1].thumbnail = thumbnail;
+    jsdata.featured[1].link = link;
+  }
+  if (formId === "featured3") {
+    jsdata.featured[2].title = name;
+    jsdata.featured[2].date = date;
+    jsdata.featured[2].excerpt = excerpt;
+    jsdata.featured[2].thumbnail = thumbnail;
+    jsdata.featured[2].link = link;
+  }
+  if (formId === "featured4") {
+    jsdata.featured[3].title = name;
+    jsdata.featured[3].date = date;
+    jsdata.featured[3].excerpt = excerpt;
+    jsdata.featured[3].thumbnail = thumbnail;
+    jsdata.featured[3].link = link;
+  }
+}
 
-  fs.writeFileSync("latest.json", JSON.stringify(jsdata, null, 2), "utf8");
-  console.log("Data written to latest.json:", jsdata);
+
+if (instanceMap[formId]) {
+  instanceMap[formId]();
+} else {
+  console.error("Invalid formId:", formId);
+  return;
+}
+
+fs.writeFileSync("latest.json", JSON.stringify(jsdata, null, 2), "utf8");
+console.log("Data written to latest.json:", jsdata);
 }
 
 http
