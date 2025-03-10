@@ -75,7 +75,7 @@ function showToast(message) {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-    fetch('https://beyondmebtw.com/manage/latest.json')
+    fetch('manage/latest.json')
         .then((response) => {
             if (!response.ok) {
                 throw new Error(`Failed to fetch JSON: ${response.statusText}`);
@@ -111,13 +111,13 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log({ mainTitle, mainDate, mainExcerpt, mainThumbnail, mainLink });
 
             for (i = 0; i < 4; i++) {
-                var divid = "fp" + i
+                var divid = "fp" + i                
 
-                document.querySelector("." + divid + " title").innerText = featuredPosts[i].title;
-                document.querySelector("." + divid + " date").innerText = featuredPosts[i].date;
-                document.querySelector("." + divid + " excerpt").innerText = featuredPosts[i].excerpt;
-                document.querySelector("." + divid + " img").src = "https://beyondmebtw.com/assets/images/thumbnails/" + featuredPosts[i].thumbnail;
-                document.querySelector("." + divid + " link").onclick = () => window.open(featuredPosts[i].link, '_blank');
+                document.querySelector("." + divid + "title").innerText = featuredPosts[i].title;
+                document.querySelector("." + divid + "date").innerText = featuredPosts[i].date;
+                document.querySelector("." + divid + "excerpt").innerText = featuredPosts[i].excerpt;
+                document.querySelector("." + divid + "img").src = "https://beyondmebtw.com/assets/images/thumbnails/" + featuredPosts[i].thumbnail;
+                document.querySelector("." + divid).onclick = () => window.open(featuredPosts[i].link, '_blank');
             }
 
             console.log("\nFeatured Posts:");
