@@ -18,7 +18,7 @@ try {
   thepasskey = "default-secure-key";
 }
 
-let jsdata;
+let jsdata = { mainPost: {}, featured: Array(4).fill({}) }; // Retain values if loadJSON fails
 function loadJSON(callback) {
   https.get("https://beyondmebtw.com/manage/latest.json", (res) => {
     let data = "";
@@ -29,13 +29,11 @@ function loadJSON(callback) {
         console.log("JSON data loaded successfully from URL.");
       } catch (err) {
         console.error("Error parsing JSON from URL:", err);
-        jsdata = { mainPost: {}, featured: Array(4).fill({}) };
       }
       callback();
     });
   }).on("error", (err) => {
     console.error("Error fetching JSON from URL:", err);
-    jsdata = { mainPost: {}, featured: Array(4).fill({}) };
     callback();
   });
 }
@@ -43,19 +41,19 @@ function loadJSON(callback) {
 function updateData(name, date, excerpt, thumbnail, link, formId) {
   const updates = {
     latest: () => {
-      jsdata.mainPost = { title: name, date, excerpt, thumbnail, link };
+      jsdata.mainPost = { ...jsdata.mainPost, title: name, date, excerpt, thumbnail, link };
     },
     featured1: () => {
-      jsdata.featured[0] = { title: name, date, excerpt, thumbnail, link };
+      jsdata.featured[0] = { ...jsdata.featured[0], title: name, date, excerpt, thumbnail, link };
     },
     featured2: () => {
-      jsdata.featured[1] = { title: name, date, excerpt, thumbnail, link };
+      jsdata.featured[1] = { ...jsdata.featured[1], title: name, date, excerpt, thumbnail, link };
     },
     featured3: () => {
-      jsdata.featured[2] = { title: name, date, excerpt, thumbnail, link };
+      jsdata.featured[2] = { ...jsdata.featured[2], title: name, date, excerpt, thumbnail, link };
     },
     featured4: () => {
-      jsdata.featured[3] = { title: name, date, excerpt, thumbnail, link };
+      jsdata.featured[3] = { ...jsdata.featured[3], title: name, date, excerpt, thumbnail, link };
     }
   };
 
