@@ -116,9 +116,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.querySelector("." + divid + "title").innerText = featuredPosts[i].title;
                 document.querySelector("." + divid + "date").innerText = featuredPosts[i].date;
                 document.querySelector("." + divid + "excerpt").innerText = featuredPosts[i].excerpt;
-                document.querySelector("." + divid + "img").src = "https://beyondmebtw.com/assets/images/thumbnails/" + featuredPosts[i].thumbnail;
-                document.querySelector("#" + divid).onclick = () => window.open(featuredPosts[i].link, '_blank');
+                document.querySelector("." + divid + "img").src = "https://beyondmebtw.com/assets/images/thumbnails/" + featuredPosts[i].thumbnail;                                
             }
+            document.querySelector(".fp0").onclick = () => window.open(featuredPosts[0].link, '_blank');
+            document.querySelector(".fp1").onclick = () => window.open(featuredPosts[1].link, '_blank');
+            document.querySelector(".fp2").onclick = () => window.open(featuredPosts[2].link, '_blank');
+            document.querySelector(".fp3").onclick = () => window.open(featuredPosts[3].link, '_blank');
+
 
             console.log("\nFeatured Posts:");
             featuredDetails.forEach((post, index) => {
