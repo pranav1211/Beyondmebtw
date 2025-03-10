@@ -41,11 +41,11 @@ if (readMoreBtn) {
         window.location = "https://medium.com/@beyondmebtw/drive-to-survive-season-7-its-alright-54ce3fa55cfa";
     });
 }
-
+ 
 var latest = document.querySelector(".latest-post")
 
 latest.addEventListener('click', () => {
-    window.open('https://medium.com/@beyondmebtw/beyond-me-btw-a-new-chapter-6268aa22a706', '_blank');
+    window.open('https://medium.com/@beyondmebtw/drive-to-survive-season-7-its-alright-54ce3fa55cfa', '_blank');
 });
 
 
