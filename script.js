@@ -38,7 +38,7 @@ if (profilePic) {
 const readMoreBtn = document.querySelector('.read-more');
 if (readMoreBtn) {
     readMoreBtn.addEventListener('click', () => {
-        window.location = "https://medium.com/@beyondmebtw/beyond-me-btw-a-new-chapter-6268aa22a706";
+        window.location = "https://medium.com/@beyondmebtw/drive-to-survive-season-7-its-alright-54ce3fa55cfa";
     });
 }
 
