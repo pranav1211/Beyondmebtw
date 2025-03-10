@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        const baseUrl = "https://manage.beyondmebtw.com/latestdata?key=${ encodeURIComponent(key)";
+        const baseUrl = "https://manage.beyondmebtw.com/latestdata";
         const queryString = queryStringParams.join("&");
         const url = queryString ? `${baseUrl}?${queryString}` : baseUrl;
 
