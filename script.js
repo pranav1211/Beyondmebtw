@@ -41,7 +41,7 @@ if (readMoreBtn) {
         window.location = "https://medium.com/@beyondmebtw/drive-to-survive-season-7-its-alright-54ce3fa55cfa";
     });
 }
- 
+
 var latest = document.querySelector(".latest-post")
 
 latest.addEventListener('click', () => {
@@ -89,3 +89,49 @@ function showToast(message) {
 }
 
 
+document.addEventListener("DOMContentLoaded", () => {
+    fetch('https://beyondmebtw.com/manage/latest.json')
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`Failed to fetch JSON: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then((data) => {
+
+            const mainPost = data.mainPost;
+            const mainTitle = mainPost.title;
+            const mainDate = mainPost.date;
+            const mainExcerpt = mainPost.excerpt;
+            const mainThumbnail = mainPost.thumbnail;
+            const mainLink = mainPost.link;
+
+            const featuredPosts = data.featured;
+            const featuredDetails = featuredPosts.map(post => ({
+                title: post.title,
+                date: post.date,
+                excerpt: post.excerpt,
+                thumbnail: post.thumbnail,
+                link: post.link
+            }));
+
+            document.querySelector('.latest-post-title').innerText = mainTitle;
+            document.querySelector('.latest-post-date').innerText = mainDate;
+            document.querySelector('.latest-post-excerpt').innerText = mainExcerpt;
+            document.querySelector('.latest-post-img').src = "https://beyondmebtw.com/assets/images/thumbnails/" + mainThumbnail;
+            document.querySelector('latest-post-content').setAttribute('data-url', mainLink);
+            
+            console.log("Main Post:");
+            console.log({ mainTitle, mainDate, mainExcerpt, mainThumbnail, mainLink });
+
+            console.log("\nFeatured Posts:");
+            featuredDetails.forEach((post, index) => {
+                console.log(`Featured Post ${index + 1}:`);
+                console.log(post);
+            });
+
+        })
+        .catch((error) => {
+            console.error("Error fetching JSON data:", error);
+        });
+});

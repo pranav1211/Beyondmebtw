@@ -4,90 +4,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beyond Me Btw - Manage</title>
+    <title>Manage Posts</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="index.js"></script>
+    <script src="index.js" defer></script>
 </head>
 
 <body>
-    <!-- Login Section -->
-    <div id="login-section" class="container">
-        <form id="login-form" class="auth-form">
-            <h2>Admin Login</h2>
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <button type="submit" class="btn">Login</button>
-            <p id="login-error" class="error-message"></p>
+    <div class="form-container">
+        <!-- Latest Form -->
+        <form action="/update" method="GET" id="latest">
+            <h2>Latest</h2>
+            <input type="hidden" name="instance" value="latest">
+            <label for="name-latest">Post Name:</label>
+            <input type="text" id="name-latest" name="name" required>
+
+            <label for="date-latest">Publish Date:</label>
+            <input type="date" id="date-latest" name="date" required>
+
+            <label for="excerpt-latest">Excerpt:</label>
+            <input type="text" id="excerpt-latest" name="excerpt" required>
+
+            <label for="thumbnail-latest">Thumbnail Image name:</label>
+            <input type="text" id="thumbnail-latest" name="thumbnail" required>
+
+            <label for="link-latest">Post Link:</label>
+            <input type="text" id="link-latest" name="link" required>
+
+            <label for="key-latest">Password:</label>
+            <input type="password" id="key-latest" name="key" required>
+
+            <button type="submit">Submit</button>
         </form>
-    </div>
 
-    <!-- Dashboard Section (initially hidden) -->
-    <div id="dashboard-section" class="container dashboard" style="display: none;">
-        <header class="dashboard-header">
-            <h1>Content Management</h1>
-            <button id="logout-btn" class="btn btn-outline">Logout</button>
-        </header>
+        <!-- Featured 1 Form -->
+        <form action="/update" method="GET" id="featured1">
+            <h2>Featured 1</h2>
+            <input type="hidden" name="instance" value="featured1">
+            <label for="name-featured1">Post Name:</label>
+            <input type="text" id="name-featured1" name="name" required>
 
-        <section class="dashboard-content">
-            <div class="posts-container">
-                <h2>Main Post</h2>
-                <div id="main-post" class="post-card">
-                    <!-- Main post content will be inserted here via JavaScript -->
-                </div>
+            <label for="date-featured1">Publish Date:</label>
+            <input type="date" id="date-featured1" name="date" required>
 
-                <h2>Featured Posts</h2>
-                <div id="featured-posts" class="featured-grid">
-                    <!-- Featured posts will be inserted here via JavaScript -->
-                </div>
+            <label for="excerpt-featured1">Excerpt:</label>
+            <input type="text" id="excerpt-featured1" name="excerpt" required>
 
-                <div class="action-buttons">
-                    <button id="add-post-btn" class="btn">Add New Post</button>
-                </div>
-            </div>
-        </section>
+            <label for="thumbnail-featured1">Thumbnail Image name:</label>
+            <input type="text" id="thumbnail-featured1" name="thumbnail" required>
 
-        <!-- Edit Post Modal (initially hidden) -->
-        <div id="edit-modal" class="modal" style="display: none;">
-            <div class="modal-content">
-                <span class="close-btn">&times;</span>
-                <h2 id="modal-title">Edit Post</h2>
-                <form id="edit-post-form">
-                    <input type="hidden" id="post-index" name="post-index">
-                    <input type="hidden" id="post-type" name="post-type">
+            <label for="link2">Post Link:</label>
+            <input type="text" id="link2" name="link" required>
 
-                    <div class="form-group">
-                        <label for="edit-title">Title:</label>
-                        <input type="text" id="edit-title" name="title" required>
-                    </div>
+            <label for="key-featured1">Password:</label>
+            <input type="password" id="key-featured1" name="key" required>
 
-                    <div class="form-group">
-                        <label for="edit-date">Date:</label>
-                        <input type="date" id="edit-date" name="date" required>
-                    </div>
+            <button type="submit">Submit</button>
+        </form>
 
-                    <div class="form-group">
-                        <label for="edit-excerpt">Excerpt:</label>
-                        <textarea id="edit-excerpt" name="excerpt" required></textarea>
-                    </div>
+        <!-- Featured 2 Form -->
+        <form action="/update" method="GET" id="featured2">
+            <h2>Featured 2</h2>
+            <input type="hidden" name="instance" value="featured2">
+            <label for="name-featured2">Post Name:</label>
+            <input type="text" id="name-featured2" name="name" required>
 
-                    <div class="form-group">
-                        <label for="edit-thumbnail">Thumbnail Image:</label>
-                        <input type="text" id="edit-thumbnail" name="thumbnail" required>
-                    </div>
+            <label for="date-featured2">Publish Date:</label>
+            <input type="date" id="date-featured2" name="date" required>
 
-                    <div class="form-group">
-                        <label for="edit-link">Post Link:</label>
-                        <input type="text" id="edit-link" name="link" required>
-                    </div>
+            <label for="excerpt-featured2">Excerpt:</label>
+            <input type="text" id="excerpt-featured2" name="excerpt" required>
 
-                    <div class="form-group">
-                        <button type="submit" class="btn">Save Changes</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+            <label for="thumbnail-featured2">Thumbnail Image name:</label>
+            <input type="text" id="thumbnail-featured2" name="thumbnail" required>
+
+            <label for="link2">Post Link:</label>
+            <input type="text" id="link2" name="link" required>
+
+            <label for="key-featured2">Password:</label>
+            <input type="password" id="key-featured2" name="key" required>
+
+            <button type="submit">Submit</button>
+        </form>
+
+        <!-- Featured 3 Form -->
+        <form action="/update" method="GET" id="featured3">
+            <h2>Featured 3</h2>
+            <input type="hidden" name="instance" value="featured3">
+            <label for="name-featured3">Post Name:</label>
+            <input type="text" id="name-featured3" name="name" required>
+
+            <label for="date-featured3">Publish Date:</label>
+            <input type="date" id="date-featured3" name="date" required>
+
+            <label for="excerpt-featured3">Excerpt:</label>
+            <input type="text" id="excerpt-featured3" name="excerpt" required>
+
+            <label for="thumbnail-featured3">Thumbnail Image name:</label>
+            <input type="text" id="thumbnail-featured3" name="thumbnail" required>
+
+            <label for="link3">Post Link:</label>
+            <input type="text" id="link3" name="link" required>
+
+            <label for="key-featured3">Password:</label>
+            <input type="password" id="key-featured3" name="key" required>
+
+            <button type="submit">Submit</button>
+        </form>
+
+        <!-- Featured 4 Form -->
+        <form action="/update" method="GET" id="featured3">
+            <h2>Featured 4</h2>
+            <input type="hidden" name="instance" value="featured3">
+            <label for="name-featured4">Post Name:</label>
+            <input type="text" id="name-featured4" name="name" required>
+
+            <label for="date-featured3">Publish Date:</label>
+            <input type="date" id="date-featured4" name="date" required>
+
+            <label for="excerpt-featured4">Excerpt:</label>
+            <input type="text" id="excerpt-featured4" name="excerpt" required>
+
+            <label for="thumbnail-featured4">Thumbnail Image name:</label>
+            <input type="text" id="thumbnail-featured4" name="thumbnail" required>
+
+            <label for="link4">Post Link:</label>
+            <input type="text" id="link4" name="link" required>
+
+            <label for="key-featured4">Password:</label>
+            <input type="password" id="key-featured4" name="key" required>
+
+            <button type="submit">Submit</button>
+        </form>
     </div>
 </body>
 

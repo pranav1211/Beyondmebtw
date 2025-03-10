@@ -1,32 +1,39 @@
 {
-    "mainPost": {
+  "mainPost": {
+    "title": "Drive To Survive Season 7 : It's Alright",
+    "date": "March 10, 2025",
+    "excerpt": "Season 7 of Drive to Survive captures the big stories brilliantly but stumbles on the finer details, sacrificing authenticity for dramatized narratives. This season dives into the all the crazy that happened in the 2024 season and it was ...",
+    "thumbnail": "dts7.jpg",
+    "link": "https://medium.com/@beyondmebtw/drive-to-survive-season-7-its-alright-54ce3fa55cfa"
+  },
+  "featured": [
+    {
+      "title": "The 2024 Formula 1 Season Review",
+      "date": "January 18, 2025",
+      "excerpt": "I never understood the appeal of Formula 1. To me, Formula 1 was just cars going around in circles — a repetitive and pointless activity. But then ...",
+      "thumbnail": "f12024.jpg",
+      "link": "https://medium.com/@beyondmebtw/the-2024-formula-1-season-review-eab959704540"
+    },
+    {
+      "title": "From Pixels to Glory : Maze Maniac Resurrected",
+      "date": "Dec 11, 2024",
+      "excerpt": "This was the third edition of the event, I knew I wanted it to be bigger, better, and bolder. Let me take you on a journey, my journey, in building this event....",
+      "thumbnail": "mmrfs.jpg",
+      "link": "https://medium.com/@beyondmebtw/from-pixels-to-glory-maze-maniac-resurrected-8e9c8d8f6bf6"
+    },
+    {
+      "title": "Perfetti Sconosciuti (Perfect Strangers) Review",
+      "date": "November 12, 2024",
+      "excerpt": "Bong Joon-ho said, “Once you overcome the one-inch tall barrier of subtitles, you will be introduced to so many more amazing films.” And watching Perfetti Sconosciuti has made that quote feel more true than ever....",
+      "thumbnail": "ps.jpg",
+      "link": "https://medium.com/@beyondmebtw/perfetti-sconosciuti-perfect-strangers-review-3db8a6dc36f1"
+    },
+    {
       "title": "Beyond Me Btw : A New Chapter",
       "date": "March 3, 2025",
       "excerpt": "Two years ago, I launched my blog, Beyond Me Btw, with the goal of exploring new experiences and ...",
       "thumbnail": "bmbv2.jpg",
-      "link": "https://beyondmebtw.com/posts/new-chapter"
-    },
-    "featured": [
-      {
-        "title": "Finding Balance in a Digital World",
-        "date": "February 20, 2025",
-        "excerpt": "As our lives become increasingly intertwined with technology, finding balance between online and offline experiences becomes essential...",
-        "thumbnail": "digitalbalance.jpg",
-        "link": "https://beyondmebtw.com/posts/digital-balance"
-      },
-      {
-        "title": "The Art of Slow Living",
-        "date": "January 15, 2025",
-        "excerpt": "In today's fast-paced world, embracing slow living can be revolutionary. This post explores practical ways to...",
-        "thumbnail": "slowliving.jpg",
-        "link": "https://beyondmebtw.com/posts/slow-living"
-      },
-      {
-        "title": "Mindfulness Through Photography",
-        "date": "December 28, 2024",
-        "excerpt": "Photography isn't just about capturing moments – it's about being present in them. Here's how I use my camera to practice mindfulness...",
-        "thumbnail": "mindfulphoto.jpg",
-        "link": "https://beyondmebtw.com/posts/mindful-photography"
-      }
-    ]
-  }
+      "link": "https://medium.com/@beyondmebtw/beyond-me-btw-a-new-chapter-6268aa22a706"
+    }
+  ]
+}
