@@ -7,19 +7,28 @@ document.addEventListener("DOMContentLoaded", () => {
     const saveButton = document.getElementById("save-button");
     
     let blogData = null;
-    let apiKey = "";
+    let managekey = localStorage.getItem('blogManagementKey'); // Try to get saved password
+    
+    // If we have a saved password, try to use it automatically
+    if (managekey) {
+        attemptLogin(managekey, true);
+    }
 
     // Handle login
     loginButton.addEventListener("click", () => {
-        apiKey = loginPassword.value;
+        const enteredKey = loginPassword.value;
         
-        if (!apiKey) {
+        if (!enteredKey) {
             loginError.innerText = "Password is required";
             return;
         }
-
-        // Verify password with a simple endpoint call
-        fetch(`https://manage.beyondmebtw.com/verify?key=${encodeURIComponent(apiKey)}`)
+        
+        attemptLogin(enteredKey, false);
+    });
+    
+    function attemptLogin(key, isAutoLogin) {
+        // Verify password with server
+        fetch(`https://manage.beyondmebtw.com/verify?key=${encodeURIComponent(key)}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error("Authentication failed");
@@ -28,24 +37,43 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .then(data => {
                 if (data.success) {
+                    managekey = key;
+                    // Save password for future use
+                    localStorage.setItem('blogManagementKey', key);
+                    
                     loginContainer.style.display = "none";
                     dashboardContainer.style.display = "block";
                     loadBlogData();
                 } else {
-                    loginError.innerText = "Invalid password";
+                    if (isAutoLogin) {
+                        // Clear invalid stored password
+                        localStorage.removeItem('blogManagementKey');
+                    } else {
+                        loginError.innerText = "Invalid password";
+                    }
                 }
             })
             .catch(error => {
-                loginError.innerText = "Authentication failed. Please try again.";
+                if (!isAutoLogin) {
+                    loginError.innerText = "Authentication failed. Please try again.";
+                }
                 console.error(error);
+                
+                // Clear potentially invalid stored password
+                if (isAutoLogin) {
+                    localStorage.removeItem('blogManagementKey');
+                }
             });
-    });
+    }
 
     // Load blog data
     function loadBlogData() {
-        fetch('https://manage.beyondmebtw.com/data')
+        fetch(`https://manage.beyondmebtw.com/data?key=${encodeURIComponent(managekey)}`)
             .then(response => {
                 if (!response.ok) {
+                    if (response.status === 403) {
+                        throw new Error("Authentication failed");
+                    }
                     throw new Error(`Failed to fetch data: ${response.statusText}`);
                 }
                 return response.json();
@@ -56,7 +84,19 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch(error => {
                 console.error("Error loading blog data:", error);
-                alert("Failed to load blog data. Please refresh the page.");
+                
+                if (error.message.includes("Authentication failed")) {
+                    // If authentication failed, return to login
+                    dashboardContainer.style.display = "none";
+                    loginContainer.style.display = "block";
+                    loginPassword.value = "";
+                    loginError.innerText = "Your session has expired. Please log in again.";
+                    
+                    // Clear invalid stored password
+                    localStorage.removeItem('blogManagementKey');
+                } else {
+                    alert("Failed to load blog data. Please refresh the page.");
+                }
             });
     }
 
@@ -164,7 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function saveDataToServer(data) {
         const urlParams = new URLSearchParams();
         urlParams.append('data', JSON.stringify(data));
-        urlParams.append('key', apiKey);
+        urlParams.append('key', managekey);
 
         fetch(`https://manage.beyondmebtw.com/update`, {
             method: 'POST',
@@ -201,6 +241,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 loginContainer.style.display = "block";
                 loginPassword.value = "";
                 loginError.innerText = "Your session has expired. Please log in again.";
+                
+                // Clear the stored key if authentication failed
+                localStorage.removeItem('blogManagementKey');
             }
         });
     }

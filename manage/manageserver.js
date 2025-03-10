@@ -146,6 +146,15 @@ http.createServer(async (request, response) => {
   }
   // Get current data
   else if (path === '/data') {
+    const parameters = url.searchParams;
+    const key = parameters.get('key');
+    
+    if (key !== thepasskey) {
+      response.writeHead(403, { 'Content-Type': 'application/json' });
+      response.end(JSON.stringify({ success: false, message: "Unauthorized access" }));
+      return;
+    }
+    
     response.writeHead(200, { 'Content-Type': 'application/json' });
     response.end(JSON.stringify(blogData));
   }
@@ -211,6 +220,18 @@ http.createServer(async (request, response) => {
         success: false, 
         message: "Invalid request data" 
       }));
+    }
+  }
+  // Serve the password value (securely, only to localhost)
+  else if (path === '/getpasskey') {
+    // Only allow this request from localhost for security
+    const clientIp = request.socket.remoteAddress;
+    if (clientIp === '127.0.0.1' || clientIp === '::1' || clientIp === 'localhost') {
+      response.writeHead(200, { 'Content-Type': 'application/json' });
+      response.end(JSON.stringify({ passkey: thepasskey }));
+    } else {
+      response.statusCode = 403;
+      response.end("Forbidden");
     }
   }
   // Serve static files
