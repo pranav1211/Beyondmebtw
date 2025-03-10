@@ -34,21 +34,6 @@ if (profilePic) {
     });
 }
 
-// Read more button
-const readMoreBtn = document.querySelector('.read-more');
-if (readMoreBtn) {
-    readMoreBtn.addEventListener('click', () => {
-        window.location = "https://medium.com/@beyondmebtw/drive-to-survive-season-7-its-alright-54ce3fa55cfa";
-    });
-}
-
-var latest = document.querySelector(".latest-post")
-
-latest.addEventListener('click', () => {
-    window.open('https://medium.com/@beyondmebtw/drive-to-survive-season-7-its-alright-54ce3fa55cfa', '_blank');
-});
-
-
 // Project cards hover effects
 const projectCards = document.querySelectorAll('.project-card');
 projectCards.forEach(card => {
@@ -120,11 +105,20 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelector('.latest-post-excerpt').innerText = mainExcerpt;
             document.querySelector('.latest-post-img').src = "https://beyondmebtw.com/assets/images/thumbnails/" + mainThumbnail;
             document.querySelector('.latest-post-content').onclick = () => window.location.href = mainLink;
-            
+            document.querySelector('.read-more').onclick = () => window.location.href = mainLink;
+
             console.log("Main Post:");
             console.log({ mainTitle, mainDate, mainExcerpt, mainThumbnail, mainLink });
 
-            
+            // for (i = 0; i < 4; i++) {
+            //     var divid = "fp" + i
+
+            //     const firstFeaturedTitle = featuredDetails[0].title;
+            //     const firstFeaturedDate = featuredDetails[0].date;
+            //     const firstFeaturedExcerpt = featuredDetails[0].excerpt;
+            //     const firstFeaturedThumbnail = featuredDetails[0].thumbnail;
+            //     const firstFeaturedLink = featuredDetails[0].link;
+            // }
 
             console.log("\nFeatured Posts:");
             featuredDetails.forEach((post, index) => {
