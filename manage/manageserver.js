@@ -1,8 +1,10 @@
 const http = require('http');
 const fs = require('fs');
+const path = require('path');
 const { URLSearchParams } = require('url');
+const crypto = require('crypto');
 
-// Fix environment variable reading
+// Environment variable handling
 let thepasskey;
 try {
   thepasskey = process.env.managekey || fs.readFileSync('/etc/environment', 'utf8')
@@ -26,36 +28,36 @@ try {
   console.log('JSON data loaded successfully');
 } catch (err) {
   console.error('Error loading JSON file:', err);
-  // Create a default structure if file doesn't exist
+  // Create a default structure
   blogData = {
-    latestPost: {
-      title: "",
-      date: "",
-      excerpt: "",
-      thumbnail: "",
-      link: ""
+    mainPost: {
+      title: "Beyond Me Btw : A New Chapter",
+      date: "March 3, 2025",
+      excerpt: "Two years ago, I launched my blog, Beyond Me Btw, with the goal of exploring new experiences and ...",
+      thumbnail: "bmbv2.jpg",
+      link: "https://beyondmebtw.com/posts/new-chapter"
     },
-    featuredPosts: [
+    featured: [
       {
-        title: "",
-        date: "",
-        excerpt: "",
-        thumbnail: "",
-        link: ""
+        title: "Finding Balance in a Digital World",
+        date: "February 20, 2025",
+        excerpt: "As our lives become increasingly intertwined with technology, finding balance between online and offline experiences becomes essential...",
+        thumbnail: "digitalbalance.jpg",
+        link: "https://beyondmebtw.com/posts/digital-balance"
       },
       {
-        title: "",
-        date: "",
-        excerpt: "",
-        thumbnail: "",
-        link: ""
+        title: "The Art of Slow Living",
+        date: "January 15, 2025",
+        excerpt: "In today's fast-paced world, embracing slow living can be revolutionary. This post explores practical ways to...",
+        thumbnail: "slowliving.jpg",
+        link: "https://beyondmebtw.com/posts/slow-living"
       },
       {
-        title: "",
-        date: "",
-        excerpt: "",
-        thumbnail: "",
-        link: ""
+        title: "Mindfulness Through Photography",
+        date: "December 28, 2024",
+        excerpt: "Photography isn't just about capturing moments – it's about being present in them. Here's how I use my camera to practice mindfulness...",
+        thumbnail: "mindfulphoto.jpg",
+        link: "https://beyondmebtw.com/posts/mindful-photography"
       }
     ]
   };
@@ -65,214 +67,185 @@ try {
   console.log('Created new JSON file with default structure');
 }
 
-// Update the entire blog data
-function updateBlogData(newData) {
-  blogData = newData;
+// Token management
+const tokens = new Map();
 
-  fs.writeFile('latest.json', JSON.stringify(blogData, null, 2), 'utf8', (err) => {
-    if (err) {
-      console.error('Error writing to JSON file:', err);
-      return false;
-    }
-    console.log("Blog data updated successfully");
+// Helper function to generate a token
+const generateToken = () => {
+  return crypto.randomBytes(32).toString('hex');
+};
+
+// Helper function to verify token
+const verifyToken = (token) => {
+  return tokens.has(token);
+};
+
+// Helper function to save data
+const saveData = (data) => {
+  try {
+    fs.writeFileSync('latest.json', JSON.stringify(data, null, 2), 'utf8');
     return true;
-  });
-}
-
-// Parse request body for POST requests
-function parseBody(request) {
-  return new Promise((resolve, reject) => {
-    if (request.method !== 'POST') {
-      return resolve({});
-    }
-
-    let body = '';
-    request.on('data', chunk => {
-      body += chunk.toString();
-      
-      // Limit size to prevent abuse
-      if (body.length > 1e6) {
-        request.connection.destroy();
-        reject(new Error('Request body too large'));
-      }
-    });
-
-    request.on('end', () => {
-      try {
-        const params = new URLSearchParams(body);
-        const result = {};
-        for (const [key, value] of params.entries()) {
-          result[key] = value;
-        }
-        resolve(result);
-      } catch (error) {
-        reject(error);
-      }
-    });
-  });
-}
-
-http.createServer(async (request, response) => {
-  const url = new URL(request.url, `http://${request.headers.host}`);
-  const path = url.pathname;
-
-  // Add CORS headers to allow cross-origin requests
-  response.setHeader('Access-Control-Allow-Origin', '*');
-  response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  // Handle preflight requests
-  if (request.method === 'OPTIONS') {
-    response.statusCode = 204;
-    response.end();
-    return;
+  } catch (error) {
+    console.error('Error saving data:', error);
+    return false;
   }
+};
 
-  // Verify password endpoint
-  if (path === '/verify') {
-    const parameters = url.searchParams;
-    const key = parameters.get('key');
-
-    console.log('Received verification request');
-
-    if (key === thepasskey) {
-      response.writeHead(200, { 'Content-Type': 'application/json' });
-      response.end(JSON.stringify({ success: true }));
-    } else {
-      console.log('Verification failed');
-      response.writeHead(403, { 'Content-Type': 'application/json' });
-      response.end(JSON.stringify({ success: false, message: "Invalid authentication" }));
-    }
-  }
-  // Get current data
-  else if (path === '/data') {
-    const parameters = url.searchParams;
-    const key = parameters.get('key');
-    
-    if (key !== thepasskey) {
-      response.writeHead(403, { 'Content-Type': 'application/json' });
-      response.end(JSON.stringify({ success: false, message: "Unauthorized access" }));
+// Helper function to serve static files
+const serveStaticFile = (res, filePath, contentType) => {
+  fs.readFile(filePath, (err, content) => {
+    if (err) {
+      res.writeHead(404);
+      res.end('File not found');
       return;
     }
     
-    response.writeHead(200, { 'Content-Type': 'application/json' });
-    response.end(JSON.stringify(blogData));
+    res.writeHead(200, { 'Content-Type': contentType });
+    res.end(content);
+  });
+};
+
+// Create server
+http.createServer((req, res) => {
+  // Add CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204);
+    res.end();
+    return;
   }
-  // Update data
-  else if (path === '/update') {
-    try {
-      // For POST requests, parse the body
-      let dataToUpdate, key;
-      
-      if (request.method === 'POST') {
-        const body = await parseBody(request);
-        dataToUpdate = JSON.parse(body.data || '{}');
-        key = body.key;
-      } else {
-        // For GET requests, use query parameters
-        const parameters = url.searchParams;
-        key = parameters.get('key');
+  
+  const url = new URL(req.url, `http://${req.headers.host}`);
+  const pathname = url.pathname;
+  
+  // Check authentication for protected routes
+  if (['/getdata', '/updatedata'].includes(pathname)) {
+    const authHeader = req.headers.authorization;
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Unauthorized' }));
+      return;
+    }
+    
+    const token = authHeader.split(' ')[1];
+    
+    if (!verifyToken(token)) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid token' }));
+      return;
+    }
+  }
+  
+  // Route handling
+  if (pathname === '/') {
+    serveStaticFile(res, 'index.html', 'text/html');
+  } 
+  // Serve static files
+  else if (['/styles.css', '/index.js'].includes(pathname)) {
+    const filePath = `.${pathname}`;
+    const contentType = pathname.endsWith('.css') ? 'text/css' : 'application/javascript';
+    serveStaticFile(res, filePath, contentType);
+  }
+  // Authentication endpoint
+  else if (pathname === '/auth' && req.method === 'POST') {
+    let body = '';
+    
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+    
+    req.on('end', () => {
+      try {
+        const { password } = JSON.parse(body);
         
-        // Legacy support
-        if (parameters.get('name')) {
-          // Convert old format to new format
-          dataToUpdate = {
-            latestPost: {
-              title: parameters.get('name') || "",
-              date: parameters.get('date') || "",
-              excerpt: parameters.get('excerpt') || "",
-              thumbnail: parameters.get('thumbnail') || "",
-              link: parameters.get('link') || ""
-            },
-            featuredPosts: blogData.featuredPosts || []
-          };
+        if (password === thepasskey) {
+          const token = generateToken();
+          tokens.set(token, Date.now()); // Store token with timestamp
+          
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ token }));
         } else {
-          response.statusCode = 400;
-          response.end(JSON.stringify({ 
-            success: false, 
-            message: "Invalid request format" 
-          }));
+          res.writeHead(401, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Invalid password' }));
+        }
+      } catch (error) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Bad request' }));
+      }
+    });
+  }
+  // Get data endpoint
+  else if (pathname === '/getdata') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(blogData));
+  }
+  // Update data endpoint
+  else if (pathname === '/updatedata' && req.method === 'POST') {
+    let body = '';
+    
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+    
+    req.on('end', () => {
+      try {
+        const newData = JSON.parse(body);
+        
+        // Basic validation
+        if (!newData.mainPost || !Array.isArray(newData.featured)) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Invalid data format' }));
           return;
         }
+        
+        // Save data
+        if (saveData(newData)) {
+          blogData = newData;
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: true }));
+        } else {
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Failed to save data' }));
+        }
+      } catch (error) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Bad request' }));
       }
-
-      console.log('Received update request');
-
-      if (key === thepasskey) {
-        updateBlogData(dataToUpdate);
-        response.writeHead(200, { 'Content-Type': 'application/json' });
-        response.end(JSON.stringify({ 
-          success: true, 
-          message: "Data updated successfully" 
-        }));
+    });
+  }
+  // Support for old API endpoint (for backward compatibility)
+  else if (pathname === '/latestdata') {
+    const parameters = url.searchParams;
+    
+    const name = parameters.get('name');
+    const date = parameters.get('date');
+    const excerpt = parameters.get('excerpt');
+    const thumbnail = parameters.get('thumbnail');
+    const key = parameters.get('key');
+    const link = parameters.get('link') || `https://beyondmebtw.com/posts/${name.toLowerCase().replace(/\s+/g, '-')}`;
+    
+    if (key === thepasskey) {
+      // Update main post
+      blogData.mainPost = {
+        title: name,
+        date: date,
+        excerpt: excerpt,
+        thumbnail: thumbnail,
+        link: link
+      };
+      
+      // Save data
+      if (saveData(blogData)) {
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end("<html><body><h1>Data updated successfully.</h1><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>");
       } else {
-        console.log('Update authorization failed');
-        response.writeHead(403, { 'Content-Type': 'application/json' });
-        response.end(JSON.stringify({ 
-          success: false, 
-          message: "Unauthorized access - Invalid key" 
-        }));
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.end("Error saving data");
       }
-    } catch (error) {
-      console.error('Error processing update request:', error);
-      response.statusCode = 400;
-      response.end(JSON.stringify({ 
-        success: false, 
-        message: "Invalid request data" 
-      }));
-    }
-  }
-  // Serve the password value (securely, only to localhost)
-  else if (path === '/getpasskey') {
-    // Only allow this request from localhost for security
-    const clientIp = request.socket.remoteAddress;
-    if (clientIp === '127.0.0.1' || clientIp === '::1' || clientIp === 'localhost') {
-      response.writeHead(200, { 'Content-Type': 'application/json' });
-      response.end(JSON.stringify({ passkey: thepasskey }));
     } else {
-      response.statusCode = 403;
-      response.end("Forbidden");
-    }
-  }
-  // Serve static files
-  else if (path === '/' || path === '/index.html') {
-    fs.readFile('index.html', (err, data) => {
-      if (err) {
-        response.statusCode = 500;
-        response.end("Error loading index.html");
-        return;
-      }
-      response.writeHead(200, { 'Content-Type': 'text/html' });
-      response.end(data);
-    });
-  }
-  else if (path === '/index.js') {
-    fs.readFile('index.js', (err, data) => {
-      if (err) {
-        response.statusCode = 500;
-        response.end("Error loading index.js");
-        return;
-      }
-      response.writeHead(200, { 'Content-Type': 'application/javascript' });
-      response.end(data);
-    });
-  }
-  else if (path === '/styles.css') {
-    fs.readFile('styles.css', (err, data) => {
-      if (err) {
-        response.statusCode = 500;
-        response.end("Error loading styles.css");
-        return;
-      }
-      response.writeHead(200, { 'Content-Type': 'text/css' });
-      response.end(data);
-    });
-  }
-  // Handle not found
-  else {
-    response.statusCode = 404;
-    response.end("Not Found");
-  }
-}).listen(7000);
-
-console.log('Server running at http://localhost:7000/');
+      res.writeHead(403, { 'Content-Type': 'text
