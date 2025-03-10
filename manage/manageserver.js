@@ -89,7 +89,7 @@ if (instanceMap[formId]) {
 
 fs.writeFileSync("latest.json", JSON.stringify(jsdata, null, 2), "utf8");
 console.log("Data written to latest.json:", jsdata);
-}
+
 
 http
   .createServer((request, response) => {
