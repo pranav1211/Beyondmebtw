@@ -1,32 +1,32 @@
 {
-    "latestPost": {
+    "mainPost": {
       "title": "Beyond Me Btw : A New Chapter",
       "date": "March 3, 2025",
       "excerpt": "Two years ago, I launched my blog, Beyond Me Btw, with the goal of exploring new experiences and ...",
       "thumbnail": "bmbv2.jpg",
-      "link": "/posts/beyond-me-btw-new-chapter"
+      "link": "https://beyondmebtw.com/posts/new-chapter"
     },
-    "featuredPosts": [
+    "featured": [
       {
-        "title": "Featured Post 1",
-        "date": "February 28, 2025",
-        "excerpt": "Sample excerpt for featured post 1...",
-        "thumbnail": "featured1.jpg",
-        "link": "/posts/featured-post-1"
+        "title": "Finding Balance in a Digital World",
+        "date": "February 20, 2025",
+        "excerpt": "As our lives become increasingly intertwined with technology, finding balance between online and offline experiences becomes essential...",
+        "thumbnail": "digitalbalance.jpg",
+        "link": "https://beyondmebtw.com/posts/digital-balance"
       },
       {
-        "title": "Featured Post 2",
-        "date": "February 15, 2025",
-        "excerpt": "Sample excerpt for featured post 2...",
-        "thumbnail": "featured2.jpg",
-        "link": "/posts/featured-post-2"
+        "title": "The Art of Slow Living",
+        "date": "January 15, 2025",
+        "excerpt": "In today's fast-paced world, embracing slow living can be revolutionary. This post explores practical ways to...",
+        "thumbnail": "slowliving.jpg",
+        "link": "https://beyondmebtw.com/posts/slow-living"
       },
       {
-        "title": "Featured Post 3",
-        "date": "January 30, 2025",
-        "excerpt": "Sample excerpt for featured post 3...",
-        "thumbnail": "featured3.jpg",
-        "link": "/posts/featured-post-3"
+        "title": "Mindfulness Through Photography",
+        "date": "December 28, 2024",
+        "excerpt": "Photography isn't just about capturing moments – it's about being present in them. Here's how I use my camera to practice mindfulness...",
+        "thumbnail": "mindfulphoto.jpg",
+        "link": "https://beyondmebtw.com/posts/mindful-photography"
       }
     ]
   }
