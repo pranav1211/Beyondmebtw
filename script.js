@@ -104,21 +104,21 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelector('.latest-post-date').innerText = mainDate;
             document.querySelector('.latest-post-excerpt').innerText = mainExcerpt;
             document.querySelector('.latest-post-img').src = "https://beyondmebtw.com/assets/images/thumbnails/" + mainThumbnail;
-            document.querySelector('.latest-post-content').onclick = () => window.location.href = mainLink;
-            document.querySelector('.read-more').onclick = () => window.location.href = mainLink;
+            document.querySelector('.latest-post-content').onclick = () => window.open(mainLink, '_blank');
+            document.querySelector('.read-more').onclick = () => window.open(mainLink, '_blank');
 
             console.log("Main Post:");
             console.log({ mainTitle, mainDate, mainExcerpt, mainThumbnail, mainLink });
 
-            // for (i = 0; i < 4; i++) {
-            //     var divid = "fp" + i
+            for (i = 0; i < 4; i++) {
+                var divid = "fp" + i
 
-            //     const firstFeaturedTitle = featuredDetails[0].title;
-            //     const firstFeaturedDate = featuredDetails[0].date;
-            //     const firstFeaturedExcerpt = featuredDetails[0].excerpt;
-            //     const firstFeaturedThumbnail = featuredDetails[0].thumbnail;
-            //     const firstFeaturedLink = featuredDetails[0].link;
-            // }
+                document.querySelector("." + divid + " .title").innerText = featuredPosts[i].title;
+                document.querySelector("." + divid + " .date").innerText = featuredPosts[i].date;
+                document.querySelector("." + divid + " .excerpt").innerText = featuredPosts[i].excerpt;
+                document.querySelector("." + divid + " .img").src = "https://beyondmebtw.com/assets/images/thumbnails/" + featuredPosts[i].thumbnail;
+                document.querySelector("." + divid + " .link").onclick = () => window.open(featuredPosts[i].link, '_blank');
+            }
 
             console.log("\nFeatured Posts:");
             featuredDetails.forEach((post, index) => {
