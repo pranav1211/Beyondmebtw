@@ -20,24 +20,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
         console.log("Constructed URL:", url);
 
-    //     fetch(url)
-    //         .then((response) => {
-    //             if (!response.ok) {
-    //                 if (response.status === 403) {
-    //                     throw new Error("Authentication failed. Check your API key.");
-    //                 }
-    //                 throw new Error(`Server responded with status: ${response.status}`);
-    //             }
-    //             return response.text();
-    //         })
-    //         .then(() => {
-    //             alert("Data updated successfully!");
-    //             form.reset();
-    //         })
-    //         .catch((error) => {
-    //             alert(`Error: ${error.message}`);
-    //             console.error(error);
-    //         });
+        fetch(url)
+            .then((response) => {
+                if (!response.ok) {
+                    if (response.status === 403) {
+                        throw new Error("Authentication failed. Check your API key.");
+                    }
+                    throw new Error(`Server responded with status: ${response.status}`);
+                }
+                return response.text();
+            })
+            .then(() => {
+                alert("Data updated successfully!");
+                form.reset();
+            })
+            .catch((error) => {
+                alert(`Error: ${error.message}`);
+                console.error(error);
+            });
     });
 
 });
