@@ -7,12 +7,20 @@ document.addEventListener("DOMContentLoaded", () => {
         const formData = new FormData(form);
         const queryStringParams = [];
 
+        // Get the form's ID
+        const formId = form.id;
+
         formData.forEach((value, key) => {
             const trimmedValue = value.trim();
             if (trimmedValue !== "") {
                 queryStringParams.push(`${encodeURIComponent(key)}=${encodeURIComponent(trimmedValue)}`);
             }
         });
+
+        // Add the formid parameter
+        if (formId) {
+            queryStringParams.push(`formid=${encodeURIComponent(formId)}`);
+        }
 
         const baseUrl = "https://manage.beyondmebtw.com/latestdata";
         const queryString = queryStringParams.join("&");
