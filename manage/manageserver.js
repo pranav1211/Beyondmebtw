@@ -39,21 +39,29 @@ function loadJSON(callback) {
 }
 
 function updateData(name, date, excerpt, thumbnail, link, formId) {
+  const updateFields = (target, updates) => {
+    for (const [key, value] of Object.entries(updates)) {
+      if (value !== null && value !== undefined) {
+        target[key] = value;
+      }
+    }
+  };
+
   const updates = {
     latest: () => {
-      jsdata.mainPost = { ...jsdata.mainPost, title: name, date, excerpt, thumbnail, link };
+      updateFields(jsdata.mainPost, { title: name, date, excerpt, thumbnail, link });
     },
     featured1: () => {
-      jsdata.featured[0] = { ...jsdata.featured[0], title: name, date, excerpt, thumbnail, link };
+      updateFields(jsdata.featured[0], { title: name, date, excerpt, thumbnail, link });
     },
     featured2: () => {
-      jsdata.featured[1] = { ...jsdata.featured[1], title: name, date, excerpt, thumbnail, link };
+      updateFields(jsdata.featured[1], { title: name, date, excerpt, thumbnail, link });
     },
     featured3: () => {
-      jsdata.featured[2] = { ...jsdata.featured[2], title: name, date, excerpt, thumbnail, link };
+      updateFields(jsdata.featured[2], { title: name, date, excerpt, thumbnail, link });
     },
     featured4: () => {
-      jsdata.featured[3] = { ...jsdata.featured[3], title: name, date, excerpt, thumbnail, link };
+      updateFields(jsdata.featured[3], { title: name, date, excerpt, thumbnail, link });
     }
   };
 
@@ -63,6 +71,7 @@ function updateData(name, date, excerpt, thumbnail, link, formId) {
     console.error("Invalid formId:", formId);
   }
 }
+
 
 http.createServer((request, response) => {
   const url = new URL(request.url, `http://${request.headers.host}`);
