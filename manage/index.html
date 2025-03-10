@@ -3,28 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage</title>
+    <title>Blog Management</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="index.js"></script>
+    <script src="index.js"></script>    
 </head>
 <body>
-    <form action="/update" method="GET">
-        <label for="name">Post Name:</label>
-        <input type="text" id="name" name="name" required>
+    <div id="login-container">
+        <h1>Blog Management</h1>
+        <div class="login-form">
+            <label for="login-password">Password:</label>
+            <input type="password" id="login-password" name="password" required>
+            <button id="login-button">Login</button>
+            <p id="login-error" class="error-message"></p>
+        </div>
+    </div>
 
-        <label for="date">Publish Date:</label>
-        <input type="date" id="date" name="date" required>
+    <div id="dashboard-container" style="display: none;">
+        <h1>Blog Dashboard</h1>
+        
+        <div class="posts-container">
+            <div class="post-section">
+                <h2>Latest Post</h2>
+                <div id="latest-post" class="post-edit-form">
+                    <label for="latest-title">Title:</label>
+                    <input type="text" id="latest-title" name="title" required>
 
-        <label for="excerpt">Excerpt:</label>
-        <input type="text" id="excerpt" name="excerpt" required>
+                    <label for="latest-date">Publish Date:</label>
+                    <input type="date" id="latest-date" name="date" required>
 
-        <label for="thumbnail">Thumbnail Image name:</label>
-        <input type="text" id="thumbnail" name="thumbnail" required>
+                    <label for="latest-excerpt">Excerpt:</label>
+                    <textarea id="latest-excerpt" name="excerpt" required></textarea>
 
-        <label for="key">Password:</label>
-        <input type="password" id="key" name="key" required>
+                    <label for="latest-thumbnail">Thumbnail Image:</label>
+                    <input type="text" id="latest-thumbnail" name="thumbnail" required>
 
-        <button type="submit">Submit</button>
-    </form>
+                    <label for="latest-link">Post Link:</label>
+                    <input type="text" id="latest-link" name="link" required>
+                </div>
+            </div>
+
+            <div class="post-section">
+                <h2>Featured Posts</h2>
+                
+                <div id="featured-posts">
+                    <!-- Featured post forms will be dynamically added here -->
+                </div>
+            </div>
+
+            <button id="save-button">Save Changes</button>
+        </div>
+    </div>
 </body>
 </html>
