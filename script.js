@@ -11,7 +11,7 @@ homelink.addEventListener('click', () => {
 });
 
 bloglink.addEventListener('click', () => {
-    window.location = "blog.html";
+    window.location = "https://blog.beyondmebtw.com";
 });
 
 projlink.addEventListener('click', () => {
