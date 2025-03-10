@@ -1,12 +1,12 @@
 /* featured-posts.css */
 .featured-posts {
-    grid-column: 1 / 3; /* Span last two columns */
-    grid-row: 3 / 5;
+    grid-column: 1 / 5; /* Span all four columns */
+    grid-row: 3 / 4;    /* Take one row only */
 }
 
 .featured-posts-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr); /* Changed from 2 to 4 columns */
     grid-gap: 15px;
     margin-bottom: 20px;
 }
@@ -28,8 +28,9 @@
 
 .featured-post-img {
     width: 100%;
-    height: 160px;
+    aspect-ratio: 16 / 9; /* Set a fixed aspect ratio */
     object-fit: cover;
+    object-position: center; /* Centers the focus point */
 }
 
 .featured-post-details {
