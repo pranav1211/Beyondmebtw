@@ -1,40 +1,37 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const forms = document.querySelectorAll("form");
+    const form = document.querySelector("form");
 
-    forms.forEach((form) => {
-        form.addEventListener("submit", (event) => {
-            event.preventDefault();
+    form.addEventListener("submit", (event) => {
+        event.preventDefault(); // Prevent form submission
 
-            const formData = new FormData(form);
-            const queryParams = [];
+        const formData = new FormData(form);
+        const queryStringParams = new URLSearchParams();
 
-            formData.forEach((value, key) => {
-                if (value.trim() !== "") {
-                    queryParams.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
-                }
-            });
-
-            const queryString = queryParams.join("&");
-            const url = `https://manage.beyondmebtw.com/latestdata?${queryString}`;
-
-            fetch(url)
-                .then((response) => {
-                    if (!response.ok) {
-                        if (response.status === 403) {
-                            throw new Error("Authentication failed. Check your API key.");
-                        }
-                        throw new Error(`Server responded with status: ${response.status}`);
-                    }
-                    return response.text();
-                })
-                .then(() => {
-                    alert("Data updated successfully!");
-                    form.reset();
-                })
-                .catch((error) => {
-                    alert(`Error: ${error.message}`);
-                    console.error(error);
-                });
+        formData.forEach((value, key) => {
+            if (value.trim() !== "") {
+                queryStringParams.append(key, value.trim());
+            }
         });
+
+        const queryString = queryStringParams.toString();
+        const url = queryString ? `/api?${queryString}` : "/api";
+
+        console.log("Constructed URL:", url);
+
+        fetch(url)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`Server responded with status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log("Response Data:", data);
+                // You can display the fetched data on the page or process it further
+            })
+            .catch((error) => {
+                console.error("Error fetching data:", error.message);
+                alert(error.message);
+            });
     });
 });
