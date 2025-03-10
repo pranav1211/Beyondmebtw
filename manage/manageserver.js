@@ -20,35 +20,99 @@ try {
 }
 
 // Load JSON data with error handling
-let jsdata;
+let blogData;
 try {
-  jsdata = JSON.parse(fs.readFileSync('latest.json', 'utf8'));
+  blogData = JSON.parse(fs.readFileSync('latest.json', 'utf8'));
   console.log('JSON data loaded successfully');
 } catch (err) {
   console.error('Error loading JSON file:', err);
   // Create a default structure if file doesn't exist
-  jsdata = { name: "", date: "", excerpt: "", thumbnail: "" };
+  blogData = {
+    latestPost: {
+      title: "",
+      date: "",
+      excerpt: "",
+      thumbnail: "",
+      link: ""
+    },
+    featuredPosts: [
+      {
+        title: "",
+        date: "",
+        excerpt: "",
+        thumbnail: "",
+        link: ""
+      },
+      {
+        title: "",
+        date: "",
+        excerpt: "",
+        thumbnail: "",
+        link: ""
+      },
+      {
+        title: "",
+        date: "",
+        excerpt: "",
+        thumbnail: "",
+        link: ""
+      }
+    ]
+  };
+  
   // Write the default structure to file
-  fs.writeFileSync('latest.json', JSON.stringify(jsdata), 'utf8');
+  fs.writeFileSync('latest.json', JSON.stringify(blogData, null, 2), 'utf8');
   console.log('Created new JSON file with default structure');
 }
 
-function updateData(name, date, excerpt, thumbnail) {
-  jsdata.title = name;
-  jsdata.date = date;
-  jsdata.excerpt = excerpt;
-  jsdata.thumbnail = thumbnail;
+// Update the entire blog data
+function updateBlogData(newData) {
+  blogData = newData;
 
-  fs.writeFile('latest.json', JSON.stringify(jsdata), 'utf8', (err) => {
+  fs.writeFile('latest.json', JSON.stringify(blogData, null, 2), 'utf8', (err) => {
     if (err) {
       console.error('Error writing to JSON file:', err);
-      return;
+      return false;
     }
-    console.log("Data updated successfully");
+    console.log("Blog data updated successfully");
+    return true;
   });
-} 
+}
 
-http.createServer((request, response) => {
+// Parse request body for POST requests
+function parseBody(request) {
+  return new Promise((resolve, reject) => {
+    if (request.method !== 'POST') {
+      return resolve({});
+    }
+
+    let body = '';
+    request.on('data', chunk => {
+      body += chunk.toString();
+      
+      // Limit size to prevent abuse
+      if (body.length > 1e6) {
+        request.connection.destroy();
+        reject(new Error('Request body too large'));
+      }
+    });
+
+    request.on('end', () => {
+      try {
+        const params = new URLSearchParams(body);
+        const result = {};
+        for (const [key, value] of params.entries()) {
+          result[key] = value;
+        }
+        resolve(result);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  });
+}
+
+http.createServer(async (request, response) => {
   const url = new URL(request.url, `http://${request.headers.host}`);
   const path = url.pathname;
 
@@ -64,34 +128,130 @@ http.createServer((request, response) => {
     return;
   }
 
-  if (path === '/latestdata') {
+  // Verify password endpoint
+  if (path === '/verify') {
     const parameters = url.searchParams;
-
-    const name = parameters.get('name');
-    const date = parameters.get('date');
-    const excerpt = parameters.get('excerpt');
-    const thumbnail = parameters.get('thumbnail');
     const key = parameters.get('key');
 
-    console.log('Received update request with key:', key);
+    console.log('Received verification request');
 
     if (key === thepasskey) {
-      updateData(name, date, excerpt, thumbnail);
-      response.writeHead(200, { 'Content-Type': 'text/html' });
-      response.end("<html><body><h1>Data updated successfully.</h1><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>");      
+      response.writeHead(200, { 'Content-Type': 'application/json' });
+      response.end(JSON.stringify({ success: true }));
     } else {
-      console.log('Authorization failed. Provided key:', key, 'Expected key:', thepasskey);
-      response.statusCode = 403;
-      response.end("Unauthorized access - Invalid key");
+      console.log('Verification failed');
+      response.writeHead(403, { 'Content-Type': 'application/json' });
+      response.end(JSON.stringify({ success: false, message: "Invalid authentication" }));
     }
-  } else if (path === '/') {
-    // Serve a simple status page
-    response.writeHead(200, { 'Content-Type': 'text/html' });
-    response.end("<html><body><h1>Server is running</h1><p>The data update service is active.</p></body></html>");
-  } else {
+  }
+  // Get current data
+  else if (path === '/data') {
+    response.writeHead(200, { 'Content-Type': 'application/json' });
+    response.end(JSON.stringify(blogData));
+  }
+  // Update data
+  else if (path === '/update') {
+    try {
+      // For POST requests, parse the body
+      let dataToUpdate, key;
+      
+      if (request.method === 'POST') {
+        const body = await parseBody(request);
+        dataToUpdate = JSON.parse(body.data || '{}');
+        key = body.key;
+      } else {
+        // For GET requests, use query parameters
+        const parameters = url.searchParams;
+        key = parameters.get('key');
+        
+        // Legacy support
+        if (parameters.get('name')) {
+          // Convert old format to new format
+          dataToUpdate = {
+            latestPost: {
+              title: parameters.get('name') || "",
+              date: parameters.get('date') || "",
+              excerpt: parameters.get('excerpt') || "",
+              thumbnail: parameters.get('thumbnail') || "",
+              link: parameters.get('link') || ""
+            },
+            featuredPosts: blogData.featuredPosts || []
+          };
+        } else {
+          response.statusCode = 400;
+          response.end(JSON.stringify({ 
+            success: false, 
+            message: "Invalid request format" 
+          }));
+          return;
+        }
+      }
+
+      console.log('Received update request');
+
+      if (key === thepasskey) {
+        updateBlogData(dataToUpdate);
+        response.writeHead(200, { 'Content-Type': 'application/json' });
+        response.end(JSON.stringify({ 
+          success: true, 
+          message: "Data updated successfully" 
+        }));
+      } else {
+        console.log('Update authorization failed');
+        response.writeHead(403, { 'Content-Type': 'application/json' });
+        response.end(JSON.stringify({ 
+          success: false, 
+          message: "Unauthorized access - Invalid key" 
+        }));
+      }
+    } catch (error) {
+      console.error('Error processing update request:', error);
+      response.statusCode = 400;
+      response.end(JSON.stringify({ 
+        success: false, 
+        message: "Invalid request data" 
+      }));
+    }
+  }
+  // Serve static files
+  else if (path === '/' || path === '/index.html') {
+    fs.readFile('index.html', (err, data) => {
+      if (err) {
+        response.statusCode = 500;
+        response.end("Error loading index.html");
+        return;
+      }
+      response.writeHead(200, { 'Content-Type': 'text/html' });
+      response.end(data);
+    });
+  }
+  else if (path === '/index.js') {
+    fs.readFile('index.js', (err, data) => {
+      if (err) {
+        response.statusCode = 500;
+        response.end("Error loading index.js");
+        return;
+      }
+      response.writeHead(200, { 'Content-Type': 'application/javascript' });
+      response.end(data);
+    });
+  }
+  else if (path === '/styles.css') {
+    fs.readFile('styles.css', (err, data) => {
+      if (err) {
+        response.statusCode = 500;
+        response.end("Error loading styles.css");
+        return;
+      }
+      response.writeHead(200, { 'Content-Type': 'text/css' });
+      response.end(data);
+    });
+  }
+  // Handle not found
+  else {
     response.statusCode = 404;
     response.end("Not Found");
   }
 }).listen(7000);
 
-console.log('Server running at http://localhost:7000/'); 
+console.log('Server running at http://localhost:7000/');

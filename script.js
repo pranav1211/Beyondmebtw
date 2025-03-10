@@ -88,32 +88,4 @@ function showToast(message) {
     }, 3000);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    fetch('https://beyondmebtw.com/manage/latest.json') // Make sure the path matches the server's location for the file
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(`Failed to fetch JSON: ${response.statusText}`);
-            }
-            return response.json(); // Parse the JSON
-        })
-        .then((data) => {
-            // Access the variables
-            const title = data.title;
-            const date = data.date;
-            const excerpt = data.excerpt;
-            const thumbnail = data.thumbnail;
 
-            console.log("Title:", title);
-            console.log("Date:", date);
-            console.log("Excerpt:", excerpt);
-            console.log("Thumbnail:", thumbnail);
-
-            document.querySelector('.latest-post-title').innerText = title;
-            document.querySelector('.latest-post-date').innerText = date;
-            document.querySelector('.latest-post-excerpt').innerText = excerpt;
-            document.querySelector('.latest-post-img').src = "https://beyondmebtw.com/assets/images/thumbnails/"+thumbnail;
-        })
-        .catch((error) => {
-            console.error("Error fetching JSON data:", error);
-        });
-});
