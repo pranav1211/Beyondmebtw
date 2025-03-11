@@ -58,6 +58,12 @@
     .link {
         padding: 8px 25px;
     }
+
+    #footer {
+        display: flex;
+        justify-content: center;
+        text-align: center;
+    }
 }
 
 /* Small Screens (max-width: 992px) */
@@ -116,6 +122,12 @@
 
     .link {
         padding: 8px 20px;
+    }
+
+    #footer {
+        display: flex;
+        justify-content: center;
+        text-align: center;
     }
 }
 /* Mobile Screens (max-width: 768px) */
@@ -200,5 +212,11 @@
     .latest-post-img {
         width: 100%;
         margin-bottom: 15px;
+    }
+
+    #footer {
+        display: flex;
+        justify-content: center;
+        text-align: center;
     }
 }
