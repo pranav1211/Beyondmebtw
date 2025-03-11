@@ -107,8 +107,8 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelector('.latest-post-content').onclick = () => window.open(mainLink, '_blank');
             document.querySelector('.read-more').onclick = () => window.open(mainLink, '_blank');
 
-            console.log("Main Post:");
-            console.log({ mainTitle, mainDate, mainExcerpt, mainThumbnail, mainLink });
+            // console.log("Main Post:");
+            // console.log({ mainTitle, mainDate, mainExcerpt, mainThumbnail, mainLink });
 
             for (i = 0; i < 4; i++) {
                 var divid = "fp" + i                
@@ -124,11 +124,11 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelector(".fp3").onclick = () => window.open(featuredPosts[3].link, '_blank');
 
 
-            console.log("\nFeatured Posts:");
-            featuredDetails.forEach((post, index) => {
-                console.log(`Featured Post ${index + 1}:`);
-                console.log(post);
-            });
+            // console.log("\nFeatured Posts:");
+            // featuredDetails.forEach((post, index) => {
+            //     console.log(`Featured Post ${index + 1}:`);
+            //     console.log(post);
+            // });
 
         })
         .catch((error) => {
