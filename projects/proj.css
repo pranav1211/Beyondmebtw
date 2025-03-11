@@ -1,11 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Kreon:wght@300..700&display=swap');
 
-#cs{
-    display: flex;
-    justify-content: center;
-    font-size: 60px;
-}
-
 * {
     margin: 0;
     padding: 0;
@@ -71,4 +65,15 @@ header {
     justify-content: center;
     text-align: center;
     margin-top: 20px;
+}
+
+.view-all-btn {
+    margin-right: 25%;
+    margin-left: 25%;
+}
+
+#cs{
+    display: flex;
+    justify-content: center;
+    font-size: 60px;
 }
