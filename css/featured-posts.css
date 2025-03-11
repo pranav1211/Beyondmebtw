@@ -62,18 +62,24 @@
     overflow: hidden;
 }
 
+.featured-posts-footer {
+    grid-column: 2 / 4; /* Span only two columns */
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
 .featured-posts .view-all-btn {
     display: block;
     text-align: center;
     background-color: #6a5a4a;
     color: #fff;
     text-decoration: none;
-    padding: 12px;
+    padding: 12px 20px;
     border-radius: 30px;
     font-weight: 500;
     font-size: 16px;
     transition: background-color 0.3s;
-    margin-top: 20px;
 }
 
 .featured-posts .view-all-btn:hover {
