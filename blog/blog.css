@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Kreon:wght@300..700&display=swap');
+
+#cs{
+    display: flex;
+    justify-content: center;
+    font-size: 60px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #F4F2EF;
+    font-family: "Kreon", serif;
+    padding-bottom: 40px;
+}
+
+header {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 30px;
+}
+
+#name {
+    font-family: "Permanent Marker", cursive;
+    font-weight: 400;
+    font-style: normal;
+    font-optical-sizing: auto;
+    font-size: 58px;
+    margin-top: 15px;
+    margin-left: 95px;
+    display: block;
+    color: #3b342d;
+
+}
+
+#links {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    margin-top: 27px;
+    font-optical-sizing: auto;
+    font-size: 27px;
+    /* Changed from vw to px */
+    font-style: normal;
+    font-weight: 400;
+    background-color: #E8D9CD;
+    padding: 7.5px;
+    border-radius: 60px;
+}
+
+.link {
+    padding: 10px 40px;
+    cursor: pointer;
+    transition: background-color 0.3s, border-radius 0.3s;
+    border-radius: 60px;
+}
+
+.link:hover {
+    background-color: rgba(244, 242, 239, 0.7);
+    border-radius: 60px;
+}
+
+#footer {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin-top: 20px;
+}

@@ -7,7 +7,7 @@ const aboutlink = document.querySelector('#about');
 homelink.style.backgroundColor = '#F4F2EF';
 
 homelink.addEventListener('click', () => {
-    window.location = "index.html";
+    window.location = "https://beyondmebtw.com";
 });
 
 bloglink.addEventListener('click', () => {
