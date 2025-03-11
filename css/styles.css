@@ -16,7 +16,7 @@ header {
     position: relative;
     display: flex;
     align-items: flex-start;
-    margin-bottom: 30px;    
+    margin-bottom: 30px;
 }
 
 #name {
@@ -39,7 +39,8 @@ header {
     display: flex;
     margin-top: 27px;
     font-optical-sizing: auto;
-    font-size: 27px; /* Changed from vw to px */
+    font-size: 27px;
+    /* Changed from vw to px */
     font-style: normal;
     font-weight: 400;
     background-color: #E8D9CD;
@@ -59,3 +60,9 @@ header {
     border-radius: 60px;
 }
 
+#footer {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin-top: 20px;
+}
