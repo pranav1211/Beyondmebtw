@@ -45,9 +45,13 @@
         grid-template-columns: repeat(2, 1fr); /* Reduce from 4 to 2 columns */
     }
 
-    .section-title,
-    .contact-header,
-    .latest-post-header {
+    .section-title,.latest-post-header{
+        font-size: 28px;        
+    }
+    .latest-post-header{
+        align-self: center;
+    }
+    .contact-header{
         font-size: 22px;
     }
 
@@ -128,6 +132,10 @@
         display: flex;
         justify-content: center;
         text-align: center;
+    }
+    .view-all-btn {
+        margin-right: 25%;
+        margin-left: 25%;
     }
 }
 /* Mobile Screens (max-width: 768px) */
@@ -218,5 +226,10 @@
         display: flex;
         justify-content: center;
         text-align: center;
+    }
+
+    .view-all-btn {
+        margin-right: 0%;
+        margin-left: 0%;
     }
 }
