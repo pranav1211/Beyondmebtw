@@ -15,11 +15,11 @@ bloglink.addEventListener('click', () => {
 });
 
 projlink.addEventListener('click', () => {
-    window.location = "projects.html";
+    window.location = "https://beyondmebtw.com/projects";
 });
 
 aboutlink.addEventListener('click', () => {
-    window.location = "about.html";
+    window.location = "https://beyondmebtw.com/about";
 });
 
 // Profile image hover effect
