@@ -42,18 +42,19 @@
 }
 
 .view-all-btn {
-    grid-column: 2 / 4; /* Spanning only 2 columns */
-    justify-self: center;
-    margin-top: 10px;
-    padding: 10px 20px;
-    background-color: #4a3f35;
-    color: white;
+    display: block;
     text-align: center;
+    background-color: #6a5a4a;
+    color: #fff;
     text-decoration: none;
-    border-radius: 5px;
+    padding: 12px;
+    border-radius: 30px;
+    font-weight: 500;
+    font-size: 16px;
     transition: background-color 0.3s;
+    margin-top: 10px;
 }
 
 .view-all-btn:hover {
-    background-color: #6a5a4a;
+    background-color: #5a4c3e;
 }
