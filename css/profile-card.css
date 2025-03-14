@@ -1,32 +1,39 @@
 /* profile-card.css */
 .profile-card {
-   grid-column: 1 / 2; /* Keep in first column */
-    grid-row: 1 / 3;
-    position: relative;
-    overflow: hidden;
-    border-radius: 15px;
-    background: linear-gradient(145deg, #e0d0be, #f0e6dd);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-    height: 100%;
-}
-
-.profile-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    border-radius: 15px;
-}
-
-.profile-pic {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s;
-}
-
-.profile-pic:hover {
-    transform: scale(1.03);
-}
+    grid-column: 1 / 2; /* Keep in first column */
+     grid-row: 1 / 3;
+     position: relative;
+     overflow: hidden;
+     border-radius: 15px;
+     background: linear-gradient(145deg, #e0d0be, #f0e6dd);
+     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+     height: 100%;
+     padding: 0;
+     display: flex; /* Add display flex */
+     align-items: center; /* Center content vertically */
+     justify-content: center; /* Center content horizontally */
+ }
+ 
+ .profile-image {
+     position: relative; /* Changed from absolute to relative */
+     width: 100%;
+     height: 100%;
+     overflow: hidden;
+     border-radius: 15px;
+     display: flex; /* Add display flex */
+     align-items: center; /* Center image vertically */
+     justify-content: center; /* Center image horizontally */
+ }
+ 
+ .profile-pic {
+     width: 100%;
+     height: 100%;
+     object-fit: cover; /* Changed from cover to contain */
+     max-height: 100%; /* Ensure it doesn't exceed container height */
+     max-width: 100%; /* Ensure it doesn't exceed container width */
+     transition: transform 0.5s;    
+ }
+ 
+ .profile-pic:hover {
+     transform: scale(1.03);
+ }

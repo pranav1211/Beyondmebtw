@@ -16,6 +16,10 @@
     padding: 15px;
     border-radius: 15px;
     transition: transform 0.3s, box-shadow 0.3s;
+    position: relative; /* Add this to position the button relative to the card */
+    display: flex;
+    flex-direction: column; /* Allow proper positioning of elements */
+    min-height: 180px; /* Ensure cards have minimum height for button positioning */
 }
 
 .project-card:hover {
@@ -29,16 +33,17 @@
 }
 
 .project-title {
-    font-size: 18px;
-    font-weight: 500;
+    font-size: 26px;
+    font-weight: bold;
     margin-bottom: 8px;
     color: #4a3f35;
 }
 
 .project-desc {
-    font-size: 14px;
-    color: #6a5a4a;
+    font-size: 16px;
+    color: #3b342d;
     line-height: 1.4;
+    margin-bottom: 40px; /* Add space for the button */
 }
 
 .view-all-btn {
@@ -57,4 +62,29 @@
 
 .view-all-btn:hover {
     background-color: #5a4c3e;
+}
+
+.project-explore {
+    position: absolute; /* Position absolutely within the card */
+    bottom: 15px; /* Distance from the bottom */
+    right: 15px; /* Distance from the right */
+    background-color: #6a5a4a;
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-family: "Kreon", serif;
+    font-weight: 500;
+    font-size: 18px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.project-explore:hover {
+    background-color: #5a4c3e;
+    transform: translateY(-2px);
+}
+
+.project-details {
+    padding: 12px;
 }
