@@ -73,7 +73,6 @@ function showToast(message) {
     }, 3000);
 }
 
-
 document.addEventListener("DOMContentLoaded", () => {
     fetch('manage/latest.json')
     // fetch('https://beyondembtw.com/manage/latest.json')
@@ -138,5 +137,5 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch((error) => {
             console.error("Error fetching JSON data:", error);
-        });
+        });              
 });

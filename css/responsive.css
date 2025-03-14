@@ -191,6 +191,11 @@
 
 /* Mobile Screens (max-width: 768px) */
 @media (max-width: 768px) {
+    
+    .theme-toggle-container {
+        margin-top: -2px;
+    }
+
     header {
         margin-bottom: 0px;
     }
