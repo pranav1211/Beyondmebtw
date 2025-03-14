@@ -39,13 +39,14 @@ header {
     display: flex;
     margin-top: 27px;
     font-optical-sizing: auto;
-    font-size: 27px;
-    /* Changed from vw to px */
-    font-style: normal;
-    font-weight: 400;
+    font-size: 27px;    
+    font-style: normal;    
     background-color: #E8D9CD;
     padding: 7.5px;
     border-radius: 60px;
+    font-family: "Delius", cursive;
+    font-weight: 600;
+    font-style: normal;
 }
 
 .link {
@@ -70,4 +71,37 @@ header {
 .view-all-btn {
     margin-right: 37.5%;
     margin-left: 37.5%;
+}
+
+/***** Bento Grid ***/
+.bento-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr; /* Change to 4 equal columns */
+    grid-auto-rows: minmax(200px, auto);
+    grid-gap: 15px;
+    padding: 0 40px;
+    max-width: 1800px;
+    margin: 0 auto;
+}
+
+.bento-item {
+    background-color: #E8D9CD;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.bento-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #4a3f35;
 }
