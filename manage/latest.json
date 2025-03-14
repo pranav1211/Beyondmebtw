@@ -1,6 +1,6 @@
 {
   "mainPost": {
-    "title": "Beyond Me Btw : A New Chapter",
+    "title": "Drive To Survive Season 7 : It's Alright",
     "date": "March 10, 2025",
     "excerpt": "Season 7 of Drive to Survive captures the big stories brilliantly but stumbles on the finer details, sacrificing authenticity for dramatized narratives. This season dives into the all the crazy that happened in the 2024 season and it was ...",
     "thumbnail": "dts7.webp",
@@ -34,6 +34,28 @@
       "excerpt": "Two years ago, I launched my blog, Beyond Me Btw, with the goal of exploring new experiences and ...",
       "thumbnail": "bmbv2.webp",
       "link": "https://medium.com/@beyondmebtw/beyond-me-btw-a-new-chapter-6268aa22a706"
+    }
+  ],
+  "projects": [
+    {
+      "title": "Real Time Driver Monitoring System",
+      "excerpt": "An application that uses AI, ML and Computer vision technology to help enhance road safety.",
+      "link": "https://github.com/pranav1211/RTDMS"
+    },
+    {
+      "title": "Pair Game",
+      "excerpt": "A fun game inspired by classic memory games created from scratch",
+      "link": "https://beyondmebtw.com/projects/pairgame"
+    },
+    {
+      "title": "My Library",
+      "excerpt": "A personal library organizer where you can scan books and access them anytime",
+      "link": "https://library.beyondmebtw.com"
+    },
+    {
+      "title": "Beyond Me Btw",
+      "excerpt": "A personal Blog built from scratch to explore",
+      "link": "https://github.com/pranav1211/Beyondmebtw"
     }
   ]
 }

@@ -24,7 +24,7 @@
 .latest-post-img {
     width: 35%;
     border-radius: 12px;
-    aspect-ratio: 16 / 9; /* Set a reasonable aspect ratio */
+    aspect-ratio: 16 / 9;
     object-fit: cover;
     object-position: center; /* Centers the focus */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);

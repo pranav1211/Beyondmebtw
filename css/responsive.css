@@ -1,91 +1,130 @@
-/* Responsive Styles */
-
-/* Desktop to Tablet Transition (max-width: 1385px) */
-@media (max-width: 1385px) {
-    header {
-        flex-direction: column;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-    
-    #name {
-        font-size: 46px;
-        margin: 20px 0 15px 0; /* Center it and add space below */
-        text-align: center;
-        width: 100%;
-        display: block;
-    }
-    
-    #links {
-        position: relative; /* Change from absolute positioning */
-        left: auto;
-        transform: none;
-        width: auto; /* Let it size naturally */
-        margin: 0 auto 15px auto;
-        font-size: 18px;
-    }
-    
-    .link {
-        padding: 8px 30px;
-    }
-}
-
-/* Medium Screens (max-width: 1200px) */
-@media (max-width: 1200px) {
-    .bento-grid {
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-        padding: 0 20px;
-    }
-
-    .featured-posts-container {
-        grid-template-columns: repeat(2, 1fr); /* Reduce from 4 to 2 columns */
-    }
-
-    .projects-grid {
-        grid-template-columns: repeat(2, 1fr); /* Reduce from 4 to 2 columns */
-    }
-
-    .section-title,.latest-post-header{
-        font-size: 28px;        
-    }
-    .latest-post-header{
-        align-self: center;
-    }
-    .contact-header{
-        font-size: 22px;
-    }
-
-    #links {
-        font-size: 16px;
-    }
-
-    .link {
-        padding: 8px 25px;
-    }
-
-    #footer {
-        display: flex;
-        justify-content: center;
-        text-align: center;
-    }
-}
-
-/* Small Screens (max-width: 992px) */
+ /* Get in Touch responsiveness improvements */
+ .get-in-touch {
+     display: flex;
+     flex-direction: column;
+     height: 100%;
+ }
+ 
+ .contact-form {
+     display: flex;
+     flex-direction: column;
+     flex-grow: 1;
+ }
+ 
+ .form-group {
+     margin-bottom: 15px;
+ }
+ 
+ /* Responsive Styles */
+ 
+ /* Desktop to Tablet Transition (max-width: 1385px) */
+ @media (max-width: 1385px) {
+     header {
+         flex-direction: column;
+         align-items: center;
+         margin-bottom: 20px;
+     }
+     
+     #name {
+         font-size: 46px;
+         margin: 20px 0 15px 0; /* Center it and add space below */
+         text-align: center;
+         width: 100%;
+         display: block;
+     }
+     
+     #links {
+         position: relative; /* Change from absolute positioning */
+         left: auto;
+         transform: none;
+         width: auto; /* Let it size naturally */
+         margin: 0 auto 15px auto;
+         font-size: 18px;
+     }
+     
+     .link {
+         padding: 8px 30px;
+     }
+ }
+ 
+ /* Medium Screens (max-width: 1200px) */
+ @media (max-width: 1200px) {
+     .bento-grid {
+         grid-template-columns: 1fr 1fr 1fr 1fr;
+         padding: 0 20px;
+     }
+ 
+     .featured-posts-container {
+         grid-template-columns: repeat(2, 1fr); /* Reduce from 4 to 2 columns */
+     }
+ 
+     .projects-grid {
+         grid-template-columns: repeat(2, 1fr); /* Reduce from 4 to 2 columns */
+     }
+ 
+     .section-title,.latest-post-header{
+         font-size: 28px;        
+     }
+     .latest-post-header{
+         align-self: center;
+     }
+     .contact-header{
+         font-size: 22px;
+     }
+ 
+     #links {
+         font-size: 16px;
+     }
+ 
+     .link {
+         padding: 8px 25px;
+     }
+ 
+     #footer {
+         display: flex;
+         justify-content: center;
+         text-align: center;
+     }
+     
+     /* Latest post responsiveness improvements */
+     .latest-post-content {
+         flex-direction: column;
+     }
+     
+     .latest-post-img {
+         width: 100%;
+         margin-right: 0;
+         margin-bottom: 15px;
+     }
+     
+     .latest-post-details {
+         width: 100%;
+     }
+ }
+ 
+ /* Additional improvements for Get in Touch on tablets */
+ @media (max-width: 1200px) and (min-width: 769px) {
+     .get-in-touch {
+         padding: 20px;
+     }
+     
+     .contact-header {
+         margin-bottom: 15px;
+     }
+     
+     .form-group input,
+     .form-group textarea {
+         padding: 10px;
+     }
+     
+     .send-message-btn {
+         padding: 10px 20px;
+         align-self: flex-start;
+     }
+ }
+ 
+/* Small Screens (max-width: 992px) continued */
 @media (max-width: 992px) {
-    .bento-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .profile-card {
-        grid-column: 1 / 2;
-        grid-row: 1 / 3;
-    }
-
-    .welcome-section {
-        grid-column: 2 / 3;
-        grid-row: 1 / 2;
-    }
-
     .latest-post {
         grid-column: 2 / 3;
         grid-row: 2 / 3;
@@ -104,6 +143,12 @@
     .get-in-touch {
         grid-column: 1 / 2;
         grid-row: 5 / 6;
+        min-height: 400px;
+        height: auto;
+    }
+    
+    .form-group textarea {
+        min-height: 100px;
     }
 
     .twitter-feed {
@@ -133,11 +178,13 @@
         justify-content: center;
         text-align: center;
     }
+    
     .view-all-btn {
         margin-right: 25%;
         margin-left: 25%;
     }
 }
+
 /* Mobile Screens (max-width: 768px) */
 @media (max-width: 768px) {
     header {
@@ -187,6 +234,8 @@
 
     .profile-card {
         grid-row: 1 / 3;
+        height: auto;
+        min-height: 350px;
     }
 
     .welcome-section {
@@ -199,6 +248,7 @@
 
     .get-in-touch {
         grid-row: 5 / 7;
+        min-height: 450px;
     }
 
     .projects-showcase {
@@ -231,5 +281,20 @@
     .view-all-btn {
         margin-right: 0%;
         margin-left: 0%;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 576px) {
+    .get-in-touch {
+        padding: 15px;
+    }
+    
+    .contact-header {
+        font-size: 20px;
+    }
+    
+    .form-group {
+        margin-bottom: 10px;
     }
 }
