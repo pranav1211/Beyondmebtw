@@ -5,15 +5,15 @@ Check out the site : www.Beyondmebtw.com
 <img src="https://beyondmebtw.com/assets/images/homepage.png" alt="Home page">
 
 
-Changelog :
+## Changelog:
 
-    V 2.1 14/3/25
-      -> added a light/dark mode toggle button (still in development)
-      -> fixed medium logo in the get in touch section
-      -> made the featured projects retrieve data from JSON file
-      -> Chnaged font of the header links
+### V 2.1 (14/3/25)
+- Added a light/dark mode toggle button (still in development)
+- Fixed Medium logo in the "Get in Touch" section
+- Made the featured projects retrieve data from a JSON file
+- Changed font of the header links
 
-    V 2.0 3/3/25
-      -> Launched Version 2 of the revamp.
-      -> Old version can be viewed at https://beyondmebtw.com/projects/V1
-      -> Stopped updating Wix site due to too many bugs, blogs posted only on (Medium)[https://blog.beyondmebtw.com]
+### V 2.0 (3/3/25)
+- Launched Version 2 of the revamp
+- Old version can be viewed at [Beyond Me Btw V1](https://beyondmebtw.com/projects/V1)
+- Stopped updating Wix site due to too many bugs, blogs posted only on [Medium](https://blog.beyondmebtw.com)
