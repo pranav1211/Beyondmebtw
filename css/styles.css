@@ -73,6 +73,23 @@ header {
     margin-left: 37.5%;
 }
 
+/* Theme toggle container positioning */
+.theme-toggle-container {
+    position: absolute;
+    right: 120px;
+    top: 37px;
+}
+
+/* For responsive design */
+@media (max-width: 768px) {
+    .theme-toggle-container {
+        position: static;
+        display: flex;
+        justify-content: center;
+        margin-top: 15px;
+    }
+}
+
 /***** Bento Grid ***/
 .bento-grid {
     display: grid;

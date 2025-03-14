@@ -2,14 +2,13 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
         content="Explore insightful articles by Pranav Veeraghanta, diving into personal experiences, and in-depth reviews of movies, TV shows, technology and Formula 1. Beyond Me Btw celebrates storytelling and innovation. This blog aims to Connect, Grow and Have Fun.">
 
     <title>Home | BeyondMeBtw</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8">
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="icon" type="image/x-icon" href="https://beyondmebtw.com/assets/images/favicon.ico">
     <meta property="og:image" content="https://beyondmebtw.com/assets/images/favicon.ico">
@@ -19,14 +18,13 @@
         href="https://fonts.googleapis.com/css2?family=Audiowide&family=Delius&family=Kreon:wght@300&family=Permanent+Marker&display=swap"
         rel="stylesheet">
 
-
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/profile-card.css">
     <link rel="stylesheet" href="css/welcome-card.css">
     <link rel="stylesheet" href="css/latest-post.css">
     <link rel="stylesheet" href="css/get-in-touch.css">
     <link rel="stylesheet" href="css/featured-posts.css">
-    <link rel="stylesheet" href="css/projects-showcase.css">    
+    <link rel="stylesheet" href="css/projects-showcase.css">
     <link rel="stylesheet" href="css/responsive.css">
 
 </head>
@@ -56,6 +54,22 @@
             <div id="blog" class="link">Blog</div>
             <div id="projects" class="link">Projects</div>
             <div id="about" class="link">About</div>
+        </div>
+        <div class="theme-toggle-container pb-5">
+            <label class="inline-flex items-center cursor-pointer">
+                <input type="checkbox" value="" class="sr-only peer" id="theme-switch">
+                <div class="relative w-28 h-14 bg-[#F4F2EF] border-2 border-[#3b342d] shadow-md peer-focus:outline-none rounded-full
+                    peer peer-checked:after:translate-x-[calc(100%+8px)] rtl:peer-checked:after:translate-x-0 peer-checked:after:border-[#E8D9CD]
+                    after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-[#bbafa5] after:border-2 
+                    after:rounded-full after:h-12 after:w-12 after:transition-all peer-checked:bg-[#3b342d]">
+                    <span class="absolute inset-0 flex items-center justify-start pl-2 pointer-events-none">
+                        <img src="assets/images/darkmode.svg" class="h-10 w-10" alt="Light Mode">
+                    </span>
+                    <span class="absolute inset-0 flex items-center justify-end pr-2 pointer-events-none">
+                        <img src="assets/images/lightmode.svg" class="h-10 w-10" alt="Dark Mode">
+                    </span>
+                </div>
+            </label>
         </div>
     </header>
 
