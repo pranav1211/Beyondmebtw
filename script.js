@@ -75,8 +75,8 @@ function showToast(message) {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-    // fetch('manage/latest.json')
-    fetch('https://beyondembtw.com/manage/latest.json')
+    fetch('manage/latest.json')
+    // fetch('https://beyondembtw.com/manage/latest.json')
         .then((response) => {
             if (!response.ok) {
                 throw new Error(`Failed to fetch JSON: ${response.statusText}`);
