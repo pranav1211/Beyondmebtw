@@ -120,16 +120,14 @@ document.addEventListener("DOMContentLoaded", () => {
             const featuredprojects = data.projects;
 
             for (i = 0; i < 4; i++) {
-                var divid = "p" + i
-                console.log(divid)     
-
+                var divid = "p" + i                 
                 document.querySelector("." + divid + "title").innerText = featuredprojects[i].title;
                 document.querySelector("." + divid + "excerpt").innerText = featuredprojects[i].excerpt;
             }
-            document.querySelector(".p1").onclick = () => window.open(featuredprojects[0].link, '_blank');
-            document.querySelector(".p2").onclick = () => window.open(featuredprojects[1].link, '_blank');
-            document.querySelector(".p3").onclick = () => window.open(featuredprojects[2].link, '_blank');
-            document.querySelector(".p4").onclick = () => window.open(featuredprojects[3].link, '_blank');
+            document.querySelector(".p0").onclick = () => window.open(featuredprojects[0].link, '_blank');
+            document.querySelector(".p1").onclick = () => window.open(featuredprojects[1].link, '_blank');
+            document.querySelector(".p2").onclick = () => window.open(featuredprojects[2].link, '_blank');
+            document.querySelector(".p3").onclick = () => window.open(featuredprojects[3].link, '_blank');
 
             // console.log("\nFeatured Posts:");
             // featuredDetails.forEach((post, index) => {
