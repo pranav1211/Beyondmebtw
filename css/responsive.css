@@ -1,128 +1,128 @@
- /* Get in Touch responsiveness improvements */
- .get-in-touch {
-     display: flex;
-     flex-direction: column;
-     height: 100%;
- }
- 
- .contact-form {
-     display: flex;
-     flex-direction: column;
-     flex-grow: 1;
- }
- 
- .form-group {
-     margin-bottom: 15px;
- }
- 
- /* Responsive Styles */
- 
- /* Desktop to Tablet Transition (max-width: 1385px) */
- @media (max-width: 1385px) {
-     header {
-         flex-direction: column;
-         align-items: center;
-         margin-bottom: 20px;
-     }
-     
-     #name {
-         font-size: 46px;
-         margin: 20px 0 15px 0; /* Center it and add space below */
-         text-align: center;
-         width: 100%;
-         display: block;
-     }
-     
-     #links {
-         position: relative; /* Change from absolute positioning */
-         left: auto;
-         transform: none;
-         width: auto; /* Let it size naturally */
-         margin: 0 auto 15px auto;
-         font-size: 18px;
-     }
-     
-     .link {
-         padding: 8px 30px;
-     }
- }
- 
- /* Medium Screens (max-width: 1200px) */
- @media (max-width: 1200px) {
-     .bento-grid {
-         grid-template-columns: 1fr 1fr 1fr 1fr;
-         padding: 0 20px;
-     }
- 
-     .featured-posts-container {
-         grid-template-columns: repeat(2, 1fr); /* Reduce from 4 to 2 columns */
-     }
- 
-     .projects-grid {
-         grid-template-columns: repeat(2, 1fr); /* Reduce from 4 to 2 columns */
-     }
- 
-     .section-title,.latest-post-header{
-         font-size: 28px;        
-     }
-     .latest-post-header{
-         align-self: center;
-     }
-     .contact-header{
-         font-size: 22px;
-     }
- 
-     #links {
-         font-size: 16px;
-     }
- 
-     .link {
-         padding: 8px 25px;
-     }
- 
-     #footer {
-         display: flex;
-         justify-content: center;
-         text-align: center;
-     }
-     
-     /* Latest post responsiveness improvements */
-     .latest-post-content {
-         flex-direction: column;
-     }
-     
-     .latest-post-img {
-         width: 100%;
-         margin-right: 0;
-         margin-bottom: 15px;
-     }
-     
-     .latest-post-details {
-         width: 100%;
-     }
- }
- 
- /* Additional improvements for Get in Touch on tablets */
- @media (max-width: 1200px) and (min-width: 769px) {
-     .get-in-touch {
-         padding: 20px;
-     }
-     
-     .contact-header {
-         margin-bottom: 15px;
-     }
-     
-     .form-group input,
-     .form-group textarea {
-         padding: 10px;
-     }
-     
-     .send-message-btn {
-         padding: 10px 20px;
-         align-self: flex-start;
-     }
- }
- 
+/* Get in Touch responsiveness improvements */
+.get-in-touch {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+/* Responsive Styles */
+
+/* Desktop to Tablet Transition (max-width: 1385px) */
+@media (max-width: 1385px) {
+    header {
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    #name {
+        font-size: 46px;
+        margin: 20px 0 15px 0; /* Center it and add space below */
+        text-align: center;
+        width: 100%;
+        display: block;
+    }
+    
+    #links {
+        position: relative; /* Change from absolute positioning */
+        left: auto;
+        transform: none;
+        width: auto; /* Let it size naturally */
+        margin: 0 auto 15px auto;
+        font-size: 18px;
+    }
+    
+    .link {
+        padding: 8px 30px;
+    }
+}
+
+/* Medium Screens (max-width: 1200px) */
+@media (max-width: 1200px) {
+    .bento-grid {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        padding: 0 20px;
+    }
+
+    .featured-posts-container {
+        grid-template-columns: repeat(2, 1fr); /* Reduce from 4 to 2 columns */
+    }
+
+    .projects-grid {
+        grid-template-columns: repeat(2, 1fr); /* Reduce from 4 to 2 columns */
+    }
+
+    .section-title,.latest-post-header{
+        font-size: 28px;        
+    }
+    .latest-post-header{
+        align-self: center;
+    }
+    .contact-header{
+        font-size: 22px;
+    }
+
+    #links {
+        font-size: 16px;
+    }
+
+    .link {
+        padding: 8px 25px;
+    }
+
+    #footer {
+        display: flex;
+        justify-content: center;
+        text-align: center;
+    }
+    
+    /* Latest post responsiveness improvements */
+    .latest-post-content {
+        flex-direction: column;
+    }
+    
+    .latest-post-img {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+    
+    .latest-post-details {
+        width: 100%;
+    }
+}
+
+/* Additional improvements for Get in Touch on tablets */
+@media (max-width: 1200px) and (min-width: 769px) {
+    .get-in-touch {
+        padding: 20px;
+    }
+    
+    .contact-header {
+        margin-bottom: 15px;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        padding: 10px;
+    }
+    
+    .send-message-btn {
+        padding: 10px 20px;
+        align-self: flex-start;
+    }
+}
+
 /* Small Screens (max-width: 992px) continued */
 @media (max-width: 992px) {
     .latest-post {
@@ -158,6 +158,10 @@
 
     .featured-posts-container {
         grid-template-columns: 1fr; /* Stack featured posts one after another */
+    }
+    
+    .projects-grid {
+        grid-template-columns: 1fr; /* Stack projects one after another to match featured posts */
     }
 
     #name {
@@ -270,6 +274,10 @@
     .latest-post-img {
         width: 100%;
         margin-bottom: 15px;
+    }
+    
+    .projects-grid {
+        grid-template-columns: 1fr; /* Ensure projects stack vertically on mobile too */
     }
 
     #footer {
