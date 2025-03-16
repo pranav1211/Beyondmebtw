@@ -125,32 +125,32 @@ http.createServer((request, response) => {
     const link = parameters.get("link");
     const formid = parameters.get("formid");
     const key = parameters.get("key");
-
+ 
     if (key === thepasskey) {
       loadJSON(() => {
         updateData(name, date, excerpt, thumbnail, link, formid);
         fs.writeFileSync("latest.json", JSON.stringify(jsdata, null, 2), "utf8");
         console.log("Data written to latest.json:", jsdata);
 
-        const scriptPath = '/shellfiles/jsonupdatebmb.sh';
-        exec(`sh ${scriptPath}`, (error, stdout, stderr) => {
-          if (error) {
-            console.error(`Error executing script: ${error}`);
-            response.statusCode = 500;
-            response.end("Error executing script: " + error.message);
-            return;
-          }
+        // const scriptPath = '/shellfiles/jsonupdatebmb.sh';
+        // exec(`sh ${scriptPath}`, (error, stdout, stderr) => {
+        //   if (error) {
+        //     console.error(`Error executing script: ${error}`);
+        //     response.statusCode = 500;
+        //     response.end("Error executing script: " + error.message);
+        //     return;
+        //   }
 
-          console.log(`Script output: ${stdout}`);
-          if (stderr) {
-            console.error(`Script stderr: ${stderr}`);
-          }
+        //   console.log(`Script output: ${stdout}`);
+        //   if (stderr) {
+        //     console.error(`Script stderr: ${stderr}`);
+        //   }
 
-          response.writeHead(200, { "Content-Type": "text/html" });
-          response.end(
-            `<html><body><h1>Data updated successfully.</h1><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>`
-          );
-        });
+        //   response.writeHead(200, { "Content-Type": "text/html" });
+        //   response.end(
+        //     `<html><body><h1>Data updated successfully.</h1><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>`
+        //   );
+        // });
       });
     } else {
       response.statusCode = 403;
