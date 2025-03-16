@@ -1,6 +1,7 @@
 const http = require("http");
 const https = require("https");
 const fs = require("fs");
+const { exec } = require("child_process");
 
 let thepasskey;
 try {
@@ -18,7 +19,12 @@ try {
   thepasskey = "default-secure-key";
 }
 
-let jsdata = { mainPost: {}, featured: Array(4).fill({}) }; // Retain values if loadJSON fails
+let jsdata = { 
+  mainPost: {}, 
+  featured: Array(4).fill({}),
+  projects: Array(4).fill({})  // Initialize projects array
+}; 
+
 function loadJSON(callback) {
   https.get("https://beyondmebtw.com/manage/latest.json", (res) => {
     let data = "";
@@ -26,6 +32,15 @@ function loadJSON(callback) {
     res.on("end", () => {
       try {
         jsdata = JSON.parse(data);
+        
+        // Ensure projects array exists and has 4 elements
+        if (!jsdata.projects) {
+          jsdata.projects = Array(4).fill({});
+        } else if (jsdata.projects.length < 4) {
+          // Pad with empty objects if fewer than 4 projects
+          jsdata.projects = [...jsdata.projects, ...Array(4 - jsdata.projects.length).fill({})];
+        }
+        
         console.log("JSON data loaded successfully from URL.");
       } catch (err) {
         console.error("Error parsing JSON from URL:", err);
@@ -48,6 +63,7 @@ function updateData(name, date, excerpt, thumbnail, link, formId) {
   };
 
   const updates = {
+    // Main post and featured posts
     latest: () => {
       updateFields(jsdata.mainPost, { title: name, date, excerpt, thumbnail, link });
     },
@@ -62,6 +78,20 @@ function updateData(name, date, excerpt, thumbnail, link, formId) {
     },
     featured4: () => {
       updateFields(jsdata.featured[3], { title: name, date, excerpt, thumbnail, link });
+    },
+    
+    // Project posts - note they use 'title' instead of 'name' in the JSON
+    project1: () => {
+      updateFields(jsdata.projects[0], { title: name, excerpt, link });
+    },
+    project2: () => {
+      updateFields(jsdata.projects[1], { title: name, excerpt, link });
+    },
+    project3: () => {
+      updateFields(jsdata.projects[2], { title: name, excerpt, link });
+    },
+    project4: () => {
+      updateFields(jsdata.projects[3], { title: name, excerpt, link });
     }
   };
 
@@ -71,7 +101,6 @@ function updateData(name, date, excerpt, thumbnail, link, formId) {
     console.error("Invalid formId:", formId);
   }
 }
-
 
 http.createServer((request, response) => {
   const url = new URL(request.url, `http://${request.headers.host}`);
@@ -87,7 +116,19 @@ http.createServer((request, response) => {
     return;
   }
 
-  if (path === "/latestdata") {
+  // New verification endpoint
+  if (path === "/verify") {
+    const parameters = url.searchParams;
+    const key = parameters.get("key");
+    
+    if (key === thepasskey) {
+      response.writeHead(200, { "Content-Type": "application/json" });
+      response.end(JSON.stringify({ success: true }));
+    } else {
+      response.writeHead(401, { "Content-Type": "application/json" });
+      response.end(JSON.stringify({ success: false, message: "Invalid password" }));
+    }
+  } else if (path === "/latestdata") {
     const parameters = url.searchParams;
     const name = parameters.get("name");
     const date = parameters.get("date");
@@ -103,10 +144,25 @@ http.createServer((request, response) => {
         fs.writeFileSync("latest.json", JSON.stringify(jsdata, null, 2), "utf8");
         console.log("Data written to latest.json:", jsdata);
 
-        response.writeHead(200, { "Content-Type": "text/html" });
-        response.end(
-          `<html><body><h1>Data updated successfully.</h1><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>`
-        );
+        const scriptPath = '/shellfiles/jsonupdatebmb.sh';
+        exec(`sh ${scriptPath}`, (error, stdout, stderr) => {
+          if (error) {
+            console.error(`Error executing script: ${error}`);
+            response.statusCode = 500;
+            response.end("Error executing script: " + error.message);
+            return;
+          }
+
+          console.log(`Script output: ${stdout}`);
+          if (stderr) {
+            console.error(`Script stderr: ${stderr}`);
+          }
+
+          response.writeHead(200, { "Content-Type": "text/html" });
+          response.end(
+            `<html><body><h1>Data updated successfully.</h1><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>`
+          );
+        });
       });
     } else {
       response.statusCode = 403;
