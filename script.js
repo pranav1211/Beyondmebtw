@@ -75,7 +75,7 @@ function showToast(message) {
 
 document.addEventListener("DOMContentLoaded", () => {
     fetch('manage/latest.json')
-    // fetch('https://beyondembtw.com/manage/latest.json')
+        // fetch('https://beyondembtw.com/manage/latest.json')
         .then((response) => {
             if (!response.ok) {
                 throw new Error(`Failed to fetch JSON: ${response.statusText}`);
@@ -86,7 +86,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const mainPost = data.mainPost;
             const mainTitle = mainPost.title;
+
             const mainDate = mainPost.date;
+            const dateObject = new Date(mainDate);
+            const formattedDate = new Intl.DateTimeFormat('en-US', {
+                month: 'short',
+                day: '2-digit',
+                year: 'numeric',
+            }).format(dateObject);
+
             const mainExcerpt = mainPost.excerpt;
             const mainThumbnail = mainPost.thumbnail;
             const mainLink = mainPost.link;
@@ -94,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const featuredPosts = data.featured;
 
             document.querySelector('.latest-post-title').innerText = mainTitle;
-            document.querySelector('.latest-post-date').innerText = mainDate;
+            document.querySelector('.latest-post-date').innerText = formattedDate;
             document.querySelector('.latest-post-excerpt').innerText = mainExcerpt;
             document.querySelector('.latest-post-img').src = "https://beyondmebtw.com/assets/images/thumbnails/" + mainThumbnail;
             document.querySelector('.latest-post-content').onclick = () => window.open(mainLink, '_blank');
@@ -104,12 +112,22 @@ document.addEventListener("DOMContentLoaded", () => {
             // console.log({ mainTitle, mainDate, mainExcerpt, mainThumbnail, mainLink });
 
             for (i = 0; i < 4; i++) {
-                var divid = "fp" + i                
+                var divid = "fp" + i
 
                 document.querySelector("." + divid + "title").innerText = featuredPosts[i].title;
-                document.querySelector("." + divid + "date").innerText = featuredPosts[i].date;
+
+                const FeatDate = featuredPosts[i].date;
+                const dateObject = new Date(FeatDate);
+                const formattedDatefeat = new Intl.DateTimeFormat('en-US', {
+                    month: 'short',
+                    day: '2-digit',
+                    year: 'numeric',
+                }).format(dateObject);
+                document.querySelector("." + divid + "date").innerText = formattedDatefeat;
+
+
                 document.querySelector("." + divid + "excerpt").innerText = featuredPosts[i].excerpt;
-                document.querySelector("." + divid + "img").src = "https://beyondmebtw.com/assets/images/thumbnails/" + featuredPosts[i].thumbnail;                                
+                document.querySelector("." + divid + "img").src = "https://beyondmebtw.com/assets/images/thumbnails/" + featuredPosts[i].thumbnail;
             }
             document.querySelector(".fp0").onclick = () => window.open(featuredPosts[0].link, '_blank');
             document.querySelector(".fp1").onclick = () => window.open(featuredPosts[1].link, '_blank');
@@ -119,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const featuredprojects = data.projects;
 
             for (i = 0; i < 4; i++) {
-                var divid = "p" + i                 
+                var divid = "p" + i
                 document.querySelector("." + divid + "title").innerText = featuredprojects[i].title;
                 document.querySelector("." + divid + "excerpt").innerText = featuredprojects[i].excerpt;
             }
@@ -137,5 +155,5 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch((error) => {
             console.error("Error fetching JSON data:", error);
-        });              
+        });
 });
