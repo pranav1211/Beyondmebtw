@@ -116,19 +116,7 @@ http.createServer((request, response) => {
     return;
   }
 
-  // New verification endpoint
-  if (path === "/verify") {
-    const parameters = url.searchParams;
-    const key = parameters.get("key");
-    
-    if (key === thepasskey) {
-      response.writeHead(200, { "Content-Type": "application/json" });
-      response.end(JSON.stringify({ success: true }));
-    } else {
-      response.writeHead(401, { "Content-Type": "application/json" });
-      response.end(JSON.stringify({ success: false, message: "Invalid password" }));
-    }
-  } else if (path === "/latestdata") {
+  if (path === "/latestdata") {
     const parameters = url.searchParams;
     const name = parameters.get("name");
     const date = parameters.get("date");
