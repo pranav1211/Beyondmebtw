@@ -69,6 +69,29 @@ button:hover {
     background: #0056b3;
 }
 
+/* Login form styling */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+}
+
+.login-form {
+    max-width: 400px;
+    width: 100%;
+}
+
+.login-form h2 {
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+
+.content-container {
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
 @media (max-width: 768px) {
     .form-container {
         flex-direction: column;

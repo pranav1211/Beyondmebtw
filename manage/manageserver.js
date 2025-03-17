@@ -116,7 +116,19 @@ http.createServer((request, response) => {
     return;
   }
 
-  if (path === "/latestdata") {
+  // Handle login authentication
+  if (path === "/loginauth") {
+    const parameters = url.searchParams;
+    const key = parameters.get("key");
+    
+    if (key === thepasskey) {
+      response.writeHead(200, { "Content-Type": "application/json" });
+      response.end(JSON.stringify({ success: true, message: "Authentication successful" }));
+    } else {
+      response.statusCode = 403;
+      response.end(JSON.stringify({ success: false, message: "Authentication failed - Invalid key" }));
+    }
+  } else if (path === "/latestdata") {
     const parameters = url.searchParams;
     const name = parameters.get("name");
     const date = parameters.get("date");
@@ -159,7 +171,17 @@ http.createServer((request, response) => {
   } else if (path === "/") {
     response.writeHead(200, { "Content-Type": "text/html" });
     response.end(
-      "<html><body><h1>Server is running</h1><p>The data update service is active.</p></body></html>"
+      fs.readFileSync("index.html", "utf8")
+    );
+  } else if (path === "/styles.css") {
+    response.writeHead(200, { "Content-Type": "text/css" });
+    response.end(
+      fs.readFileSync("styles.css", "utf8")
+    );
+  } else if (path === "/index.js") {
+    response.writeHead(200, { "Content-Type": "application/javascript" });
+    response.end(
+      fs.readFileSync("index.js", "utf8")
     );
   } else {
     response.statusCode = 404;
