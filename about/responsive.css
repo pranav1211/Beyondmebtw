@@ -1,72 +1,87 @@
+/* Responsive Layout */
+@media screen and (max-width: 1024px) {
+    .bento-container {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-areas:
+            "who-i-am who-i-am"
+            "image-slider experience"
+            "skills quotes";
+    }
+}
 
-        /* Responsive Layout */
-        @media screen and (max-width: 1024px) {
-            .bento-container {
-                grid-template-columns: repeat(2, 1fr);
-                grid-template-areas:
-                    "who-i-am who-i-am"
-                    "image-slider experience"
-                    "skills projects"
-                    "quotes blog-preview";
-            }
-        }
+@media screen and (max-width: 768px) {
+    #name {
+        font-size: 40px;
+        margin-left: 20px;
+    }
 
-        @media screen and (max-width: 768px) {
-            #name {
-                font-size: 40px;
-                margin-left: 20px;
-            }
+    #links {
+        position: static;
+        transform: none;
+        margin: 15px auto;
+        font-size: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 90%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        text-align: center;
+        grid-gap: 5px;
+        border-radius: 15px;
+    }
 
-            #links {
-                position: static;
-                transform: none;
-                margin: 15px auto;
-                font-size: 20px;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
+    .link {
+        padding: 8px 5px;
+        display: flex;
+        justify-content: center;
+        border-radius: 15px;
+    }
 
-            .link {
-                padding: 8px 20px;
-            }
+    .link:hover {
+        border-radius: 10px;
+    }
 
-            header {
-                flex-direction: column;
-                align-items: center;
-            }
+    header {
+        flex-direction: column;
+        align-items: center;
+    }
 
-            .bento-container {
-                grid-template-columns: 1fr;
-                grid-template-areas:
-                    "who-i-am"
-                    "image-slider"
-                    "experience"
-                    "skills"
-                    "projects"
-                    "quotes"
-                    "blog-preview";
-            }
+    .bento-container {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "who-i-am"
+            "image-slider"
+            "experience"
+            "skills"
+            "quotes";
+        max-width: 95%;
+    }
 
-            .section-title {
-                font-size: 24px;
-            }
-        }
+    .section-title {
+        font-size: 28px;
+    }
+}
 
-        @media screen and (max-width: 480px) {
-            #name {
-                font-size: 32px;
-            }
+@media screen and (max-width: 480px) {
+    #name {
+        font-size: 32px;
+    }
 
-            .link {
-                padding: 6px 15px;
-                font-size: 18px;
-            }
+    .link {
+        padding: 6px 15px;
+        font-size: 18px;
+    }
 
-            .bento-item {
-                padding: 15px;
-            }
+    .bento-item {
+        padding: 20px;
+    }
 
-            .section-title {
-                font-size: 20px;
-            }
-        }
+    .section-title {
+        font-size: 24px;
+    }
+
+    .bento-container {
+        padding: 10px;
+        gap: 15px;
+    }
+}

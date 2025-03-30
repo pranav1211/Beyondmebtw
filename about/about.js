@@ -40,13 +40,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Change image every 5 seconds
     setInterval(changeImage, 5000);
-    
-    // Blog title clicks
-    const blogTitles = document.querySelectorAll('.blog-title');
-    blogTitles.forEach(title => {
-        title.addEventListener('click', function () {
-            // This would normally navigate to the blog post
-            alert('This would navigate to: ' + this.textContent);
-        });
-    });
 });
