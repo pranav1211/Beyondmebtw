@@ -61,25 +61,25 @@ header {
     border-radius: 60px;
 }
 
-/* Bento Grid Layout */
+/* Bento Grid Layout with updated spacing */
 .bento-container {
-    max-width: 1200px;
+    max-width: 90%;
     margin: 0 auto;
     padding: 20px;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     grid-template-rows: auto;
-    gap: 20px;
+    gap: 25px;
     grid-template-areas:
-        "who-i-am who-i-am image-slider"
-        "experience experience skills"
-        "projects quotes blog-preview";
+        "who-i-am image-slider"
+        "experience skills"
+        "quotes quotes";
 }
 
 .bento-item {
     background-color: #E8D9CD;
     border-radius: 20px;
-    padding: 25px;
+    padding: 30px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -97,7 +97,7 @@ header {
     grid-area: image-slider;
     position: relative;
     overflow: hidden;
-    min-height: 300px;
+    min-height: 350px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -125,86 +125,60 @@ header {
     grid-area: skills;
 }
 
-.projects {
-    grid-area: projects;
-}
-
 .quotes {
     grid-area: quotes;
 }
 
-.blog-preview {
-    grid-area: blog-preview;
-}
-
 .section-title {
     font-family: "Permanent Marker", cursive;
-    font-size: 28px;
-    margin-bottom: 15px;
+    font-size: 32px;
+    margin-bottom: 20px;
     color: #3b342d;
     border-bottom: 2px solid #3b342d;
-    padding-bottom: 8px;
+    padding-bottom: 10px;
 }
 
 .experience-item {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .experience-title {
     font-weight: 600;
-    font-size: 18px;
+    font-size: 20px;
 }
 
 .experience-company {
     font-style: italic;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
 }
 
 .skill-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 15px;
+    gap: 12px;
+    margin-top: 20px;
 }
 
 .skill-tag {
     background-color: #F4F2EF;
-    padding: 8px 15px;
+    padding: 10px 18px;
     border-radius: 30px;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 500;
 }
 
 .quote {
     font-style: italic;
-    margin-bottom: 10px;
-    padding-left: 15px;
+    margin-bottom: 20px;
+    padding-left: 20px;
     border-left: 3px solid #3b342d;
+    font-size: 18px;
 }
 
 .quote-author {
     text-align: right;
     font-weight: 500;
-}
-
-.blog-item {
-    margin-bottom: 15px;
-}
-
-.blog-title {
-    font-weight: 600;
-    cursor: pointer;
-    transition: color 0.3s ease;
-}
-
-.blog-title:hover {
-    color: #665e54;
-}
-
-.blog-date {
-    font-size: 14px;
-    color: #665e54;
-    margin-top: 4px;
+    margin-top: 8px;
 }
 
 #footer {
