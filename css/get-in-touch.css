@@ -12,7 +12,7 @@
     font-size: 24px;
     font-weight: 600;
     margin-bottom: 12px;
-    color: #6a5a4a;
+    color: #3b342d;
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -69,14 +69,14 @@
 
 .social-name {
     font-weight: 700;
-    font-size: 16px;
+    font-size: 19px;
     color: #5a4a3a;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .social-username {
-    font-weight: 400; /* Bolder font weight */
+    font-weight: 500; /* Bolder font weight */
     font-size: 18px; /* Larger font size */
     color: #000000; /* Darker color for more focus */
     margin-top: 4px; /* Slight spacing from the name */
