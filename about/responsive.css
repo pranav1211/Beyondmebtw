@@ -1,11 +1,30 @@
 /* Responsive Layout */
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1200px) {
     .bento-container {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 2fr 1fr;
         grid-template-areas:
-            "who-i-am who-i-am"
-            "image-slider experience"
-            "skills quotes";
+            "who-i-am image-slider"
+            "who-i-am image-slider"
+            "experience skills"
+            "quotes quotes";
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .bento-container {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+            "who-i-am image-slider"
+            "experience skills"
+            "quotes quotes";
+    }
+    
+    .who-i-am {
+        grid-row: span 1;
+    }
+    
+    .image-slider {
+        min-height: 400px;
     }
 }
 
@@ -49,16 +68,29 @@
     .bento-container {
         grid-template-columns: 1fr;
         grid-template-areas:
-            "who-i-am"
             "image-slider"
+            "who-i-am"
             "experience"
             "skills"
             "quotes";
         max-width: 95%;
     }
+    
+    .image-slider {
+        min-height: 350px;
+    }
 
     .section-title {
         font-size: 28px;
+    }
+    
+    /* Make skills flex but stack on small screens */
+    .skills-container {
+        flex-direction: column;
+    }
+    
+    .skill-category {
+        width: 100%;
     }
 }
 
@@ -79,9 +111,17 @@
     .section-title {
         font-size: 24px;
     }
+    
+    .skill-category-title {
+        font-size: 20px;
+    }
 
     .bento-container {
         padding: 10px;
         gap: 15px;
+    }
+    
+    .image-slider {
+        min-height: 300px;
     }
 }
