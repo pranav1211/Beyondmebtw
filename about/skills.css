@@ -1,0 +1,61 @@
+/* Skills Section Styles */
+.skills {
+    grid-area: skills;
+}
+
+.skills-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.skill-category {
+    flex: 1;
+    min-width: 250px;
+    background-color: rgba(244, 242, 239, 0.7);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.skill-category-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #3b342d;
+    border-bottom: 2px solid #3b342d;
+    padding-bottom: 8px;
+}
+
+.skill-item {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.skill-tag {
+    background-color: #F4F2EF;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: 500;
+    display: inline-block;
+    margin-right: 10px;
+    margin-bottom: 5px;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+}
+
+.skill-tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.skill-application {
+    font-size: 14px;
+    color: #665e54;
+    line-height: 1.5;
+    padding-left: 5px;
+}

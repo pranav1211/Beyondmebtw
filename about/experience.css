@@ -1,0 +1,74 @@
+/* Experience Section Styles */
+.experience {
+    grid-area: experience;
+}
+
+.experience-container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    margin-top: 20px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.organization-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-width: 300px;
+    background-color: rgba(244, 242, 239, 0.7);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    flex: 1;
+}
+
+.experience-where {
+    font-size: 18px;
+    font-weight: 600;
+    color: #3b342d;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #c9b8a8;
+}
+
+.experience-role {
+    font-size: 17px;
+    font-weight: 500;
+    color: #665e54;
+    margin-bottom: 5px;
+}
+
+.role-container {
+    margin-bottom: 15px;
+}
+
+.role-container:last-child {
+    margin-bottom: 0;
+}
+
+.experience-duration {
+    font-size: 14px;
+    color: #8a7f75;
+    margin-bottom: 8px;
+}
+
+.experience-about {
+    font-size: 15px;
+    line-height: 1.5;
+    color: #3b342d;
+    padding-left: 10px;
+    border-left: 2px solid #E8D9CD;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .experience-container {
+        flex-direction: column-reverse;
+    }
+    
+    .organization-group {
+        min-width: 100%;
+    }
+}
