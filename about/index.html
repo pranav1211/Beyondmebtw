@@ -18,6 +18,8 @@
 
 
     <link rel="stylesheet" href="about.css">
+    <link rel="stylesheet" href="skills.css">
+    <link rel="stylesheet" href="experience.css">
     <link rel="stylesheet" href="responsive.css">
 </head>
 
@@ -55,22 +57,45 @@
         <!-- Experience Section -->
         <div class="bento-item experience">
             <h2 class="section-title">Experience</h2>
-            <div class="experience-item">
-                <div class="experience-title">Web Development Intern</div>
-                <div class="experience-company">TechInnovate Solutions</div>
-                <p>Developed responsive websites using modern frameworks and collaborated with a team of designers to
-                    implement user-friendly interfaces.</p>
-            </div>
-            <div class="experience-item">
-                <div class="experience-title">Content Creator</div>
-                <div class="experience-company">Digital Storytellers Network</div>
-                <p>Created engaging content for various platforms, focusing on technology trends and educational
-                    resources for beginners.</p>
-            </div>
-            <div class="experience-item">
-                <div class="experience-title">Research Assistant</div>
-                <div class="experience-company">University Innovation Lab</div>
-                <p>Assisted in research projects focused on emerging technologies and their impact on society.</p>
+            <div class="experience-container">
+                <!-- Most recent experience first in DOM for mobile -->
+                <div class="organization-group">
+                    <div class="experience-where">Gradient Club</div>
+
+                    <div class="role-container">
+                        <div class="experience-role">Tech Head</div>
+                        <div class="experience-duration">Jan 2023 - Present</div>
+                        <div class="experience-about">
+                            Leading the technical team in developing club projects and initiatives.
+                            Mentoring junior members in web development and design principles.
+                            Overseeing all technical aspects of club events and workshops.
+                        </div>
+                    </div>
+
+                    <div class="role-container">
+                        <div class="experience-role">Tech Team Member</div>
+                        <div class="experience-duration">Aug 2022 - Dec 2022</div>
+                        <div class="experience-about">
+                            Collaborated on developing club websites and technical projects.
+                            Assisted in organizing and conducting technical workshops.
+                            Contributed to brainstorming sessions for new initiatives.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="organization-group">
+                    <div class="experience-where">Beyond Me Btw</div>
+
+                    <div class="role-container">
+                        <div class="experience-role">Blog Writer & Creator</div>
+                        <div class="experience-duration">Jun 2021 - Present</div>
+                        <div class="experience-about">
+                            Creating engaging content about technology, personal growth, and college life.
+                            Developing tutorials and guides for beginners in web development.
+                            Sharing personal experiences and lessons learned through storytelling.
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -78,51 +103,42 @@
         <div class="bento-item skills">
             <h2 class="section-title">Skills</h2>
             <p>I've developed a diverse skillset through academic pursuits and personal projects:</p>
-            
+
             <div class="skills-container">
                 <div class="skill-category">
                     <h3 class="skill-category-title">Software Development</h3>
-                    <div class="skill-tag">HTML/CSS</div>
-                    <p class="skill-application">Used to create responsive websites including this personal portfolio</p>
-                    
-                    <div class="skill-tag">JavaScript</div>
-                    <p class="skill-application">Applied in interactive web features and data visualization projects</p>
-                    
-                    <div class="skill-tag">Python</div>
-                    <p class="skill-application">Used for data analysis and research projects at University Innovation Lab</p>
-                    
-                    <div class="skill-tag">Java</div>
-                    <p class="skill-application">Applied in academic projects and algorithm implementations</p>
-                    
-                    <div class="skill-tag">Next.js</div>
-                    <p class="skill-application">Used to build modern web applications with server-side rendering</p>
-                    
-                    <div class="skill-tag">Vercel</div>
-                    <p class="skill-application">Deployed and managed web applications for personal and team projects</p>
+                    <div class="skill-tags-container">
+                        <div class="skill-tag">HTML/CSS</div>
+                        <div class="skill-tag">JavaScript</div>
+                        <div class="skill-tag">Python</div>
+                        <div class="skill-tag">Java</div>
+                        <div class="skill-tag">Next.js</div>
+                        <div class="skill-tag">Vercel</div>
+                    </div>
+                    <div class="skill-application">Used to create responsive websites including this personal portfolio
+                    </div>
                 </div>
-                
+
                 <div class="skill-category">
                     <h3 class="skill-category-title">Design & Content</h3>
-                    <div class="skill-tag">UI/UX Design</div>
-                    <p class="skill-application">Applied to improve user experience in all web development projects</p>
-                    
-                    <div class="skill-tag">Content Writing</div>
-                    <p class="skill-application">Showcased in my Medium blog and Digital Storytellers Network</p>
-                    
-                    <div class="skill-tag">Digital Marketing</div>
-                    <p class="skill-application">Used to promote personal projects and create engagement strategies</p>
+                    <div class="skill-tags-container">
+                        <div class="skill-tag">UI/UX Design</div>
+                        <div class="skill-tag">Content Writing</div>
+                        <div class="skill-tag">Digital Marketing</div>
+                    </div>
+                    <div class="skill-application">Applied to improve user experience in all web development projects
+                    </div>
                 </div>
-                
+
                 <div class="skill-category">
                     <h3 class="skill-category-title">Professional</h3>
-                    <div class="skill-tag">Project Management</div>
-                    <p class="skill-application">Coordinated team projects during internship at TechInnovate Solutions</p>
-                    
-                    <div class="skill-tag">Event Management</div>
-                    <p class="skill-application">Organized and coordinated university events and tech meetups</p>
-                    
-                    <div class="skill-tag">Public Speaking</div>
-                    <p class="skill-application">Presented research findings and led workshops at university events</p>
+                    <div class="skill-tags-container">
+                        <div class="skill-tag">Project Management</div>
+                        <div class="skill-tag">Event Management</div>
+                        <div class="skill-tag">Public Speaking</div>
+                    </div>
+                    <div class="skill-application">Coordinated team projects during internship at TechInnovate Solutions
+                    </div>
                 </div>
             </div>
         </div>
@@ -139,7 +155,8 @@
                 <div class="quote-author">- Steve Jobs</div>
             </div>
             <div class="quote">
-                <p>"The most powerful person in the world is the storyteller. The storyteller sets the vision, values and agenda of an entire generation."</p>
+                <p>"The most powerful person in the world is the storyteller. The storyteller sets the vision, values
+                    and agenda of an entire generation."</p>
                 <div class="quote-author">- Steve Jobs</div>
             </div>
         </div>
