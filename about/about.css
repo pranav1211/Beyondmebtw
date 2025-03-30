@@ -10,6 +10,7 @@ body {
     background-color: #F4F2EF;
     font-family: "Kreon", serif;
     padding-bottom: 40px;
+    color: #3b342d;
 }
 
 header {
@@ -29,7 +30,6 @@ header {
     margin-left: 95px;
     display: block;
     color: #3b342d;
-
 }
 
 #links {
@@ -39,13 +39,14 @@ header {
     display: flex;
     margin-top: 27px;
     font-optical-sizing: auto;
-    font-size: 27px;
-    /* Changed from vw to px */
-    font-style: normal;
-    font-weight: 400;
+    font-size: 27px;    
+    font-style: normal;    
     background-color: #E8D9CD;
     padding: 7.5px;
     border-radius: 60px;
+    font-family: "Delius", cursive;
+    font-weight: 600;
+    font-style: normal;
 }
 
 .link {
@@ -60,20 +61,155 @@ header {
     border-radius: 60px;
 }
 
+/* Bento Grid Layout */
+.bento-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto;
+    gap: 20px;
+    grid-template-areas:
+        "who-i-am who-i-am image-slider"
+        "experience experience skills"
+        "projects quotes blog-preview";
+}
+
+.bento-item {
+    background-color: #E8D9CD;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.bento-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.who-i-am {
+    grid-area: who-i-am;
+}
+
+.image-slider {
+    grid-area: image-slider;
+    position: relative;
+    overflow: hidden;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slider-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    border-radius: 15px;
+}
+
+.slider-image.active {
+    opacity: 1;
+}
+
+.experience {
+    grid-area: experience;
+}
+
+.skills {
+    grid-area: skills;
+}
+
+.projects {
+    grid-area: projects;
+}
+
+.quotes {
+    grid-area: quotes;
+}
+
+.blog-preview {
+    grid-area: blog-preview;
+}
+
+.section-title {
+    font-family: "Permanent Marker", cursive;
+    font-size: 28px;
+    margin-bottom: 15px;
+    color: #3b342d;
+    border-bottom: 2px solid #3b342d;
+    padding-bottom: 8px;
+}
+
+.experience-item {
+    margin-bottom: 15px;
+}
+
+.experience-title {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.experience-company {
+    font-style: italic;
+    margin-bottom: 5px;
+}
+
+.skill-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.skill-tag {
+    background-color: #F4F2EF;
+    padding: 8px 15px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.quote {
+    font-style: italic;
+    margin-bottom: 10px;
+    padding-left: 15px;
+    border-left: 3px solid #3b342d;
+}
+
+.quote-author {
+    text-align: right;
+    font-weight: 500;
+}
+
+.blog-item {
+    margin-bottom: 15px;
+}
+
+.blog-title {
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.blog-title:hover {
+    color: #665e54;
+}
+
+.blog-date {
+    font-size: 14px;
+    color: #665e54;
+    margin-top: 4px;
+}
+
 #footer {
     display: flex;
     justify-content: center;
     text-align: center;
-    margin-top: 20px;
-}
-
-.view-all-btn {
-    margin-right: 25%;
-    margin-left: 25%;
-}
-
-#cs{
-    display: flex;
-    justify-content: center;
-    font-size: 60px;
+    margin-top: 40px;
 }
