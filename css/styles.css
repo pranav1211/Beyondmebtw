@@ -39,8 +39,8 @@ header {
     display: flex;
     margin-top: 27px;
     font-optical-sizing: auto;
-    font-size: 27px;    
-    font-style: normal;    
+    font-size: 27px;
+    font-style: normal;
     background-color: #E8D9CD;
     padding: 7.5px;
     border-radius: 60px;
@@ -93,7 +93,8 @@ header {
 /***** Bento Grid ***/
 .bento-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr; /* Change to 4 equal columns */
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    /* Change to 4 equal columns */
     grid-auto-rows: minmax(200px, auto);
     grid-gap: 15px;
     padding: 0 40px;
@@ -117,8 +118,9 @@ header {
 }
 
 .section-title {
-    font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 15px;
+    font-family: "Kavoon", serif;
+    font-weight: 100;
+    font-size: 40px;
+    margin-bottom: 8px;
     color: #3b342d;
 }

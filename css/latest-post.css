@@ -33,6 +33,7 @@
 
 .latest-post-img:hover {
     transform: scale(1.02);
+    object-fit: contain;
 }
 
 .latest-post-info {
@@ -43,7 +44,7 @@
 }
 
 .latest-post-title {
-    font-size: 24px;
+    font-size: 28px;
     font-weight: 500;
     color: #3b342d;
     font-weight: bolder;
@@ -57,7 +58,7 @@
 }
 
 .latest-post-excerpt {
-    font-size: 18px;
+    font-size: 20px;
     line-height: 1.5;
     color: #3b342d;
 }

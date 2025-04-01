@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Kreon:wght@300..700&display=swap');
 
+
 * {
     margin: 0;
     padding: 0;
@@ -10,7 +11,7 @@ body {
     background-color: #F4F2EF;
     font-family: "Kreon", serif;
     padding-bottom: 40px;
-    color: #3b342d;
+    overflow-x: hidden;
 }
 
 header {
@@ -26,10 +27,11 @@ header {
     font-style: normal;
     font-optical-sizing: auto;
     font-size: 58px;
-    margin-top: 15px;
+    margin-top: 16px;
     margin-left: 95px;
     display: block;
     color: #3b342d;
+
 }
 
 #links {
@@ -39,8 +41,8 @@ header {
     display: flex;
     margin-top: 27px;
     font-optical-sizing: auto;
-    font-size: 27px;    
-    font-style: normal;    
+    font-size: 27px;
+    font-style: normal;
     background-color: #E8D9CD;
     padding: 7.5px;
     border-radius: 60px;
@@ -50,7 +52,7 @@ header {
 }
 
 .link {
-    padding: 10px 40px;
+    padding: 13px 40px;
     cursor: pointer;
     transition: background-color 0.3s, border-radius 0.3s;
     border-radius: 60px;
@@ -67,8 +69,7 @@ header {
     margin: 0 auto;
     padding: 20px;
     display: grid;
-    grid-template-columns: 3fr 1fr; /* 3 columns for who-i-am, 1 column for image */
-    grid-template-rows: auto auto auto;
+    grid-template-columns: 3fr 1fr;
     gap: 25px;
     grid-template-areas:
         "who-i-am image-slider"
@@ -76,14 +77,21 @@ header {
         "experience experience"
         "skills skills"
         "quotes quotes";
+    width: 100%;
+    box-sizing: border-box;
 }
+
 .bento-item {
     background-color: #E8D9CD;
     border-radius: 20px;
     padding: 30px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden; /* Prevents content overflow */
 }
+
 
 .bento-item:hover {
     transform: translateY(-5px);
@@ -98,20 +106,23 @@ header {
     grid-area: image-slider;
     position: relative;
     overflow: hidden;
-    min-height: 700px; /* Increased height to span 2 rows */
+    min-height: 700px;
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .slider-image {
     position: absolute;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: cover; /* Changed from contain to cover */
     opacity: 0;
     transition: opacity 1s ease-in-out;
     border-radius: 15px;
+    max-height: 100%; /* Added max-height */
 }
 
 .slider-image.active {
@@ -123,12 +134,17 @@ header {
 }
 
 .section-title {
-    font-family: "Permanent Marker", cursive;
-    font-size: 32px;
+    font-family: "Kavoon", serif;
+    font-weight: 400;
+    font-size: 42px;
     margin-bottom: 20px;
-    color: #3b342d;
+    color: #000000;
     border-bottom: 2px solid #3b342d;
     padding-bottom: 10px;
+}
+
+.whoami{
+text-align: center;
 }
 
 .quote {
@@ -150,4 +166,88 @@ header {
     justify-content: center;
     text-align: center;
     margin-top: 40px;
+}
+/* Updated Who I Am Section Styling */
+.abouttext {
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.intro-section {
+    margin-bottom: 30px;
+    font-size: 20px;
+    background-color: #f4f2ef;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+    position: relative;
+    border-left: 5px solid #3b342d;
+    border-right: 5px solid #3b342d;
+}
+
+.intro-section p {
+    margin-bottom: 15px;
+}
+
+.intro-section p:last-child {
+    margin-bottom: 0;
+}
+
+.intro-section strong {
+    color: #3b342d;
+}
+
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+}
+
+.about-card {
+    background-color: #f4f2ef;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border-left: 5px solid #3b342d;
+    height: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.about-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+}
+
+.about-card h3 {
+    font-family: "Kavoon", serif;
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: #3b342d;
+    border-bottom: 1px solid #E8D9CD;
+    padding-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.about-card p {
+    margin: 0 0 12px 0;
+}
+
+.about-card p:last-child {
+    margin-bottom: 0;
+}
+
+.about-icon {
+    margin-right: 10px;
+}
+
+/* Make the layout responsive */
+@media (max-width: 900px) {
+    .cards-container {
+        grid-template-columns: 1fr;
+    }
 }

@@ -1,4 +1,31 @@
 /* Responsive Layout */
+@media screen and (max-width: 1385px) {
+    header {
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    #name {
+        font-size: 46px;
+        margin: 20px 0 15px 0;
+        text-align: center;
+        width: 100%;
+    }
+    
+    #links {
+        position: relative;
+        left: auto;
+        transform: none;
+        margin: 0 auto 15px auto;
+        font-size: 18px;
+    }
+    
+    .link {
+        padding: 8px 30px;
+    }
+}
+
 @media screen and (max-width: 1200px) {
     .bento-container {
         grid-template-columns: 2fr 1fr;
@@ -7,6 +34,14 @@
             "who-i-am image-slider"
             "experience skills"
             "quotes quotes";
+    }
+
+    #links {
+        font-size: 16px;
+    }
+
+    .link {
+        padding: 8px 25px;
     }
 }
 
@@ -19,19 +54,32 @@
             "quotes quotes";
     }
     
-    .who-i-am {
-        grid-row: span 1;
-    }
-    
     .image-slider {
         min-height: 400px;
+    }
+
+    #name {
+        font-size: 38px;
+    }
+    
+    #links {
+        font-size: 14px;
+        padding: 5px;
+    }
+    
+    .link {
+        padding: 8px 20px;
     }
 }
 
 @media screen and (max-width: 768px) {
+    header {
+        margin-bottom: 0;
+    }
+
     #name {
-        font-size: 40px;
-        margin-left: 20px;
+        font-size: 36px;
+        margin-left: 0;
     }
 
     #links {
@@ -39,30 +87,19 @@
         transform: none;
         margin: 15px auto;
         font-size: 20px;
-        flex-wrap: wrap;
-        justify-content: center;
-        width: 90%;
         display: grid;
         grid-template-columns: 1fr 1fr;
-        text-align: center;
+        width: 90%;
         grid-gap: 5px;
         border-radius: 15px;
+        text-align: center;
     }
 
     .link {
-        padding: 8px 5px;
         display: flex;
         justify-content: center;
+        padding: 8px 5px;
         border-radius: 15px;
-    }
-
-    .link:hover {
-        border-radius: 10px;
-    }
-
-    header {
-        flex-direction: column;
-        align-items: center;
     }
 
     .bento-container {
@@ -73,9 +110,10 @@
             "experience"
             "skills"
             "quotes";
-        max-width: 95%;
+        max-width: 95%;        
+        padding: 10px;
     }
-    
+
     .image-slider {
         min-height: 350px;
     }
@@ -84,7 +122,6 @@
         font-size: 28px;
     }
     
-    /* Make skills flex but stack on small screens */
     .skills-container {
         flex-direction: column;
     }
@@ -94,20 +131,20 @@
     }
 }
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 576px) {
     #name {
         font-size: 32px;
     }
-
+    
     .link {
         padding: 6px 15px;
         font-size: 18px;
     }
-
+    
     .bento-item {
         padding: 20px;
     }
-
+    
     .section-title {
         font-size: 24px;
     }
@@ -115,7 +152,7 @@
     .skill-category-title {
         font-size: 20px;
     }
-
+    
     .bento-container {
         padding: 10px;
         gap: 15px;

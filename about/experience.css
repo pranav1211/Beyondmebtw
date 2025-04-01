@@ -25,18 +25,16 @@
 }
 
 .experience-where {
-    font-size: 18px;
+    font-size: 24px;
     font-weight: 600;
-    color: #3b342d;
-    margin-bottom: 15px;
-    padding-bottom: 8px;
+    color: #3b342d;        
     border-bottom: 2px solid #c9b8a8;
 }
 
 .experience-role {
-    font-size: 17px;
+    font-size: 21px;
     font-weight: 500;
-    color: #665e54;
+    color: #3b342d;
     margin-bottom: 5px;
 }
 
@@ -50,12 +48,12 @@
 
 .experience-duration {
     font-size: 14px;
-    color: #8a7f75;
+    color: #524941;
     margin-bottom: 8px;
 }
 
 .experience-about {
-    font-size: 15px;
+    font-size: 19px;
     line-height: 1.5;
     color: #3b342d;
     padding-left: 10px;
