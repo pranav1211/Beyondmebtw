@@ -19,17 +19,16 @@ header {
     display: flex;
     align-items: flex-start;
     margin-bottom: 30px;
+    margin-top: 1px;
 }
 
 #name {
     font-family: "Permanent Marker", cursive;
     font-weight: 400;
-    font-style: normal;
-    font-optical-sizing: auto;
+    font-style: normal;    
     font-size: 58px;
     margin-top: 16px;
-    margin-left: 95px;
-    display: block;
+    margin-left: 95px;    
     color: #3b342d;
 
 }
@@ -67,10 +66,10 @@ header {
 .bento-container {
     max-width: 90%;
     margin: 0 auto;
-    padding: 20px;
+    padding: 10px;
     display: grid;
     grid-template-columns: 3fr 1fr;
-    gap: 25px;
+    gap: 30px;
     grid-template-areas:
         "who-i-am image-slider"
         "who-i-am image-slider"
@@ -117,12 +116,12 @@ header {
 .slider-image {
     position: absolute;
     width: 100%;
-    height: 100%;
+    height: 130%;
     object-fit: cover; /* Changed from contain to cover */
     opacity: 0;
     transition: opacity 1s ease-in-out;
     border-radius: 15px;
-    max-height: 100%; /* Added max-height */
+    max-height: 150%; /* Added max-height */
 }
 
 .slider-image.active {
