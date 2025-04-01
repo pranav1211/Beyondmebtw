@@ -11,6 +11,7 @@ Check out the site : www.Beyondmebtw.com
 ### V2.2 (1/4/25)
 - About Page Added
 - changed some fonts on the home pages for the section titles
+- made changes to responsiveness to accomodate for various screen sizes
 
 ### V 2.1 (14/3/25)
 - Added a light/dark mode toggle button (still in development)
