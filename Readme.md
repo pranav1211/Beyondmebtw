@@ -7,6 +7,11 @@ Check out the site : www.Beyondmebtw.com
 
 ## Changelog:
 
+
+### V2.2 (1/4/25)
+- About Page Added
+- changed some fonts on the home pages for the section titles
+
 ### V 2.1 (14/3/25)
 - Added a light/dark mode toggle button (still in development)
 - Fixed Medium logo in the "Get in Touch" section

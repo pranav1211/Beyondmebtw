@@ -22,7 +22,6 @@ aboutlink.addEventListener('click', () => {
     window.location = "https://beyondmebtw.com/about";
 });
 
-// Profile image hover effect
 const profilePic = document.querySelector('.profile-pic');
 if (profilePic) {
     profilePic.addEventListener('mouseover', () => {
@@ -34,7 +33,6 @@ if (profilePic) {
     });
 }
 
-// Project cards hover effects
 const projectCards = document.querySelectorAll('.project-card');
 projectCards.forEach(card => {
     card.addEventListener('mouseover', () => {

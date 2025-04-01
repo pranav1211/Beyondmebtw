@@ -9,8 +9,9 @@
 }
 
 .contact-header {
-    font-size: 24px;
-    font-weight: 600;
+    font-family: "Kavoon", serif;
+    font-weight: 100;
+    font-size: 30px;
     margin-bottom: 12px;
     color: #3b342d;
     text-align: center;

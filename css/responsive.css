@@ -62,7 +62,7 @@
         grid-template-columns: repeat(2, 1fr); /* Reduce from 4 to 2 columns */
     }
 
-    .section-title,.latest-post-header{
+    .latest-post-header{
         font-size: 28px;        
     }
     .latest-post-header{
