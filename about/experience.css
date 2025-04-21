@@ -60,6 +60,10 @@
     border-left: 2px solid #E8D9CD;
 }
 
+.listitem{
+    padding-left: 19px;
+}
+
 /* Responsive Styles */
 @media (max-width: 768px) {
     .experience-container {

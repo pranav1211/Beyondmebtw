@@ -18,8 +18,7 @@ header {
     position: relative;
     display: flex;
     align-items: flex-start;
-    margin-bottom: 30px;
-    margin-top: 1px;
+    margin-bottom: 30px;        
 }
 
 #name {
@@ -27,7 +26,7 @@ header {
     font-weight: 400;
     font-style: normal;    
     font-size: 58px;
-    margin-top: 16px;
+    margin-top: 15px;
     margin-left: 95px;    
     color: #3b342d;
 
@@ -38,20 +37,20 @@ header {
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    margin-top: 27px;
+    margin-top: 28px;
     font-optical-sizing: auto;
     font-size: 27px;
     font-style: normal;
     background-color: #E8D9CD;
-    padding: 7.5px;
+    padding: 7.2px;
     border-radius: 60px;
     font-family: "Delius", cursive;
     font-weight: 600;
-    font-style: normal;
+    font-style: normal;    
 }
 
 .link {
-    padding: 13px 40px;
+    padding: 10px 40px;
     cursor: pointer;
     transition: background-color 0.3s, border-radius 0.3s;
     border-radius: 60px;
