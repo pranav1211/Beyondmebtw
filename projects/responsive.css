@@ -1,5 +1,5 @@
-/* Desktop to Tablet Transition (max-width: 1385px) */
-@media (max-width: 1385px) {
+/* Responsive layout for projects page */
+@media screen and (max-width: 1440px) {
     header {
         flex-direction: column;
         align-items: center;
@@ -8,17 +8,15 @@
     
     #name {
         font-size: 46px;
-        margin: 20px 0 15px 0; /* Center it and add space below */
+        margin: 20px 0 15px 0;
         text-align: center;
         width: 100%;
-        display: block;
     }
     
     #links {
-        position: relative; /* Change from absolute positioning */
+        position: relative;
         left: auto;
         transform: none;
-        width: auto; /* Let it size naturally */
         margin: 0 auto 15px auto;
         font-size: 18px;
     }
@@ -26,10 +24,17 @@
     .link {
         padding: 8px 30px;
     }
+    
+    .projects-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+    
+    .slideshow {
+        height: 400px;
+    }
 }
 
-/* Medium Screens (max-width: 1200px) */
-@media (max-width: 1200px) {
+@media screen and (max-width: 1200px) {
     #links {
         font-size: 16px;
     }
@@ -37,52 +42,26 @@
     .link {
         padding: 8px 25px;
     }
-
-    #footer {
-        display: flex;
-        justify-content: center;
-        text-align: center;
-    }
-}
-
-/* Small Screens (max-width: 992px) */
-@media (max-width: 992px) {
-    #name {
-        font-size: 30px;
-    }
-
-    #links {
-        font-size: 14px;
-        padding: 5px;
-    }
-
-    .link {
-        padding: 8px 20px;
-    }
-
-    #footer {
-        display: flex;
-        justify-content: center;
-        text-align: center;
-    }
     
-    .view-all-btn {
-        margin-right: 25%;
-        margin-left: 25%;
-    }
-}
-
-/* Mobile Screens (max-width: 768px) */
-@media (max-width: 768px) {
-    header {
-        margin-bottom: 0px;
-    }
-    
-    #name {
+    .section-title {
         font-size: 36px;
-        margin: 20px 0 15px 0;
     }
     
+    .project-card.expanded .slideshow {
+        height: 380px;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    header {
+        margin-bottom: 0;
+    }
+
+    #name {
+        font-size: 40px;
+        margin-left: 0;
+    }
+
     #links {
         width: 90%;
         margin: 0 auto 20px auto;
@@ -91,9 +70,13 @@
         text-align: center;
         grid-gap: 5px;
         border-radius: 15px;
-        font-size: 20px;
+        font-size: 18px;
     }
-    
+
+    .link:hover {
+        border-radius: 10px;
+    }
+
     .link {
         display: flex;
         justify-content: center;
@@ -101,16 +84,104 @@
         border-radius: 15px;
     }
     
-    .link:hover {
-        border-radius: 10px;
+    .projects-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     }
     
-    #cs {
-        font-size: 40px;
+    .project-card.expanded .slideshow {
+        height: 350px;
     }
     
-    .view-all-btn {
-        margin-right: 0%;
-        margin-left: 0%;
+    .expanded-info h2 {
+        font-size: 28px;
+    }
+    
+    .expanded-description {
+        font-size: 16px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .projects-container {
+        padding: 0 20px;
+    }
+    
+    .section-title {
+        padding: 0 20px;
+        font-size: 32px;
+    }
+    
+    .projects-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+        gap: 20px;
+    }
+    
+    .project-image {
+        height: 200px;
+    }
+    
+    .project-card.expanded .slideshow {
+        height: 300px;
+    }
+    
+    .slide-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+    
+    .expanded-info {
+        padding: 20px;
+    }
+    
+    /* When a project is expanded, minimize others significantly on mobile */
+    .project-card.minimized {
+        opacity: 0.5;
+        transform: scale(0.95);
+    }
+}
+
+@media screen and (max-width: 576px) {
+    #name {
+        font-size: 36px;        
+    }
+    
+    .link {
+        padding: 10.5px 15px;
+        font-size: 20px;
+    }
+    
+    .section-title {
+        font-size: 28px;
+        margin: 15px 0;
+    }
+    
+    .project-info h3 {
+        font-size: 20px;
+    }
+    
+    .project-card.expanded .slideshow {
+        height: 250px;
+    }
+    
+    .expanded-info h2 {
+        font-size: 24px;
+    }
+    
+    .expanded-description {
+        font-size: 14px;
+    }
+    
+    .project-link {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+    
+    .close-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 20px;
+        top: 12px;
+        right: 12px;
     }
 }
