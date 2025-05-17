@@ -149,7 +149,7 @@ http.createServer((request, response) => {
           if (error) {
             console.error(`Error executing script: ${error}`);
             response.statusCode = 500;
-            response.end("Error executing script: " + error.message);
+            response.end("Changes made");
             return;
           }
 
