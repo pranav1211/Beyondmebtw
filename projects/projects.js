@@ -1,6 +1,18 @@
 // Import the projects data
 import projectsData from './project-data.js';
 
+// Define category colors map
+const categoryColors = {
+  'Web Development': '#4285F4',  // Google Blue
+  'Mobile App': '#EA4335',       // Google Red
+  'Machine Learning': '#34A853', // Google Green
+  'Game Development': '#FBBC05', // Google Yellow
+  'IoT': '#9C27B0',              // Purple
+  'Backend': '#FF9800',          // Orange
+  'Design': '#E91E63',           // Pink
+  'Other': '#607D8B'             // Blue Grey
+};
+
 // Initialize Vue application
 new Vue({
     el: '#app',
@@ -8,7 +20,8 @@ new Vue({
         projects: projectsData,
         selectedProject: null,
         projectSlides: {}, // Tracks current slide for each project
-        slideIntervals: {} // Tracks slideshow intervals for each project
+        slideIntervals: {}, // Tracks slideshow intervals for each project
+        categoryColors: categoryColors
     },
     methods: {
         toggleProject(projectId) {
@@ -90,6 +103,9 @@ new Vue({
                 clearInterval(interval);
                 this.$delete(this.slideIntervals, projectId);
             }
+        },
+        getCategoryColor(category) {
+            return this.categoryColors[category] || this.categoryColors['Other'];
         }
     },
     mounted() {

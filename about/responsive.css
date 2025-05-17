@@ -1,4 +1,5 @@
-/* Responsive Layout */
+
+/*About Responsive */
 @media screen and (max-width: 1440px) {
     header {
         flex-direction: column;
@@ -7,7 +8,7 @@
     }
     
     #name {
-        font-size: 46px;
+        font-size: 52px;
         margin: 20px 0 15px 0;
         text-align: center;
         width: 100%;
@@ -18,7 +19,7 @@
         left: auto;
         transform: none;
         margin: 0 auto 15px auto;
-        font-size: 18px;
+        font-size: 25px;
     }
     
     .link {
@@ -34,10 +35,10 @@
             "who-i-am image-slider"
             "experience skills"
             "quotes quotes";
-    }
+    }    
 
     #links {
-        font-size: 16px;
+        font-size: 25px;
     }
 
     .link {
@@ -45,36 +46,28 @@
     }
 }
 
+/* Medium-Small Screens (max-width: 1024px) */
 @media screen and (max-width: 1024px) {
     header {
         margin-bottom: 0;
     }
 
     #name {
-        font-size: 40px;
+        font-size: 52px;
         margin-left: 0;
     }
 
-    #links {
-        width: 90%;
-        margin: 0 auto 20px auto;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        text-align: center;
-        grid-gap: 5px;
-        border-radius: 15px;
-        font-size: 18px;
-    }
-
-    .link:hover {
-        border-radius: 10px;
+    #links {        
+        position: relative;
+        font-size: 22px;
+        padding: 8px;        
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
     .link {
-        display: flex;
-        justify-content: center;
-        padding: 8px 5px;
-        border-radius: 15px;
+        padding: 8px 25px;
     }
 
     .bento-container {
@@ -128,47 +121,39 @@
     #name {
         font-size: 38px;
     }
-    
-    #links {
-        font-size: 14px;
-        padding: 5px;
-    }
-    
-    .link {
-        padding: 8px 20px;
-    }
 }
 
+/* Mobile Screens (max-width: 768px) */
 @media screen and (max-width: 768px) {
     header {
-        margin-bottom: 0;
+        margin-bottom: 0px;
     }
-
+    
     #name {
-        font-size: 38px;
-        margin-left: 0;
+        font-size: 36px;
+        margin: 20px 0 15px 0;
     }
-
+    
     #links {
         width: 90%;
         margin: 0 auto 20px auto;
         display: grid;
         grid-template-columns: 1fr 1fr;
         text-align: center;
-        grid-gap: 5px;
+        grid-gap: 6px;
         border-radius: 15px;
         font-size: 20px;
     }
-
-    .link:hover {
-        border-radius: 10px;
-    }
-
+    
     .link {
         display: flex;
         justify-content: center;
-        padding: 8px 5px;
+        padding: 13px 5px;
         border-radius: 15px;
+    }
+    
+    .link:hover {
+        border-radius: 10px;
     }
 
     .bento-container {
@@ -212,7 +197,7 @@
     }
     
     .link {
-        padding: 10.5px 15px;
+        padding: 9px 17px;
         font-size: 20px;
     }
     

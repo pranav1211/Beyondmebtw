@@ -1,4 +1,4 @@
-/* Get in Touch responsiveness improvements */
+/*Main responsive */
 .get-in-touch {
     display: flex;
     flex-direction: column;
@@ -26,7 +26,7 @@
     }
     
     #name {
-        font-size: 46px;
+        font-size: 52px;
         margin: 20px 0 15px 0; /* Center it and add space below */
         text-align: center;
         width: 100%;
@@ -39,7 +39,7 @@
         transform: none;
         width: auto; /* Let it size naturally */
         margin: 0 auto 15px auto;
-        font-size: 18px;
+        font-size: 25px;
     }
     
     .link {
@@ -70,10 +70,10 @@
     }
     .contact-header{
         font-size: 22px;
-    }
+    }    
 
     #links {
-        font-size: 16px;
+        font-size: 22px;
     }
 
     .link {
@@ -241,7 +241,7 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         text-align: center;
-        grid-gap: 5px;
+        grid-gap: 6px;
         border-radius: 15px;
         font-size: 20px;
     }
@@ -249,7 +249,7 @@
     .link {
         display: flex;
         justify-content: center;
-        padding: 8px 5px;
+        padding: 11px 5px;
         border-radius: 15px;
     }
     

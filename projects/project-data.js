@@ -1,57 +1,64 @@
-// Project data structure with all required information
 const projectsData = [
-    {
-      id: 1,
-      title: "Beyond Me BTW",
-      shortDescription: "A Personal Blog Site",
-      fullDescription: "A comprehensive smart home dashboard built with Vue.js that allows users to control all their IoT devices from one central interface. Features include real-time updates, customizable widgets, and integration with major smart home platforms.",
-      images: [
-        "/api/placeholder/800/450",
-        "/api/placeholder/800/450",
-        "/api/placeholder/800/450"
-      ],
-      link: "https://beyondmebtw.com",
-      tags: ["Vue.js", "IoT", "Dashboard"]
-    },
-    {
-      id: 2,
-      title: "Gradient Club Website",
-      shortDescription: "The official website of the Gradient Club at BMSCE",
-      fullDescription: "A cross-platform fitness application that helps users track their workouts, nutrition, and overall health goals. The app provides personalized recommendations based on user data and includes social features for workout challenges with friends.",
-      images: [
-        "/api/placeholder/800/450",
-        "/api/placeholder/800/450",
-        "/api/placeholder/800/450"
-      ],
-      link: "https://Gradientaiml.tech",
-      tags: ["React Native", "Firebase", "Health"]
-    },
-    {
-      id: 3,
-      title: "My Library",
-      shortDescription: "A personal online library",
-      fullDescription: "A complete e-commerce platform with customer and admin interfaces. Features include product management, secure checkout, inventory tracking, and detailed analytics for business owners.",
-      images: [
-        "/api/placeholder/800/450",
-        "/api/placeholder/800/450",
-        "/api/placeholder/800/450"
-      ],
-      link: "https://library.beyondmebtw.com",
-      tags: ["MERN Stack", "Payment Gateway", "E-commerce"]
-    },
-    {
-      id: 4,
-      title: "Pair Game",
-      shortDescription: "A Fun game based on the classic memory games",
-      fullDescription: "An interactive web application that visualizes weather data from around the world in unique and insightful ways. Users can explore historical trends, compare regions, and see forecasts through intuitive charts and maps.",
-      images: [
-        "/api/placeholder/800/450",
-        "/api/placeholder/800/450",
-        "/api/placeholder/800/450"
-      ],
-      link: "https://beyondmebtw.com/projects/weatherviz",
-      tags: ["D3.js", "APIs", "Data Visualization"]
-    }
-  ];
-  
-  export default projectsData;
+  {
+    id: 1,
+    title: "Beyond Me Btw",
+    shortDescription: "A personal Blog site",
+    fullDescription: "A modern, responsive blog platform designed to share thoughts and ideas with the world. Features a clean interface, article categorization, and seamless navigation.",
+    logo: "https://beyondmebtw.com/assets/images/favicon.ico",
+    images: [],
+    link: "https://beyondmebtw.com",
+    githubLink: "https://github.com/pranav1211/beyondmebtw",    
+    demoLink: "https://demo.example.com/project1",
+    category: "Web Development",
+    tags: ["HTML", "CSS", "JavaScript"]
+  },
+  {
+    id: 2,
+    title: "Gradient club website",
+    shortDescription: "The official website of the Gradient student Club at BMSCE",
+    fullDescription: "A dynamic platform for the Gradient AI/ML student club showcasing events, resources, and member projects. Features a modern UI/UX with interactive elements.",
+    logo: "https://gradient-content-server.vercel.app/content/Logo.png",
+    images: [],
+    link: "https://gradientaiml.tech",
+    githubLink: "https://github.com/pranav1211/Gradient-website",
+    category: "Web Development",
+    tags: ["React", "JavaScript", "UI/UX"]
+  }, 
+  {
+    id: 3,
+    title: "Real Time Driver Monitoring System",
+    shortDescription: "A monitoring system for driver fatigue and distraction",
+    fullDescription: "An AI-powered solution that monitors driver alertness and behavior in real-time, detecting signs of fatigue and distraction to prevent accidents and improve road safety.",
+    logo: "https://beyondmebtw.com/assets/images/favicon.ico", 
+    images: [],
+    githubLink: "https://github.com/pranav1211/RTDMS",
+    category: "AI/ML",
+    tags: ["Python", "Computer Vision", "Machine Learning"]
+  },
+  {
+    id: 4,
+    title: "My Library",
+    shortDescription: "A personal book collection management application",
+    fullDescription: "A digital library management system allowing users to catalog, search, and organize their book collections. Features include reading progress tracking and book recommendations.",
+    logo: "https://beyondmebtw.com/assets/images/favicon.ico", 
+    images: [],
+    link: "https://gradientaiml.tech",
+    githubLink: "https://github.com/pranav1211/My-Library",
+    category: "Full Stack",
+    tags: ["JavaScript", "Node.js", "Database"]
+  },
+  {
+    id: 5,
+    title: "Pair Game",
+    shortDescription: "A memory matching card game with engaging gameplay",
+    fullDescription: "An interactive memory card game where players need to match pairs of identical cards. Features multiple difficulty levels, score tracking, and engaging animations.",
+    logo: "https://beyondmebtw.com/assets/images/favicon.ico", 
+    images: [],
+    link: "https://beyondmebtw.com/pairgame",
+    githubLink: "https://github.com/pranav1211/Pair-Game",
+    category: "Game Development",
+    tags: ["JavaScript", "HTML5", "CSS3"]
+  }
+];
+
+export default projectsData;
