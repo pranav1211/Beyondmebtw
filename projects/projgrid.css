@@ -20,11 +20,11 @@
     font-family: "Kavoon", serif;
     font-size: 32px;
     font-weight: 100;
-    color: var(--primary-color);
+    color: var(--primary-color, #3b342d);
     margin-bottom: 12px;
     display: inline-block;
     padding-right: 20px;
-    background-color: var(--secondary-color);
+    background-color: var(--secondary-color, #F4F2EF);
     position: relative;
     z-index: 1;
 }
@@ -32,7 +32,7 @@
 .category-divider {
     height: 3px;
     width: 100%;
-    background: var(--gradient-blue);
+    background: var(--gradient-blue, linear-gradient(90deg, #4285F4 0%, #34A853 100%));
     position: relative;
     top: -15px;
     z-index: 0;
@@ -40,15 +40,15 @@
 
 /* Apply different gradient colors to different categories */
 .category-section:nth-child(1) .category-divider {
-    background: var(--gradient-blue);
+    background: var(--gradient-blue, linear-gradient(90deg, #4285F4 0%, #34A853 100%));
 }
 
 .category-section:nth-child(2) .category-divider {
-    background: var(--gradient-purple);
+    background: var(--gradient-purple, linear-gradient(90deg, #9C27B0 0%, #E91E63 100%));
 }
 
 .category-section:nth-child(3) .category-divider {
-    background: var(--gradient-green);
+    background: var(--gradient-green, linear-gradient(90deg, #34A853 0%, #FBBC05 100%));
 }
 
 .category-projects {
@@ -63,7 +63,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 30px;
-    transition: var(--transition);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .projects-grid.expanded-view {
@@ -93,16 +93,16 @@
     font-size: 20px;
     padding-bottom: 10px;
     margin-bottom: 10px;
-    border-bottom: 2px solid var(--border-color);
-    color: var(--primary-color);
+    border-bottom: 2px solid var(--border-color, rgba(0, 0, 0, 0.1));
+    color: var(--primary-color, #3b342d);
 }
 
 /* Project Card Styling */
 .project-card {
-    background-color: var(--accent-color);
+    background-color: #E8D9CD;
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: var(--card-shadow);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     cursor: pointer;
     position: relative;
@@ -138,22 +138,22 @@
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    transition: var(--transition);
+    transition: all 0.3s;
 }
 
 .project-info h3 {
     font-family: "Kavoon", serif;
     font-size: 22px;
     margin-bottom: 10px;
-    color: var(--primary-color);
-    transition: var(--transition);
+    color: #3b342d;
+    transition: all 0.3s;
 }
 
 .project-info p {
     font-size: 16px;
     margin-bottom: 15px;
     color: #5a5149;
-    transition: var(--transition);
+    transition: all 0.3s;
 }
 
 .project-tags {
@@ -161,7 +161,7 @@
     flex-wrap: wrap;
     gap: 8px;
     margin-bottom: 15px;
-    transition: var(--transition);
+    transition: all 0.3s;
 }
 
 .tag {
@@ -173,15 +173,15 @@
 }
 
 .click-me-btn {
-    background-color: var(--primary-color);
-    color: var(--secondary-color);
+    background-color: #3b342d;
+    color: #F4F2EF;
     border: none;
     border-radius: 12px;
     padding: 8px 16px;
     font-family: "Delius", cursive;
     font-size: 14px;
     cursor: pointer;
-    transition: var(--transition);
+    transition: all 0.3s;
     margin-top: auto;
 }
 
@@ -192,12 +192,12 @@
 /* Sidebar Cards (when expanded) */
 .project-card.sidebar-card {
     grid-column: 1;
-    transition: var(--transition);
+    transition: all 0.3s;
     margin-bottom: 15px;
     height: 100px;
     display: flex;
     align-items: center;
-    background-color: var(--accent-color);
+    background-color: #E8D9CD;
 }
 
 .sidebar-card .project-image {
@@ -226,21 +226,20 @@
 }
 
 .sidebar-card.active {
-    border-left: 4px solid var(--primary-color);
+    border-left: 4px solid #3b342d;
     background-color: rgba(244, 242, 239, 0.7);
 }
-
-
 
 /* Expanded Project Styles */
 .expanded-project {
     grid-area: main;
-    background-color: var(--accent-color);
+    background-color: #E8D9CD;
     border-radius: 20px;
-    box-shadow: var(--card-shadow);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     opacity: 1;
     transform: translateX(0);
     height: min-content;
+    position: relative;
 }
 
 .expanded-project.active {
@@ -275,7 +274,7 @@
     padding: 30px;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .project-logo {
@@ -283,7 +282,7 @@
     height: 100px;
     flex-shrink: 0;
     margin-right: 30px;
-    background-color: var(--secondary-color);
+    background-color: #F4F2EF;
     border-radius: 10px;
     overflow: hidden;
     display: flex;
@@ -306,8 +305,8 @@
 
 .category-badge {
     display: inline-block;
-    background-color: var(--primary-color);
-    color: var(--secondary-color);
+    background-color: #3b342d;
+    color: #F4F2EF;
     padding: 5px 12px;
     border-radius: 15px;
     font-size: 14px;
@@ -335,7 +334,7 @@
     font-size: 18px;
     line-height: 1.6;
     margin-bottom: 25px;
-    color: var(--primary-color);
+    color: #3b342d;
 }
 
 .project-links {
@@ -347,8 +346,8 @@
 
 .project-link {
     display: inline-block;
-    background-color: var(--primary-color);
-    color: var(--secondary-color);
+    background-color: #3b342d;
+    color: #F4F2EF;
     text-decoration: none;
     border-radius: 12px;
     padding: 10px 20px;
@@ -463,9 +462,47 @@
     font-size: 1.2rem;
     color: white;
     cursor: pointer;
-    transition: var(--transition);
+    transition: all 0.3s;
 }
 
 .nav-btn:hover {
     background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Project category badge styles */
+.project-category-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 5px 10px;
+  border-radius: 15px;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Small badge for sidebar cards */
+.project-category-badge.small {
+  font-size: 10px;
+  padding: 3px 6px;
+  top: 6px;
+  right: 6px;
+  border-radius: 10px;
+}
+
+/* Large badge for expanded view */
+.project-category-badge.large {
+  position: relative;
+  top: auto;
+  right: auto;
+  display: inline-block;
+  margin-bottom: 10px;
+  font-size: 16px;
+  padding: 7px 14px;
 }
