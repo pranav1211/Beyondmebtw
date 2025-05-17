@@ -19,89 +19,54 @@ new Vue({
     data: {
         projects: projectsData,
         selectedProject: null,
-        projectSlides: {}, // Tracks current slide for each project
-        slideIntervals: {}, // Tracks slideshow intervals for each project
+        isExpandedView: false,
+        isImageViewerActive: false,
+        currentImageIndex: 0,
         categoryColors: categoryColors
     },
+    computed: {
+        selectedProjectData() {
+            if (!this.selectedProject) return null;
+            return this.projects.find(p => p.id === this.selectedProject);
+        }
+    },
     methods: {
-        toggleProject(projectId) {
-            // If already selected, close it
-            if (this.selectedProject === projectId) {
-                this.closeProject();
-                return;
+        selectProject(projectId) {
+            // If this is the first project selection, switch to expanded view
+            if (!this.isExpandedView) {
+                this.isExpandedView = true;
             }
             
-            // If another project is expanded, close it first
-            if (this.selectedProject !== null) {
-                this.stopSlideshow(this.selectedProject);
-            }
-            
-            // Expand selected project
+            // Select the project
             this.selectedProject = projectId;
-            
-            // Initialize slide index if not already set
-            if (this.projectSlides[projectId] === undefined) {
-                this.$set(this.projectSlides, projectId, 0);
-            }
-            
-            // Scroll to the expanded project with smooth animation
-            this.$nextTick(() => {
-                const expandedCard = document.querySelector('.project-card.expanded');
-                if (expandedCard) {
-                    const headerOffset = 100;
-                    const elementPosition = expandedCard.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-                    window.scrollTo({
-                        top: offsetPosition,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-            
-            // Start slideshow for this project
-            this.startSlideshow(projectId);
         },
-        closeProject(event) {
-            if (event) event.stopPropagation();
-            
-            // Stop slideshow for current project
-            if (this.selectedProject !== null) {
-                this.stopSlideshow(this.selectedProject);
-            }
-            
+        closeExpandedView() {
+            this.isExpandedView = false;
             this.selectedProject = null;
         },
-        nextSlide(project) {
-            const currentIndex = this.projectSlides[project.id] || 0;
-            this.$set(this.projectSlides, project.id, (currentIndex + 1) % project.images.length);
+        openImageViewer(index) {
+            this.currentImageIndex = index;
+            this.isImageViewerActive = true;
         },
-        prevSlide(project) {
-            const currentIndex = this.projectSlides[project.id] || 0;
-            this.$set(this.projectSlides, project.id, (currentIndex - 1 + project.images.length) % project.images.length);
+        closeImageViewer() {
+            this.isImageViewerActive = false;
         },
-        startSlideshow(projectId) {
-            this.stopSlideshow(projectId); // Clear any existing interval
+        nextImage(event) {
+            if (event) event.stopPropagation();
+            if (!this.selectedProjectData) return;
             
-            // Start a new interval for this project
-            const interval = setInterval(() => {
-                if (this.selectedProject === projectId) {
-                    const project = this.projects.find(p => p.id === projectId);
-                    if (project) {
-                        this.nextSlide(project);
-                    }
-                } else {
-                    this.stopSlideshow(projectId);
-                }
-            }, 5000); // Change slide every 5 seconds
-            
-            this.$set(this.slideIntervals, projectId, interval);
+            this.currentImageIndex = (this.currentImageIndex + 1) % this.selectedProjectData.images.length;
         },
-        stopSlideshow(projectId) {
-            const interval = this.slideIntervals[projectId];
-            if (interval) {
-                clearInterval(interval);
-                this.$delete(this.slideIntervals, projectId);
+        prevImage(event) {
+            if (event) event.stopPropagation();
+            if (!this.selectedProjectData) return;
+            
+            this.currentImageIndex = (this.currentImageIndex - 1 + this.selectedProjectData.images.length) % this.selectedProjectData.images.length;
+        },
+        handleViewerBackgroundClick(event) {
+            // Only close if clicking directly on the background, not on content
+            if (event.target.classList.contains('image-viewer')) {
+                this.closeImageViewer();
             }
         },
         getCategoryColor(category) {
@@ -133,29 +98,6 @@ new Vue({
 
         aboutLink.addEventListener('click', () => {
             window.location = "https://beyondmebtw.com/about";
-        });
-        
-        // Handle clicks outside of project cards to close expanded card
-        document.addEventListener('click', (e) => {
-            if (this.selectedProject !== null) {
-                const clickedInsideCard = e.target.closest('.project-card');
-                const clickedCloseButton = e.target.closest('.close-btn');
-                
-                if (!clickedInsideCard || clickedCloseButton) {
-                    this.closeProject();
-                }
-            }
-        });
-        
-        // Cleanup event listener on component destroy
-        this.$once('hook:beforeDestroy', () => {
-            document.removeEventListener('click', this.handleOutsideClick);
-        });
-    },
-    beforeDestroy() {
-        // Clean up all slideshow intervals
-        Object.keys(this.slideIntervals).forEach(projectId => {
-            this.stopSlideshow(projectId);
         });
     }
 });
