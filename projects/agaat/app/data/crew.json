@@ -1,0 +1,14 @@
+[
+  {
+    "crew_id": "C001",
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "phone": "1234567890"
+  },
+  {
+    "crew_id": "C002",
+    "name": "Jane Smith",
+    "email": "jane.smith@example.com",
+    "phone": "0987654321"
+  }
+]
