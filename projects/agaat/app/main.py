@@ -3,10 +3,12 @@ from datetime import datetime, timedelta
 import json
 import os
 from chatbot import KeywordChatbot
+from dotenv import load_dotenv
 
 # Initialize Flask app
 app = Flask(__name__)
-app.secret_key = 'pv1'
+load_dotenv()
+app.secret_key = os.getenv('SECRET_KEY')
 app.permanent_session_lifetime = timedelta(hours=24)
 
 # Initialize chatbot
