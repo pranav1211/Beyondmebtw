@@ -1,0 +1,274 @@
+{
+  "users": [
+    {
+      "id": "user_001",
+      "username": "admin",
+      "password": "admin123",
+      "name": "Admin User",
+      "role": "administrator",
+      "email": "admin@aviationcrew.com",
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "user_002", 
+      "username": "pilot01",
+      "password": "pilot123",
+      "name": "Captain John Smith",
+      "role": "pilot",
+      "email": "john.smith@aviationcrew.com",
+      "created_at": "2024-01-15T00:00:00Z"
+    },
+    {
+      "id": "user_003",
+      "username": "scheduler",
+      "password": "schedule123", 
+      "name": "Sarah Johnson",
+      "role": "scheduler",
+      "email": "sarah.johnson@aviationcrew.com",
+      "created_at": "2024-02-01T00:00:00Z"
+    }
+  ],
+  "crew_members": [
+    {
+      "id": "crew_001",
+      "name": "Captain John Smith",
+      "employee_id": "EMP001",
+      "role": "pilot",
+      "experience_years": 15,
+      "phone": "+1-555-0101",
+      "email": "john.smith@aviationcrew.com",
+      "status": "available",
+      "certifications": ["ATP", "B737", "B777"],
+      "next_flight": {
+        "date": "2025-06-02",
+        "route": "NYC-LAX",
+        "flight_number": "AA101"
+      },
+      "avatar": "/static/avatars/pilot1.jpg"
+    },
+    {
+      "id": "crew_002",
+      "name": "First Officer Emily Davis",
+      "employee_id": "EMP002", 
+      "role": "copilot",
+      "experience_years": 8,
+      "phone": "+1-555-0102",
+      "email": "emily.davis@aviationcrew.com",
+      "status": "scheduled",
+      "certifications": ["CPL", "B737", "B320"],
+      "next_flight": {
+        "date": "2025-06-01",
+        "route": "LAX-CHI",
+        "flight_number": "UA205"
+      },
+      "avatar": "/static/avatars/pilot2.jpg"
+    },
+    {
+      "id": "crew_003",
+      "name": "Lisa Martinez",
+      "employee_id": "EMP003",
+      "role": "flight_attendant", 
+      "experience_years": 6,
+      "phone": "+1-555-0103",
+      "email": "lisa.martinez@aviationcrew.com",
+      "status": "available",
+      "certifications": ["FA_CERT", "SAFETY_TRAINING", "FIRST_AID"],
+      "next_flight": null,
+      "avatar": "/static/avatars/fa1.jpg"
+    },
+    {
+      "id": "crew_004",
+      "name": "Michael Johnson",
+      "employee_id": "EMP004",
+      "role": "flight_attendant",
+      "experience_years": 4,
+      "phone": "+1-555-0104", 
+      "email": "michael.johnson@aviationcrew.com",
+      "status": "unavailable",
+      "certifications": ["FA_CERT", "SAFETY_TRAINING"],
+      "next_flight": null,
+      "avatar": "/static/avatars/fa2.jpg"
+    },
+    {
+      "id": "crew_005",
+      "name": "Robert Chen",
+      "employee_id": "EMP005",
+      "role": "engineer",
+      "experience_years": 12,
+      "phone": "+1-555-0105",
+      "email": "robert.chen@aviationcrew.com", 
+      "status": "scheduled",
+      "certifications": ["A&P", "AVIONICS", "B747"],
+      "next_flight": {
+        "date": "2025-06-03",
+        "route": "CHI-MIA",
+        "flight_number": "DL330"
+      },
+      "avatar": "/static/avatars/engineer1.jpg"
+    },
+    {
+      "id": "crew_006",
+      "name": "Captain Maria Rodriguez",
+      "employee_id": "EMP006",
+      "role": "pilot",
+      "experience_years": 18,
+      "phone": "+1-555-0106",
+      "email": "maria.rodriguez@aviationcrew.com",
+      "status": "available", 
+      "certifications": ["ATP", "B737", "B777", "B787"],
+      "next_flight": {
+        "date": "2025-06-04",
+        "route": "MIA-NYC",
+        "flight_number": "AA405"
+      },
+      "avatar": "/static/avatars/pilot3.jpg"
+    },
+    {
+      "id": "crew_007",
+      "name": "David Wilson",
+      "employee_id": "EMP007",
+      "role": "copilot",
+      "experience_years": 5,
+      "phone": "+1-555-0107",
+      "email": "david.wilson@aviationcrew.com",
+      "status": "available",
+      "certifications": ["CPL", "B737"],
+      "next_flight": null,
+      "avatar": "/static/avatars/pilot4.jpg"
+    },
+    {
+      "id": "crew_008",
+      "name": "Jennifer Lee",
+      "employee_id": "EMP008",
+      "role": "flight_attendant",
+      "experience_years": 9,
+      "phone": "+1-555-0108",
+      "email": "jennifer.lee@aviationcrew.com",
+      "status": "scheduled",
+      "certifications": ["FA_CERT", "SAFETY_TRAINING", "FIRST_AID", "LANGUAGES"],
+      "next_flight": {
+        "date": "2025-06-02", 
+        "route": "NYC-LAX",
+        "flight_number": "AA101"
+      },
+      "avatar": "/static/avatars/fa3.jpg"
+    }
+  ],
+  "flights": [
+    {
+      "id": "flight_001",
+      "flight_number": "AA101",
+      "route": "NYC-LAX",
+      "departure_time": "2025-06-02T08:00:00Z",
+      "arrival_time": "2025-06-02T11:30:00Z",
+      "aircraft": "Boeing 737-800",
+      "assigned_crew": ["crew_001", "crew_008"],
+      "status": "scheduled"
+    },
+    {
+      "id": "flight_002", 
+      "flight_number": "UA205",
+      "route": "LAX-CHI",
+      "departure_time": "2025-06-01T14:00:00Z",
+      "arrival_time": "2025-06-01T19:15:00Z",
+      "aircraft": "Boeing 737-900",
+      "assigned_crew": ["crew_002"],
+      "status": "scheduled"
+    },
+    {
+      "id": "flight_003",
+      "flight_number": "DL330", 
+      "route": "CHI-MIA",
+      "departure_time": "2025-06-03T10:30:00Z",
+      "arrival_time": "2025-06-03T14:45:00Z",
+      "aircraft": "Airbus A320",
+      "assigned_crew": ["crew_005"],
+      "status": "scheduled"
+    },
+    {
+      "id": "flight_004",
+      "flight_number": "AA405",
+      "route": "MIA-NYC", 
+      "departure_time": "2025-06-04T16:00:00Z",
+      "arrival_time": "2025-06-04T19:30:00Z",
+      "aircraft": "Boeing 777-200",
+      "assigned_crew": ["crew_006"],
+      "status": "scheduled"
+    }
+  ],
+  "recent_activities": [
+    {
+      "id": "activity_001",
+      "time": "10:30 AM",
+      "description": "Flight AA101 crew assigned",
+      "crew_member": "Captain John Smith",
+      "status": "scheduled"
+    },
+    {
+      "id": "activity_002",
+      "time": "09:45 AM", 
+      "description": "Completed pre-flight check",
+      "crew_member": "Emily Davis",
+      "status": "scheduled"
+    },
+    {
+      "id": "activity_003",
+      "time": "09:15 AM",
+      "description": "Status updated to available",
+      "crew_member": "Lisa Martinez", 
+      "status": "available"
+    },
+    {
+      "id": "activity_004",
+      "time": "08:30 AM",
+      "description": "Called in sick",
+      "crew_member": "Michael Johnson",
+      "status": "unavailable"
+    },
+    {
+      "id": "activity_005",
+      "time": "08:00 AM",
+      "description": "Maintenance check completed",
+      "crew_member": "Robert Chen",
+      "status": "scheduled"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "notif_001",
+      "type": "warning",
+      "message": "Flight AA101 needs backup crew member",
+      "timestamp": "2025-05-31T10:00:00Z",
+      "read": false
+    },
+    {
+      "id": "notif_002",
+      "type": "success", 
+      "message": "All crew members checked in for today's flights",
+      "timestamp": "2025-05-31T09:00:00Z",
+      "read": false
+    },
+    {
+      "id": "notif_003",
+      "type": "info",
+      "message": "New crew member training scheduled for next week",
+      "timestamp": "2025-05-31T08:00:00Z",
+      "read": true
+    }
+  ],
+  "stats": {
+    "total_crew": 8,
+    "scheduled_flights": 4,
+    "available_crew": 4,
+    "alerts": 1
+  },
+  "chat_history": [
+    {
+      "id": "chat_001",
+      "user_id": "user_001",
+      "message": "What's the crew availability for today?",
+      "response": "Currently we have 4 crew members available: Lisa Martinez (Flight Attendant), Captain Maria Rodriguez (Pilot), David Wilson (Co-Pilot), and 1 other crew member ready for assignment.",
+      "timestamp": "2025-05-31T09:30:00Z"
+    }
+  ]
+}

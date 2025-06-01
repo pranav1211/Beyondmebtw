@@ -1,0 +1,20 @@
+[
+  {
+    "username": "admin1",
+    "password": "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9",
+    "role": "admin",
+    "crew_id": null
+  },
+  {
+    "username": "crew1",
+    "password": "19c4a83c653042cdb94a36aa5599ecde24631d03019d55085a29d9a6058dc8e9",
+    "role": "crew",
+    "crew_id": "C001"
+  },
+  {
+    "username": "crew2",
+    "password": "19c4a83c653042cdb94a36aa5599ecde24631d03019d55085a29d9a6058dc8e9",
+    "role": "crew",
+    "crew_id": "C002"
+  }
+]
