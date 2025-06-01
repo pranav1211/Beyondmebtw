@@ -6,8 +6,6 @@ from chatbot import KeywordChatbot
 
 # Initialize Flask app
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-change-in-production'
-app.permanent_session_lifetime = timedelta(hours=24)
 
 # Initialize chatbot
 chatbot = KeywordChatbot("data.json")
