@@ -1,0 +1,11 @@
+id,username,password,name,role,email,license,base,phone,experience_years,aircraft_certifications,language_skills,availability_status
+pilot_001,user,pass,John Smith,pilot,jsmith@airline.com,ATPL-88761,JFK,555-0199,12,"B737, A320","English, Spanish",active
+pilot_002,mdavis,f0xTr!p,Mike Davis,first_officer,mdavis@airline.com,CPL-33452,LAX,555-0274,8,"B737, B757",English,active
+pilot_003,rkim,skyL1ne,Robert Kim,pilot,rkim@airline.com,ATPL-15677,ORD,555-0381,15,"B757, A320","English, Korean",on_leave
+pilot_004,ljohnson,Jet$456,Lisa Johnson,flight_engineer,ljohnson@airline.com,FE-44901,DFW,555-0422,10,"B737, B757","English, French",active
+pilot_005,tchen,cL0ud9,Tina Chen,first_officer,tchen@airline.com,CPL-77883,SFO,555-0537,6,"A320, B777","English, Mandarin",inactive
+pilot_006,bmartin,w1nDs0r,Brian Martin,pilot,bmartin@airline.com,ATPL-22345,JFK,555-0648,18,"B737, B777, A350","English, German",active
+pilot_007,kgarcia,fLyHigh,Karen Garcia,first_officer,kgarcia@airline.com,CPL-99123,MIA,555-0759,7,"A320, B757","English, Spanish",active
+pilot_008,dwilson,sT@rF1y,David Wilson,flight_engineer,dwilson@airline.com,FE-11234,ATL,555-0860,9,"B757, B777",English,active
+pilot_009,jbrown,m0unT@in,James Brown,pilot,jbrown@airline.com,ATPL-55678,LAX,555-0971,14,"B737, A320, B777",English,on_leave
+pilot_010,slee,r@inBow5,Sarah Lee,first_officer,slee@airline.com,CPL-33456,SEA,555-1082,5,"A320, B737","English, Japanese",active

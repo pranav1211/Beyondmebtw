@@ -1,0 +1,11 @@
+flight_number,route,departure_time,arrival_time,aircraft,status,captain,first_officer,passengers_booked,passengers_capacity,gate_departure,gate_arrival,weather_departure,weather_arrival,fuel_required,cargo_weight,delay_reason,need,priority,notes
+AA101,JFK-LAX,2025-06-05 08:00:00,2025-06-05 13:30:00,Boeing 737-800,scheduled,John Smith,Mike Davis,156,180,A12,B7,Clear skies,"Sunny, 22°C",5500,2500,,,medium,VIP passengers
+DL455,LAX-JFK,2025-06-06 16:00:00,2025-06-06 21:45:00,Boeing 757-200,scheduled,Robert Kim,Sarah Lee,189,200,C15,A8,Light rain,"Cloudy, 18°C",6200,3100,,first_officer,high,Extra cargo
+UA789,ORD-SFO,2025-06-08 10:00:00,2025-06-08 14:15:00,Airbus A320,delayed,Brian Martin,Karen Garcia,172,186,B7,C12,"Fog, 3km visibility","Clear, 20°C",4800,1800,Weather,flight_engineer,high,Medical supplies
+BA456,LHR-JFK,2025-06-11 09:30:00,2025-06-11 16:30:00,Airbus A350,scheduled,James Brown,Tina Chen,293,325,A1,B15,Cloudy,"Windy, 15°C",18000,8900,,both,medium,Priority baggage
+LH123,FRA-JFK,2025-06-12 12:00:00,2025-06-12 20:20:00,Boeing 747-8,scheduled,David Wilson,Robert Kim,367,410,E44,D3,Thunderstorms,"Rain, 16°C",36000,12400,,pilot,low,De-icing required
+EK012,DXB-LAX,2025-06-10 20:00:00,2025-06-11 11:30:00,Boeing 777-300ER,scheduled,Lisa Johnson,Mike Davis,342,396,D20,TBIT,"Clear, windy","Sunny, 28°C",42000,15600,,,low,Crew rest scheduled
+QF678,SYD-LAX,2025-06-14 22:00:00,2025-06-14 20:10:00¹,Airbus A380,scheduled,John Smith,Brian Martin,489,500,F5,TBIT,Clear,"Clear, 25°C",56000,21000,,pilot,medium,Special meals
+AF789,CDG-ATL,2025-06-15 13:00:00,2025-06-15 18:45:00,Boeing 777-200,scheduled,Karen Garcia,James Brown,285,320,G8,D11,Partly cloudy,Thunderstorms,34000,13200,,,high,Storm warning at arrival
+SQ345,SIN-SFO,2025-06-16 23:30:00,2025-06-17 08:00:00,Airbus A350,scheduled,Tina Chen,Sarah Lee,301,325,B2,I8,Clear,"Foggy, 14°C",39000,14300,,,medium,Tech stop in HNL
+JL901,NRT-JFK,2025-06-18 11:00:00,2025-06-18 14:00:00,Boeing 787-9,scheduled,Mike Davis,David Wilson,218,250,C5,A9,Sunny,"Clear, 22°C",24000,8700,,,low,Live animals cargo
