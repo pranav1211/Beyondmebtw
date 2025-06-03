@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviation Crew Scheduler</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 95%;
+            max-width: 1200px;
+            min-height: 600px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            min-height: 500px;
+        }
+
+        .dashboard {
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2a5298;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h3 {
+            color: #2a5298;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .shift-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #2a5298;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .shift-item:hover {
+            background: #e9ecef;
+        }
+
+        .flight-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .flight-number {
+            font-weight: bold;
+            color: #2a5298;
+        }
+
+        .flight-details {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .chat-container {
+            background: white;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid #eee;
+        }
+
+        .chat-header {
+            background: #2a5298;
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 400px;
+            min-height: 300px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+        }
+
+        .user-message {
+            background: #e3f2fd;
+            padding: 10px 15px;
+            border-radius: 18px;
+            margin-left: 50px;
+            text-align: right;
+        }
+
+        .ai-message {
+            background: #f5f5f5;
+            padding: 10px 15px;
+            border-radius: 18px;
+            margin-right: 50px;
+            white-space: pre-wrap;
+        }
+
+        .chat-input-container {
+            padding: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .chat-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .chat-input:focus {
+            border-color: #2a5298;
+        }
+
+        .suggestions-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .suggestions-section h3 {
+            color: white;
+        }
+
+        .suggestion-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: #fff;
+            color: white;
+        }
+
+        .priority-high {
+            border-left-color: #ff4757;
+        }
+
+        .priority-medium {
+            border-left-color: #ffa502;
+        }
+
+        .priority-low {
+            border-left-color: #2ed573;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            color: #666;
+            padding: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✈️ Aviation Crew Scheduler</h1>
+            <div class="user-info">
+                <span id="userName">{{ user.name or 'Demo Pilot' }} ({{ user.role or 'Captain' }})</span>
+                <span>{{ user.base or 'JFK' }}</span>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="dashboard">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalShifts">{{ stats.total_shifts or 0 }}</div>
+                        <div class="stat-label">Total Shifts</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="upcomingShifts">{{ stats.upcoming_shifts or 0 }}</div>
+                        <div class="stat-label">Upcoming</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="availablePickups">{{ stats.available_pickups or 0 }}</div>
+                        <div class="stat-label">Available Pickups</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="suggestions">{{ stats.suggestions or 0 }}</div>
+                        <div class="stat-label">AI Suggestions</div>
+                    </div>
+                </div>
+
+                <!-- Your Schedule -->
+                <div class="section">
+                    <h3>📋 Your Schedule</h3>
+                    <div id="scheduleList">
+                        {% if shifts %}
+                            {% for shift in shifts %}
+                            <div class="shift-item" onclick="showFlightDetails('{{ shift.flight_number }}')">
+                                <div class="flight-info">
+                                    <span class="flight-number">{{ shift.flight_number or 'N/A' }}</span>
+                                    <span class="flight-details">{{ shift.route or 'Route N/A' }}</span>
+                                </div>
+                                <div class="flight-details">{{ shift.shift_date or 'Date N/A' }} • {{ shift.start_time or '00:00' }}-{{ shift.end_time or '00:00' }} • {{ shift.aircraft or 'Aircraft N/A' }}</div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="empty-state">✅ Your schedule is clear! Ready for some pickup shifts?</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Available Pickup Shifts -->
+                <div class="section">
+                    <h3>✈️ Available Pickup Shifts</h3>
+                    <div id="pickupList">
+                        {% if pickup_shifts %}
+                            {% for shift in pickup_shifts %}
+                            <div class="shift-item priority-{{ shift.priority or 'medium' }} pickup-shift" 
+                                 data-shift-id="{{ shift.id }}" 
+                                 data-flight-number="{{ shift.flight_number }}"
+                                 onclick="selectPickupShift('{{ shift.flight_number }}', '{{ shift.id }}')">
+                                <div class="flight-info">
+                                    <span class="flight-number">{{ shift.flight_number or 'N/A' }}</span>
+                                    <span class="flight-details">{{ shift.route or 'Route N/A' }}</span>
+                                </div>
+                                <div class="flight-details">
+                                    {{ shift.shift_date or 'Date N/A' }} • {{ shift.start_time or '00:00' }}-{{ shift.end_time or '00:00' }} • 
+                                    Need: {{ shift.need or 'Not specified' }} • {{ (shift.priority or 'MEDIUM').upper() }} Priority
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="empty-state">No pickup shifts available at the moment.</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- AI Suggestions -->
+                {% if suggestions %}
+                <div class="section suggestions-section">
+                    <h3>🤖 AI Recommendations</h3>
+                    <div id="suggestionsList">
+                        {% for suggestion in suggestions[:3] %}
+                        <div class="suggestion-item shift-item" onclick="selectPickupShift('{{ suggestion.flight_number }}', '{{ suggestion.id }}')">
+                            <div class="flight-info">
+                                <span class="flight-number">🎯 {{ suggestion.flight_number or 'N/A' }} - Recommended</span>
+                                <span class="flight-details">Score: {{ suggestion.suggestion_score or 0 }}/100</span>
+                            </div>
+                            <div class="flight-details">
+                                {% if suggestion.reasons %}
+                                    {{ suggestion.reasons[:2] | join(' • ') }}
+                                {% else %}
+                                    Great match for your profile
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Flight Information -->
+                <div class="section">
+                    <h3>📊 Flight Information</h3>
+                    <div id="flightInfoList">
+                        {% if flight_info %}
+                            {% for flight in flight_info[:5] %}
+                            <div class="shift-item" onclick="showFlightDetails('{{ flight.flight_number }}')">
+                                <div class="flight-info">
+                                    <span class="flight-number">{{ flight.flight_number or 'N/A' }}</span>
+                                    <span class="flight-details">Status: {{ flight.status or 'Unknown' }}</span>
+                                </div>
+                                <div class="flight-details">{{ flight.route or 'Route N/A' }} • {{ flight.aircraft or 'Aircraft N/A' }}</div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="empty-state">No flight information available.</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Chat -->
+            <div class="chat-container">
+                <div class="chat-header">
+                    🤖 AI Assistant
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message ai-message">Hello {{ user.name or 'Captain' }}! 👨‍✈️ I'm your AI crew scheduling assistant. 
+
+I can help you with:
+• View and manage your schedule
+• Find and pick up available shifts  
+• Get personalized AI recommendations
+• Check flight information and status
+• Cancel or modify existing flights
+
+How can I help you today? You can ask naturally or mention specific flight numbers!</div>
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" class="chat-input" id="chatInput" placeholder="Ask me about shifts, flights, or your schedule..." onkeypress="handleChatKeyPress(event)">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Handle chat functionality
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message to chat
+            addChatMessage(message, 'user');
+            input.value = '';
+            
+            // Show loading
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message ai-message loading';
+            loadingDiv.textContent = 'AI is thinking...';
+            document.getElementById('chatMessages').appendChild(loadingDiv);
+            
+            try {
+                // Send to Flask backend
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: message })
+                });
+                
+                const data = await response.json();
+                
+                // Remove loading message
+                loadingDiv.remove();
+                
+                if (data.response) {
+                    addChatMessage(data.response, 'ai');
+                } else {
+                    addChatMessage('Sorry, I encountered an error. Please try again.', 'ai');
+                }
+                
+            } catch (error) {
+                console.error('Chat error:', error);
+                loadingDiv.remove();
+                addChatMessage('Sorry, I\'m having trouble connecting. Please try again.', 'ai');
+            }
+        }
+
+        function addChatMessage(message, sender) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.textContent = message;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Handle pickup shift selection
+        function selectPickupShift(flightNumber, shiftId) {
+            const input = document.getElementById('chatInput');
+            input.value = flightNumber;
+            sendChatMessage();
+        }
+
+        // Show flight details
+        function showFlightDetails(flightNumber) {
+            const input = document.getElementById('chatInput');
+            input.value = `flight info ${flightNumber}`;
+            sendChatMessage();
+        }
+
+        // Auto-refresh data periodically
+        setInterval(async () => {
+            try {
+                await fetch('/api/refresh_data', { method: 'POST' });
+            } catch (error) {
+                console.log('Auto-refresh failed:', error);
+            }
+        }, 300000); // Refresh every 5 minutes
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Aviation Crew Scheduler Dashboard initialized');
+            
+            // Focus on chat input
+            document.getElementById('chatInput').focus();
+        });
+    </script>
+</body>
+</html>
