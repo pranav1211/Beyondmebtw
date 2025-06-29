@@ -2,6 +2,7 @@ const http = require("http");
 const https = require("https");
 const fs = require("fs");
 const { exec } = require("child_process");
+const path = require("path");
 
 let thepasskey;
 try {
@@ -21,24 +22,43 @@ try {
 
 let jsdata = {
   mainPost: {},
-  featured: Array(4).fill({}),
-  projects: Array(4).fill({})  // Initialize projects array
+  featured: Array(4).fill(null).map(() => ({})), // Create separate objects
+  projects: Array(4).fill(null).map(() => ({}))   // Create separate objects
 };
 
 function loadJSON(callback) {
-  https.get("https://beyondmebtw.com/manage/latest.json", (res) => {
+  const request = https.get("https://beyondmebtw.com/manage/latest.json", (res) => {
     let data = "";
-    res.on("data", (chunk) => (data += chunk));
+    
+    res.on("data", (chunk) => {
+      data += chunk;
+    });
+    
     res.on("end", () => {
       try {
-        jsdata = JSON.parse(data);
-
-        // Ensure projects array exists and has 4 elements
-        if (!jsdata.projects) {
-          jsdata.projects = Array(4).fill({});
-        } else if (jsdata.projects.length < 4) {
-          // Pad with empty objects if fewer than 4 projects
-          jsdata.projects = [...jsdata.projects, ...Array(4 - jsdata.projects.length).fill({})];
+        const parsedData = JSON.parse(data);
+        
+        // Validate and merge data
+        jsdata.mainPost = parsedData.mainPost || {};
+        
+        // Handle featured array
+        if (Array.isArray(parsedData.featured)) {
+          jsdata.featured = parsedData.featured.slice(0, 4); // Take first 4
+          while (jsdata.featured.length < 4) {
+            jsdata.featured.push({}); // Pad with empty objects
+          }
+        } else {
+          jsdata.featured = Array(4).fill(null).map(() => ({}));
+        }
+        
+        // Handle projects array
+        if (Array.isArray(parsedData.projects)) {
+          jsdata.projects = parsedData.projects.slice(0, 4); // Take first 4
+          while (jsdata.projects.length < 4) {
+            jsdata.projects.push({}); // Pad with empty objects
+          }
+        } else {
+          jsdata.projects = Array(4).fill(null).map(() => ({}));
         }
 
         console.log("JSON data loaded successfully from URL.");
@@ -47,8 +67,17 @@ function loadJSON(callback) {
       }
       callback();
     });
-  }).on("error", (err) => {
+  });
+
+  request.on("error", (err) => {
     console.error("Error fetching JSON from URL:", err);
+    callback();
+  });
+
+  // Add timeout to prevent hanging
+  request.setTimeout(10000, () => {
+    console.error("Request timeout");
+    request.destroy();
     callback();
   });
 }
@@ -56,7 +85,7 @@ function loadJSON(callback) {
 function updateData(name, date, excerpt, thumbnail, link, formId) {
   const updateFields = (target, updates) => {
     for (const [key, value] of Object.entries(updates)) {
-      if (value !== null && value !== undefined) {
+      if (value !== null && value !== undefined && value !== "") {
         target[key] = value;
       }
     }
@@ -80,7 +109,7 @@ function updateData(name, date, excerpt, thumbnail, link, formId) {
       updateFields(jsdata.featured[3], { title: name, date, excerpt, thumbnail, link });
     },
 
-    // Project posts - note they use 'title' instead of 'name' in the JSON
+    // Project posts
     project1: () => {
       updateFields(jsdata.projects[0], { title: name, excerpt, link });
     },
@@ -97,15 +126,55 @@ function updateData(name, date, excerpt, thumbnail, link, formId) {
 
   if (updates[formId]) {
     updates[formId]();
+    console.log(`Updated ${formId} with data:`, { name, date, excerpt, thumbnail, link });
   } else {
     console.error("Invalid formId:", formId);
+    throw new Error(`Invalid formId: ${formId}`);
   }
 }
 
-http.createServer((request, response) => {
+function writeJSONFile(callback) {
+  const jsonPath = path.join(__dirname, "latest.json");
+  
+  try {
+    fs.writeFileSync(jsonPath, JSON.stringify(jsdata, null, 2), "utf8");
+    console.log("Data written to latest.json successfully");
+    callback(null);
+  } catch (error) {
+    console.error("Error writing JSON file:", error);
+    callback(error);
+  }
+}
+
+function executeScript(callback) {
+  const scriptPath = '/shellfiles/jsonupdatebmb.sh';
+  
+  // Check if script exists
+  if (!fs.existsSync(scriptPath)) {
+    console.error(`Script not found: ${scriptPath}`);
+    return callback(new Error(`Script not found: ${scriptPath}`));
+  }
+
+  exec(`sh ${scriptPath}`, { timeout: 10000 }, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error executing script: ${error}`);
+      return callback(error);
+    }
+
+    console.log(`Script output: ${stdout}`);
+    if (stderr) {
+      console.error(`Script stderr: ${stderr}`);
+    }
+
+    callback(null);
+  });
+}
+
+const server = http.createServer((request, response) => {
   const url = new URL(request.url, `http://${request.headers.host}`);
   const path = url.pathname;
 
+  // Set CORS headers
   response.setHeader("Access-Control-Allow-Origin", "*");
   response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   response.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -116,62 +185,131 @@ http.createServer((request, response) => {
     return;
   }
 
-  // Handle login authentication
-  if (path === "/loginauth") {
-    const parameters = url.searchParams;
-    const key = parameters.get("key");
+  try {
+    // Handle login authentication
+    if (path === "/loginauth") {
+      const parameters = url.searchParams;
+      const key = parameters.get("key");
 
-    if (key === thepasskey) {
-      response.writeHead(200, { "Content-Type": "application/json" });
-      response.end(JSON.stringify({ success: true, message: "Authentication successful" }));
-    } else {
-      response.statusCode = 403;
-      response.end(JSON.stringify({ success: false, message: "Authentication failed - Invalid key" }));
-    }
-  } else if (path === "/latestdata") {
-    const parameters = url.searchParams;
-    const name = parameters.get("name");
-    const date = parameters.get("date");
-    const excerpt = parameters.get("excerpt");
-    const thumbnail = parameters.get("thumbnail");
-    const link = parameters.get("link");
-    const formid = parameters.get("formid");
-    const key = parameters.get("key");
+      if (!key) {
+        response.statusCode = 400;
+        response.setHeader("Content-Type", "application/json");
+        response.end(JSON.stringify({ success: false, message: "Missing key parameter" }));
+        return;
+      }
 
-    if (key === thepasskey) {
+      if (key === thepasskey) {
+        response.writeHead(200, { "Content-Type": "application/json" });
+        response.end(JSON.stringify({ success: true, message: "Authentication successful" }));
+      } else {
+        response.statusCode = 403;
+        response.setHeader("Content-Type", "application/json");
+        response.end(JSON.stringify({ success: false, message: "Authentication failed - Invalid key" }));
+      }
+    } 
+    else if (path === "/latestdata") {
+      const parameters = url.searchParams;
+      const name = parameters.get("name");
+      const date = parameters.get("date");
+      const excerpt = parameters.get("excerpt");
+      const thumbnail = parameters.get("thumbnail");
+      const link = parameters.get("link");
+      const formid = parameters.get("formid");
+      const key = parameters.get("key");
+
+      // Validate required parameters
+      if (!key) {
+        response.statusCode = 400;
+        response.end("Missing key parameter");
+        return;
+      }
+
+      if (!formid) {
+        response.statusCode = 400;
+        response.end("Missing formid parameter");
+        return;
+      }
+
+      if (key !== thepasskey) {
+        response.statusCode = 403;
+        response.end("Unauthorized access - Invalid key");
+        return;
+      }
+
+      // Load JSON and update data
       loadJSON(() => {
-        updateData(name, date, excerpt, thumbnail, link, formid);
-        fs.writeFileSync("latest.json", JSON.stringify(jsdata, null, 2), "utf8");
-        console.log("Data written to latest.json:", jsdata);
+        try {
+          updateData(name, date, excerpt, thumbnail, link, formid);
+          
+          writeJSONFile((writeError) => {
+            if (writeError) {
+              response.statusCode = 500;
+              response.end("Error writing data to file");
+              return;
+            }
 
-        const scriptPath = '/shellfiles/jsonupdatebmb.sh';
-        exec(`sh ${scriptPath}`, { timeout: 5000 }, (error, stdout, stderr) => {
-          if (error) {
-            console.error(`Error executing script: ${error}`);
-            response.statusCode = 500;
-            response.end("Changes made");
-            return;
-          }
+            executeScript((scriptError) => {
+              if (scriptError) {
+                console.error("Script execution failed, but data was saved");
+                response.writeHead(200, { "Content-Type": "text/html" });
+                response.end(
+                  `<html><body><h1>Data updated successfully.</h1><p>Note: Script execution failed but data was saved.</p><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>`
+                );
+                return;
+              }
 
-          console.log(`Script output: ${stdout}`);
-          if (stderr) {
-            console.error(`Script stderr: ${stderr}`);
-          }
-
-          response.writeHead(200, { "Content-Type": "text/html" });
-          response.end(
-            `<html><body><h1>Data updated successfully.</h1><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>`
-          );
-        });
+              response.writeHead(200, { "Content-Type": "text/html" });
+              response.end(
+                `<html><body><h1>Data updated successfully.</h1><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>`
+              );
+            });
+          });
+        } catch (updateError) {
+          console.error("Error updating data:", updateError);
+          response.statusCode = 400;
+          response.end(`Error updating data: ${updateError.message}`);
+        }
       });
-    } else {
-      response.statusCode = 403;
-      response.end("Unauthorized access - Invalid key");
+    } 
+    else if (path === "/health") {
+      // Health check endpoint
+      response.writeHead(200, { "Content-Type": "application/json" });
+      response.end(JSON.stringify({ status: "OK", timestamp: new Date().toISOString() }));
     }
-  } else {
-    response.statusCode = 404;
-    response.end("Not Found");
+    else {
+      response.statusCode = 404;
+      response.end("Not Found");
+    }
+  } catch (error) {
+    console.error("Unhandled error:", error);
+    response.statusCode = 500;
+    response.end("Internal Server Error");
   }
-}).listen(7000);
+});
 
-console.log("Server running at http://206.189.130.179:7000/");
+// Handle server errors
+server.on('error', (error) => {
+  console.error('Server error:', error);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received, shutting down gracefully');
+  server.close(() => {
+    console.log('Server closed');
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('SIGINT received, shutting down gracefully');
+  server.close(() => {
+    console.log('Server closed');
+    process.exit(0);
+  });
+});
+
+const PORT = process.env.PORT || 7000;
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
