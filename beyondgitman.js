@@ -1,101 +1,105 @@
 const express = require('express');
 const { exec } = require('child_process');
-const fs = require('fs');
+const crypto = require('crypto');
 
 const scriptPath = '/shellfiles/beyond.sh';
-
 const app = express();
+
+// Middleware to capture raw body for webhook signature verification
+app.use('/bmbg', express.raw({ type: 'application/json' }));
+
+// Function to verify GitHub webhook signature
+function verifyGitHubSignature(payload, signature) {
+  const secret = process.env.beyondmegitkey;
+  if (!secret) {
+    console.error('GitHub webhook secret not found in environment variables');
+    return false;
+  }
+
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(payload)
+    .digest('hex');
+
+  const actualSignature = signature.replace('sha256=', '');
+  
+  return crypto.timingSafeEqual(
+    Buffer.from(expectedSignature, 'hex'),
+    Buffer.from(actualSignature, 'hex')
+  );
+}
 
 // Handle GET requests (when visiting in browser)
 app.get('/bmbg', (req, res) => {
-    console.log('=== BMBG Request Started ===');
-    console.log('Script path:', scriptPath);
-    
-    // Check if script exists and is executable
-    try {
-        const stats = fs.statSync(scriptPath);
-        console.log('Script exists:', stats.isFile());
-        console.log('Script permissions:', stats.mode.toString(8));
-    } catch (error) {
-        console.error('Script file error:', error.message);
-        return res.status(500).send(`
-            <html><body>
-                <h1>Script file not found</h1>
-                <p>Error: ${error.message}</p>
-                <p>Script path: ${scriptPath}</p>
-            </body></html>
-        `);
+  exec(`sh ${scriptPath}`, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error executing script: ${error}`);
+      return res.status(500).send(`
+        <html>
+        <body>
+          <h1>Error executing script</h1>
+          <p>${error.message}</p>
+          <a href="javascript:history.back()">Go Back</a>
+        </body>
+        </html>
+      `);
     }
-    
-    // Execute with more detailed options
-    exec(`bash ${scriptPath}`, {
-        cwd: '/shellfiles',  // Set working directory
-        env: process.env,    // Pass environment variables
-        timeout: 30000       // 30 second timeout
-    }, (error, stdout, stderr) => {
-        console.log('=== Script Execution Complete ===');
-        console.log('Error:', error);
-        console.log('Stdout:', stdout);
-        console.log('Stderr:', stderr);
-        console.log('=== End Debug Info ===');
-        
-        if (error) {
-            console.error(`Error executing script: ${error}`);
-            return res.status(500).send(`
-                <html><body>
-                    <h1>Error executing script</h1>
-                    <p><strong>Error:</strong> ${error.message}</p>
-                    <p><strong>Exit code:</strong> ${error.code}</p>
-                    <p><strong>Signal:</strong> ${error.signal}</p>
-                    <p><strong>Stderr:</strong> <pre>${stderr}</pre></p>
-                    <a href="javascript:history.back()">Go Back</a>
-                </body></html>
-            `);
-        }
 
-        res.status(200).send(`
-            <html><body>
-                <h1>Script executed successfully!</h1>
-                <p><strong>Timestamp:</strong> ${new Date()}</p>
-                <p><strong>Stdout:</strong></p>
-                <pre>${stdout || 'No output'}</pre>
-                ${stderr ? `<p><strong>Stderr:</strong></p><pre>${stderr}</pre>` : ''}
-                <a href="javascript:history.back()">Go Back</a>
-            </body></html>
-        `);
-    });
+    console.log(`Script output: ${stdout}`);
+    if (stderr) {
+      console.error(`Script stderr: ${stderr}`);
+    }
+
+    res.status(200).send(`
+      <html>
+      <body>
+        <h1>Script executed successfully!</h1>
+        <p>Timestamp: ${new Date()}</p>
+        <pre>${stdout}</pre>
+        <a href="javascript:history.back()">Go Back</a>
+      </body>
+      </html>
+    `);
+  });
 });
 
-// Keep POST route for API calls if needed
+// Handle POST requests with GitHub webhook signature verification
 app.post('/bmbg', (req, res) => {
-    exec(`bash ${scriptPath}`, {
-        cwd: '/shellfiles',
-        env: process.env,
-        timeout: 30000
-    }, (error, stdout, stderr) => {
-        if (error) {
-            console.error(`Error executing script: ${error}`);
-            return res.status(500).json({ 
-                message: 'Error executing script', 
-                error: error.message,
-                stderr: stderr
-            });
-        }
+  const signature = req.get('X-Hub-Signature-256');
+  
+  if (!signature) {
+    console.error('No signature provided');
+    return res.status(401).json({ message: 'Unauthorized: No signature provided' });
+  }
 
-        console.log(`Script output: ${stdout}`);
-        if (stderr) {
-            console.error(`Script stderr: ${stderr}`);
-        }
+  if (!verifyGitHubSignature(req.body, signature)) {
+    console.error('Invalid signature');
+    return res.status(401).json({ message: 'Unauthorized: Invalid signature' });
+  }
 
-        res.status(200).json({ 
-            message: 'Script executed successfully', 
-            timestamp: new Date(),
-            stdout: stdout,
-            stderr: stderr
-        });
+  console.log('GitHub webhook signature verified successfully');
+
+  exec(`sh ${scriptPath}`, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error executing script: ${error}`);
+      return res.status(500).json({
+        message: 'Error executing script',
+        error: error.message
+      });
+    }
+
+    console.log(`Script output: ${stdout}`);
+    if (stderr) {
+      console.error(`Script stderr: ${stderr}`);
+    }
+
+    res.status(200).json({
+      message: 'Script executed successfully',
+      timestamp: new Date()
     });
+  });
 });
 
 app.listen(6009, () => {
-    console.log('Server is running on port 6009');
+  console.log('Server is running on port 6009');
 });
