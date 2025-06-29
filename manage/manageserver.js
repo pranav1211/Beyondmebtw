@@ -145,7 +145,7 @@ http.createServer((request, response) => {
         console.log("Data written to latest.json:", jsdata);
 
         const scriptPath = '/shellfiles/jsonupdatebmb.sh';
-        exec(`sh ${scriptPath}`, (error, stdout, stderr) => {
+        exec(`sh ${scriptPath}`, { timeout: 5000 }, (error, stdout, stderr) => {
           if (error) {
             console.error(`Error executing script: ${error}`);
             response.statusCode = 500;
