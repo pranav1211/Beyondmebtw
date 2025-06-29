@@ -19,11 +19,11 @@ try {
   thepasskey = "default-secure-key";
 }
 
-let jsdata = { 
-  mainPost: {}, 
+let jsdata = {
+  mainPost: {},
   featured: Array(4).fill({}),
   projects: Array(4).fill({})  // Initialize projects array
-}; 
+};
 
 function loadJSON(callback) {
   https.get("https://beyondmebtw.com/manage/latest.json", (res) => {
@@ -32,7 +32,7 @@ function loadJSON(callback) {
     res.on("end", () => {
       try {
         jsdata = JSON.parse(data);
-        
+
         // Ensure projects array exists and has 4 elements
         if (!jsdata.projects) {
           jsdata.projects = Array(4).fill({});
@@ -40,7 +40,7 @@ function loadJSON(callback) {
           // Pad with empty objects if fewer than 4 projects
           jsdata.projects = [...jsdata.projects, ...Array(4 - jsdata.projects.length).fill({})];
         }
-        
+
         console.log("JSON data loaded successfully from URL.");
       } catch (err) {
         console.error("Error parsing JSON from URL:", err);
@@ -79,7 +79,7 @@ function updateData(name, date, excerpt, thumbnail, link, formId) {
     featured4: () => {
       updateFields(jsdata.featured[3], { title: name, date, excerpt, thumbnail, link });
     },
-    
+
     // Project posts - note they use 'title' instead of 'name' in the JSON
     project1: () => {
       updateFields(jsdata.projects[0], { title: name, excerpt, link });
@@ -120,7 +120,7 @@ http.createServer((request, response) => {
   if (path === "/loginauth") {
     const parameters = url.searchParams;
     const key = parameters.get("key");
-    
+
     if (key === thepasskey) {
       response.writeHead(200, { "Content-Type": "application/json" });
       response.end(JSON.stringify({ success: true, message: "Authentication successful" }));
@@ -137,7 +137,7 @@ http.createServer((request, response) => {
     const link = parameters.get("link");
     const formid = parameters.get("formid");
     const key = parameters.get("key");
- 
+
     if (key === thepasskey) {
       loadJSON(() => {
         updateData(name, date, excerpt, thumbnail, link, formid);
@@ -168,21 +168,6 @@ http.createServer((request, response) => {
       response.statusCode = 403;
       response.end("Unauthorized access - Invalid key");
     }
-  } else if (path === "/") {
-    response.writeHead(200, { "Content-Type": "text/html" });
-    response.end(
-      fs.readFileSync("index.html", "utf8")
-    );
-  } else if (path === "/styles.css") {
-    response.writeHead(200, { "Content-Type": "text/css" });
-    response.end(
-      fs.readFileSync("styles.css", "utf8")
-    );
-  } else if (path === "/index.js") {
-    response.writeHead(200, { "Content-Type": "application/javascript" });
-    response.end(
-      fs.readFileSync("index.js", "utf8")
-    );
   } else {
     response.statusCode = 404;
     response.end("Not Found");
