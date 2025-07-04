@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="projects.css">
     <link rel="stylesheet" href="projgrid.css">
     <link rel="stylesheet" href="responsive.css">
-    
+
     <!-- Vue.js -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
 </head>
@@ -36,20 +36,18 @@
 
     <div id="app">
         <div class="section-title">My Projects</div>
-        
+
         <div class="projects-container">
             <!-- Regular grid view (default) -->
             <div v-if="!isExpandedView" class="projects-grid">
-                <div v-for="project in projects" 
-                     :key="project.id" 
-                     class="project-card"
-                     @click="selectProject(project.id)">
-                    
-                    <div class="project-category-badge" 
-                         :style="{ backgroundColor: getCategoryColor(project.category) }">
+                <div v-for="project in projects" :key="project.id" class="project-card"
+                    @click="selectProject(project.id)">
+
+                    <div class="project-category-badge"
+                        :style="{ backgroundColor: getCategoryColor(project.category) }">
                         {{ project.category }}
                     </div>
-                    
+
                     <div class="project-image">
                         <img :src="project.images[0]" alt="Project thumbnail">
                     </div>
@@ -63,36 +61,30 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Expanded view with sidebar -->
             <div v-else class="projects-grid expanded-view">
                 <!-- Sidebar with minimized project cards -->
+
                 <div class="sidebar-container">
-                    <div v-for="project in projects" 
-                         :key="project.id" 
-                         class="project-card sidebar-card"
-                         :class="{'active': selectedProject === project.id}"
-                         @click="selectProject(project.id)">
-                        
-                        <div class="project-category-badge small"
-                             :style="{ backgroundColor: getCategoryColor(project.category) }">
-                            {{ project.category }}
-                        </div>
-                        
+                    <div v-for="project in projects" :key="project.id" class="project-card sidebar-card"
+                        :class="{'active': selectedProject === project.id}" @click="selectProject(project.id)">
                         <div class="project-image">
-                            <img :src="project.images[0]" alt="Project thumbnail">
+                            <img :src="project.logo" alt="Project thumbnail">
                         </div>
-                        <div class="project-info">
-                            <h3>{{ project.title }}</h3>
+                        <div class="card-header">
+                            <div class="project-info">
+                                <h3>{{ project.title }}</h3>
+                            </div>
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Expanded project details -->
                 <div class="expanded-project" v-if="selectedProjectData">
                     <!-- Close button -->
                     <button class="close-expanded" @click="closeExpandedView">&times;</button>
-                    
+
                     <!-- Header with logo and title -->
                     <div class="expanded-header">
                         <div class="project-logo">
@@ -100,7 +92,7 @@
                         </div>
                         <div class="header-content">
                             <div class="project-category-badge large"
-                                 :style="{ backgroundColor: getCategoryColor(selectedProjectData.category) }">
+                                :style="{ backgroundColor: getCategoryColor(selectedProjectData.category) }">
                                 {{ selectedProjectData.category }}
                             </div>
                             <h2>{{ selectedProjectData.title }}</h2>
@@ -109,26 +101,27 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Body with description and links -->
                     <div class="expanded-body">
-                        <p class="expanded-description">{{ selectedProjectData.fullDescription }}</p>
-                        
+                        <div class="expanded-description">{{ selectedProjectData.fullDescription }}</div>
+
                         <div class="project-links">
                             <a :href="selectedProjectData.link" class="project-link" target="_blank">Visit Project</a>
-                            <a v-if="selectedProjectData.githubLink" :href="selectedProjectData.githubLink" class="project-link" target="_blank">GitHub Repo</a>
-                            <a v-if="selectedProjectData.demoLink" :href="selectedProjectData.demoLink" class="project-link" target="_blank">Live Demo</a>
-                            <a v-if="selectedProjectData.playLink" :href="selectedProjectData.playLink" class="project-link" target="_blank">Play Now</a>
+                            <a v-if="selectedProjectData.githubLink" :href="selectedProjectData.githubLink"
+                                class="project-link" target="_blank">GitHub Repo</a>
+                            <a v-if="selectedProjectData.demoLink" :href="selectedProjectData.demoLink"
+                                class="project-link" target="_blank">Live Demo</a>
+                            <a v-if="selectedProjectData.playLink" :href="selectedProjectData.playLink"
+                                class="project-link" target="_blank">Play Now</a>
                         </div>
-                        
+
                         <!-- Image gallery -->
                         <div class="project-gallery">
                             <h3 class="gallery-title">Project Gallery</h3>
                             <div class="gallery-grid">
-                                <div v-for="(image, index) in selectedProjectData.images" 
-                                     :key="index" 
-                                     class="gallery-item"
-                                     @click="openImageViewer(index)">
+                                <div v-for="(image, index) in selectedProjectData.images" :key="index"
+                                    class="gallery-item" @click="openImageViewer(index)">
                                     <img :src="image" alt="Project screenshot">
                                 </div>
                             </div>
@@ -137,19 +130,16 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Image Viewer Modal -->
-        <div class="image-viewer" 
-             :class="{ active: isImageViewerActive }"
-             @click="handleViewerBackgroundClick">
+        <div class="image-viewer" :class="{ active: isImageViewerActive }" @click="handleViewerBackgroundClick">
             <div class="viewer-content">
                 <button class="close-viewer" @click="closeImageViewer">&times;</button>
-                
+
                 <img v-if="selectedProjectData && selectedProjectData.images[currentImageIndex]"
-                     :src="selectedProjectData.images[currentImageIndex]" 
-                     alt="Project image full view"
-                     class="viewer-image">
-                
+                    :src="selectedProjectData.images[currentImageIndex]" alt="Project image full view"
+                    class="viewer-image">
+
                 <div class="image-nav">
                     <button class="nav-btn prev-btn" @click.stop="prevImage">&lt;</button>
                     <button class="nav-btn next-btn" @click.stop="nextImage">&gt;</button>

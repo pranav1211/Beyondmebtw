@@ -7,6 +7,8 @@ Check out the site : www.Beyondmebtw.com
 
 ## Changelog:
 
+### V2.3 (4/7/25)
+- Projects page data is added
 
 ### V2.2 (1/4/25)
 - About Page Added
