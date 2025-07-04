@@ -38,7 +38,7 @@
     z-index: 0;
 }
 
-/* Apply different gradient colors to different categories */
+/* Different gradient colors for categories */
 .category-section:nth-child(1) .category-divider {
     background: var(--gradient-blue, linear-gradient(90deg, #4285F4 0%, #34A853 100%));
 }
@@ -67,21 +67,19 @@
 }
 
 .projects-grid.expanded-view {
-    display: grid;
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: 280px 1fr;
     grid-template-areas: "sidebar main";
-    gap: 30px;
 }
 
-/* Sidebar Container with Categories */
+/* Sidebar Container */
 .sidebar-container {
     grid-area: sidebar;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
     max-height: 80vh;
     overflow-y: auto;
-    padding-right: 15px;
+    padding-right: 10px;
 }
 
 .sidebar-category {
@@ -97,7 +95,7 @@
     color: var(--primary-color, #3b342d);
 }
 
-/* Project Card Styling */
+/* Project Cards - Default and Sidebar */
 .project-card {
     background-color: #E8D9CD;
     border-radius: 20px;
@@ -116,6 +114,67 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
+/* Sidebar Cards - Square Layout */
+.project-card.sidebar-card {
+    height: 130px;
+    width: 100%;
+    border-radius: 12px;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 12px;
+    gap: 12px;
+}
+
+.sidebar-card:hover {
+    transform: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-card.active {
+    border-left: 4px solid #3b342d;
+    background-color: rgba(244, 242, 239, 0.9);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-card .project-image {
+    height: 100px;
+    width: 100px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.sidebar-card .project-info {
+    flex: 1;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    height: 100px;
+}
+
+.sidebar-card .project-info h3 {
+    font-size: 14px;
+    margin: 0;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;    
+    -webkit-box-orient: vertical;
+}
+
+/* Hide elements in sidebar cards */
+.sidebar-card .project-tags,
+.sidebar-card .click-me-btn,
+.sidebar-card .project-info p,
+.sidebar-card .project-category-badge {
+    display: none;
+}
+
+/* Default Project Card Elements */
 .project-image {
     height: 180px;
     overflow: hidden;
@@ -187,47 +246,6 @@
 
 .click-me-btn:hover {
     background-color: #5a5149;
-}
-
-/* Sidebar Cards (when expanded) */
-.project-card.sidebar-card {
-    grid-column: 1;
-    transition: all 0.3s;
-    margin-bottom: 15px;
-    height: 100px;
-    display: flex;
-    align-items: center;
-    background-color: #E8D9CD;
-}
-
-.sidebar-card .project-image {
-    height: 100%;
-    width: 100px;
-    flex-shrink: 0;
-}
-
-.sidebar-card .project-info {
-    padding: 10px;
-    width: calc(100% - 100px);
-}
-
-.sidebar-card .project-info h3 {
-    font-size: 16px;
-    margin-bottom: 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.sidebar-card .project-tags,
-.sidebar-card .click-me-btn,
-.sidebar-card .project-info p {
-    display: none;
-}
-
-.sidebar-card.active {
-    border-left: 4px solid #3b342d;
-    background-color: rgba(244, 242, 239, 0.7);
 }
 
 /* Expanded Project Styles */
@@ -395,7 +413,7 @@
     transform: scale(1.05);
 }
 
-/* Image Viewer Styles */
+/* Image Viewer */
 .image-viewer {
     position: fixed;
     top: 0;
@@ -469,40 +487,30 @@
     background-color: rgba(255, 255, 255, 0.3);
 }
 
-/* Project category badge styles */
+/* Project Category Badge */
 .project-category-badge {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  padding: 5px 10px;
-  border-radius: 15px;
-  color: white;
-  font-weight: bold;
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  z-index: 10;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 5px 10px;
+    border-radius: 15px;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-/* Small badge for sidebar cards */
-.project-category-badge.small {
-  font-size: 10px;
-  padding: 3px 6px;
-  top: 6px;
-  right: 6px;
-  border-radius: 10px;
-}
-
-/* Large badge for expanded view */
 .project-category-badge.large {
-  position: relative;
-  top: auto;
-  right: auto;
-  display: inline-block;
-  margin-bottom: 10px;
-  font-size: 16px;
-  padding: 7px 14px;
+    position: relative;
+    top: auto;
+    right: auto;
+    display: inline-block;
+    margin-bottom: 10px;
+    font-size: 16px;
+    padding: 7px 14px;
 }
