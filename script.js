@@ -33,47 +33,117 @@ if (profilePic) {
     });
 }
 
-const projectCards = document.querySelectorAll('.project-card');
-projectCards.forEach(card => {
-    card.addEventListener('mouseover', () => {
-        card.style.transform = 'translateY(-3px)';
-        card.style.boxShadow = '0 5px 10px rgba(0, 0, 0, 0.1)';
-    });
+// Dynamic hover effects for project cards (applied after creation)
+function addProjectCardHoverEffects() {
+    const projectCards = document.querySelectorAll('.project-card');
+    projectCards.forEach(card => {
+        card.addEventListener('mouseover', () => {
+            card.style.transform = 'translateY(-3px)';
+            card.style.boxShadow = '0 5px 10px rgba(0, 0, 0, 0.1)';
+        });
 
-    card.addEventListener('mouseout', () => {
-        card.style.transform = 'translateY(0)';
-        card.style.boxShadow = 'none';
+        card.addEventListener('mouseout', () => {
+            card.style.transform = 'translateY(0)';
+            card.style.boxShadow = 'none';
+        });
     });
-});
-
+}
 
 document.getElementById('copy-email').addEventListener('click', function (event) {
-    event.preventDefault(); // Prevent the default link behavior
-
-    const email = document.getElementById('email-address').innerText; // Get the email address
-    navigator.clipboard.writeText(email) // Copy to clipboard
+    event.preventDefault();
+    const email = document.getElementById('email-address').innerText;
+    navigator.clipboard.writeText(email)
         .then(() => {
-            showToast('Email copied to clipboard!'); // Show toast notification
+            showToast('Email copied to clipboard!');
         })
         .catch((err) => {
-            console.error('Failed to copy email: ', err); // Handle errors
+            console.error('Failed to copy email: ', err);
         });
 });
 
 function showToast(message) {
     const toast = document.getElementById('toast');
-    toast.innerText = message; // Set the toast message
-    toast.classList.add('show'); // Make the toast visible
-
-    // Hide the toast after 3 seconds
+    toast.innerText = message;
+    toast.classList.add('show');
     setTimeout(() => {
         toast.classList.remove('show');
     }, 3000);
 }
 
+// Component creation functions
+function createFeaturedPost(post, index) {
+    const postDate = new Date(post.date);
+    const formattedDate = new Intl.DateTimeFormat('en-US', {
+        month: 'short',
+        day: '2-digit',
+        year: 'numeric',
+    }).format(postDate);
+
+    const postElement = document.createElement('div');
+    postElement.className = 'featured-post';
+    postElement.innerHTML = `
+        <img src="https://beyondmebtw.com/assets/images/thumbnails/${post.thumbnail}" alt="Featured post" class="featured-post-img">
+        <div class="featured-post-details">
+            <h3 class="featured-post-title">${post.title}</h3>
+            <p class="featured-post-date">${formattedDate}</p>
+            <p class="featured-post-excerpt">${post.excerpt}</p>
+        </div>
+        <button class="featured-read-more">Read More</button>
+    `;
+
+    postElement.addEventListener('click', () => {
+        window.open(post.link, '_blank');
+    });
+
+    return postElement;
+}
+
+function createProjectCard(project, index) {
+    const projectElement = document.createElement('div');
+    projectElement.className = 'project-card';
+    projectElement.innerHTML = `
+        <div class="project-details">
+            <div class="project-icon">${project.emoji}</div>
+            <div>
+                <h3 class="project-title">${project.title}</h3>
+                <p class="project-desc">${project.excerpt}</p>
+            </div>
+        </div>
+        <button class="project-explore">Explore</button>
+    `;
+
+    projectElement.addEventListener('click', () => {
+        window.open(project.link, '_blank');
+    });
+
+    return projectElement;
+}
+
+function renderFeaturedPosts(posts) {
+    const container = document.getElementById('featured-posts-container');
+    container.innerHTML = ''; // Clear existing content
+
+    posts.forEach((post, index) => {
+        const postElement = createFeaturedPost(post, index);
+        container.appendChild(postElement);
+    });
+}
+
+function renderProjects(projects) {
+    const container = document.getElementById('projects-grid');
+    container.innerHTML = ''; // Clear existing content
+
+    projects.forEach((project, index) => {
+        const projectElement = createProjectCard(project, index);
+        container.appendChild(projectElement);
+    });
+
+    // Add hover effects to newly created project cards
+    addProjectCardHoverEffects();
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-    fetch('manage/latest.json')
-        // fetch('https://beyondembtw.com/manage/latest.json')
+    fetch('https://beyondmebtw.com/manage/latest.json')
         .then((response) => {
             if (!response.ok) {
                 throw new Error(`Failed to fetch JSON: ${response.statusText}`);
@@ -81,75 +151,28 @@ document.addEventListener("DOMContentLoaded", () => {
             return response.json();
         })
         .then((data) => {
-
+            // Handle main post
             const mainPost = data.mainPost;
-            const mainTitle = mainPost.title;
-
-            const mainDate = mainPost.date;
-            const dateObject = new Date(mainDate);
+            const mainDate = new Date(mainPost.date);
             const formattedDate = new Intl.DateTimeFormat('en-US', {
                 month: 'short',
                 day: '2-digit',
                 year: 'numeric',
-            }).format(dateObject);
+            }).format(mainDate);
 
-            const mainExcerpt = mainPost.excerpt;
-            const mainThumbnail = mainPost.thumbnail;
-            const mainLink = mainPost.link;
-
-            const featuredPosts = data.featured;
-
-            document.querySelector('.latest-post-title').innerText = mainTitle;
+            document.querySelector('.latest-post-title').innerText = mainPost.title;
             document.querySelector('.latest-post-date').innerText = formattedDate;
-            document.querySelector('.latest-post-excerpt').innerText = mainExcerpt;
-            document.querySelector('.latest-post-img').src = "https://beyondmebtw.com/assets/images/thumbnails/" + mainThumbnail;
-            document.querySelector('.latest-post-content').onclick = () => window.open(mainLink, '_blank');
-            document.querySelector('.read-more').onclick = () => window.open(mainLink, '_blank');
+            document.querySelector('.latest-post-excerpt').innerText = mainPost.excerpt;
+            document.querySelector('.latest-post-img').src = "https://beyondmebtw.com/assets/images/thumbnails/" + mainPost.thumbnail;
+            
+            document.querySelector('.latest-post-content').onclick = () => window.open(mainPost.link, '_blank');
+            document.querySelector('.read-more').onclick = () => window.open(mainPost.link, '_blank');
 
-            // console.log("Main Post:");
-            // console.log({ mainTitle, mainDate, mainExcerpt, mainThumbnail, mainLink });
+            // Render featured posts using component approach
+            renderFeaturedPosts(data.featured);
 
-            for (i = 0; i < 4; i++) {
-                var divid = "fp" + i
-
-                document.querySelector("." + divid + "title").innerText = featuredPosts[i].title;
-
-                const FeatDate = featuredPosts[i].date;
-                const dateObject = new Date(FeatDate);
-                const formattedDatefeat = new Intl.DateTimeFormat('en-US', {
-                    month: 'short',
-                    day: '2-digit',
-                    year: 'numeric',
-                }).format(dateObject);
-                document.querySelector("." + divid + "date").innerText = formattedDatefeat;
-
-
-                document.querySelector("." + divid + "excerpt").innerText = featuredPosts[i].excerpt;
-                document.querySelector("." + divid + "img").src = "https://beyondmebtw.com/assets/images/thumbnails/" + featuredPosts[i].thumbnail;
-            }
-            document.querySelector(".fp0").onclick = () => window.open(featuredPosts[0].link, '_blank');
-            document.querySelector(".fp1").onclick = () => window.open(featuredPosts[1].link, '_blank');
-            document.querySelector(".fp2").onclick = () => window.open(featuredPosts[2].link, '_blank');
-            document.querySelector(".fp3").onclick = () => window.open(featuredPosts[3].link, '_blank');
-
-            const featuredprojects = data.projects;
-
-            for (i = 0; i < 4; i++) {
-                var divid = "p" + i
-                document.querySelector("." + divid + "title").innerText = featuredprojects[i].title;
-                document.querySelector("." + divid + "excerpt").innerText = featuredprojects[i].excerpt;
-            }
-            document.querySelector(".p0").onclick = () => window.open(featuredprojects[0].link, '_blank');
-            document.querySelector(".p1").onclick = () => window.open(featuredprojects[1].link, '_blank');
-            document.querySelector(".p2").onclick = () => window.open(featuredprojects[2].link, '_blank');
-            document.querySelector(".p3").onclick = () => window.open(featuredprojects[3].link, '_blank');
-
-            // console.log("\nFeatured Posts:");
-            // featuredDetails.forEach((post, index) => {
-            //     console.log(`Featured Post ${index + 1}:`);
-            //     console.log(post);
-            // });
-
+            // Render projects using component approach
+            renderProjects(data.projects);
         })
         .catch((error) => {
             console.error("Error fetching JSON data:", error);

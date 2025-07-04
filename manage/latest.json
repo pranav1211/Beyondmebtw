@@ -36,26 +36,30 @@
       "link": "https://medium.com/@beyondmebtw/movie-review-dune-part-two-31510041ba27"
     }
   ],
-  "projects": [
+ "projects": [
     {
-      "title": "Real Time Driver Monitoring System",
-      "excerpt": "An application that uses AI, ML and Computer vision technology to help enhance road safety.",
-      "link": "https://github.com/pranav1211/RTDMS"
-    },
-    {
-      "title": "Pair Game",
-      "excerpt": "A fun game inspired by classic memory games created from scratch",
-      "link": "https://beyondmebtw.com/projects/pairgame"
+      "title": "Gradient Club Website",
+      "excerpt": "The official website of the Gradient student Club at BMSCE",
+      "link": "https://gradientaiml.tech",
+      "emoji": "🌐"
     },
     {
       "title": "My Library",
       "excerpt": "A personal library organizer where you can scan books and access them anytime",
-      "link": "https://library.beyondmebtw.com"
+      "link": "https://library.beyondmebtw.com",
+      "emoji": "📚"
     },
     {
-      "title": "Beyond Me BTW",
-      "excerpt": "A personal Blog built from scratch to explore",
-      "link": "https://github.com/pranav1211/Beyondmebtw"
+      "title": "Real Time Driver Monitoring System",
+      "excerpt": "An application that uses AI, ML and Computer vision technology to help enhance road safety.",
+      "link": "https://github.com/pranav1211/RTDMS",
+      "emoji": "🚗"
+    },
+    {
+      "title": "Pair Game",
+      "excerpt": "A fun game inspired by classic memory games created from scratch",
+      "link": "https://beyondmebtw.com/projects/pairgame",
+      "emoji": "🎮"
     }
   ]
 }
