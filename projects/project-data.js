@@ -25,13 +25,13 @@ const projectsData = [
   },
   {
     id: 3,
-    title: "LUMA AI",
+    title: "LUMEX AI",
     shortDescription: "An AI-Powered real-time visual assistant",
-    fullDescription: "• This project is currently being built.\n• LUMA (Live Understanding and Mobility Assistant) is an AI-powered real-time visual assistant designed to enhance user interaction with their environment.\n• Utilizes advanced computer vision and machine learning algorithms to provide contextual information, navigation assistance, and real-time object recognition.\n• Serves as a versatile tool for various applications such as smart homes, augmented reality, and personal assistance.\n• Leverages the power of Lidar and depth cameras to create a 3D understanding of the environment.\n• Enables features like obstacle detection and spatial awareness through advanced depth perception.",
+    fullDescription: "• This project is currently being built.\n• LUMEX (Live Understanding and Mobility EXpert) is an AI-powered real-time visual assistant designed to enhance user interaction with their environment.\n• Utilizes advanced computer vision and machine learning algorithms to provide contextual information, navigation assistance, and real-time object recognition.\n• Serves as a versatile tool for various applications such as smart homes, augmented reality, and personal assistance.\n• Leverages the power of Lidar and depth cameras to create a 3D understanding of the environment.\n• Enables features like obstacle detection and spatial awareness through advanced depth perception.",
     logo: "https://beyondmebtw.com/assets/images/favicon.ico",
-    images: ["/assets/images/projects/luma.webp"],
+    images: ["/assets/images/projects/lumex.webp"],
     link: "",
-    githubLink: "https://github.com/pranav1211/LUMA-AI",
+    githubLink: "https://github.com/pranav1211/LUMEX-AI",
     category: "AI/ML",
     tags: ["Python", "Computer Vision", "Machine Learning", "Lidar", "Depth Cameras"]
   },
