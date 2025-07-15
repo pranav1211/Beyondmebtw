@@ -1,22 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Kreon:wght@300..700&display=swap');
 
 :root {
-  /* Color variables */
-  --primary-color: #3b342d;
-  --secondary-color: #F4F2EF;
-  --accent-color: #E8D9CD;
-  --text-color: #3b342d;
-  --text-light-color: #5a5149;
-  --border-color: rgba(0, 0, 0, 0.1);
-  --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  
-  /* Gradient variables */
-  --gradient-blue: linear-gradient(90deg, #4285F4 0%, #34A853 100%);
-  --gradient-purple: linear-gradient(90deg, #9C27B0 0%, #E91E63 100%);
-  --gradient-green: linear-gradient(90deg, #34A853 0%, #FBBC05 100%);
-  
-  /* Transition variable */
-  --transition: all 0.3s ease;
+    /* Color variables */
+    --primary-color: #3b342d;
+    --secondary-color: #F4F2EF;
+    --accent-color: #E8D9CD;
+    --text-color: #000;
+    --text-light-color: #5a5149;
+    --border-color: rgba(0, 0, 0, 0.1);
+    --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    /* Gradient variables */
+    --gradient-blue: linear-gradient(90deg, #4285F4 0%, #34A853 100%);
+    --gradient-purple: linear-gradient(90deg, #9C27B0 0%, #E91E63 100%);
+    --gradient-green: linear-gradient(90deg, #34A853 0%, #FBBC05 100%);
+
+    /* Transition variable */
+    --transition: all 0.3s ease;
 }
 
 * {
@@ -25,7 +25,8 @@
     box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
     background-color: var(--secondary-color);
     font-family: "Kreon", serif;
     padding-bottom: 40px;
@@ -38,22 +39,22 @@ header {
     position: relative;
     display: flex;
     align-items: flex-start;
-    margin-bottom: 30px;        
+    margin-bottom: 30px;
 }
 
 #name {
     font-family: "Permanent Marker", cursive;
     font-weight: 400;
-    font-style: normal;    
+    font-style: normal;
     font-size: 58px;
     margin-top: 15px;
-    margin-left: 95px;    
+    margin-left: 95px;
     color: var(--primary-color);
 }
 
 #links {
     position: absolute;
-    left: 49.61%;
+    left: 50%;
     transform: translateX(-50%);
     display: flex;
     margin-top: 28px;
@@ -65,7 +66,7 @@ header {
     border-radius: 60px;
     font-family: "Delius", cursive;
     font-weight: 600;
-    font-style: normal;    
+    font-style: normal;
 }
 
 .link {
@@ -148,7 +149,7 @@ header {
 .image-nav {
     display: flex;
     gap: 20px;
-    position: absolute; 
+    position: absolute;
     bottom: -50px;
     left: 50%;
     transform: translateX(-50%);
@@ -174,5 +175,5 @@ header {
 }
 
 .expanded-description {
-  white-space: pre-line;
+    white-space: pre-line;
 }

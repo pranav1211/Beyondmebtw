@@ -7,6 +7,10 @@ Check out the site : www.Beyondmebtw.com
 
 ## Changelog:
 
+### V2.4 (15/7/25)
+- Fixed styling across the site for uniformity
+- changed skills orientation in about section
+
 ### V2.3 (4/7/25)
 - Projects page data is added
 
