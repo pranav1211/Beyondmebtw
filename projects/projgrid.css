@@ -202,14 +202,14 @@
 
 .project-info h3 {
     font-family: "Kavoon", serif;
-    font-size: 22px;
+    font-size: 24px;
     margin-bottom: 10px;
     color: #3b342d;
     transition: all 0.3s;
 }
 
 .project-info p {
-    font-size: 16px;
+    font-size: 18px;
     margin-bottom: 15px;
     color: #5a5149;
     transition: all 0.3s;
@@ -349,10 +349,10 @@
 }
 
 .expanded-description {
-    font-size: 18px;
+    font-size: 22px;
     line-height: 1.6;
     margin-bottom: 25px;
-    color: #3b342d;
+    color: black;
 }
 
 .project-links {

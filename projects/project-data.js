@@ -51,7 +51,7 @@ const projectsData = [
     id: 5,
     title: "My Library",
     shortDescription: "A personal book collection management application",
-    fullDescription: "\n• A digital library management system allowing users to catalog, search, and organize their book collections.\n• Features include reading progress tracking and book recommendations.\n• The book information is fetched from the Google Books API.",
+    fullDescription: "• A digital library management system allowing users to catalog, search, and organize their book collections.\n• Features include reading progress tracking and book recommendations.\n• The book information is fetched from the Google Books API.",
     logo: "https://beyondmebtw.com/assets/images/favicon.ico",
     images: ["/assets/images/projects/mylib.webp"],
     link: "https://library.beyondmebtw.com",
@@ -63,13 +63,24 @@ const projectsData = [
     id: 6,
     title: "Pair Game",
     shortDescription: "A memory matching card game with engaging gameplay",
-    fullDescription: "\n• An interactive memory card game where players need to match pairs of identical cards.\n• Features multiple difficulty levels, score tracking, and engaging animations.\n• Based on the classic memory game concept, This was built as a project for an interview as a tech member of the Gradient AI/ML club at BMSCE.",
+    fullDescription: "• An interactive memory card game where players need to match pairs of identical cards.\n• Features multiple difficulty levels, score tracking, and engaging animations.\n• Based on the classic memory game concept, This was built as a project for an interview as a tech member of the Gradient AI/ML club at BMSCE.",
     logo: "https://beyondmebtw.com/assets/images/favicon.ico",
     images: ["/assets/images/projects/pair.webp"],
     link: "https://beyondmebtw.com/projects/pairgame",
     githubLink: "https://github.com/pranav1211/Pair-Game",
     category: "Game Development",
     tags: ["Python", "HTML", "CSS"]
+  },  {
+    id: 7,
+    title: "Uncharted Lost Voyage",
+    shortDescription: "An online treasure hunting game",
+    fullDescription: "• A digital treasure hunt hosted during Utsav Ananta 2025, where participants raced against time to solve puzzles and outwit competitors. \n • Co-developed with event volunteers; I led puzzle design, system integration, deployment, marketing, and designed the event's visual artwork. \n • Successfully launched as a playable online game post-event under a dedicated subdomain of the GradientAIML.tech website.",
+    logo: "https://gradient-content-server.vercel.app/content/Logo.png",
+    images: ["https://gradient-content-server.vercel.app/content/utsav25/gallery/unc/ulvfs.png","https://gradient-content-server.vercel.app/content/utsav25/gallery/unc/2.jpeg", "https://gradient-content-server.vercel.app/content/utsav25/gallery/unc/4.jpg"],
+    link: "https://uncharted3.gradientaiml.tech",
+    githubLink: "https://github.com/pranav1211/Uncharted-3",
+    category: "Game Development",
+    tags: ["Next.js", "HTML", "CSS", "Vercel"]
   }
 
 ];
