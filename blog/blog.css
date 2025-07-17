@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Kreon:wght@300..700&display=swap');
-
 * {
     margin: 0;
     padding: 0;
@@ -29,7 +27,6 @@ header {
     margin-left: 95px;
     display: block;
     color: #3b342d;
-
 }
 
 #links {
@@ -40,7 +37,6 @@ header {
     margin-top: 27px;
     font-optical-sizing: auto;
     font-size: 27px;
-    /* Changed from vw to px */
     font-style: normal;
     font-weight: 400;
     background-color: #E8D9CD;
@@ -60,20 +56,66 @@ header {
     border-radius: 60px;
 }
 
+.search-container {
+    max-width: 1200px;
+    margin: 0 auto 30px auto;
+    padding: 0 20px;
+}
+
+.search-box {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.search-input {
+    width: 100%;
+    padding: 15px 20px 15px 50px;
+    border: none;
+    border-radius: 30px;
+    background-color: #E8D9CD;
+    font-family: "Kreon", serif;
+    font-size: 16px;
+    color: #3b342d;
+    outline: none;
+    transition: box-shadow 0.3s;
+}
+
+.search-input:focus {
+    box-shadow: 0 0 0 3px rgba(59, 52, 45, 0.1);
+}
+
+.search-input::placeholder {
+    color: #8b7355;
+}
+
+.search-icon {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8b7355;
+    font-size: 18px;
+}
+
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Footer */
 #footer {
     display: flex;
     justify-content: center;
     text-align: center;
-    margin-top: 20px;
-}
-
-.view-all-btn {
-    margin-right: 25%;
-    margin-left: 25%;
-}
-
-#cs{
-    display: flex;
-    justify-content: center;
-    font-size: 60px;
+    margin-top: 40px;
+    color: #3b342d;
 }
