@@ -96,7 +96,7 @@
 
     .blog-grid .post-card:nth-child(1) .post-excerpt {
         font-size: 17px;
-        font-weight: 500;
+        font-weight: 600;
     }
 }
 
@@ -546,12 +546,12 @@
     }
 
     .post-title {
-        font-size: 16px;
+        font-size: 18px;
     }
 
     .post-excerpt {
-        font-size: 13px;
-        font-weight: 500;
+        font-size: 16px;
+        font-weight: 590;
     }
 
     .search-input {
