@@ -59,15 +59,15 @@
 
     #links {        
         position: relative;
-        font-size: 22px;
-        padding: 8px;        
+        font-size: 22px;        
+        padding :8px;
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
     }
 
     .link {
-        padding: 8px 25px;
+        padding: 8px 24.9px;          
     }
 
     .bento-container {

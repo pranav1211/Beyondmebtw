@@ -4,7 +4,7 @@
     gap: 35px;
     margin-bottom: 40px;
     grid-template-columns: repeat(2, 1fr);
-    /* 2 columns */
+    /* 2 columns for 2x2 grid */
 }
 
 .category-card {
@@ -40,7 +40,6 @@
 .category-card:nth-child(4):hover {
     box-shadow: 0 15px 40px rgba(33, 150, 243, 0.25);
 }
-
 
 .category-card::before {
     content: '';
@@ -80,8 +79,7 @@
     /* Technology - Blue/Cyan gradient */
     background: linear-gradient(135deg, #e6f3ff 0%, #cce7ff 100%);
     box-shadow: 0 8px 25px rgba(33, 150, 243, 0.15);
-    /* Center align the 4th category */
-    justify-self: center;
+    /* Removed justify-self: center to maintain proper grid alignment */
 }
 
 .category-header {
@@ -120,6 +118,7 @@
     transform: translateY(-2px);
 }
 
+/* Rest of the CSS remains the same... */
 
 /* Expanded View */
 .expanded-view {
@@ -182,7 +181,6 @@
     display: flex;
     flex-direction: column;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-
 }
 
 /* First post card linear scaling - only for main grid, not expanded view */
@@ -280,7 +278,6 @@
     line-height: 1.4;
     margin-bottom: 10px;
     font-weight: 550;
-
 }
 
 .post-date {
@@ -301,7 +298,6 @@
     overflow: visible;
     margin-bottom: 30px;
     order: -1;
-    /* Always show at the top */
 }
 
 .sidebar-header {

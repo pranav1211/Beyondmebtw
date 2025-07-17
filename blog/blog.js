@@ -76,7 +76,7 @@ function createBlogDataFromCategories() {
     const categoryMetadata = {
         'movie-tv': {
             title: 'Movies & TV',
-            description: 'Reviews, analysis, and thoughts on movies and TV shows',
+            "description": "Reviews, analyses, and deep dives into cinema and television",
             icon: 'fas fa-film'
         },
         'f1': {
@@ -86,12 +86,12 @@ function createBlogDataFromCategories() {
         },
         'experience': {
             title: 'Experience',
-            description: 'Personal experiences, travel, and life stories',
+            description: 'Personal experiences, reflections, and life stories',
             icon: 'fas fa-compass'
         },
         'tech': {
             title: 'Technology',
-            description: 'Tech reviews, programming, and digital innovations',
+            "description": "Tech reviews, programming insights and digital guides.",
             icon: 'fas fa-code'
         }
     };
