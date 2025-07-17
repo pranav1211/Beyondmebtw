@@ -1,0 +1,29 @@
+{
+    "title": "Formula 1",
+    "icon": "fas fa-flag-checkered",
+    "description": "Deep dives into F1 races, driver analysis, and season reviews",
+    "subcategories": [
+        "2025 Season",
+        "General Blogs"
+    ],
+    "posts": [
+        {
+            "uid": "f1_001",
+            "title": "The 2025 British Grand Prix Recap",
+            "date": "2025-01-01",
+            "excerpt": "This is a dummy post for the Formula 1 category.",
+            "thumbnail": "https://beyondmebtw.com/assets/images/thumbnails/Recap.jpg",
+            "link": "#",
+            "subcategory": "2025 Season"
+        },
+        {
+            "uid": "f1_002",
+            "title": "F1 The Movie Review",
+            "date": "2025-01-02",
+            "excerpt": "Another dummy entry for testing the Formula 1 section.",
+            "thumbnail": "https://beyondmebtw.com/assets/images/thumbnails/f1movie.webp",
+            "link": "#",
+            "subcategory": "General Blogs"
+        }
+    ]
+}

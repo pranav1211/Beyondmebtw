@@ -34,10 +34,20 @@
     transition: all 0.3s ease;
     border: 1px solid rgba(232, 217, 205, 0.5);
     min-height: 300px;
+     display: flex;
+    flex-direction: column;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.latest-post-card:hover .read-more {
+    background-color: #5a4c3e;
+    transform: translateY(-2px);
 }
 
 .latest-post-card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     background: rgba(255, 255, 255, 0.95);
 }

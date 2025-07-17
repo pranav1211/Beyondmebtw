@@ -2,6 +2,16 @@
 let blogData = null;
 let currentCategory = null;
 let currentSubcategory = null;
+let allCategoryData = {};
+let latestBlogData = null;
+
+// JSON file mappings for each category
+const categoryJsonFiles = {
+    'movie-tv': 'movietv.json',
+    'f1': 'f1arti.json',
+    'experience': 'experience.json',
+    'tech': 'techart.json'
+};
 
 // DOM elements
 const homelink = document.querySelector('#home');
@@ -62,57 +72,198 @@ async function fetchBlogData() {
     }
 }
 
+// Fetch latest blog data
+async function fetchLatestBlogData() {
+    try {
+        const response = await fetch('latestblog.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        latestBlogData = await response.json();
+        console.log('Latest blog data loaded successfully');
+        return latestBlogData;
+    } catch (error) {
+        console.error('Error fetching latest blog data:', error);
+        return null;
+    }
+}
+
+// Fetch category-specific data
+async function fetchCategoryData(categoryKey) {
+    const jsonFile = categoryJsonFiles[categoryKey];
+    if (!jsonFile) {
+        console.error('No JSON file found for category:', categoryKey);
+        return null;
+    }
+
+    try {
+        const response = await fetch(jsonFile);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const categoryData = await response.json();
+        console.log(`Category data loaded for ${categoryKey}`);
+        return categoryData;
+    } catch (error) {
+        console.error(`Error fetching category data for ${categoryKey}:`, error);
+        return null;
+    }
+}
+
+// Load all JSON files upfront
+async function loadAllData() {
+    try {
+        // Load main blog data and latest blog data
+        const [mainBlogData, latestData] = await Promise.all([
+            fetchBlogData(),
+            fetchLatestBlogData()
+        ]);
+
+        blogData = mainBlogData;
+        latestBlogData = latestData;
+
+        // Load all category-specific data
+        const categoryPromises = Object.keys(categoryJsonFiles).map(async (categoryKey) => {
+            const categoryData = await fetchCategoryData(categoryKey);
+            if (categoryData) {
+                allCategoryData[categoryKey] = categoryData;
+                // Merge with main blog data if it exists
+                if (blogData && blogData.categories && blogData.categories[categoryKey]) {
+                    blogData.categories[categoryKey] = {
+                        ...blogData.categories[categoryKey],
+                        ...categoryData
+                    };
+                }
+            }
+        });
+
+        await Promise.all(categoryPromises);
+        console.log('All data loaded successfully');
+        return true;
+    } catch (error) {
+        console.error('Error loading all data:', error);
+        return false;
+    }
+}
+
 // Initialize the page
 async function initializePage() {
     try {
         setupNavigation();
-        await fetchBlogData();
+        
+        // Load all data first
+        const dataLoaded = await loadAllData();
 
-        if (blogData) {
+        if (dataLoaded && blogData) {
             renderLatestPosts();
             renderCategories();
             setupSearch();
+        } else {
+            console.error('Failed to load data');
         }
     } catch (error) {
         console.error('Error initializing page:', error);
     }
 }
 
+// Lazy load images
+function lazyLoadImage(img) {
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                img.classList.remove('lazy');
+                img.classList.add('loaded');
+                observer.unobserve(img);
+            }
+        });
+    });
+
+    imageObserver.observe(img);
+}
+
+// Handle post card clicks with middle mouse button support
+function handlePostCardClick(event, postLink) {
+    event.preventDefault();
+    
+    // Middle mouse button (wheel button) - open in new tab
+    if (event.button === 1) {
+        window.open(postLink, '_blank');
+        return;
+    }
+    
+    // Left click - open in new tab
+    if (event.button === 0) {
+        window.open(postLink, '_blank');
+        return;
+    }
+}
+
 // Render latest posts
 function renderLatestPosts() {
-    if (!blogData || !blogData.categories || !blogData.latestPosts) {
-        console.error('Blog data not available or missing latestPosts');
+    if (!latestBlogData || !latestBlogData.latestPosts) {
+        console.error('Latest blog data not available');
         return;
     }
 
     latestPostsGrid.innerHTML = '';
 
-    // Create a lookup map for all posts by their UID
+    // Create a lookup map for all posts by their UID from all categories
     const postLookup = {};
-    Object.values(blogData.categories).forEach(category => {
-        if (category.posts && Array.isArray(category.posts)) {
-            category.posts.forEach(post => {
+    
+    // Add posts from main blog data
+    if (blogData && blogData.categories) {
+        Object.values(blogData.categories).forEach(category => {
+            if (category.posts && Array.isArray(category.posts)) {
+                category.posts.forEach(post => {
+                    postLookup[post.uid] = post;
+                });
+            }
+        });
+    }
+
+    // Add posts from category-specific data
+    Object.values(allCategoryData).forEach(categoryData => {
+        if (categoryData.posts && Array.isArray(categoryData.posts)) {
+            categoryData.posts.forEach(post => {
                 postLookup[post.uid] = post;
             });
         }
     });
 
     // Get the latest posts using the UIDs from latestPosts array
-    const latestPosts = blogData.latestPosts
+    const latestPosts = latestBlogData.latestPosts
         .map(uid => postLookup[uid])
         .filter(post => post !== undefined); // Filter out any missing posts
 
     latestPosts.forEach(post => {
         const postCard = document.createElement('div');
         postCard.className = 'latest-post-card';
-        postCard.onclick = () => window.location.href = post.link;
+        postCard.style.position = 'relative';
+        postCard.style.cursor = 'pointer';
+        postCard.style.display = 'flex';
+        postCard.style.flexDirection = 'column';
+        
+        // Add click event listeners for left and middle mouse buttons
+        postCard.addEventListener('click', (e) => handlePostCardClick(e, post.link));
+        postCard.addEventListener('mousedown', (e) => {
+            if (e.button === 1) {
+                handlePostCardClick(e, post.link);
+            }
+        });
 
         postCard.innerHTML = `
-            <img class="latest-post-thumbnail" src="${post.thumbnail}" alt="${post.title}">
+            <img class="latest-post-thumbnail lazy" data-src="${post.thumbnail}" alt="${post.title}">
             <h4 class="latest-post-title">${post.title}</h4>
             <p class="latest-post-excerpt">${post.excerpt}</p>
             <div class="latest-post-date">${formatDate(post.date)}</div>
+            <div class="read-more">Read More</div>
         `;
+
+        // Set up lazy loading for the image
+        const img = postCard.querySelector('.latest-post-thumbnail');
+        lazyLoadImage(img);
 
         latestPostsGrid.appendChild(postCard);
     });
@@ -122,7 +273,6 @@ function renderLatestPosts() {
         latestPostsGrid.innerHTML = '<p style="text-align: center; color: #8b7355;">No posts available yet.</p>';
     }
 }
-
 
 // Render categories grid
 function renderCategories() {
@@ -259,14 +409,30 @@ function renderPosts(posts) {
     posts.forEach(post => {
         const postCard = document.createElement('div');
         postCard.className = 'post-card';
-        postCard.onclick = () => window.location.href = post.link;
+        postCard.style.position = 'relative';
+        postCard.style.cursor = 'pointer';
+        postCard.style.display = 'flex';
+        postCard.style.flexDirection = 'column';
+        
+        // Add click event listeners for left and middle mouse buttons
+        postCard.addEventListener('click', (e) => handlePostCardClick(e, post.link));
+        postCard.addEventListener('mousedown', (e) => {
+            if (e.button === 1) {
+                handlePostCardClick(e, post.link);
+            }
+        });
 
         postCard.innerHTML = `
-            <img class="post-thumbnail" src="${post.thumbnail}" alt="${post.title}">
+            <img class="post-thumbnail lazy" data-src="${post.thumbnail}" alt="${post.title}">
             <h4 class="post-title">${post.title}</h4>
             <p class="post-excerpt">${post.excerpt}</p>
             <div class="post-date">${formatDate(post.date)}</div>
+            <div class="read-more">Read More</div>
         `;
+
+        // Set up lazy loading for the image
+        const img = postCard.querySelector('.post-thumbnail');
+        lazyLoadImage(img);
 
         postsGrid.appendChild(postCard);
     });
@@ -330,19 +496,31 @@ function setupSearch() {
 
 // Search posts function
 function searchPosts(searchTerm) {
-    if (!blogData || !blogData.categories) return;
-
     const allPosts = [];
 
-    // Collect all posts from all categories
-    Object.values(blogData.categories).forEach(category => {
-        if (category.posts && Array.isArray(category.posts)) {
-            allPosts.push(...category.posts);
+    // Collect all posts from all loaded data
+    if (blogData && blogData.categories) {
+        Object.values(blogData.categories).forEach(category => {
+            if (category.posts && Array.isArray(category.posts)) {
+                allPosts.push(...category.posts);
+            }
+        });
+    }
+
+    // Also collect from category-specific data
+    Object.values(allCategoryData).forEach(categoryData => {
+        if (categoryData.posts && Array.isArray(categoryData.posts)) {
+            allPosts.push(...categoryData.posts);
         }
     });
 
+    // Remove duplicates based on UID
+    const uniquePosts = allPosts.filter((post, index, self) =>
+        index === self.findIndex(p => p.uid === post.uid)
+    );
+
     // Filter posts based on search term
-    const filteredPosts = allPosts.filter(post =>
+    const filteredPosts = uniquePosts.filter(post =>
         post.title.toLowerCase().includes(searchTerm) ||
         post.excerpt.toLowerCase().includes(searchTerm) ||
         (post.subcategory && post.subcategory.toLowerCase().includes(searchTerm))
@@ -387,15 +565,31 @@ function displaySearchResults(posts, searchTerm) {
         const postCard = document.createElement('div');
         postCard.className = 'post-card';
         postCard.style.margin = '10px';
-        postCard.onclick = () => window.location.href = post.link;
+        postCard.style.position = 'relative';
+        postCard.style.cursor = 'pointer';
+        postCard.style.display = 'flex';
+        postCard.style.flexDirection = 'column';
+        
+        // Add click event listeners for left and middle mouse buttons
+        postCard.addEventListener('click', (e) => handlePostCardClick(e, post.link));
+        postCard.addEventListener('mousedown', (e) => {
+            if (e.button === 1) {
+                handlePostCardClick(e, post.link);
+            }
+        });
 
         postCard.innerHTML = `
-            <img class="post-thumbnail" src="${post.thumbnail}" alt="${post.title}">
+            <img class="post-thumbnail lazy" data-src="${post.thumbnail}" alt="${post.title}">
             <h4 class="post-title">${post.title}</h4>
             <p class="post-excerpt">${post.excerpt}</p>
             <div class="post-date">${formatDate(post.date)}</div>
             ${post.subcategory ? `<div style="margin-top: 5px; font-size: 12px; color: #8b7355;">Category: ${post.subcategory}</div>` : ''}
+            <div class="read-more">Read More</div>
         `;
+
+        // Set up lazy loading for the image
+        const img = postCard.querySelector('.post-thumbnail');
+        lazyLoadImage(img);
 
         blogGrid.appendChild(postCard);
     });
