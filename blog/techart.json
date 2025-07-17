@@ -1,0 +1,17 @@
+{
+    "title": "Technology",
+    "icon": "fas fa-laptop-code",
+    "description": "Tech reviews, programming insights, and digital trends",
+    "subcategories": [],
+    "posts": [
+        {
+            "uid": "tech_001",
+            "title": "Automating Git Calls with Webhooks",
+            "date": "Sep 12, 2024",
+            "excerpt": "A comprehensive guide to using Github Webhooks for automating Git operations on an Nginx server.",
+            "thumbnail": "https://bmb-content-server.vercel.app/tech/tech1.png",
+            "link": "https://medium.com/@beyondmebtw/Automating-Git-Calls-with-Webhooks-dad20d19ca44",
+            "subcategory": ""
+        }
+    ]
+}
