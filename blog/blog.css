@@ -23,8 +23,9 @@ header {
     font-style: normal;
     font-optical-sizing: auto;
     font-size: 58px;
-    margin-top: 15px;
     margin-left: 95px;
+    margin-top: 15px;
+
     display: block;
     color: #3b342d;
 }
@@ -38,10 +39,12 @@ header {
     font-optical-sizing: auto;
     font-size: 27px;
     font-style: normal;
-    font-weight: 400;
     background-color: #E8D9CD;
     padding: 7.5px;
     border-radius: 60px;
+    font-family: "Delius", cursive;
+    font-weight: 600;
+    font-style: normal;
 }
 
 .link {
@@ -57,7 +60,7 @@ header {
 }
 
 .search-container {
-    max-width: 1200px;
+    max-width: 1800px;
     margin: 0 auto 30px auto;
     padding: 0 20px;
 }
@@ -76,10 +79,11 @@ header {
     border-radius: 30px;
     background-color: #E8D9CD;
     font-family: "Kreon", serif;
-    font-size: 16px;
+    font-size: 17px;
     color: #3b342d;
     outline: none;
     transition: box-shadow 0.3s;
+    font-weight: bold;
 }
 
 .search-input:focus {
@@ -100,15 +104,22 @@ header {
 }
 
 .main-container {
-    max-width: 1200px;
+    max-width: 1800px;
     margin: 0 auto;
     padding: 0 20px;
 }
 
 /* Animations */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Footer */
@@ -135,12 +146,30 @@ header {
     margin-top: auto;
     text-align: center;
     user-select: none;
-    pointer-events: none; /* Prevent direct clicking on the button */
+    pointer-events: none;
+    /* Prevent direct clicking on the button */
 }
 
 .read-more:hover {
     background-color: #5a4c3e;
     transform: translateY(-2px);
+}
+
+.explore-button {
+    align-self: flex-end;
+    background-color: #6a5a4a;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-family: "Kreon", serif;
+    font-weight: 500;
+    font-size: 18px;
+    transition: background-color 0.3s, transform 0.3s;
+    margin-top: auto;
+    text-align: center;
+    user-select: none;
+    pointer-events: none;
 }
 
 
@@ -178,6 +207,7 @@ header {
     0% {
         background-position: 200% 0;
     }
+
     100% {
         background-position: -200% 0;
     }

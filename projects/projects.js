@@ -89,7 +89,7 @@ new Vue({
         });
 
         blogLink.addEventListener('click', () => {
-            window.location = "https://medium.com/@beyondmebtw";
+            window.location = "https://beyondmebtw.com/blog";
         });
 
         projLink.addEventListener('click', () => {
