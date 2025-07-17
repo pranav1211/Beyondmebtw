@@ -1,7 +1,4 @@
 {
-  "title": "Movies & TV Shows",
-  "icon": "fas fa-film",
-  "description": "Reviews, analyses, and deep dives into cinema and television",
   "subcategories": [
     "Movies",
     "TV Shows"
