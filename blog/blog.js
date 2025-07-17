@@ -85,7 +85,7 @@ function createBlogDataFromCategories() {
             icon: 'fas fa-flag-checkered'
         },
         'experience': {
-            title: 'Experience',
+            title: 'Personal Experience',
             description: 'Personal experiences, reflections, and life stories',
             icon: 'fas fa-compass'
         },
