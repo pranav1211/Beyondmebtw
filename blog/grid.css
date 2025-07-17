@@ -1,26 +1,46 @@
 /* Categories Grid */
 .blog-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     gap: 35px;
     margin-bottom: 40px;
+    grid-template-columns: repeat(2, 1fr);
+    /* 2 columns */
 }
 
 .category-card {
     background: linear-gradient(135deg, #E8D9CD 0%, #dcc8b8 100%);
-    border-radius: 20px;
-    padding: 30px;
+    border-radius: 25px;
+    padding: 40px;
     cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
-    min-height: 200px;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
 }
 
 .category-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
 }
+
+.category-card:nth-child(1):hover {
+    box-shadow: 0 15px 40px rgba(116, 92, 185, 0.25);
+}
+
+.category-card:nth-child(2):hover {
+    box-shadow: 0 15px 40px rgba(220, 20, 60, 0.25);
+}
+
+.category-card:nth-child(3):hover {
+    box-shadow: 0 15px 40px rgba(46, 125, 50, 0.25);
+}
+
+.category-card:nth-child(4):hover {
+    box-shadow: 0 15px 40px rgba(33, 150, 243, 0.25);
+}
+
 
 .category-card::before {
     content: '';
@@ -38,33 +58,73 @@
     right: -30%;
 }
 
+.category-card:nth-child(1) {
+    /* Movies & TV - Purple/Blue gradient */
+    background: linear-gradient(135deg, #e6e0ff 0%, #d4c7f7 100%);
+    box-shadow: 0 8px 25px rgba(116, 92, 185, 0.15);
+}
+
+.category-card:nth-child(2) {
+    /* Formula 1 - Red/Orange gradient */
+    background: linear-gradient(135deg, #ffe6e6 0%, #ffcccc 100%);
+    box-shadow: 0 8px 25px rgba(220, 20, 60, 0.15);
+}
+
+.category-card:nth-child(3) {
+    /* Experience - Green/Teal gradient */
+    background: linear-gradient(135deg, #e6f7f0 0%, #ccf2e0 100%);
+    box-shadow: 0 8px 25px rgba(46, 125, 50, 0.15);
+}
+
+.category-card:nth-child(4) {
+    /* Technology - Blue/Cyan gradient */
+    background: linear-gradient(135deg, #e6f3ff 0%, #cce7ff 100%);
+    box-shadow: 0 8px 25px rgba(33, 150, 243, 0.15);
+    /* Center align the 4th category */
+    justify-self: center;
+}
+
 .category-header {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .category-icon {
-    font-size: 40px;
-    margin-right: 15px;
+    font-size: 50px;
+    margin-right: 20px;
     color: #3b342d;
 }
 
 .category-title {
-    font-size: 28px;
+    font-size: 32px;
     font-weight: 600;
     color: #3b342d;
 }
 
 .category-description {
     color: #5a4d3d;
-    font-size: 16px;
-    line-height: 1.5;
+    font-size: 25px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    flex-grow: 1;
 }
+
+.explore-button:hover {
+    background-color: #5a4c3e;
+    transform: translateY(-2px);
+}
+
+.category-card:hover .explore-button {
+    background-color: #5a4c3e;
+    transform: translateY(-2px);
+}
+
 
 /* Expanded View */
 .expanded-view {
     display: flex;
+    flex-direction: column;
     gap: 30px;
     animation: fadeIn 0.3s ease-in-out;
 }
@@ -76,7 +136,7 @@
 
 .subcategory-tabs {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     margin-bottom: 30px;
     flex-wrap: wrap;
 }
@@ -91,7 +151,7 @@
     font-family: "Kreon", serif;
     font-size: 16px;
     color: #3b342d;
-    font-weight: 500;
+    font-weight: bold;
 }
 
 .subcategory-tab:hover {
@@ -106,7 +166,7 @@
 
 .posts-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 25px;
 }
 
@@ -115,14 +175,14 @@
     border-radius: 15px;
     padding: 20px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease;
     border: 1px solid rgba(232, 217, 205, 0.5);
     min-height: 280px;
     position: relative;
     display: flex;
-    flex-direction: column;    
-    cursor: pointer;
-    transition: transform 0.3s ease;
+    flex-direction: column;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+
 }
 
 /* First post card linear scaling - only for main grid, not expanded view */
@@ -158,6 +218,7 @@
     font-size: 16px;
     line-height: 1.5;
     margin-bottom: 15px;
+    font-weight: 500;
 }
 
 .blog-grid .post-card:nth-child(1) .post-date {
@@ -214,27 +275,33 @@
 }
 
 .post-excerpt {
-    color: #5a4d3d;
-    font-size: 14px;
+    color: #000000;
+    font-size: 16px;
     line-height: 1.4;
     margin-bottom: 10px;
+    font-weight: 550;
+
 }
 
 .post-date {
     color: #8b7355;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 500;
+    font-style: italic;
 }
 
-/* Categories Sidebar */
+/* Categories Sidebar - Consistent button layout for ALL screen sizes */
 .categories-sidebar {
-    width: 300px;
-    background: linear-gradient(135deg, #F4F2EF 0%, #E8D9CD 100%);
-    border-radius: 20px;
-    padding: 20px;
-    border: 2px solid #E8D9CD;
-    max-height: 600px;
-    overflow-y: auto;
+    width: 100%;
+    background: none;
+    border-radius: 0;
+    padding: 0;
+    border: none;
+    max-height: none;
+    overflow: visible;
+    margin-bottom: 30px;
+    order: -1;
+    /* Always show at the top */
 }
 
 .sidebar-header {
@@ -248,17 +315,17 @@
 
 .sidebar-header h3 {
     color: #3b342d;
-    font-size: 24px;
+    font-size: 28px;
     font-weight: 600;
 }
 
 .close-btn {
     background: none;
     border: none;
-    font-size: 18px;
+    font-size: 24px;
     color: #3b342d;
     cursor: pointer;
-    padding: 5px;
+    padding: 8px;
     border-radius: 50%;
     transition: all 0.3s ease;
 }
@@ -267,28 +334,35 @@
     background-color: rgba(59, 52, 45, 0.1);
 }
 
+/* Consistent button layout for categories */
 .categories-list {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: flex-start;
 }
 
 .sidebar-category {
-    background: rgba(255, 255, 255, 0.6);
-    padding: 15px;
-    border-radius: 15px;
+    background-color: #E8D9CD;
+    padding: 12px 24px;
+    border-radius: 25px;
     cursor: pointer;
     transition: all 0.3s ease;
-    border: 1px solid rgba(232, 217, 205, 0.5);
+    border: none;
+    font-family: "Kreon", serif;
+    font-size: 16px;
+    color: #3b342d;
+    font-weight: 500;
+    flex: 0 0 auto;
 }
 
 .sidebar-category:hover {
-    background: rgba(255, 255, 255, 0.8);
-    transform: translateX(5px);
+    background-color: #dcc8b8;
+    transform: translateY(-2px);
 }
 
 .sidebar-category.active {
-    background: #3b342d;
+    background-color: #3b342d;
     color: #F4F2EF;
 }
 

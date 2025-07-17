@@ -33,43 +33,82 @@ document.addEventListener('DOMContentLoaded', initializePage);
 // Navigation setup
 function setupNavigation() {
     // Set active state for blog link
-    bloglink.style.backgroundColor = '#F4F2EF';
+    if (bloglink) {
+        bloglink.style.backgroundColor = '#F4F2EF';
+    }
 
     // Navigation event listeners
-    homelink.addEventListener('click', () => {
-        window.location = "https://beyondmebtw.com";
-    });
+    if (homelink) {
+        homelink.addEventListener('click', () => {
+            window.location = "https://beyondmebtw.com";
+        });
+    }
 
-    bloglink.addEventListener('click', () => {
-        window.location = "https://medium.com/@beyondmebtw";
-    });
+    if (bloglink) {
+        bloglink.addEventListener('click', () => {
+            window.location = "https://beyondmebtw.com/blog";
+        });
+    }
 
-    projlink.addEventListener('click', () => {
-        window.location = "https://beyondmebtw.com/projects";
-    });
+    if (projlink) {
+        projlink.addEventListener('click', () => {
+            window.location = "https://beyondmebtw.com/projects";
+        });
+    }
 
-    aboutlink.addEventListener('click', () => {
-        window.location = "https://beyondmebtw.com/about";
-    });
+    if (aboutlink) {
+        aboutlink.addEventListener('click', () => {
+            window.location = "https://beyondmebtw.com/about";
+        });
+    }
 
     // Close button event listener
-    closeBtn.addEventListener('click', closeExpandedView);
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeExpandedView);
+    }
 }
 
-// Fetch blog data from JSON file
-async function fetchBlogData() {
-    try {
-        const response = await fetch('posts.json');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+// Create a basic blog data structure from category data
+function createBlogDataFromCategories() {
+    const categories = {};
+    
+    // Define category metadata
+    const categoryMetadata = {
+        'movie-tv': {
+            title: 'Movies & TV',
+            description: 'Reviews, analysis, and thoughts on movies and TV shows',
+            icon: 'fas fa-film'
+        },
+        'f1': {
+            title: 'Formula 1',
+            description: 'F1 race analysis, driver insights, and motorsport commentary',
+            icon: 'fas fa-flag-checkered'
+        },
+        'experience': {
+            title: 'Experience',
+            description: 'Personal experiences, travel, and life stories',
+            icon: 'fas fa-compass'
+        },
+        'tech': {
+            title: 'Technology',
+            description: 'Tech reviews, programming, and digital innovations',
+            icon: 'fas fa-code'
         }
-        blogData = await response.json();
-        console.log('Blog data loaded successfully');
-        return blogData;
-    } catch (error) {
-        console.error('Error fetching blog data:', error);
-        return null;
-    }
+    };
+
+    // Build categories from loaded data
+    Object.keys(categoryJsonFiles).forEach(categoryKey => {
+        const categoryData = allCategoryData[categoryKey];
+        if (categoryData) {
+            categories[categoryKey] = {
+                ...categoryMetadata[categoryKey],
+                posts: categoryData.posts || [],
+                subcategories: categoryData.subcategories || []
+            };
+        }
+    });
+
+    return { categories };
 }
 
 // Fetch latest blog data
@@ -113,13 +152,8 @@ async function fetchCategoryData(categoryKey) {
 // Load all JSON files upfront
 async function loadAllData() {
     try {
-        // Load main blog data and latest blog data
-        const [mainBlogData, latestData] = await Promise.all([
-            fetchBlogData(),
-            fetchLatestBlogData()
-        ]);
-
-        blogData = mainBlogData;
+        // Load latest blog data
+        const latestData = await fetchLatestBlogData();
         latestBlogData = latestData;
 
         // Load all category-specific data
@@ -127,18 +161,16 @@ async function loadAllData() {
             const categoryData = await fetchCategoryData(categoryKey);
             if (categoryData) {
                 allCategoryData[categoryKey] = categoryData;
-                // Merge with main blog data if it exists
-                if (blogData && blogData.categories && blogData.categories[categoryKey]) {
-                    blogData.categories[categoryKey] = {
-                        ...blogData.categories[categoryKey],
-                        ...categoryData
-                    };
-                }
             }
+            return categoryData;
         });
 
         await Promise.all(categoryPromises);
-        console.log('All data loaded successfully');
+        
+        // Create blog data structure from loaded category data
+        blogData = createBlogDataFromCategories();
+        
+        console.log('All data loaded successfully', blogData);
         return true;
     } catch (error) {
         console.error('Error loading all data:', error);
@@ -149,12 +181,14 @@ async function loadAllData() {
 // Initialize the page
 async function initializePage() {
     try {
+        console.log('Initializing page...');
         setupNavigation();
         
         // Load all data first
         const dataLoaded = await loadAllData();
 
         if (dataLoaded && blogData) {
+            console.log('Data loaded, rendering components...');
             renderLatestPosts();
             renderCategories();
             setupSearch();
@@ -202,8 +236,14 @@ function handlePostCardClick(event, postLink) {
 
 // Render latest posts
 function renderLatestPosts() {
+    if (!latestPostsGrid) {
+        console.error('Latest posts grid element not found');
+        return;
+    }
+
     if (!latestBlogData || !latestBlogData.latestPosts) {
         console.error('Latest blog data not available');
+        latestPostsGrid.innerHTML = '<p style="text-align: center; color: #8b7355;">No latest posts available.</p>';
         return;
     }
 
@@ -212,17 +252,6 @@ function renderLatestPosts() {
     // Create a lookup map for all posts by their UID from all categories
     const postLookup = {};
     
-    // Add posts from main blog data
-    if (blogData && blogData.categories) {
-        Object.values(blogData.categories).forEach(category => {
-            if (category.posts && Array.isArray(category.posts)) {
-                category.posts.forEach(post => {
-                    postLookup[post.uid] = post;
-                });
-            }
-        });
-    }
-
     // Add posts from category-specific data
     Object.values(allCategoryData).forEach(categoryData => {
         if (categoryData.posts && Array.isArray(categoryData.posts)) {
@@ -236,6 +265,8 @@ function renderLatestPosts() {
     const latestPosts = latestBlogData.latestPosts
         .map(uid => postLookup[uid])
         .filter(post => post !== undefined); // Filter out any missing posts
+
+    console.log('Rendering latest posts:', latestPosts.length);
 
     latestPosts.forEach(post => {
         const postCard = document.createElement('div');
@@ -276,12 +307,19 @@ function renderLatestPosts() {
 
 // Render categories grid
 function renderCategories() {
+    if (!blogGrid) {
+        console.error('Blog grid element not found');
+        return;
+    }
+
     if (!blogData || !blogData.categories) {
         console.error('Blog data not available');
+        blogGrid.innerHTML = '<p style="text-align: center; color: #8b7355;">No categories available.</p>';
         return;
     }
 
     blogGrid.innerHTML = '';
+    console.log('Rendering categories:', Object.keys(blogData.categories));
 
     Object.entries(blogData.categories).forEach(([key, category]) => {
         const categoryCard = document.createElement('div');
@@ -294,6 +332,7 @@ function renderCategories() {
                 <h3 class="category-title">${category.title}</h3>
             </div>
             <p class="category-description">${category.description}</p>
+            <div class="explore-button">Explore</div>
         `;
 
         blogGrid.appendChild(categoryCard);
@@ -311,8 +350,8 @@ function expandCategory(categoryKey) {
     const category = blogData.categories[categoryKey];
 
     // Hide categories grid and show expanded view
-    blogGrid.style.display = 'none';
-    expandedView.style.display = 'flex';
+    if (blogGrid) blogGrid.style.display = 'none';
+    if (expandedView) expandedView.style.display = 'flex';
 
     // Render subcategory tabs
     renderSubcategoryTabs(category);
@@ -327,6 +366,8 @@ function expandCategory(categoryKey) {
 
 // Render subcategory tabs
 function renderSubcategoryTabs(category) {
+    if (!subcategoryTabs) return;
+    
     subcategoryTabs.innerHTML = '';
 
     if (!category.subcategories || category.subcategories.length === 0) {
@@ -355,14 +396,16 @@ function switchSubcategory(subcategory) {
     currentSubcategory = subcategory;
 
     // Update active tab
-    const tabs = subcategoryTabs.querySelectorAll('.subcategory-tab');
-    tabs.forEach(tab => {
-        tab.classList.remove('active');
-        if ((subcategory === null && tab.textContent === 'All') ||
-            (subcategory && tab.textContent === subcategory)) {
-            tab.classList.add('active');
-        }
-    });
+    if (subcategoryTabs) {
+        const tabs = subcategoryTabs.querySelectorAll('.subcategory-tab');
+        tabs.forEach(tab => {
+            tab.classList.remove('active');
+            if ((subcategory === null && tab.textContent === 'All') ||
+                (subcategory && tab.textContent === subcategory)) {
+                tab.classList.add('active');
+            }
+        });
+    }
 
     // Render posts
     if (subcategory) {
@@ -376,7 +419,7 @@ function switchSubcategory(subcategory) {
 function renderPostsBySubcategory(subcategory) {
     const category = blogData.categories[currentCategory];
     if (!category.posts) {
-        postsGrid.innerHTML = '<p style="text-align: center; color: #8b7355;">No posts available.</p>';
+        if (postsGrid) postsGrid.innerHTML = '<p style="text-align: center; color: #8b7355;">No posts available.</p>';
         return;
     }
 
@@ -384,21 +427,27 @@ function renderPostsBySubcategory(subcategory) {
         post.subcategory === subcategory
     );
 
-    renderPosts(filteredPosts);
+    // Reverse the order of posts (newest first)
+    const reversedPosts = [...filteredPosts].reverse();
+    renderPosts(reversedPosts);
 }
 
 // Render all posts in category
 function renderCategoryPosts(category) {
     if (!category.posts) {
-        postsGrid.innerHTML = '<p style="text-align: center; color: #8b7355;">No posts available.</p>';
+        if (postsGrid) postsGrid.innerHTML = '<p style="text-align: center; color: #8b7355;">No posts available.</p>';
         return;
     }
 
-    renderPosts(category.posts);
+    // Reverse the order of posts (newest first)
+    const reversedPosts = [...category.posts].reverse();
+    renderPosts(reversedPosts);
 }
 
 // Render posts
 function renderPosts(posts) {
+    if (!postsGrid) return;
+    
     postsGrid.innerHTML = '';
 
     if (posts.length === 0) {
@@ -440,6 +489,8 @@ function renderPosts(posts) {
 
 // Render sidebar categories
 function renderSidebarCategories() {
+    if (!categoriesList) return;
+    
     categoriesList.innerHTML = '';
 
     Object.entries(blogData.categories).forEach(([key, category]) => {
@@ -468,8 +519,8 @@ function switchCategory(categoryKey) {
 
 // Close expanded view
 function closeExpandedView() {
-    expandedView.style.display = 'none';
-    blogGrid.style.display = 'grid';
+    if (expandedView) expandedView.style.display = 'none';
+    if (blogGrid) blogGrid.style.display = 'grid';
     currentCategory = null;
     currentSubcategory = null;
 }
@@ -498,16 +549,7 @@ function setupSearch() {
 function searchPosts(searchTerm) {
     const allPosts = [];
 
-    // Collect all posts from all loaded data
-    if (blogData && blogData.categories) {
-        Object.values(blogData.categories).forEach(category => {
-            if (category.posts && Array.isArray(category.posts)) {
-                allPosts.push(...category.posts);
-            }
-        });
-    }
-
-    // Also collect from category-specific data
+    // Collect all posts from category-specific data
     Object.values(allCategoryData).forEach(categoryData => {
         if (categoryData.posts && Array.isArray(categoryData.posts)) {
             allPosts.push(...categoryData.posts);
@@ -533,21 +575,26 @@ function searchPosts(searchTerm) {
 // Display search results
 function displaySearchResults(posts, searchTerm) {
     // Close expanded view if open
-    expandedView.style.display = 'none';
-    blogGrid.style.display = 'grid';
+    if (expandedView) expandedView.style.display = 'none';
+    if (blogGrid) blogGrid.style.display = 'grid';
 
     // Clear existing content
-    blogGrid.innerHTML = '';
+    if (blogGrid) blogGrid.innerHTML = '';
 
     if (posts.length === 0) {
-        blogGrid.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-                <h3 style="color: #3b342d; margin-bottom: 10px;">No posts found</h3>
-                <p style="color: #8b7355;">No posts match your search term "${searchTerm}"</p>
-            </div>
-        `;
+        if (blogGrid) {
+            blogGrid.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                    <h3 style="color: #3b342d; margin-bottom: 10px;">No posts found</h3>
+                    <p style="color: #8b7355;">No posts match your search term "${searchTerm}"</p>
+                </div>
+            `;
+        }
         return;
     }
+
+    // Reverse the order of search results (newest first)
+    const reversedPosts = [...posts].reverse();
 
     // Create search results header
     const searchHeader = document.createElement('div');
@@ -558,10 +605,10 @@ function displaySearchResults(posts, searchTerm) {
         <h3 style="color: #3b342d; margin-bottom: 10px;">Search Results</h3>
         <p style="color: #8b7355;">Found ${posts.length} post${posts.length === 1 ? '' : 's'} for "${searchTerm}"</p>
     `;
-    blogGrid.appendChild(searchHeader);
+    if (blogGrid) blogGrid.appendChild(searchHeader);
 
     // Display search results as post cards
-    posts.forEach(post => {
+    reversedPosts.forEach(post => {
         const postCard = document.createElement('div');
         postCard.className = 'post-card';
         postCard.style.margin = '10px';
@@ -591,7 +638,7 @@ function displaySearchResults(posts, searchTerm) {
         const img = postCard.querySelector('.post-thumbnail');
         lazyLoadImage(img);
 
-        blogGrid.appendChild(postCard);
+        if (blogGrid) blogGrid.appendChild(postCard);
     });
 }
 

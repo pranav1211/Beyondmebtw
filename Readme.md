@@ -7,6 +7,16 @@ Check out the site : www.Beyondmebtw.com
 
 ## Changelog:
 
+### 2.5 (18/7/25)
+- Built the blog page
+- added the posts along with information and categoreis and sub categories
+- created a content server for the images
+- styled it work with responsive designs
+- redirected previously other medium links to the blog part
+- current posts redirect to medium but will eventually change, i am going to be building a platform to view the content, will use a framework like lit or svelte kit
+- fixed styling on blog page
+- fixed fonts on blog page
+
 ### V2.4 (15/7/25)
 - Fixed styling across the site for uniformity
 - changed skills orientation in about section

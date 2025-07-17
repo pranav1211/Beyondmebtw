@@ -9,7 +9,7 @@ const projectsData = [
     link: "https://beyondmebtw.com",
     githubLink: "https://github.com/pranav1211/beyondmebtw",
     category: "Web Development",
-    tags: ["HTML", "CSS", "JavaScript", "Node.js", "Backend", "Nginx", "Ubuntu"]
+    tags: ["HTML", "CSS", "JavaScript", "Node.js", "Backend", "Nginx", "Ubuntu","Vue.js"]
   },
   {
     id: 2,
@@ -57,7 +57,7 @@ const projectsData = [
     link: "https://library.beyondmebtw.com",
     githubLink: "https://github.com/pranav1211/My-Library",
     category: "Full Stack",
-    tags: ["JavaScript", "Node.js", "Database"]
+    tags: ["JavaScript", "Node.js", "Database", "Vue.js"]
   },
   {
     id: 6,
