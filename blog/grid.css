@@ -216,7 +216,7 @@
     font-size: 16px;
     line-height: 1.5;
     margin-bottom: 15px;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .blog-grid .post-card:nth-child(1) .post-date {
@@ -277,7 +277,7 @@
     font-size: 16px;
     line-height: 1.4;
     margin-bottom: 10px;
-    font-weight: 600;
+    font-weight: 650;
 }
 
 .post-date {
