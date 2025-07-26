@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile OCR Scanner</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.1.1/tesseract.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            padding: 30px 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 300;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .content {
+            padding: 30px 20px;
+        }
+
+        .camera-container {
+            position: relative;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            background: #f8f9fa;
+        }
+
+        #video {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+
+        #canvas {
+            display: none;
+        }
+
+        .captured-image {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .button-primary {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            color: white;
+        }
+
+        .button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79, 172, 254, 0.3);
+        }
+
+        .button-secondary {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .button-secondary:hover {
+            background: #dee2e6;
+        }
+
+        .button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .result-container {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #4facfe;
+        }
+
+        .result-text {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #495057;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e9ecef;
+            border-top: 2px solid #4facfe;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .progress-container {
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+            height: 8px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .content {
+                padding: 20px 15px;
+            }
+            
+            #video {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📱 OCR Scanner</h1>
+            <p>Capture text from images instantly</p>
+        </div>
+        
+        <div class="content">
+            <div class="camera-container">
+                <video id="video" autoplay playsinline></video>
+                <canvas id="canvas"></canvas>
+            </div>
+            
+            <img id="capturedImage" class="captured-image hidden" alt="Captured image">
+            
+            <button id="captureBtn" class="button button-primary">📸 Take Photo</button>
+            <button id="processBtn" class="button button-secondary hidden">🔍 Extract Text</button>
+            <button id="retakeBtn" class="button button-secondary hidden">🔄 Take Another Photo</button>
+            
+            <div id="loadingContainer" class="loading hidden">
+                <div class="spinner"></div>
+                <span>Processing image...</span>
+            </div>
+            
+            <div id="progressContainer" class="progress-container hidden">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
+            
+            <div id="resultContainer" class="result-container hidden">
+                <h3 style="margin-bottom: 15px; color: #495057;">📄 Extracted Text:</h3>
+                <div id="resultText" class="result-text"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const capturedImage = document.getElementById('capturedImage');
+        const captureBtn = document.getElementById('captureBtn');
+        const processBtn = document.getElementById('processBtn');
+        const retakeBtn = document.getElementById('retakeBtn');
+        const loadingContainer = document.getElementById('loadingContainer');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const resultContainer = document.getElementById('resultContainer');
+        const resultText = document.getElementById('resultText');
+        
+        let stream = null;
+        let capturedImageData = null;
+
+        // Initialize camera
+        async function initCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: 'environment', // Use back camera
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }
+                });
+                video.srcObject = stream;
+            } catch (error) {
+                console.error('Error accessing camera:', error);
+                alert('Unable to access camera. Please ensure you have given camera permissions.');
+            }
+        }
+
+        // Capture photo
+        function capturePhoto() {
+            const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0);
+            
+            capturedImageData = canvas.toDataURL('image/jpeg', 0.8);
+            capturedImage.src = capturedImageData;
+            
+            // Hide video and show captured image
+            video.classList.add('hidden');
+            capturedImage.classList.remove('hidden');
+            
+            // Update buttons
+            captureBtn.classList.add('hidden');
+            processBtn.classList.remove('hidden');
+            retakeBtn.classList.remove('hidden');
+            
+            // Hide previous results
+            resultContainer.classList.add('hidden');
+        }
+
+        // Process image with OCR
+        async function processImage() {
+            if (!capturedImageData) return;
+            
+            // Show loading state
+            processBtn.disabled = true;
+            loadingContainer.classList.remove('hidden');
+            progressContainer.classList.remove('hidden');
+            progressBar.style.width = '0%';
+            
+            try {
+                const worker = await Tesseract.createWorker('eng', 1, {
+                    logger: m => {
+                        if (m.status === 'recognizing text') {
+                            const progress = Math.round(m.progress * 100);
+                            progressBar.style.width = progress + '%';
+                        }
+                    }
+                });
+                
+                const { data: { text } } = await worker.recognize(capturedImageData);
+                await worker.terminate();
+                
+                // Display results
+                resultText.textContent = text.trim() || 'No text detected in the image.';
+                resultContainer.classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('OCR Error:', error);
+                resultText.textContent = 'Error processing image. Please try again.';
+                resultContainer.classList.remove('hidden');
+            } finally {
+                // Hide loading state
+                loadingContainer.classList.add('hidden');
+                progressContainer.classList.add('hidden');
+                processBtn.disabled = false;
+            }
+        }
+
+        // Retake photo
+        function retakePhoto() {
+            // Show video and hide captured image
+            video.classList.remove('hidden');
+            capturedImage.classList.add('hidden');
+            
+            // Update buttons
+            captureBtn.classList.remove('hidden');
+            processBtn.classList.add('hidden');
+            retakeBtn.classList.add('hidden');
+            
+            // Hide results
+            resultContainer.classList.add('hidden');
+            
+            capturedImageData = null;
+        }
+
+        // Event listeners
+        captureBtn.addEventListener('click', capturePhoto);
+        processBtn.addEventListener('click', processImage);
+        retakeBtn.addEventListener('click', retakePhoto);
+
+        // Initialize app
+        initCamera();
+    </script>
+</body>
+</html>
