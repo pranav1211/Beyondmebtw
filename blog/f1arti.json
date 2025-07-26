@@ -147,6 +147,15 @@
             "thumbnail": "https://bmb-content-server.vercel.app/f1/2025/12.jpg",
             "link": "https://medium.com/@beyondmebtw/The-2025-British-Grand-Prix-Recap-25fed3205d5f",
             "subcategory": "2025 Season"
+        },
+        {
+            "uid": "f12025re_13.1",
+            "title": "The 2025 Belgian Sprint Race Recap",
+            "date": "Jul 26, 2025",
+            "excerpt": "Unexpected winners, Lost chances, The 2025 Belgian Sprint Race....",
+            "thumbnail": "https://bmb-content-server.vercel.app/f1/2025/13.1.png",
+            "link": "https://medium.com/@beyondmebtw/the-2025-belgian-sprint-race-recap-40ee6b262ec2",
+            "subcategory": "2025 Season"
         }
     ]
 }
