@@ -543,6 +543,15 @@
       "thumbnail": "https://bmb-content-server.vercel.app/movietv/movie/mov45.webp",
       "link": "https://medium.com/@beyondmebtw/Jurassic-World-Rebirth-Review-34f39014d865",
       "subcategory": "Movies"
+    },
+        {
+      "uid": "movies_46",
+      "title": "Superman (2025) Review",
+      "date": "Jul 28, 2025",
+      "excerpt": "This movie isn't just a reboot, it's a reminder of why the character matters. A genre too often weighed down by cynicism and loneliness…",
+      "thumbnail": "https://bmb-content-server.vercel.app/movietv/movie/mov46.png",
+      "link": "https://medium.com/@beyondmebtw/superman-2025-review-3d0c1a20493c",
+      "subcategory": "Movies"
     }
   ]
 }
