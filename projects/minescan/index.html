@@ -1,182 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OCR Scanner</title>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js"></script>
-    <style>
-        body {
-            margin: 0;
-            font-family: sans-serif;
-            background: #000;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OCR Scanner</title>
 
-        #video {
-            width: 90vw;
-            max-width: 400px;
-            aspect-ratio: 1;
-            object-fit: cover;
-            border: 4px solid #4facfe;
-            border-radius: 12px;
-            margin-top: 20px;
-        }
+  <!-- OCR + JScanify -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js"></script>
+  <script src="https://docs.opencv.org/4.7.0/opencv.js" async></script>
+  <script src="https://cdn.jsdelivr.net/gh/ColonelParrot/jscanify@master/src/jscanify.min.js"></script>
 
-        .controls {
-            margin-top: 15px;
-            display: flex;
-            gap: 10px;
-        }
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #000;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
 
-        button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 8px;
-            background: #4facfe;
-            color: white;
-            font-size: 14px;
-            cursor: pointer;
-        }
+    #video {
+      width: 95vw;
+      max-width: 600px;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border: 4px solid #4facfe;
+      border-radius: 12px;
+      margin-top: 20px;
+    }
 
-        #preview {
-            margin-top: 20px;
-            max-width: 90vw;
-            max-height: 300px;
-            display: none;
-            border-radius: 10px;
-        }
+    .controls {
+      margin-top: 15px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
 
-        #resultBox {
-            background: #fff;
-            color: #000;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 20px;
-            max-width: 90vw;
-            display: none;
-            white-space: pre-wrap;
-        }
+    button {
+      padding: 12px 18px;
+      border: none;
+      border-radius: 8px;
+      background: #4facfe;
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
+    }
 
-        canvas {
-            display: none;
-        }
-    </style>
+    #preview {
+      margin-top: 20px;
+      max-width: 95vw;
+      max-height: 350px;
+      display: none;
+      border-radius: 10px;
+    }
+
+    #resultBox {
+      background: #fff;
+      color: #000;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+      max-width: 95vw;
+      display: none;
+      white-space: pre-wrap;
+    }
+
+    canvas {
+      display: none;
+    }
+  </style>
 </head>
-
 <body>
 
-    <video id="video" autoplay playsinline muted></video>
+  <video id="video" autoplay playsinline muted></video>
 
-    <div class="controls">
-        <button id="flashBtn">💡 Flash</button>
-        <button id="processBtn" disabled>🔍 OCR</button>
-        <button id="captureBtn">📸 Capture</button>
-    </div>
+  <div class="controls">
+    <button id="flashBtn">💡 Flash</button>
+    <button id="captureBtn">📸 Capture</button>
+    <button id="processBtn" disabled>🔍 OCR</button>
+  </div>
 
-    <img id="preview" alt="Captured Image Preview" />
-    <div id="resultBox"></div>
+  <img id="preview" alt="Captured Image Preview"/>
+  <div id="resultBox"></div>
 
-    <canvas id="canvas"></canvas>
+  <canvas id="canvas"></canvas>
 
-    <script>
-        const video = document.getElementById("video");
-        const canvas = document.getElementById("canvas");
-        const captureBtn = document.getElementById("captureBtn");
-        const flashBtn = document.getElementById("flashBtn");
-        const processBtn = document.getElementById("processBtn");
-        const preview = document.getElementById("preview");
-        const resultBox = document.getElementById("resultBox");
+  <script>
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
+    const captureBtn = document.getElementById("captureBtn");
+    const flashBtn = document.getElementById("flashBtn");
+    const processBtn = document.getElementById("processBtn");
+    const preview = document.getElementById("preview");
+    const resultBox = document.getElementById("resultBox");
 
-        let stream, track;
-        let imageDataURL;
+    let stream, track;
+    let imageDataURL;
 
-        async function initCamera() {
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({
-                    video: {
-                        facingMode: { ideal: "environment" },
-                        width: { ideal: 720 },
-                        height: { ideal: 720 },
-                        focusMode: "continuous"
-                    }
-                });
-                video.srcObject = stream;
+    async function initCamera() {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: "environment" },
+            width: { ideal: 1280 },
+            height: { ideal: 1280 },
+            focusMode: "continuous"
+          }
+        });
+        video.srcObject = stream;
+        track = stream.getVideoTracks()[0];
+      } catch (e) {
+        alert("Camera access failed.");
+        console.error(e);
+      }
+    }
 
-                // Get video track for torch control
-                track = stream.getVideoTracks()[0];
-            } catch (e) {
-                alert("Camera access failed.");
-                console.error(e);
-            }
-        }
+    captureBtn.onclick = async () => {
+      const ctx = canvas.getContext("2d");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        captureBtn.onclick = () => {
-            const ctx = canvas.getContext("2d");
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            imageDataURL = canvas.toDataURL("image/jpeg", 0.9);
+      const baseImage = new Image();
+      baseImage.src = canvas.toDataURL("image/jpeg", 0.9);
+
+      baseImage.onload = async () => {
+        try {
+          // Apply JScanify
+          const jscanify = new Jscanify();
+          const quad = jscanify.findDocument(baseImage);
+
+          if (quad) {
+            const scanned = jscanify.extract(baseImage, quad);
+            imageDataURL = scanned.toDataURL("image/jpeg", 0.9);
             preview.src = imageDataURL;
-            preview.style.display = "block";
-            processBtn.disabled = false;
-            resultBox.style.display = "none";
-        };
+          } else {
+            // fallback if no doc detected
+            imageDataURL = baseImage.src;
+            preview.src = baseImage.src;
+          }
 
-        processBtn.onclick = async () => {
-            resultBox.textContent = "Processing...";
-            resultBox.style.display = "block";
-
-            const worker = await Tesseract.createWorker("eng", 1, {
-                logger: m => console.log(m),
-            });
-
-            const { data: { text } } = await worker.recognize(imageDataURL);
-            await worker.terminate();
-
-            uid = extractUID(text);
-
-            resultBox.textContent = uid || "No text detected.";
-        };
-
-        function extractUID(text) {
-            // Split into lines and only look at the top 5
-            const lines = text.split('\n').slice(0, 5);
-
-            // Search for a 5+ digit number using regex
-            for (let line of lines) {
-                const match = line.match(/\b\d{5,}\b/);
-                if (match) {
-                    return match[0]; // Return the first matching number
-                }
-            }
-
-            return null; // If not found
+          preview.style.display = "block";
+          processBtn.disabled = false;
+          resultBox.style.display = "none";
+          preview.scrollIntoView({ behavior: "smooth" });
+        } catch (err) {
+          console.error("JScanify error:", err);
         }
+      };
+    };
 
+    processBtn.onclick = async () => {
+      resultBox.textContent = "Processing...";
+      resultBox.style.display = "block";
+      resultBox.scrollIntoView({ behavior: "smooth" });
 
-        flashBtn.onclick = async () => {
-            if (!track) return alert("No camera track available.");
-            const capabilities = track.getCapabilities();
-            if (!capabilities.torch) return alert("Flash not supported on this device.");
+      const worker = await Tesseract.createWorker("eng", 1, {
+        logger: m => console.log(m),
+      });
 
-            const current = track.getSettings().torch || false;
-            try {
-                await track.applyConstraints({ advanced: [{ torch: !current }] });
-                flashBtn.textContent = !current ? "🔦 Flash On" : "💡 Flash";
-            } catch (e) {
-                console.error("Torch toggle failed:", e);
-            }
-        };
+      const { data: { text } } = await worker.recognize(imageDataURL);
+      await worker.terminate();
 
-        window.onload = initCamera;
-    </script>
+      const uid = extractUID(text);
+      resultBox.textContent = uid ? `UID: ${uid}` : "No UID found.";
+    };
 
+    function extractUID(text) {
+      const lines = text.split('\n').slice(0, 5);
+      for (let line of lines) {
+        const match = line.match(/\b\d{5,}\b/);
+        if (match) {
+          return match[0];
+        }
+      }
+      return null;
+    }
+
+    flashBtn.onclick = async () => {
+      if (!track) return alert("No camera track available.");
+      const capabilities = track.getCapabilities();
+      if (!capabilities.torch) return alert("Flash not supported on this device.");
+      const current = track.getSettings().torch || false;
+      try {
+        await track.applyConstraints({ advanced: [{ torch: !current }] });
+        flashBtn.textContent = !current ? "🔦 Flash On" : "💡 Flash";
+      } catch (e) {
+        console.error("Torch toggle failed:", e);
+      }
+    };
+
+    window.onload = initCamera;
+  </script>
 </body>
-
 </html>
