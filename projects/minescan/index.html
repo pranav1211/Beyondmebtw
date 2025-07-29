@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>JScanify Debug Test</title>
   <script src="https://docs.opencv.org/4.7.0/opencv.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/ColonelParrot/jscanify/dist/jscanify.min.js"></script>
@@ -17,14 +18,21 @@
       align-items: center;
       padding: 20px;
     }
-    video, #preview, #scanned {
+
+    video,
+    #preview,
+    #scanned {
       width: 90vw;
       max-width: 500px;
       margin-top: 20px;
       border-radius: 12px;
       border: 2px solid #4facfe;
     }
-    #scanned { display: none; }
+
+    #scanned {
+      display: none;
+    }
+
     button {
       margin-top: 15px;
       padding: 12px 18px;
@@ -35,27 +43,16 @@
       font-size: 15px;
       cursor: pointer;
     }
-    button:disabled {
-      background: #666;
-      cursor: not-allowed;
-    }
-    #status {
-      margin-top: 10px;
-      padding: 10px;
-      background: #333;
-      border-radius: 6px;
-      font-size: 14px;
-    }
   </style>
 </head>
+
 <body>
   <h2>📄 JScanify Square Doc Test</h2>
-  <div id="status">Loading libraries...</div>
   <video id="video" autoplay playsinline muted></video>
-  <button id="captureBtn" disabled>📸 Capture & Detect</button>
+  <button id="captureBtn">📸 Capture & Detect</button>
   <canvas id="canvas" style="display:none;"></canvas>
-  <img id="preview" alt="Captured Frame"/>
-  <img id="scanned" alt="Scanned Result"/>
+  <img id="preview" alt="Captured Frame" />
+  <img id="scanned" alt="Scanned Result" />
 
   <script>
     const video = document.getElementById("video");
@@ -63,112 +60,45 @@
     const preview = document.getElementById("preview");
     const scannedImg = document.getElementById("scanned");
     const captureBtn = document.getElementById("captureBtn");
-    const status = document.getElementById("status");
 
-    let jscanify, opencvReady = false, jscanifyReady = false;
-
-    function updateStatus(message) {
-      status.textContent = message;
-      console.log(message);
-    }
+    let jscanify, opencvReady = false;
 
     function waitForOpenCV() {
       return new Promise((resolve) => {
         if (typeof cv !== 'undefined' && cv.Mat) {
           opencvReady = true;
-          updateStatus("OpenCV loaded ✅");
           resolve();
         } else {
           cv.onRuntimeInitialized = () => {
             opencvReady = true;
-            updateStatus("OpenCV loaded ✅");
             resolve();
           };
         }
       });
     }
 
-    function waitForJScanify() {
-      return new Promise((resolve, reject) => {
-        let attempts = 0;
-        const maxAttempts = 50; // 5 seconds max
-        
-        const checkJScanify = () => {
-          attempts++;
-          if (typeof Jscanify !== 'undefined') {
-            jscanifyReady = true;
-            updateStatus("JScanify loaded ✅");
-            resolve();
-          } else if (attempts >= maxAttempts) {
-            reject(new Error("JScanify failed to load after 5 seconds"));
-          } else {
-            setTimeout(checkJScanify, 100);
-          }
-        };
-        
-        checkJScanify();
-      });
-    }
-
-    async function initLibraries() {
-      try {
-        updateStatus("Loading OpenCV...");
-        await waitForOpenCV();
-        
-        updateStatus("Loading JScanify...");
-        await waitForJScanify();
-        
-        // Initialize JScanify
-        jscanify = new Jscanify();
-        updateStatus("All libraries ready! 🎉");
-        
-        return true;
-      } catch (err) {
-        updateStatus(`❌ Library loading failed: ${err.message}`);
-        console.error("Library loading error:", err);
-        return false;
-      }
-    }
-
     async function initCamera() {
       try {
-        updateStatus("Requesting camera access...");
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-          video: { facingMode: "environment" } 
-        });
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
         video.srcObject = stream;
-        
         video.onloadedmetadata = async () => {
-          updateStatus("Camera ready! Loading libraries...");
-          const librariesReady = await initLibraries();
-          
-          if (librariesReady) {
-            captureBtn.disabled = false;
-            updateStatus("Ready to scan documents! 📸");
-          } else {
-            updateStatus("❌ Failed to initialize. Please refresh the page.");
-          }
+          await waitForOpenCV();
+          jscanify = new Jscanify();
+          console.log("✅ Camera ready & JScanify initialized");
         };
       } catch (err) {
         console.error("Camera error:", err);
-        updateStatus("❌ Camera access failed. Please allow camera permissions.");
+        alert("Camera access failed.");
       }
     }
 
     captureBtn.onclick = () => {
-      if (!jscanify) {
-        updateStatus("❌ JScanify not ready yet. Please wait.");
-        return;
-      }
-
-      updateStatus("Capturing and analyzing...");
-      
       const ctx = canvas.getContext("2d");
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       ctx.drawImage(video, 0, 0);
 
-      // Preview raw capture
+      // preview raw capture
       const dataURL = canvas.toDataURL("image/jpeg", 0.9);
       preview.src = dataURL;
 
@@ -177,9 +107,8 @@
         const quad = jscanify.findDocument(canvas);
         if (quad) {
           console.log("✅ Document detected:", quad);
-          updateStatus("✅ Document detected! Processing...");
 
-          // Draw detected quad outline on preview
+          // draw detected quad outline on preview
           const debugCanvas = document.createElement("canvas");
           debugCanvas.width = canvas.width;
           debugCanvas.height = canvas.height;
@@ -196,24 +125,22 @@
           dctx.stroke();
           preview.src = debugCanvas.toDataURL("image/jpeg", 0.9);
 
-          // Extract and show scanned version
+          // extract and show scanned version
           const scanned = jscanify.extract(canvas, quad);
           scannedImg.src = scanned.toDataURL("image/jpeg", 0.9);
           scannedImg.style.display = "block";
-          
-          updateStatus("✅ Document scanned successfully!");
         } else {
           console.warn("⚠️ No document detected");
-          updateStatus("⚠️ No document detected. Try better lighting or clearer edges.");
+          alert("No document detected. Try better lighting or contrast.");
         }
       } catch (err) {
         console.error("❌ Detection error:", err);
-        updateStatus(`❌ Detection failed: ${err.message}`);
+        alert("Document detection failed. See console.");
       }
     };
 
-    // Start initialization when page loads
     window.onload = initCamera;
   </script>
 </body>
+
 </html>
