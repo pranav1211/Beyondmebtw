@@ -74,151 +74,146 @@
 
   <script>
     const video = document.getElementById("video");
-    const canvas = document.getElementById("canvas");
-    const preview = document.getElementById("preview");
-    const highlighted = document.getElementById("highlighted");
-    const extracted = document.getElementById("extracted");
-    const enhanced = document.getElementById("enhanced");
-    const captureBtn = document.getElementById("captureBtn");
-    const flashBtn = document.getElementById("flashBtn");
-    const resultBox = document.getElementById("resultBox");
+const canvas = document.getElementById("canvas");
+const preview = document.getElementById("preview");
+const highlighted = document.getElementById("highlighted");
+const extracted = document.getElementById("extracted");
+const enhanced = document.getElementById("enhanced");
+const captureBtn = document.getElementById("captureBtn");
+const flashBtn = document.getElementById("flashBtn");
+const resultBox = document.getElementById("resultBox");
 
-    let scanner, track;
+let scanner, track;
 
-    function waitForOpenCV() {
-      return new Promise((resolve) => {
-        if (typeof cv !== 'undefined' && cv.Mat) {
-          resolve();
-        } else {
-          cv.onRuntimeInitialized = resolve;
-        }
-      });
+function waitForOpenCV() {
+  return new Promise((resolve) => {
+    if (typeof cv !== 'undefined' && cv.Mat) {
+      resolve();
+    } else {
+      cv.onRuntimeInitialized = resolve;
     }
+  });
+}
 
-    async function init() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-          video: { facingMode: "environment" } 
-        });
-        video.srcObject = stream;
-        track = stream.getVideoTracks()[0];
+async function init() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ 
+      video: { facingMode: "environment" } 
+    });
+    video.srcObject = stream;
+    track = stream.getVideoTracks()[0];
 
-        await waitForOpenCV();
-        if (typeof jscanify === "undefined") {
-          alert("❌ JScanify did not load.");
-          return;
-        }
-        scanner = new jscanify();
-        alert("✅ Camera ready & JScanify initialized.");
-      } catch (err) {
-        alert("❌ Camera error: " + err.message);
-      }
+    await waitForOpenCV();
+    if (typeof jscanify === "undefined") {
+      alert("❌ JScanify did not load.");
+      return;
     }
+    scanner = new jscanify();
+    alert("✅ Camera ready & JScanify initialized.");
+  } catch (err) {
+    alert("❌ Camera error: " + err.message);
+  }
+}
 
-    captureBtn.onclick = () => {
-      if (!scanner) {
-        alert("❌ Scanner not initialized.");
-        return;
-      }
+captureBtn.onclick = () => {
+  if (!scanner) {
+    alert("❌ Scanner not initialized.");
+    return;
+  }
 
-      const ctx = canvas.getContext("2d");
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  const ctx = canvas.getContext("2d");
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      const dataURL = canvas.toDataURL("image/jpeg", 0.9);
-      preview.src = dataURL;
+  const dataURL = canvas.toDataURL("image/jpeg", 0.9);
+  preview.src = dataURL;
 
-      try {
-        // Highlight paper
-        const highlightedCanvas = scanner.highlightPaper(canvas);
-        highlighted.width = highlightedCanvas.width;
-        highlighted.height = highlightedCanvas.height;
-        highlighted.getContext("2d").drawImage(highlightedCanvas, 0, 0);
-        highlighted.style.display = "block";
+  try {
+    // Highlight paper
+    const highlightedCanvas = scanner.highlightPaper(canvas);
+    highlighted.width = highlightedCanvas.width;
+    highlighted.height = highlightedCanvas.height;
+    highlighted.getContext("2d").drawImage(highlightedCanvas, 0, 0);
+    highlighted.style.display = "block";
 
-        // Extract paper
-        const extractedCanvas = scanner.extractPaper(canvas, 1200, 1600);
-        extracted.width = extractedCanvas.width;
-        extracted.height = extractedCanvas.height;
-        extracted.getContext("2d").drawImage(extractedCanvas, 0, 0);
-        extracted.style.display = "block";
+    // Extract paper
+    const extractedCanvas = scanner.extractPaper(canvas, 1200, 1600);
+    extracted.width = extractedCanvas.width;
+    extracted.height = extractedCanvas.height;
+    extracted.getContext("2d").drawImage(extractedCanvas, 0, 0);
+    extracted.style.display = "block";
 
-        // Enhance with OpenCV
-        enhanceWithOpenCV(extractedCanvas);
+    // Minimal enhancement
+    enhanceMinimal(extractedCanvas);
 
-      } catch (err) {
-        alert("❌ Detection error: " + err.message);
-      }
-    };
+  } catch (err) {
+    alert("❌ Detection error: " + err.message);
+  }
+};
 
-    function enhanceWithOpenCV(sourceCanvas) {
-      try {
-        const src = cv.imread(sourceCanvas);
-        let gray = new cv.Mat();
-        let blurred = new cv.Mat();
-        let thresh = new cv.Mat();
+function enhanceMinimal(sourceCanvas) {
+  try {
+    const src = cv.imread(sourceCanvas);
+    let gray = new cv.Mat();
+    let blurred = new cv.Mat();
 
-        // Grayscale
-        cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
+    // Just grayscale + light blur to remove noise
+    cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
+    cv.GaussianBlur(gray, blurred, new cv.Size(3, 3), 0);
 
-        // Reduce noise
-        cv.GaussianBlur(gray, blurred, new cv.Size(3, 3), 0);
+    cv.imshow(enhanced, blurred);
+    enhanced.style.display = "block";
 
-        // Otsu's Threshold for crisp B/W
-        cv.threshold(blurred, thresh, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU);
+    runOCR(enhanced);
 
-        cv.imshow(enhanced, thresh);
-        enhanced.style.display = "block";
+    src.delete(); gray.delete(); blurred.delete();
+  } catch (err) {
+    alert("❌ Minimal enhancement failed: " + err.message);
+  }
+}
 
-        runOCR(enhanced);
+async function runOCR(canvasElement) {
+  try {
+    resultBox.style.display = "block";
+    resultBox.textContent = "🔍 Running OCR, please wait...";
 
-        src.delete(); gray.delete(); blurred.delete(); thresh.delete();
-      } catch (err) {
-        alert("❌ Enhancement failed: " + err.message);
-      }
-    }
+    const worker = await Tesseract.createWorker("eng", 1, {
+      logger: m => console.log(m),
+    });
 
-    async function runOCR(canvasElement) {
-      try {
-        resultBox.style.display = "block";
-        resultBox.textContent = "🔍 Running OCR, please wait...";
+    const { data: { text } } = await worker.recognize(canvasElement);
+    await worker.terminate();
 
-        const worker = await Tesseract.createWorker("eng", 1, {
-          logger: m => console.log(m),
-        });
+    resultBox.textContent = text.trim() || "No text detected.";
+    resultBox.scrollIntoView({ behavior: "smooth" });
 
-        const { data: { text } } = await worker.recognize(canvasElement);
-        await worker.terminate();
+  } catch (err) {
+    resultBox.textContent = "❌ OCR failed: " + err.message;
+  }
+}
 
-        resultBox.textContent = text.trim() || "No text detected.";
-        resultBox.scrollIntoView({ behavior: "smooth" });
+flashBtn.onclick = async () => {
+  if (!track) {
+    alert("No camera track available.");
+    return;
+  }
+  const capabilities = track.getCapabilities();
+  if (!capabilities.torch) {
+    alert("Flash not supported on this device.");
+    return;
+  }
+  const current = track.getSettings().torch || false;
+  try {
+    await track.applyConstraints({ advanced: [{ torch: !current }] });
+    flashBtn.textContent = !current ? "🔦 Flash On" : "💡 Flash";
+  } catch (e) {
+    alert("Flash toggle failed.");
+  }
+};
 
-      } catch (err) {
-        resultBox.textContent = "❌ OCR failed: " + err.message;
-      }
-    }
+window.onload = init;
 
-    flashBtn.onclick = async () => {
-      if (!track) {
-        alert("No camera track available.");
-        return;
-      }
-      const capabilities = track.getCapabilities();
-      if (!capabilities.torch) {
-        alert("Flash not supported on this device.");
-        return;
-      }
-      const current = track.getSettings().torch || false;
-      try {
-        await track.applyConstraints({ advanced: [{ torch: !current }] });
-        flashBtn.textContent = !current ? "🔦 Flash On" : "💡 Flash";
-      } catch (e) {
-        alert("Flash toggle failed.");
-      }
-    };
-
-    window.onload = init;
   </script>
 </body>
 </html>
