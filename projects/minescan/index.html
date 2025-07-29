@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>JScanify Capture Test</title>
+  <title>JScanify Debug Test</title>
   <script src="https://docs.opencv.org/4.7.0/opencv.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/ColonelParrot/jscanify@master/src/jscanify.min.js"></script>
   <style>
@@ -17,24 +17,14 @@
       align-items: center;
       padding: 20px;
     }
-    #video {
-      width: 95vw;
-      max-width: 600px;
+    video, #preview, #scanned {
+      width: 90vw;
+      max-width: 500px;
+      margin-top: 20px;
       border-radius: 12px;
-      margin-top: 20px;
+      border: 2px solid #4facfe;
     }
-    #preview {
-      margin-top: 20px;
-      max-width: 95vw;
-      border-radius: 10px;
-      display: none;
-    }
-    #scanned {
-      margin-top: 20px;
-      max-width: 95vw;
-      border-radius: 10px;
-      display: none;
-    }
+    #scanned { display: none; }
     button {
       margin-top: 15px;
       padding: 12px 18px;
@@ -48,12 +38,12 @@
   </style>
 </head>
 <body>
-  <h2>📄 JScanify Static Capture Test</h2>
+  <h2>📄 JScanify Square Doc Test</h2>
   <video id="video" autoplay playsinline muted></video>
   <button id="captureBtn">📸 Capture & Detect</button>
-  <img id="preview" alt="Captured Image"/>
-  <img id="scanned" alt="Scanned Document"/>
   <canvas id="canvas" style="display:none;"></canvas>
+  <img id="preview" alt="Captured Frame"/>
+  <img id="scanned" alt="Scanned Result"/>
 
   <script>
     const video = document.getElementById("video");
@@ -79,12 +69,18 @@
     }
 
     async function initCamera() {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-      video.srcObject = stream;
-      video.onloadedmetadata = async () => {
-        await waitForOpenCV();
-        jscanify = new Jscanify();
-      };
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        video.srcObject = stream;
+        video.onloadedmetadata = async () => {
+          await waitForOpenCV();
+          jscanify = new Jscanify();
+          console.log("✅ Camera ready & JScanify initialized");
+        };
+      } catch (err) {
+        console.error("Camera error:", err);
+        alert("Camera access failed.");
+      }
     }
 
     captureBtn.onclick = () => {
@@ -93,46 +89,45 @@
       canvas.height = video.videoHeight;
       ctx.drawImage(video, 0, 0);
 
-      const baseImage = new Image();
-      baseImage.src = canvas.toDataURL("image/jpeg", 0.9);
+      // preview raw capture
+      const dataURL = canvas.toDataURL("image/jpeg", 0.9);
+      preview.src = dataURL;
 
-      baseImage.onload = () => {
-        preview.src = baseImage.src;
-        preview.style.display = "block";
+      // Run JScanify
+      try {
+        const quad = jscanify.findDocument(canvas);
+        if (quad) {
+          console.log("✅ Document detected:", quad);
 
-        try {
-          const quad = jscanify.findDocument(baseImage);
-          if (quad) {
-            // draw the box on preview
-            const tempCanvas = document.createElement("canvas");
-            tempCanvas.width = baseImage.width;
-            tempCanvas.height = baseImage.height;
-            const tctx = tempCanvas.getContext("2d");
-            tctx.drawImage(baseImage, 0, 0);
-            tctx.lineWidth = 4;
-            tctx.strokeStyle = "#00ff88";
-            tctx.beginPath();
-            tctx.moveTo(quad.topLeft[0], quad.topLeft[1]);
-            tctx.lineTo(quad.topRight[0], quad.topRight[1]);
-            tctx.lineTo(quad.bottomRight[0], quad.bottomRight[1]);
-            tctx.lineTo(quad.bottomLeft[0], quad.bottomLeft[1]);
-            tctx.closePath();
-            tctx.stroke();
+          // draw detected quad outline on preview
+          const debugCanvas = document.createElement("canvas");
+          debugCanvas.width = canvas.width;
+          debugCanvas.height = canvas.height;
+          const dctx = debugCanvas.getContext("2d");
+          dctx.drawImage(canvas, 0, 0);
+          dctx.lineWidth = 4;
+          dctx.strokeStyle = "#00ff88";
+          dctx.beginPath();
+          dctx.moveTo(quad.topLeft[0], quad.topLeft[1]);
+          dctx.lineTo(quad.topRight[0], quad.topRight[1]);
+          dctx.lineTo(quad.bottomRight[0], quad.bottomRight[1]);
+          dctx.lineTo(quad.bottomLeft[0], quad.bottomLeft[1]);
+          dctx.closePath();
+          dctx.stroke();
+          preview.src = debugCanvas.toDataURL("image/jpeg", 0.9);
 
-            preview.src = tempCanvas.toDataURL("image/jpeg", 0.9);
-
-            // extract and show enhanced doc
-            const scanned = jscanify.extract(baseImage, quad);
-            scannedImg.src = scanned.toDataURL("image/jpeg", 0.9);
-            scannedImg.style.display = "block";
-          } else {
-            alert("No document detected.");
-          }
-        } catch (err) {
-          console.error("Detection error:", err);
-          alert("Document detection failed.");
+          // extract and show scanned version
+          const scanned = jscanify.extract(canvas, quad);
+          scannedImg.src = scanned.toDataURL("image/jpeg", 0.9);
+          scannedImg.style.display = "block";
+        } else {
+          console.warn("⚠️ No document detected");
+          alert("No document detected. Try better lighting or contrast.");
         }
-      };
+      } catch (err) {
+        console.error("❌ Detection error:", err);
+        alert("Document detection failed. See console.");
+      }
     };
 
     window.onload = initCamera;
