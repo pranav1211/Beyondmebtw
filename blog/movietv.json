@@ -506,7 +506,9 @@
       "excerpt": "Review 55 — Drive to Survive Season 7",
       "thumbnail": "https://bmb-content-server.vercel.app/movietv/tv/tv7.webp",
       "link": "https://medium.com/@beyondmebtw/Drive-To-Survive-Season-7---It-s-Alright-54ce3fa55cfa",
-      "subcategory": "TV Shows"
+      "subcategory": "TV Shows",
+      "secondaryCategory": "f1",
+      "secondarySubcategory": "General"
     },
     {
       "uid": "movies_42",
@@ -533,7 +535,9 @@
       "excerpt": "This movie is a love letter, to motorsport, to Formula 1, to the machines that defy limits. A seamless blend of drama and racing…",
       "thumbnail": "https://bmb-content-server.vercel.app/movietv/movie/mov44.webp",
       "link": "https://medium.com/@beyondmebtw/F1---The-Movie-Review--Fast--Fun-and-Entertaining-68be7e150f6d",
-      "subcategory": "Movies"
+      "subcategory": "Movies",
+      "secondaryCategory": "f1",
+      "secondarySubcategory": "General"
     },
     {
       "uid": "movies_45",
@@ -544,7 +548,7 @@
       "link": "https://medium.com/@beyondmebtw/Jurassic-World-Rebirth-Review-34f39014d865",
       "subcategory": "Movies"
     },
-        {
+    {
       "uid": "movies_46",
       "title": "Superman (2025) Review",
       "date": "Jul 28, 2025",
