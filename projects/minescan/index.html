@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>JScanify Upload Test</title>
   <script src="https://docs.opencv.org/4.7.0/opencv.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/puffinsoft/jscanify/dist/jscanify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/puffinsoft/jscanify/dist/jscanify.min.js"></script>
   <style>
     body {
       margin: 0;
@@ -17,24 +18,31 @@
       align-items: center;
       padding: 20px;
     }
-    #preview, #scanned {
+
+    #preview,
+    #scanned {
       margin-top: 20px;
       max-width: 90vw;
       border-radius: 12px;
       border: 2px solid #4facfe;
     }
-    #scanned { display: none; }
+
+    #scanned {
+      display: none;
+    }
+
     input {
       margin-top: 20px;
     }
   </style>
 </head>
+
 <body>
   <h2>📄 JScanify File Upload Test</h2>
   <input type="file" id="fileInput" accept="image/*">
   <canvas id="canvas" style="display:none;"></canvas>
-  <img id="preview" alt="Uploaded Image"/>
-  <img id="scanned" alt="Scanned Document"/>
+  <img id="preview" alt="Uploaded Image" />
+  <img id="scanned" alt="Scanned Document" />
 
   <script>
     const fileInput = document.getElementById("fileInput");
@@ -121,4 +129,5 @@
     window.onload = init;
   </script>
 </body>
+
 </html>
