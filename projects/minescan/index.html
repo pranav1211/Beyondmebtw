@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>OCR Scanner with JScanify + Tesseract</title>
+  <title>Enhanced OCR Scanner</title>
 
   <!-- OpenCV -->
   <script src="https://docs.opencv.org/4.7.0/opencv.js" async></script>
@@ -39,6 +39,11 @@
       font-size: 15px;
       cursor: pointer;
     }
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
     #highlighted, #extracted, #enhanced, #resultBox {
       display: none;
     }
@@ -54,9 +59,12 @@
   </style>
 </head>
 <body>
-  <h2>📸 Live OCR Scanner</h2>
+  <h2>📸 Enhanced OCR Scanner</h2>
   <video id="video" autoplay playsinline muted></video>
-  <button id="captureBtn">📸 Capture & Scan</button>
+  <div class="controls">
+    <button id="captureBtn">📸 Capture & Scan</button>
+    <button id="flashBtn">💡 Flash</button>
+  </div>
   <canvas id="canvas" style="display:none;"></canvas>
   <img id="preview" alt="Captured Frame"/>
   <canvas id="highlighted"></canvas>
@@ -72,9 +80,10 @@
     const extracted = document.getElementById("extracted");
     const enhanced = document.getElementById("enhanced");
     const captureBtn = document.getElementById("captureBtn");
+    const flashBtn = document.getElementById("flashBtn");
     const resultBox = document.getElementById("resultBox");
 
-    let scanner;
+    let scanner, track;
 
     function waitForOpenCV() {
       return new Promise((resolve) => {
@@ -88,8 +97,11 @@
 
     async function init() {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { facingMode: "environment" } 
+        });
         video.srcObject = stream;
+        track = stream.getVideoTracks()[0];
 
         await waitForOpenCV();
         if (typeof jscanify === "undefined") {
@@ -126,7 +138,7 @@
         highlighted.style.display = "block";
 
         // Extract paper
-        const extractedCanvas = scanner.extractPaper(canvas, 600, 800);
+        const extractedCanvas = scanner.extractPaper(canvas, 1000, 1400);
         extracted.width = extractedCanvas.width;
         extracted.height = extractedCanvas.height;
         extracted.getContext("2d").drawImage(extractedCanvas, 0, 0);
@@ -144,23 +156,24 @@
       try {
         const src = cv.imread(sourceCanvas);
         let gray = new cv.Mat();
-        let enhancedMat = new cv.Mat();
+        let thresh = new cv.Mat();
+        let blended = new cv.Mat();
 
         // Convert to grayscale
         cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
 
-        // Adaptive threshold for crisp black/white
-        cv.adaptiveThreshold(gray, enhancedMat, 255,
-          cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, 21, 10);
+        // Otsu's threshold for cleaner docs
+        cv.threshold(gray, thresh, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU);
 
-        // Write to canvas
-        cv.imshow(enhanced, enhancedMat);
+        // Blend threshold (75%) with grayscale (25%) to reduce harshness
+        cv.addWeighted(thresh, 0.75, gray, 0.25, 0, blended);
+
+        cv.imshow(enhanced, blended);
         enhanced.style.display = "block";
 
-        // OCR the enhanced result
         runOCR(enhanced);
 
-        src.delete(); gray.delete(); enhancedMat.delete();
+        src.delete(); gray.delete(); thresh.delete(); blended.delete();
       } catch (err) {
         alert("❌ Enhancement failed: " + err.message);
       }
@@ -185,6 +198,25 @@
         resultBox.textContent = "❌ OCR failed: " + err.message;
       }
     }
+
+    flashBtn.onclick = async () => {
+      if (!track) {
+        alert("No camera track available.");
+        return;
+      }
+      const capabilities = track.getCapabilities();
+      if (!capabilities.torch) {
+        alert("Flash not supported on this device.");
+        return;
+      }
+      const current = track.getSettings().torch || false;
+      try {
+        await track.applyConstraints({ advanced: [{ torch: !current }] });
+        flashBtn.textContent = !current ? "🔦 Flash On" : "💡 Flash";
+      } catch (e) {
+        alert("Flash toggle failed.");
+      }
+    };
 
     window.onload = init;
   </script>
