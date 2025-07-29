@@ -7,6 +7,19 @@ Check out the site : www.Beyondmebtw.com
 
 ## Changelog:
 
+### 2.6 (29/07/25)
+- Revamped the blog page, now shows all posts
+- removed latest posts grid
+- added an intro section to the blog page
+- added a category selector at the start, this has subcategories as well
+- changed json formatting to accomadate duplicate posts by adding secondaryCategory and secondarySubCategory values
+- search bar is still there
+- added a scroll to top button at the bottom right for accessibility
+- fixed responsiveness on mobile devices
+
+Working on a mini's section(name not finalized). This will be more like a feed where i can update or talk about stuff daily without having to create mt full production article. \
+Goal is to be more online and allow for quicker creative output.
+
 ### 2.5 (18/7/25)
 - Built the blog page
 - added the posts along with information and categoreis and sub categories
