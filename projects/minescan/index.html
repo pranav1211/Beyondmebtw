@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>JScanify Debug Test</title>
   <script src="https://docs.opencv.org/4.7.0/opencv.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/ColonelParrot/jscanify/dist/jscanify.min.js"></script>
@@ -18,21 +17,14 @@
       align-items: center;
       padding: 20px;
     }
-
-    video,
-    #preview,
-    #scanned {
+    video, #preview, #scanned {
       width: 90vw;
       max-width: 500px;
       margin-top: 20px;
       border-radius: 12px;
       border: 2px solid #4facfe;
     }
-
-    #scanned {
-      display: none;
-    }
-
+    #scanned { display: none; }
     button {
       margin-top: 15px;
       padding: 12px 18px;
@@ -45,14 +37,13 @@
     }
   </style>
 </head>
-
 <body>
   <h2>📄 JScanify Square Doc Test</h2>
   <video id="video" autoplay playsinline muted></video>
   <button id="captureBtn">📸 Capture & Detect</button>
   <canvas id="canvas" style="display:none;"></canvas>
-  <img id="preview" alt="Captured Frame" />
-  <img id="scanned" alt="Scanned Result" />
+  <img id="preview" alt="Captured Frame"/>
+  <img id="scanned" alt="Scanned Result"/>
 
   <script>
     const video = document.getElementById("video");
@@ -82,33 +73,43 @@
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
         video.srcObject = stream;
         video.onloadedmetadata = async () => {
-          await waitForOpenCV();
-          jscanify = new Jscanify();
-          console.log("✅ Camera ready & JScanify initialized");
+          try {
+            await waitForOpenCV();
+            if (typeof Jscanify === "undefined") {
+              alert("❌ JScanify library did not load.");
+              return;
+            }
+            jscanify = new Jscanify();
+            alert("✅ Camera ready & JScanify initialized");
+          } catch (err) {
+            alert("❌ OpenCV init failed: " + err.message);
+          }
         };
       } catch (err) {
-        console.error("Camera error:", err);
-        alert("Camera access failed.");
+        alert("❌ Camera access failed: " + err.message);
       }
     }
 
     captureBtn.onclick = () => {
-      const ctx = canvas.getContext("2d");
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      ctx.drawImage(video, 0, 0);
-
-      // preview raw capture
-      const dataURL = canvas.toDataURL("image/jpeg", 0.9);
-      preview.src = dataURL;
-
-      // Run JScanify
       try {
+        if (!jscanify) {
+          alert("❌ JScanify not available. Cannot detect document.");
+          return;
+        }
+
+        const ctx = canvas.getContext("2d");
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0);
+
+        const dataURL = canvas.toDataURL("image/jpeg", 0.9);
+        preview.src = dataURL;
+
         const quad = jscanify.findDocument(canvas);
         if (quad) {
-          console.log("✅ Document detected:", quad);
+          alert("✅ Document detected!");
 
-          // draw detected quad outline on preview
+          // Draw the quad outline
           const debugCanvas = document.createElement("canvas");
           debugCanvas.width = canvas.width;
           debugCanvas.height = canvas.height;
@@ -125,22 +126,18 @@
           dctx.stroke();
           preview.src = debugCanvas.toDataURL("image/jpeg", 0.9);
 
-          // extract and show scanned version
           const scanned = jscanify.extract(canvas, quad);
           scannedImg.src = scanned.toDataURL("image/jpeg", 0.9);
           scannedImg.style.display = "block";
         } else {
-          console.warn("⚠️ No document detected");
-          alert("No document detected. Try better lighting or contrast.");
+          alert("⚠️ No document detected. Try adjusting lighting or background contrast.");
         }
       } catch (err) {
-        console.error("❌ Detection error:", err);
-        alert("Document detection failed. See console.");
+        alert("❌ Detection error: " + err.message);
       }
     };
 
     window.onload = initCamera;
   </script>
 </body>
-
 </html>
