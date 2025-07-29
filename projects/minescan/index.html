@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OCR Scanner with Modes</title>
 
   <!-- OpenCV -->
@@ -23,6 +24,7 @@
       align-items: center;
       padding: 20px;
     }
+
     #videoWrapper {
       position: relative;
       max-width: 90vw;
@@ -31,17 +33,20 @@
       overflow: hidden;
       margin-top: 20px;
     }
+
     #video {
       width: 100%;
       height: auto;
       display: block;
     }
+
     #overlayCanvas {
       position: absolute;
       top: 0;
       left: 0;
       pointer-events: none;
     }
+
     .controls {
       margin-top: 15px;
       display: flex;
@@ -49,6 +54,7 @@
       flex-wrap: wrap;
       justify-content: center;
     }
+
     button {
       padding: 10px 15px;
       border: none;
@@ -58,12 +64,15 @@
       font-size: 14px;
       cursor: pointer;
     }
-    #preview, canvas {
+
+    #preview,
+    canvas {
       margin-top: 20px;
       max-width: 90vw;
       border-radius: 12px;
       border: 2px solid #4facfe;
     }
+
     #resultBox {
       background: #fff;
       color: #000;
@@ -76,6 +85,7 @@
     }
   </style>
 </head>
+
 <body>
   <h2>📸 OCR Scanner</h2>
   <div id="videoWrapper">
@@ -90,7 +100,7 @@
   </div>
 
   <canvas id="canvas" style="display:none;"></canvas>
-  <img id="preview" alt="Captured Frame"/>
+  <img id="preview" alt="Captured Frame" />
   <canvas id="extracted"></canvas>
   <canvas id="enhanced"></canvas>
   <div id="resultBox"></div>
@@ -108,11 +118,15 @@
     const resultBox = document.getElementById("resultBox");
 
     let scanner, track;
-    let enhancementMode = "minimal"; // default mode
+    let enhancementMode = "minimal";
+
+    // hidden frame canvas
+    const frameCanvas = document.createElement("canvas");
+    const frameCtx = frameCanvas.getContext("2d");
 
     function waitForOpenCV() {
       return new Promise((resolve) => {
-        if (typeof cv !== 'undefined' && cv.Mat) {
+        if (typeof cv !== "undefined" && cv.Mat) {
           resolve();
         } else {
           cv.onRuntimeInitialized = resolve;
@@ -122,8 +136,8 @@
 
     async function init() {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-          video: { facingMode: "environment" } 
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "environment" }
         });
         video.srcObject = stream;
         track = stream.getVideoTracks()[0];
@@ -138,6 +152,10 @@
         video.onloadedmetadata = () => {
           overlayCanvas.width = video.videoWidth;
           overlayCanvas.height = video.videoHeight;
+
+          frameCanvas.width = video.videoWidth;
+          frameCanvas.height = video.videoHeight;
+
           drawOverlayLoop();
         };
 
@@ -148,42 +166,38 @@
     }
 
     function drawOverlayLoop() {
-      const ctx = overlayCanvas.getContext("2d");
-      ctx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+      const overlayCtx = overlayCanvas.getContext("2d");
+      overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+
+      frameCtx.drawImage(video, 0, 0, frameCanvas.width, frameCanvas.height);
 
       try {
-        const quad = scanner.findDocument(video);
+        const quad = scanner.findDocument(frameCanvas);
         if (quad) {
-          ctx.lineWidth = 4;
-          ctx.strokeStyle = "#00ff88";
-          ctx.beginPath();
-          ctx.moveTo(quad.topLeft[0], quad.topLeft[1]);
-          ctx.lineTo(quad.topRight[0], quad.topRight[1]);
-          ctx.lineTo(quad.bottomRight[0], quad.bottomRight[1]);
-          ctx.lineTo(quad.bottomLeft[0], quad.bottomLeft[1]);
-          ctx.closePath();
-          ctx.stroke();
+          overlayCtx.lineWidth = 4;
+          overlayCtx.strokeStyle = "#00ff88";
+          overlayCtx.beginPath();
+          overlayCtx.moveTo(quad.topLeft[0], quad.topLeft[1]);
+          overlayCtx.lineTo(quad.topRight[0], quad.topRight[1]);
+          overlayCtx.lineTo(quad.bottomRight[0], quad.bottomRight[1]);
+          overlayCtx.lineTo(quad.bottomLeft[0], quad.bottomLeft[1]);
+          overlayCtx.closePath();
+          overlayCtx.stroke();
         }
       } catch (err) {
-        // no doc found
+        // No document detected, do nothing
       }
 
       requestAnimationFrame(drawOverlayLoop);
     }
 
     captureBtn.onclick = () => {
-      if (!scanner) {
-        alert("❌ Scanner not initialized.");
-        return;
-      }
-
       const ctx = canvas.getContext("2d");
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      const dataURL = canvas.toDataURL("image/jpeg", 0.9);
-      preview.src = dataURL;
+      preview.src = canvas.toDataURL("image/jpeg", 0.9);
 
       try {
         const extractedCanvas = scanner.extractPaper(canvas, 1200, 1600);
@@ -193,7 +207,6 @@
         extracted.style.display = "block";
 
         enhanceWithMode(extractedCanvas);
-
       } catch (err) {
         alert("❌ Detection error: " + err.message);
       }
@@ -210,7 +223,13 @@
         cv.GaussianBlur(gray, blurred, new cv.Size(3, 3), 0);
 
         if (enhancementMode === "crisp") {
-          cv.threshold(blurred, finalMat, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU);
+          cv.threshold(
+            blurred,
+            finalMat,
+            0,
+            255,
+            cv.THRESH_BINARY + cv.THRESH_OTSU
+          );
         } else {
           finalMat = blurred.clone();
         }
@@ -219,7 +238,10 @@
         enhanced.style.display = "block";
         runOCR(enhanced);
 
-        src.delete(); gray.delete(); blurred.delete(); finalMat.delete();
+        src.delete();
+        gray.delete();
+        blurred.delete();
+        finalMat.delete();
       } catch (err) {
         alert("❌ Enhancement failed: " + err.message);
       }
@@ -231,15 +253,16 @@
         resultBox.textContent = "🔍 Running OCR, please wait...";
 
         const worker = await Tesseract.createWorker("eng", 1, {
-          logger: m => console.log(m),
+          logger: (m) => console.log(m)
         });
 
-        const { data: { text } } = await worker.recognize(canvasElement);
+        const {
+          data: { text }
+        } = await worker.recognize(canvasElement);
         await worker.terminate();
 
         resultBox.textContent = text.trim() || "No text detected.";
         resultBox.scrollIntoView({ behavior: "smooth" });
-
       } catch (err) {
         resultBox.textContent = "❌ OCR failed: " + err.message;
       }
@@ -247,9 +270,8 @@
 
     toggleModeBtn.onclick = () => {
       enhancementMode = enhancementMode === "minimal" ? "crisp" : "minimal";
-      toggleModeBtn.textContent = enhancementMode === "minimal"
-        ? "🔄 Mode: Minimal"
-        : "🔄 Mode: Crisp";
+      toggleModeBtn.textContent =
+        enhancementMode === "minimal" ? "🔄 Mode: Minimal" : "🔄 Mode: Crisp";
     };
 
     flashBtn.onclick = async () => {
@@ -274,4 +296,5 @@
     window.onload = init;
   </script>
 </body>
+
 </html>
