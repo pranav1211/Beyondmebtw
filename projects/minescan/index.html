@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>JScanify Debug Test</title>
+  <title>JScanify Upload Test</title>
   <script src="https://docs.opencv.org/4.7.0/opencv.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/ColonelParrot/jscanify/dist/jscanify.min.js"></script>
   <style>
@@ -17,40 +17,30 @@
       align-items: center;
       padding: 20px;
     }
-    video, #preview, #scanned {
-      width: 90vw;
-      max-width: 500px;
+    #preview, #scanned {
       margin-top: 20px;
+      max-width: 90vw;
       border-radius: 12px;
       border: 2px solid #4facfe;
     }
     #scanned { display: none; }
-    button {
-      margin-top: 15px;
-      padding: 12px 18px;
-      background: #4facfe;
-      border: none;
-      border-radius: 8px;
-      color: #fff;
-      font-size: 15px;
-      cursor: pointer;
+    input {
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <h2>📄 JScanify Square Doc Test</h2>
-  <video id="video" autoplay playsinline muted></video>
-  <button id="captureBtn">📸 Capture & Detect</button>
+  <h2>📄 JScanify File Upload Test</h2>
+  <input type="file" id="fileInput" accept="image/*">
   <canvas id="canvas" style="display:none;"></canvas>
-  <img id="preview" alt="Captured Frame"/>
-  <img id="scanned" alt="Scanned Result"/>
+  <img id="preview" alt="Uploaded Image"/>
+  <img id="scanned" alt="Scanned Document"/>
 
   <script>
-    const video = document.getElementById("video");
+    const fileInput = document.getElementById("fileInput");
     const canvas = document.getElementById("canvas");
     const preview = document.getElementById("preview");
     const scannedImg = document.getElementById("scanned");
-    const captureBtn = document.getElementById("captureBtn");
 
     let jscanify, opencvReady = false;
 
@@ -68,76 +58,67 @@
       });
     }
 
-    async function initCamera() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-        video.srcObject = stream;
-        video.onloadedmetadata = async () => {
-          try {
-            await waitForOpenCV();
-            if (typeof Jscanify === "undefined") {
-              alert("❌ JScanify library did not load.");
-              return;
-            }
-            jscanify = new Jscanify();
-            alert("✅ Camera ready & JScanify initialized");
-          } catch (err) {
-            alert("❌ OpenCV init failed: " + err.message);
-          }
-        };
-      } catch (err) {
-        alert("❌ Camera access failed: " + err.message);
+    async function init() {
+      await waitForOpenCV();
+      if (typeof Jscanify === "undefined") {
+        alert("❌ JScanify failed to load.");
+        return;
       }
+      jscanify = new Jscanify();
+      alert("✅ JScanify ready for file upload test");
     }
 
-    captureBtn.onclick = () => {
-      try {
-        if (!jscanify) {
-          alert("❌ JScanify not available. Cannot detect document.");
-          return;
-        }
+    fileInput.onchange = () => {
+      const file = fileInput.files[0];
+      if (!file) return;
 
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
         const ctx = canvas.getContext("2d");
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        ctx.drawImage(video, 0, 0);
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
 
-        const dataURL = canvas.toDataURL("image/jpeg", 0.9);
-        preview.src = dataURL;
+        preview.src = canvas.toDataURL("image/jpeg", 0.9);
 
-        const quad = jscanify.findDocument(canvas);
-        if (quad) {
-          alert("✅ Document detected!");
+        try {
+          const quad = jscanify.findDocument(canvas);
+          if (quad) {
+            alert("✅ Document detected!");
 
-          // Draw the quad outline
-          const debugCanvas = document.createElement("canvas");
-          debugCanvas.width = canvas.width;
-          debugCanvas.height = canvas.height;
-          const dctx = debugCanvas.getContext("2d");
-          dctx.drawImage(canvas, 0, 0);
-          dctx.lineWidth = 4;
-          dctx.strokeStyle = "#00ff88";
-          dctx.beginPath();
-          dctx.moveTo(quad.topLeft[0], quad.topLeft[1]);
-          dctx.lineTo(quad.topRight[0], quad.topRight[1]);
-          dctx.lineTo(quad.bottomRight[0], quad.bottomRight[1]);
-          dctx.lineTo(quad.bottomLeft[0], quad.bottomLeft[1]);
-          dctx.closePath();
-          dctx.stroke();
-          preview.src = debugCanvas.toDataURL("image/jpeg", 0.9);
+            // draw the outline
+            const debugCanvas = document.createElement("canvas");
+            debugCanvas.width = canvas.width;
+            debugCanvas.height = canvas.height;
+            const dctx = debugCanvas.getContext("2d");
+            dctx.drawImage(canvas, 0, 0);
+            dctx.lineWidth = 4;
+            dctx.strokeStyle = "#00ff88";
+            dctx.beginPath();
+            dctx.moveTo(quad.topLeft[0], quad.topLeft[1]);
+            dctx.lineTo(quad.topRight[0], quad.topRight[1]);
+            dctx.lineTo(quad.bottomRight[0], quad.bottomRight[1]);
+            dctx.lineTo(quad.bottomLeft[0], quad.bottomLeft[1]);
+            dctx.closePath();
+            dctx.stroke();
+            preview.src = debugCanvas.toDataURL("image/jpeg", 0.9);
 
-          const scanned = jscanify.extract(canvas, quad);
-          scannedImg.src = scanned.toDataURL("image/jpeg", 0.9);
-          scannedImg.style.display = "block";
-        } else {
-          alert("⚠️ No document detected. Try adjusting lighting or background contrast.");
+            // extract document
+            const scanned = jscanify.extract(canvas, quad);
+            scannedImg.src = scanned.toDataURL("image/jpeg", 0.9);
+            scannedImg.style.display = "block";
+          } else {
+            alert("⚠️ No document detected in uploaded image.");
+          }
+        } catch (err) {
+          alert("❌ Detection error: " + err.message);
         }
-      } catch (err) {
-        alert("❌ Detection error: " + err.message);
-      }
+      };
+      img.src = URL.createObjectURL(file);
     };
 
-    window.onload = initCamera;
+    window.onload = init;
   </script>
 </body>
 </html>
