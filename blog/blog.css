@@ -25,7 +25,6 @@ header {
     font-size: 58px;
     margin-left: 95px;
     margin-top: 15px;
-
     display: block;
     color: #3b342d;
 }
@@ -59,54 +58,82 @@ header {
     border-radius: 60px;
 }
 
-.search-container {
-    max-width: 1800px;
-    margin: 0 auto 30px auto;
-    padding: 0 20px;
-}
-
-.search-box {
-    position: relative;
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-}
-
-.search-input {
-    width: 100%;
-    padding: 15px 20px 15px 50px;
+.load-more-btn {
+    background-color: #3b342d;
+    color: #F4F2EF;
     border: none;
+    padding: 15px 35px;
     border-radius: 30px;
-    background-color: #E8D9CD;
+    cursor: pointer;
     font-family: "Kreon", serif;
-    font-size: 17px;
-    color: #3b342d;
-    outline: none;
-    transition: box-shadow 0.3s;
-    font-weight: bold;
-}
-
-.search-input:focus {
-    box-shadow: 0 0 0 3px rgba(59, 52, 45, 0.1);
-}
-
-.search-input::placeholder {
-    color: #8b7355;
-}
-
-.search-icon {
-    position: absolute;
-    left: 18px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #8b7355;
+    font-weight: 600;
     font-size: 18px;
+    transition: all 0.3s ease;
+    display: block;
+    margin: 0 auto;
 }
 
-.main-container {
-    max-width: 1800px;
-    margin: 0 auto;
-    padding: 0 20px;
+.load-more-btn:hover {
+    background-color: #5a4c3e;
+    transform: translateY(-2px);
+}
+
+.load-more-btn:disabled {
+    background-color: #8b7355;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Scroll to Top Button */
+.scroll-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background-color: #3b342d;
+    color: #F4F2EF;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 24px;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(100px);
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.scroll-to-top.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.scroll-to-top:hover {
+    background-color: #5a4c3e;
+    transform: translateY(-5px);
+}
+
+/* No Results */
+.no-results {
+    text-align: center;
+    padding: 60px 20px;
+    color: #8b7355;
+}
+
+.no-results h3 {
+    color: #3b342d;
+    margin-bottom: 10px;
+    font-size: 24px;
+}
+
+/* Footer */
+#footer {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin-top: 40px;
+    color: #3b342d;
 }
 
 /* Animations */
@@ -122,57 +149,11 @@ header {
     }
 }
 
-/* Footer */
-#footer {
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    margin-top: 40px;
-    color: #3b342d;
+.post-card {
+    animation: fadeIn 0.5s ease-in-out;
 }
 
-.read-more {
-    align-self: flex-end;
-    background-color: #6a5a4a;
-    color: #fff;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 30px;
-    cursor: pointer;
-    font-family: "Kreon", serif;
-    font-weight: 500;
-    font-size: 18px;
-    transition: background-color 0.3s, transform 0.3s;
-    margin-top: auto;
-    text-align: center;
-    user-select: none;
-    pointer-events: none;
-    /* Prevent direct clicking on the button */
-}
-
-.read-more:hover {
-    background-color: #5a4c3e;
-    transform: translateY(-2px);
-}
-
-.explore-button {
-    align-self: flex-end;
-    background-color: #6a5a4a;
-    color: #fff;
-    padding: 12px 24px;
-    border-radius: 30px;
-    cursor: pointer;
-    font-family: "Kreon", serif;
-    font-weight: 500;
-    font-size: 18px;
-    transition: background-color 0.3s, transform 0.3s;
-    margin-top: auto;
-    text-align: center;
-    user-select: none;
-    pointer-events: none;
-}
-
-
+/* Lazy loading */
 .lazy {
     opacity: 0;
     transition: opacity 0.3s;
@@ -180,82 +161,4 @@ header {
 
 .lazy.loaded {
     opacity: 1;
-}
-
-/* Ensure images load properly */
-.post-thumbnail.lazy,
-.latest-post-thumbnail.lazy {
-    background-color: #f0f0f0;
-    min-height: 200px;
-    object-fit: cover;
-}
-
-/* Placeholder for loading images */
-.post-thumbnail.lazy::before,
-.latest-post-thumbnail.lazy::before {
-    content: '';
-    display: block;
-    width: 100%;
-    height: 200px;
-    background-color: #f0f0f0;
-    background-image: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 200% 100%;
-    animation: loading 1.5s infinite;
-}
-
-@keyframes loading {
-    0% {
-        background-position: 200% 0;
-    }
-
-    100% {
-        background-position: -200% 0;
-    }
-}
-
-/* Ensure proper spacing in post cards */
-.post-card .post-title,
-.latest-post-card .latest-post-title {
-    margin-bottom: 8px;
-}
-
-.post-card .post-excerpt,
-.latest-post-card .latest-post-excerpt {
-    margin-bottom: 12px;
-    flex-grow: 1;
-}
-
-.post-card .post-date,
-.latest-post-card .latest-post-date {
-    margin-bottom: 16px;
-}
-
-/* Middle mouse button support - prevent text selection */
-.post-card,
-.latest-post-card {
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-}
-
-/* Ensure proper cursor behavior */
-.post-card *,
-.latest-post-card * {
-    cursor: pointer;
-}
-
-/* Responsive adjustments for read more button */
-@media (max-width: 768px) {
-    .read-more {
-        font-size: 16px;
-        padding: 10px 20px;
-    }
-}
-
-@media (max-width: 480px) {
-    .read-more {
-        font-size: 14px;
-        padding: 8px 16px;
-    }
 }

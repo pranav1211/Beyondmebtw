@@ -30,14 +30,43 @@
     </header>
 
     <div class="main-container">
-        <!-- Latest Posts Section - Now at top -->
-        <div class="latest-posts">
-            <h2>Latest Posts</h2>
-            <div class="latest-posts-grid" id="latestPostsGrid">
-                <!-- Latest posts will be populated by JavaScript -->
+        <!-- Intro Section -->
+        <div class="intro-section">
+            <p>Welcome to my corner of the web — a space where I share my thoughts, reviews, and projects. From films
+                and shows to personal reflections and creative ideas, this is where it all comes together.</p>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <h2>Explore by Category</h2>
+            <div class="category-filters">
+                <button class="category-filter active" data-category="all">
+                    <i class="fas fa-globe"></i>
+                    All Posts
+                </button>
+                <button class="category-filter" data-category="movie-tv">
+                    <i class="fas fa-film"></i>
+                    Movies & TV
+                </button>
+                <button class="category-filter" data-category="f1">
+                    <i class="fas fa-flag-checkered"></i>
+                    Formula 1
+                </button>
+                <button class="category-filter" data-category="experience">
+                    <i class="fas fa-compass"></i>
+                    Personal Experience
+                </button>
+                <button class="category-filter" data-category="tech">
+                    <i class="fas fa-code"></i>
+                    Technology
+                </button>
+            </div>
+            <div class="subcategory-filters" id="subcategoryFilters">
+                <!-- Subcategory filters will be populated by JavaScript -->
             </div>
         </div>
 
+        <!-- Search -->
         <div class="search-container">
             <div class="search-box">
                 <i class="fas fa-search search-icon"></i>
@@ -45,40 +74,26 @@
             </div>
         </div>
 
-        <!-- Main Content Area -->
-        <div class="content-area" id="contentArea">
-            <!-- Categories Grid (Default View) -->
-            <div class="blog-grid" id="blogGrid">
-                <!-- Categories will be populated by JavaScript -->
-            </div>
+        <!-- Posts Grid -->
+        <div class="posts-grid" id="postsGrid">
+            <!-- Posts will be populated by JavaScript -->
+        </div>
 
-            <!-- Expanded Category View (Hidden by default) -->
-            <div class="expanded-view" id="expandedView" style="display: none;">
-                <!-- Left side - Posts -->
-                <div class="posts-section">
-                    <div class="subcategory-tabs" id="subcategoryTabs">
-                        <!-- Subcategory buttons will be populated by JavaScript -->
-                    </div>
-                    <div class="posts-grid" id="postsGrid">
-                        <!-- Posts will be populated by JavaScript -->
-                    </div>
-                </div>
-
-                <!-- Right side - Categories sidebar -->
-                <div class="categories-sidebar">
-                    <div class="sidebar-header">
-                        <h3>Categories</h3>
-                        <button class="close-btn" id="closeBtn">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="categories-list" id="categoriesList">
-                        <!-- Categories will be populated by JavaScript -->
-                    </div>
-                </div>
+        <!-- Loading/Load More -->
+        <div class="loading-container" id="loadingContainer">
+            <div class="loading-spinner" id="loadingSpinner" style="display: none;"></div>
+            <button class="load-more-btn" id="loadMoreBtn" style="display: none;">Load More Posts</button>
+            <div class="no-results" id="noResults" style="display: none;">
+                <h3>No posts found</h3>
+                <p>Try adjusting your filters or search terms.</p>
             </div>
         </div>
     </div>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-to-top" id="scrollToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
     <div id="footer">
         <div>
@@ -86,6 +101,7 @@
                 style="color: black; text-decoration: none; font-weight: bold;" target="_blank">Pranav Veeraghanta.</a>
         </div>
     </div>
+
     <script src="blog.js"></script>
 </body>
 

@@ -220,11 +220,11 @@
     #name {
         font-size: 52px;
     }
-    
+
     #links {
-        font-size: 22px;        
+        font-size: 22px;
     }
-    
+
     .link {
         padding: 8px 25px;
     }
@@ -573,28 +573,28 @@
     body {
         overflow-x: hidden;
     }
-    
+
     #name {
         font-size: 32px;
     }
-    
+
     #links {
         width: 95%;
         margin: 0 auto 15px auto;
         font-size: 18px;
         padding: 3px;
     }
-    
+
     .link {
         padding: 10px 3px;
         font-size: 16px;
     }
-    
+
     .main-container {
         padding: 0 10px;
         max-width: 100%;
     }
-    
+
     .latest-posts {
         padding: 12px;
         width: 100%;
@@ -604,11 +604,11 @@
         flex-direction: column;
         align-items: center;
     }
-    
+
     .latest-posts h2 {
         font-size: 22px;
     }
-    
+
     .latest-posts-grid {
         grid-template-columns: 1fr;
         gap: 10px;
@@ -616,67 +616,67 @@
         max-width: 400px;
         margin: 0 auto;
     }
-    
+
     .latest-post-card {
         padding: 12px;
         min-height: 240px;
     }
-    
+
     .latest-post-thumbnail {
         aspect-ratio: 16 / 9;
         height: auto;
         font-size: 18px;
     }
-    
+
     .latest-post-title {
         font-size: 15px;
         line-height: 1.3;
     }
-    
+
     .latest-post-excerpt {
         font-size: 12px;
     }
-    
+
     .category-card {
         padding: 12px;
         min-height: 120px;
     }
-    
+
     .category-title {
         font-size: 18px;
     }
-    
+
     .category-icon {
         font-size: 24px;
     }
-    
+
     .category-description {
         font-size: 12px;
     }
-    
+
     .sidebar-header h3 {
         font-size: 18px;
     }
-    
+
     .sidebar-category {
         padding: 6px 12px;
         font-size: 13px;
     }
-    
+
     .sidebar-category-title {
         font-size: 13px;
     }
-    
+
     .subcategory-tab {
         padding: 6px 12px;
         font-size: 13px;
     }
-    
+
     .post-card {
         padding: 12px;
         min-height: 240px;
     }
-    
+
     .posts-grid {
         grid-template-columns: 1fr;
         gap: 15px;
@@ -690,38 +690,38 @@
         max-width: 400px;
         margin: 0 auto;
     }
-    
+
     .blog-grid .post-card:nth-child(1) {
         grid-template-columns: 1fr;
         min-height: 280px;
         padding: 15px;
     }
-    
+
     .blog-grid .post-card:nth-child(1) .post-thumbnail {
         height: 130px;
         margin-bottom: 12px;
     }
-    
+
     .blog-grid .post-card:nth-child(1) .post-title {
         font-size: 18px;
     }
-    
+
     .blog-grid .post-card:nth-child(1) .post-excerpt {
         font-size: 13px;
         font-weight: 500;
     }
-    
+
     .post-thumbnail {
         aspect-ratio: 16 / 9;
         height: auto;
         font-size: 16px;
     }
-    
+
     .post-title {
         font-size: 16px;
         line-height: 1.3;
     }
-    
+
     .post-excerpt {
         font-size: 14px;
         font-weight: 590;
@@ -737,12 +737,12 @@
         gap: 10px;
         justify-content: center;
     }
-    
+
     .search-input {
         padding: 8px 12px 8px 35px;
         font-size: 12px;
     }
-    
+
     .search-icon {
         left: 10px;
         font-size: 13px;
@@ -755,27 +755,27 @@
         font-size: 24px;
         margin: 10px 0 8px 0;
     }
-    
+
     #links {
         width: 100%;
         font-size: 14px;
         padding: 1px;
         grid-gap: 2px;
     }
-    
+
     .link {
         padding: 6px 1px;
         font-size: 12px;
     }
-    
+
     .main-container {
         padding: 0 5px;
     }
-    
+
     .latest-posts {
         padding: 5px;
     }
-    
+
     .latest-posts h2 {
         font-size: 18px;
         margin-bottom: 12px;
@@ -786,60 +786,60 @@
         max-width: 300px;
         margin: 0 auto;
     }
-    
+
     .latest-post-card {
         padding: 8px;
         min-height: 200px;
     }
-    
+
     .latest-post-title {
         font-size: 13px;
     }
-    
+
     .latest-post-excerpt {
         font-size: 10px;
     }
-    
+
     .category-card {
         padding: 8px;
         min-height: 90px;
     }
-    
+
     .category-title {
         font-size: 14px;
     }
-    
+
     .category-icon {
         font-size: 18px;
     }
-    
+
     .category-description {
         font-size: 10px;
     }
-    
+
     .sidebar-header h3 {
         font-size: 16px;
     }
-    
+
     .sidebar-category {
         padding: 4px 8px;
         font-size: 11px;
     }
-    
+
     .subcategory-tab {
         padding: 4px 8px;
         font-size: 11px;
     }
-    
+
     .post-card {
         padding: 8px;
         min-height: 200px;
     }
-    
+
     .post-title {
         font-size: 14px;
     }
-    
+
     .post-excerpt {
         font-size: 12px;
     }
@@ -862,16 +862,16 @@
         max-width: 300px;
         margin: 0 auto;
     }
-    
+
     .search-container {
         padding: 0 5px;
     }
-    
+
     .search-input {
         padding: 6px 10px 6px 30px;
         font-size: 11px;
     }
-    
+
     .search-icon {
         left: 8px;
         font-size: 12px;
@@ -965,5 +965,146 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+    }
+}
+
+@media (max-width: 1200px) {
+    .posts-grid {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    #name {
+        font-size: 36px;
+        margin: 20px 0 15px 0;
+        text-align: center;
+        margin-left: 0;
+    }
+
+    #links {
+        position: static;
+        transform: none;
+        width: 90%;
+        margin: 0 auto 20px auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        text-align: center;
+        grid-gap: 6px;
+        font-size: 18px;
+    }
+
+    .link {
+        padding: 10px 5px;
+    }
+
+    .main-container {
+        padding: 0 15px;
+    }
+
+    .intro-section {
+        padding: 25px 20px;
+    }
+
+    .intro-section p {
+        font-size: 18px;
+    }
+
+    .intro-section {
+        padding: 20px 15px;
+    }
+
+    .intro-section p {
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    .filter-section {
+        padding: 20px 15px;
+    }
+
+    .category-filters {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .category-filter {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+
+    .subcategory-filters {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .subcategory-filter {
+        width: 100%;
+        max-width: 250px;
+        text-align: center;
+    }
+
+    .posts-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .scroll-to-top {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+        bottom: 20px;
+        right: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    #name {
+        font-size: 28px;
+    }
+
+    #links {
+        font-size: 16px;
+        padding: 3px;
+    }
+
+    .link {
+        padding: 8px 3px;
+        font-size: 14px;
+    }
+
+    .filter-section {
+        padding: 15px 10px;
+    }
+
+    .filter-section h2 {
+        font-size: 22px;
+    }
+
+    .category-filter,
+    .subcategory-filter {
+        font-size: 14px;
+        padding: 10px 20px;
+    }
+
+    .post-card {
+        padding: 15px;
+        min-height: 280px;
+    }
+
+    .post-title {
+        font-size: 18px;
+    }
+
+    .post-excerpt {
+        font-size: 14px;
     }
 }
