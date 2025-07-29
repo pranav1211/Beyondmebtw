@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Enhanced OCR Scanner</title>
+  <title>Crisp OCR Scanner</title>
 
   <!-- OpenCV -->
   <script src="https://docs.opencv.org/4.7.0/opencv.js" async></script>
@@ -59,7 +59,7 @@
   </style>
 </head>
 <body>
-  <h2>📸 Enhanced OCR Scanner</h2>
+  <h2>📸 Crisp OCR Scanner</h2>
   <video id="video" autoplay playsinline muted></video>
   <div class="controls">
     <button id="captureBtn">📸 Capture & Scan</button>
@@ -138,7 +138,7 @@
         highlighted.style.display = "block";
 
         // Extract paper
-        const extractedCanvas = scanner.extractPaper(canvas, 1000, 1400);
+        const extractedCanvas = scanner.extractPaper(canvas, 1200, 1600);
         extracted.width = extractedCanvas.width;
         extracted.height = extractedCanvas.height;
         extracted.getContext("2d").drawImage(extractedCanvas, 0, 0);
@@ -156,23 +156,24 @@
       try {
         const src = cv.imread(sourceCanvas);
         let gray = new cv.Mat();
+        let blurred = new cv.Mat();
         let thresh = new cv.Mat();
-        let blended = new cv.Mat();
 
-        // Convert to grayscale
+        // Grayscale
         cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
 
-        // Otsu's threshold for cleaner docs
-        cv.threshold(gray, thresh, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU);
+        // Reduce noise
+        cv.GaussianBlur(gray, blurred, new cv.Size(3, 3), 0);
 
-        
+        // Otsu's Threshold for crisp B/W
+        cv.threshold(blurred, thresh, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU);
 
-        cv.imshow(enhanced, blended);
+        cv.imshow(enhanced, thresh);
         enhanced.style.display = "block";
 
         runOCR(enhanced);
 
-        src.delete(); gray.delete(); thresh.delete(); blended.delete();
+        src.delete(); gray.delete(); blurred.delete(); thresh.delete();
       } catch (err) {
         alert("❌ Enhancement failed: " + err.message);
       }
