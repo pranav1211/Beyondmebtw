@@ -1,4 +1,4 @@
-    {        
+    {
         "subcategories": [],
         "posts": [
             {
@@ -233,6 +233,15 @@
                 "excerpt": "On April 9th, 2025, Uncharted Lost Voyage reached its grand finale, a digital treasure hunt that pushed my planning, creativity and…",
                 "thumbnail": "https://bmb-content-server.vercel.app/experience/exp26.png",
                 "link": "https://medium.com/@beyondmebtw/From-Trenches-to-Triumph---Uncharted-Lost-Voyage-c0c6729f86c9",
+                "subcategory": ""
+            },
+            {
+                "uid": "exper_27",
+                "title": "Prologue: Live Blogging the Build",
+                "date": "July 29, 2025",
+                "excerpt": "I've decided to start something new - a live blog series where I share the process of building and improving things in real time. It is…",
+                "thumbnail": "https://bmb-content-server.vercel.app/experience/exp27.png",
+                "link": "https://medium.com/@beyondmebtw/prologue-live-blogging-the-build-c4801f0d2eb5",
                 "subcategory": ""
             }
         ]
