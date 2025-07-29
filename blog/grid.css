@@ -1,4 +1,4 @@
-        * {
+* {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -129,7 +129,7 @@
 
         .subcategory-filters.visible {
             opacity: 1;
-            max-height: 100px;
+            max-height: 200px;
             padding-top: 15px;
         }
 
@@ -301,8 +301,21 @@
             border: 1px solid rgba(59, 52, 45, 0.2);
         }
 
+        /* Bottom section of post card */
+        .post-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: auto;
+        }
+
+        .post-bottom-left {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
         .read-more {
-            align-self: flex-end;
             background-color: #6a5a4a;
             color: #fff;
             border: none;
@@ -310,10 +323,9 @@
             border-radius: 30px;
             cursor: pointer;
             font-family: "Kreon", serif;
-            font-weight: 500;
-            font-size: 16px;
+            font-weight: 600;
+            font-size: 18px;            
             transition: background-color 0.3s, transform 0.3s;
-            margin-top: auto;
             text-align: center;
             user-select: none;
             pointer-events: none;
