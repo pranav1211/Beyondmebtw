@@ -7,7 +7,7 @@
 
   <!-- OCR + JScanify -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js"></script>
-  <script src="https://docs.opencv.org/4.7.0/opencv.js" async></script>
+  <script src="https://docs.opencv.org/4.7.0/opencv.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/ColonelParrot/jscanify@master/src/jscanify.min.js"></script>
 
   <style>
@@ -22,12 +22,19 @@
       padding: 20px;
     }
 
+    #loadingMessage {
+      color: #4facfe;
+      font-size: 18px;
+      margin-top: 50px;
+    }
+
     #videoWrapper {
       position: relative;
       width: 95vw;
       max-width: 600px;
       aspect-ratio: 1;
       margin-top: 20px;
+      display: none;
     }
 
     #video {
@@ -53,6 +60,7 @@
       gap: 10px;
       flex-wrap: wrap;
       justify-content: center;
+      display: none;
     }
 
     button {
@@ -91,6 +99,8 @@
 </head>
 <body>
 
+  <div id="loadingMessage">Loading camera and dependencies...</div>
+
   <div id="videoWrapper">
     <video id="video" autoplay playsinline muted></video>
     <canvas id="overlayCanvas"></canvas>
@@ -117,38 +127,76 @@
     const processBtn = document.getElementById("processBtn");
     const preview = document.getElementById("preview");
     const resultBox = document.getElementById("resultBox");
+    const loadingMessage = document.getElementById("loadingMessage");
+    const videoWrapper = document.getElementById("videoWrapper");
+    const controls = document.querySelector(".controls");
 
     let stream, track;
     let imageDataURL;
     let jscanify;
+    let opencvReady = false;
+
+    // Wait for OpenCV to load
+    function waitForOpenCV() {
+      return new Promise((resolve) => {
+        if (typeof cv !== 'undefined') {
+          cv.onRuntimeInitialized = () => {
+            opencvReady = true;
+            resolve();
+          };
+        } else {
+          // If cv is not defined yet, wait and try again
+          setTimeout(() => {
+            waitForOpenCV().then(resolve);
+          }, 100);
+        }
+      });
+    }
 
     async function initCamera() {
       try {
+        // First wait for OpenCV to be ready
+        await waitForOpenCV();
+        
+        // Initialize JScanify after OpenCV is ready
+        jscanify = new Jscanify();
+        
+        // Now request camera access
         stream = await navigator.mediaDevices.getUserMedia({
           video: {
             facingMode: { ideal: "environment" },
             width: { ideal: 1280 },
-            height: { ideal: 1280 },
-            focusMode: "continuous"
+            height: { ideal: 1280 }
           }
         });
+        
         video.srcObject = stream;
         track = stream.getVideoTracks()[0];
-
-        jscanify = new Jscanify();
 
         video.onloadedmetadata = () => {
           overlayCanvas.width = video.videoWidth;
           overlayCanvas.height = video.videoHeight;
+          
+          // Hide loading message and show camera interface
+          loadingMessage.style.display = "none";
+          videoWrapper.style.display = "block";
+          controls.style.display = "flex";
+          
           drawOverlayLoop();
         };
       } catch (e) {
-        alert("Camera access failed.");
-        console.error(e);
+        loadingMessage.textContent = "Camera access failed. Please allow camera permissions and refresh.";
+        loadingMessage.style.color = "#ff4444";
+        console.error("Camera initialization error:", e);
       }
     }
 
     function drawOverlayLoop() {
+      if (!jscanify || !opencvReady) {
+        requestAnimationFrame(drawOverlayLoop);
+        return;
+      }
+
       overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
       overlayCtx.drawImage(video, 0, 0, overlayCanvas.width, overlayCanvas.height);
 
@@ -172,6 +220,11 @@
     }
 
     captureBtn.onclick = () => {
+      if (!jscanify) {
+        alert("JScanify not ready yet. Please wait.");
+        return;
+      }
+
       const ctx = canvas.getContext("2d");
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
@@ -196,24 +249,35 @@
           preview.scrollIntoView({ behavior: "smooth" });
         } catch (err) {
           console.error("Capture error:", err);
+          alert("Capture failed. Please try again.");
         }
       };
     };
 
     processBtn.onclick = async () => {
+      if (!imageDataURL) {
+        alert("Please capture an image first.");
+        return;
+      }
+
       resultBox.textContent = "Processing...";
       resultBox.style.display = "block";
       resultBox.scrollIntoView({ behavior: "smooth" });
 
-      const worker = await Tesseract.createWorker("eng", 1, {
-        logger: m => console.log(m),
-      });
+      try {
+        const worker = await Tesseract.createWorker("eng", 1, {
+          logger: m => console.log(m),
+        });
 
-      const { data: { text } } = await worker.recognize(imageDataURL);
-      await worker.terminate();
+        const { data: { text } } = await worker.recognize(imageDataURL);
+        await worker.terminate();
 
-      const uid = extractUID(text);
-      resultBox.textContent = uid ? `UID: ${uid}` : "No UID found.";
+        const uid = extractUID(text);
+        resultBox.textContent = uid ? `UID: ${uid}` : "No UID found.";
+      } catch (err) {
+        console.error("OCR error:", err);
+        resultBox.textContent = "OCR processing failed. Please try again.";
+      }
     };
 
     function extractUID(text) {
@@ -226,18 +290,28 @@
     }
 
     flashBtn.onclick = async () => {
-      if (!track) return alert("No camera track available.");
+      if (!track) {
+        alert("No camera track available.");
+        return;
+      }
+      
       const capabilities = track.getCapabilities();
-      if (!capabilities.torch) return alert("Flash not supported on this device.");
+      if (!capabilities.torch) {
+        alert("Flash not supported on this device.");
+        return;
+      }
+      
       const current = track.getSettings().torch || false;
       try {
         await track.applyConstraints({ advanced: [{ torch: !current }] });
         flashBtn.textContent = !current ? "🔦 Flash On" : "💡 Flash";
       } catch (e) {
         console.error("Torch toggle failed:", e);
+        alert("Flash toggle failed.");
       }
     };
 
+    // Initialize when page loads
     window.onload = initCamera;
   </script>
 </body>
