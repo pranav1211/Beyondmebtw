@@ -99,7 +99,7 @@
 </head>
 <body>
 
-  <div id="loadingMessage">Loading camera and dependencies...</div>
+  <div id="loadingMessage">Requesting camera access...</div>
 
   <div id="videoWrapper">
     <video id="video" autoplay playsinline muted></video>
@@ -136,16 +136,19 @@
     let jscanify;
     let opencvReady = false;
 
-    // Wait for OpenCV to load
     function waitForOpenCV() {
       return new Promise((resolve) => {
         if (typeof cv !== 'undefined') {
-          cv.onRuntimeInitialized = () => {
+          if (cv.Mat) {
             opencvReady = true;
             resolve();
-          };
+          } else {
+            cv.onRuntimeInitialized = () => {
+              opencvReady = true;
+              resolve();
+            };
+          }
         } else {
-          // If cv is not defined yet, wait and try again
           setTimeout(() => {
             waitForOpenCV().then(resolve);
           }, 100);
@@ -155,13 +158,8 @@
 
     async function initCamera() {
       try {
-        // First wait for OpenCV to be ready
-        await waitForOpenCV();
+        loadingMessage.textContent = "Requesting camera access...";
         
-        // Initialize JScanify after OpenCV is ready
-        jscanify = new Jscanify();
-        
-        // Now request camera access
         stream = await navigator.mediaDevices.getUserMedia({
           video: {
             facingMode: { ideal: "environment" },
@@ -173,58 +171,61 @@
         video.srcObject = stream;
         track = stream.getVideoTracks()[0];
 
-        video.onloadedmetadata = () => {
+        video.onloadedmetadata = async () => {
           overlayCanvas.width = video.videoWidth;
           overlayCanvas.height = video.videoHeight;
           
-          // Hide loading message and show camera interface
-          loadingMessage.style.display = "none";
           videoWrapper.style.display = "block";
           controls.style.display = "flex";
           
-          drawOverlayLoop();
+          loadingMessage.textContent = "Loading document detection...";
+          
+          try {
+            await waitForOpenCV();
+            jscanify = new Jscanify();
+            loadingMessage.style.display = "none";
+            drawOverlayLoop();
+          } catch (err) {
+            console.error("JScanify initialization error:", err);
+            loadingMessage.textContent = "Document detection unavailable, but camera works";
+            loadingMessage.style.color = "#ffaa00";
+            drawOverlayLoop();
+          }
         };
       } catch (e) {
-        loadingMessage.textContent = "Camera access failed. Please allow camera permissions and refresh.";
+        loadingMessage.textContent = "Camera access denied. Please allow camera permissions and refresh.";
         loadingMessage.style.color = "#ff4444";
         console.error("Camera initialization error:", e);
       }
     }
 
     function drawOverlayLoop() {
-      if (!jscanify || !opencvReady) {
-        requestAnimationFrame(drawOverlayLoop);
-        return;
-      }
-
       overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
       overlayCtx.drawImage(video, 0, 0, overlayCanvas.width, overlayCanvas.height);
 
-      try {
-        const quad = jscanify.findDocument(overlayCanvas);
-        if (quad) {
-          overlayCtx.lineWidth = 4;
-          overlayCtx.strokeStyle = "#00ff88";
-          overlayCtx.beginPath();
-          overlayCtx.moveTo(quad.topLeft[0], quad.topLeft[1]);
-          overlayCtx.lineTo(quad.topRight[0], quad.topRight[1]);
-          overlayCtx.lineTo(quad.bottomRight[0], quad.bottomRight[1]);
-          overlayCtx.lineTo(quad.bottomLeft[0], quad.bottomLeft[1]);
-          overlayCtx.closePath();
-          overlayCtx.stroke();
+      if (jscanify && opencvReady) {
+        try {
+          const quad = jscanify.findDocument(overlayCanvas);
+          if (quad) {
+            overlayCtx.lineWidth = 4;
+            overlayCtx.strokeStyle = "#00ff88";
+            overlayCtx.beginPath();
+            overlayCtx.moveTo(quad.topLeft[0], quad.topLeft[1]);
+            overlayCtx.lineTo(quad.topRight[0], quad.topRight[1]);
+            overlayCtx.lineTo(quad.bottomRight[0], quad.bottomRight[1]);
+            overlayCtx.lineTo(quad.bottomLeft[0], quad.bottomLeft[1]);
+            overlayCtx.closePath();
+            overlayCtx.stroke();
+          }
+        } catch (err) {
+          console.warn("No document detected");
         }
-      } catch (err) {
-        console.warn("No document detected");
       }
+      
       requestAnimationFrame(drawOverlayLoop);
     }
 
     captureBtn.onclick = () => {
-      if (!jscanify) {
-        alert("JScanify not ready yet. Please wait.");
-        return;
-      }
-
       const ctx = canvas.getContext("2d");
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
@@ -234,11 +235,16 @@
       baseImage.src = canvas.toDataURL("image/jpeg", 0.9);
       baseImage.onload = () => {
         try {
-          const quad = jscanify.findDocument(baseImage);
-          if (quad) {
-            const scanned = jscanify.extract(baseImage, quad);
-            imageDataURL = scanned.toDataURL("image/jpeg", 0.9);
-            preview.src = imageDataURL;
+          if (jscanify) {
+            const quad = jscanify.findDocument(baseImage);
+            if (quad) {
+              const scanned = jscanify.extract(baseImage, quad);
+              imageDataURL = scanned.toDataURL("image/jpeg", 0.9);
+              preview.src = imageDataURL;
+            } else {
+              imageDataURL = baseImage.src;
+              preview.src = baseImage.src;
+            }
           } else {
             imageDataURL = baseImage.src;
             preview.src = baseImage.src;
@@ -311,7 +317,6 @@
       }
     };
 
-    // Initialize when page loads
     window.onload = initCamera;
   </script>
 </body>
