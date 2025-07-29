@@ -3,13 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>OCR Scanner</title>
-
-  <!-- OCR + JScanify -->
+  <title>JScanify Test</title>
   <script src="https://docs.opencv.org/4.7.0/opencv.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/ColonelParrot/jscanify@master/src/jscanify.min.js"></script>
-  <script src="https://antimatter15.com/ocrad.js/ocrad.js"></script>
-
   <style>
     body {
       margin: 0;
@@ -21,198 +17,95 @@
       align-items: center;
       padding: 20px;
     }
-
-    #loadingMessage {
-      color: #4facfe;
-      font-size: 18px;
-      margin-top: 50px;
-    }
-
     #videoWrapper {
       position: relative;
       width: 95vw;
       max-width: 600px;
       aspect-ratio: 1;
       margin-top: 20px;
-      display: none;
     }
-
-    #video {
+    #video, #overlayCanvas {
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      border: 4px solid #4facfe;
       border-radius: 12px;
     }
-
     #overlayCanvas {
       position: absolute;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
       pointer-events: none;
     }
-
-    .controls {
-      margin-top: 15px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-      display: none;
-    }
-
-    button {
-      padding: 12px 18px;
-      border: none;
-      border-radius: 8px;
-      background: #4facfe;
-      color: white;
-      font-size: 15px;
-      cursor: pointer;
-    }
-
     #preview {
       margin-top: 20px;
       max-width: 95vw;
-      max-height: 350px;
       display: none;
       border-radius: 10px;
     }
-
-    #resultBox {
-      background: #fff;
-      color: #000;
-      padding: 15px;
-      border-radius: 10px;
-      margin-top: 20px;
-      max-width: 95vw;
-      display: none;
-      white-space: pre-wrap;
-    }
-
-    #canvas {
-      display: none;
+    button {
+      margin-top: 15px;
+      padding: 12px 18px;
+      background: #4facfe;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 15px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-
-  <div id="loadingMessage">Requesting camera access...</div>
-
+  <h2>📄 JScanify Test</h2>
   <div id="videoWrapper">
     <video id="video" autoplay playsinline muted></video>
     <canvas id="overlayCanvas"></canvas>
   </div>
-
-  <div class="controls">
-    <button id="flashBtn">💡 Flash</button>
-    <button id="processBtn" disabled>🔍 OCR</button>
-    <button id="captureBtn">📸 Capture</button>
-  </div>
-
-  <img id="preview" alt="Captured Image Preview"/>
-  <div id="resultBox"></div>
-
-  <canvas id="canvas"></canvas>
+  <button id="captureBtn">📸 Capture & Enhance</button>
+  <img id="preview" alt="Scanned Document"/>
+  <canvas id="canvas" style="display:none;"></canvas>
 
   <script>
     const video = document.getElementById("video");
     const overlayCanvas = document.getElementById("overlayCanvas");
     const overlayCtx = overlayCanvas.getContext("2d");
-    const canvas = document.getElementById("canvas");
     const captureBtn = document.getElementById("captureBtn");
-    const flashBtn = document.getElementById("flashBtn");
-    const processBtn = document.getElementById("processBtn");
     const preview = document.getElementById("preview");
-    const resultBox = document.getElementById("resultBox");
-    const loadingMessage = document.getElementById("loadingMessage");
-    const videoWrapper = document.getElementById("videoWrapper");
-    const controls = document.querySelector(".controls");
+    const canvas = document.getElementById("canvas");
 
-    let stream, track;
-    let imageDataURL;
-    let jscanify;
-    let opencvReady = false;
+    let jscanify, opencvReady = false;
 
     function waitForOpenCV() {
       return new Promise((resolve) => {
-        if (typeof cv !== 'undefined') {
-          if (cv.Mat) {
+        if (typeof cv !== 'undefined' && cv.Mat) {
+          opencvReady = true;
+          resolve();
+        } else {
+          cv.onRuntimeInitialized = () => {
             opencvReady = true;
             resolve();
-          } else {
-            cv.onRuntimeInitialized = () => {
-              opencvReady = true;
-              resolve();
-            };
-          }
-        } else {
-          setTimeout(() => {
-            waitForOpenCV().then(resolve);
-          }, 100);
+          };
         }
       });
     }
 
     async function initCamera() {
-      try {
-        loadingMessage.textContent = "Requesting camera access...";
-        
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: { ideal: "environment" },
-            width: { ideal: 1280 },
-            height: { ideal: 1280 }
-          }
-        });
-        
-        video.srcObject = stream;
-        track = stream.getVideoTracks()[0];
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+      video.srcObject = stream;
 
-        video.onloadedmetadata = async () => {
-          overlayCanvas.width = video.videoWidth;
-          overlayCanvas.height = video.videoHeight;
-          
-          videoWrapper.style.display = "block";
-          controls.style.display = "flex";
-          
-          loadingMessage.textContent = "Loading document detection...";
-          
-          try {
-            await waitForOpenCV();
-            jscanify = new Jscanify();
-            loadingMessage.style.display = "none";
-            drawOverlayLoop();
-          } catch (err) {
-            console.error("JScanify initialization error:", err);
-            loadingMessage.textContent = "Document detection unavailable, but camera works";
-            loadingMessage.style.color = "#ffaa00";
-            drawOverlayLoop();
-          }
-        };
-      } catch (e) {
-        loadingMessage.textContent = "Camera access denied. Please allow camera permissions and refresh.";
-        loadingMessage.style.color = "#ff4444";
-        console.error("Camera initialization error:", e);
-      }
+      video.onloadedmetadata = async () => {
+        overlayCanvas.width = video.videoWidth;
+        overlayCanvas.height = video.videoHeight;
+        await waitForOpenCV();
+        jscanify = new Jscanify();
+        drawOverlayLoop();
+      };
     }
 
     function drawOverlayLoop() {
       overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
       overlayCtx.drawImage(video, 0, 0, overlayCanvas.width, overlayCanvas.height);
-
       if (jscanify && opencvReady) {
         try {
-          // use a clean canvas for detection
-          const tempCanvas = document.createElement("canvas");
-          tempCanvas.width = video.videoWidth;
-          tempCanvas.height = video.videoHeight;
-          const tempCtx = tempCanvas.getContext("2d");
-          tempCtx.drawImage(video, 0, 0);
-
-          const quad = jscanify.findDocument(tempCanvas);
+          const quad = jscanify.findDocument(overlayCanvas);
           if (quad) {
             overlayCtx.lineWidth = 4;
             overlayCtx.strokeStyle = "#00ff88";
@@ -224,11 +117,8 @@
             overlayCtx.closePath();
             overlayCtx.stroke();
           }
-        } catch (err) {
-          console.warn("No document detected this frame");
-        }
+        } catch {}
       }
-      
       requestAnimationFrame(drawOverlayLoop);
     }
 
@@ -236,91 +126,24 @@
       const ctx = canvas.getContext("2d");
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(video, 0, 0);
 
       const baseImage = new Image();
       baseImage.src = canvas.toDataURL("image/jpeg", 0.9);
       baseImage.onload = () => {
         try {
-          if (jscanify) {
-            const quad = jscanify.findDocument(baseImage);
-            if (quad) {
-              const scanned = jscanify.extract(baseImage, quad);
-              imageDataURL = scanned.toDataURL("image/jpeg", 0.9);
-              preview.src = imageDataURL;
-            } else {
-              imageDataURL = baseImage.src;
-              preview.src = baseImage.src;
-            }
+          const quad = jscanify.findDocument(baseImage);
+          if (quad) {
+            const scanned = jscanify.extract(baseImage, quad);
+            preview.src = scanned.toDataURL("image/jpeg", 0.9);
           } else {
-            imageDataURL = baseImage.src;
             preview.src = baseImage.src;
           }
           preview.style.display = "block";
-          processBtn.disabled = false;
-          resultBox.style.display = "none";
-          preview.scrollIntoView({ behavior: "smooth" });
         } catch (err) {
-          console.error("Capture error:", err);
-          alert("Capture failed. Please try again.");
+          alert("Capture failed.");
         }
       };
-    };
-
-    processBtn.onclick = () => {
-      if (!imageDataURL) {
-        alert("Please capture an image first.");
-        return;
-      }
-
-      resultBox.textContent = "Processing...";
-      resultBox.style.display = "block";
-      resultBox.scrollIntoView({ behavior: "smooth" });
-
-      const ctx = canvas.getContext("2d");
-      const img = new Image();
-      img.src = imageDataURL;
-
-      img.onload = () => {
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
-
-        const text = OCRAD(canvas);
-        const uid = extractUID(text);
-        resultBox.textContent = uid ? `UID: ${uid}` : "No UID found.";
-      };
-    };
-
-    function extractUID(text) {
-      const lines = text.split('\n').slice(0, 5);
-      for (let line of lines) {
-        const match = line.match(/\b\d{5,}\b/);
-        if (match) return match[0];
-      }
-      return null;
-    }
-
-    flashBtn.onclick = async () => {
-      if (!track) {
-        alert("No camera track available.");
-        return;
-      }
-      
-      const capabilities = track.getCapabilities();
-      if (!capabilities.torch) {
-        alert("Flash not supported on this device.");
-        return;
-      }
-      
-      const current = track.getSettings().torch || false;
-      try {
-        await track.applyConstraints({ advanced: [{ torch: !current }] });
-        flashBtn.textContent = !current ? "🔦 Flash On" : "💡 Flash";
-      } catch (e) {
-        console.error("Torch toggle failed:", e);
-        alert("Flash toggle failed.");
-      }
     };
 
     window.onload = initCamera;
