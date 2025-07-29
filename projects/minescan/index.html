@@ -22,14 +22,29 @@
       padding: 20px;
     }
 
-    #video {
+    #videoWrapper {
+      position: relative;
       width: 95vw;
       max-width: 600px;
       aspect-ratio: 1;
+      margin-top: 20px;
+    }
+
+    #video {
+      width: 100%;
+      height: 100%;
       object-fit: cover;
       border: 4px solid #4facfe;
       border-radius: 12px;
-      margin-top: 20px;
+    }
+
+    #overlayCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
     }
 
     .controls {
@@ -69,19 +84,22 @@
       white-space: pre-wrap;
     }
 
-    canvas {
+    #canvas {
       display: none;
     }
   </style>
 </head>
 <body>
 
-  <video id="video" autoplay playsinline muted></video>
+  <div id="videoWrapper">
+    <video id="video" autoplay playsinline muted></video>
+    <canvas id="overlayCanvas"></canvas>
+  </div>
 
   <div class="controls">
     <button id="flashBtn">💡 Flash</button>
-    <button id="captureBtn">📸 Capture</button>
     <button id="processBtn" disabled>🔍 OCR</button>
+    <button id="captureBtn">📸 Capture</button>
   </div>
 
   <img id="preview" alt="Captured Image Preview"/>
@@ -91,6 +109,8 @@
 
   <script>
     const video = document.getElementById("video");
+    const overlayCanvas = document.getElementById("overlayCanvas");
+    const overlayCtx = overlayCanvas.getContext("2d");
     const canvas = document.getElementById("canvas");
     const captureBtn = document.getElementById("captureBtn");
     const flashBtn = document.getElementById("flashBtn");
@@ -100,6 +120,7 @@
 
     let stream, track;
     let imageDataURL;
+    let jscanify;
 
     async function initCamera() {
       try {
@@ -113,13 +134,44 @@
         });
         video.srcObject = stream;
         track = stream.getVideoTracks()[0];
+
+        jscanify = new Jscanify();
+
+        video.onloadedmetadata = () => {
+          overlayCanvas.width = video.videoWidth;
+          overlayCanvas.height = video.videoHeight;
+          drawOverlayLoop();
+        };
       } catch (e) {
         alert("Camera access failed.");
         console.error(e);
       }
     }
 
-    captureBtn.onclick = async () => {
+    function drawOverlayLoop() {
+      overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+      overlayCtx.drawImage(video, 0, 0, overlayCanvas.width, overlayCanvas.height);
+
+      try {
+        const quad = jscanify.findDocument(overlayCanvas);
+        if (quad) {
+          overlayCtx.lineWidth = 4;
+          overlayCtx.strokeStyle = "#00ff88";
+          overlayCtx.beginPath();
+          overlayCtx.moveTo(quad.topLeft[0], quad.topLeft[1]);
+          overlayCtx.lineTo(quad.topRight[0], quad.topRight[1]);
+          overlayCtx.lineTo(quad.bottomRight[0], quad.bottomRight[1]);
+          overlayCtx.lineTo(quad.bottomLeft[0], quad.bottomLeft[1]);
+          overlayCtx.closePath();
+          overlayCtx.stroke();
+        }
+      } catch (err) {
+        console.warn("No document detected");
+      }
+      requestAnimationFrame(drawOverlayLoop);
+    }
+
+    captureBtn.onclick = () => {
       const ctx = canvas.getContext("2d");
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
@@ -127,29 +179,23 @@
 
       const baseImage = new Image();
       baseImage.src = canvas.toDataURL("image/jpeg", 0.9);
-
-      baseImage.onload = async () => {
+      baseImage.onload = () => {
         try {
-          // Apply JScanify
-          const jscanify = new Jscanify();
           const quad = jscanify.findDocument(baseImage);
-
           if (quad) {
             const scanned = jscanify.extract(baseImage, quad);
             imageDataURL = scanned.toDataURL("image/jpeg", 0.9);
             preview.src = imageDataURL;
           } else {
-            // fallback if no doc detected
             imageDataURL = baseImage.src;
             preview.src = baseImage.src;
           }
-
           preview.style.display = "block";
           processBtn.disabled = false;
           resultBox.style.display = "none";
           preview.scrollIntoView({ behavior: "smooth" });
         } catch (err) {
-          console.error("JScanify error:", err);
+          console.error("Capture error:", err);
         }
       };
     };
@@ -174,9 +220,7 @@
       const lines = text.split('\n').slice(0, 5);
       for (let line of lines) {
         const match = line.match(/\b\d{5,}\b/);
-        if (match) {
-          return match[0];
-        }
+        if (match) return match[0];
       }
       return null;
     }
