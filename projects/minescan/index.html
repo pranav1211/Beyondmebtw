@@ -6,9 +6,9 @@
   <title>OCR Scanner</title>
 
   <!-- OCR + JScanify -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js"></script>
   <script src="https://docs.opencv.org/4.7.0/opencv.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/ColonelParrot/jscanify@master/src/jscanify.min.js"></script>
+  <script src="https://antimatter15.com/ocrad.js/ocrad.js"></script>
 
   <style>
     body {
@@ -205,7 +205,14 @@
 
       if (jscanify && opencvReady) {
         try {
-          const quad = jscanify.findDocument(overlayCanvas);
+          // use a clean canvas for detection
+          const tempCanvas = document.createElement("canvas");
+          tempCanvas.width = video.videoWidth;
+          tempCanvas.height = video.videoHeight;
+          const tempCtx = tempCanvas.getContext("2d");
+          tempCtx.drawImage(video, 0, 0);
+
+          const quad = jscanify.findDocument(tempCanvas);
           if (quad) {
             overlayCtx.lineWidth = 4;
             overlayCtx.strokeStyle = "#00ff88";
@@ -218,7 +225,7 @@
             overlayCtx.stroke();
           }
         } catch (err) {
-          console.warn("No document detected");
+          console.warn("No document detected this frame");
         }
       }
       
@@ -260,7 +267,7 @@
       };
     };
 
-    processBtn.onclick = async () => {
+    processBtn.onclick = () => {
       if (!imageDataURL) {
         alert("Please capture an image first.");
         return;
@@ -270,20 +277,19 @@
       resultBox.style.display = "block";
       resultBox.scrollIntoView({ behavior: "smooth" });
 
-      try {
-        const worker = await Tesseract.createWorker("eng", 1, {
-          logger: m => console.log(m),
-        });
+      const ctx = canvas.getContext("2d");
+      const img = new Image();
+      img.src = imageDataURL;
 
-        const { data: { text } } = await worker.recognize(imageDataURL);
-        await worker.terminate();
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
 
+        const text = OCRAD(canvas);
         const uid = extractUID(text);
         resultBox.textContent = uid ? `UID: ${uid}` : "No UID found.";
-      } catch (err) {
-        console.error("OCR error:", err);
-        resultBox.textContent = "OCR processing failed. Please try again.";
-      }
+      };
     };
 
     function extractUID(text) {
