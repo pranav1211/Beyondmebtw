@@ -1,79 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>JScanify Upload Test</title>
-  <script src="https://docs.opencv.org/4.7.0/opencv.js"></script>
+
+  <!-- Load OpenCV -->
+  <script src="https://docs.opencv.org/4.7.0/opencv.js" async></script>
+  <!-- Load JScanify from puffinsoft repo -->
   <script src="https://cdn.jsdelivr.net/gh/puffinsoft/jscanify/dist/jscanify.min.js"></script>
+
   <style>
     body {
       margin: 0;
-      font-family: sans-serif;
       background: #000;
       color: #fff;
+      font-family: sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 20px;
     }
-
-    #preview,
-    #scanned {
+    #preview, canvas {
       margin-top: 20px;
       max-width: 90vw;
       border-radius: 12px;
       border: 2px solid #4facfe;
     }
-
-    #scanned {
-      display: none;
-    }
-
     input {
       margin-top: 20px;
     }
   </style>
 </head>
-
 <body>
-  <h2>📄 JScanify File Upload Test</h2>
-  <input type="file" id="fileInput" accept="image/*">
-  <canvas id="canvas" style="display:none;"></canvas>
-  <img id="preview" alt="Uploaded Image" />
-  <img id="scanned" alt="Scanned Document" />
+  <h2>📄 JScanify Upload Test</h2>
+  <input type="file" id="fileInput" accept="image/*"/>
+  <img id="preview" alt="Uploaded Image"/>
+  <canvas id="highlighted"></canvas>
+  <canvas id="extracted"></canvas>
 
   <script>
     const fileInput = document.getElementById("fileInput");
-    const canvas = document.getElementById("canvas");
     const preview = document.getElementById("preview");
-    const scannedImg = document.getElementById("scanned");
+    const highlighted = document.getElementById("highlighted");
+    const extracted = document.getElementById("extracted");
 
-    let jscanify, opencvReady = false;
+    let scanner;
 
     function waitForOpenCV() {
       return new Promise((resolve) => {
         if (typeof cv !== 'undefined' && cv.Mat) {
-          opencvReady = true;
           resolve();
         } else {
-          cv.onRuntimeInitialized = () => {
-            opencvReady = true;
-            resolve();
-          };
+          cv.onRuntimeInitialized = resolve;
         }
       });
     }
 
     async function init() {
       await waitForOpenCV();
-      if (typeof Jscanify === "undefined") {
-        alert("❌ JScanify failed to load.");
+      if (typeof jscanify === "undefined") {
+        alert("❌ JScanify did not load.");
         return;
       }
-      jscanify = new Jscanify();
-      alert("✅ JScanify ready for file upload test");
+      scanner = new jscanify();
+      alert("✅ JScanify initialized. Upload a document image to test.");
     }
 
     fileInput.onchange = () => {
@@ -83,44 +74,24 @@
       const img = new Image();
       img.crossOrigin = "anonymous";
       img.onload = () => {
-        const ctx = canvas.getContext("2d");
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
-
-        preview.src = canvas.toDataURL("image/jpeg", 0.9);
+        preview.src = img.src;
 
         try {
-          const quad = jscanify.findDocument(canvas);
-          if (quad) {
-            alert("✅ Document detected!");
+          // Highlight detected paper
+          const highlightedCanvas = scanner.highlightPaper(img);
+          highlighted.width = highlightedCanvas.width;
+          highlighted.height = highlightedCanvas.height;
+          highlighted.getContext("2d").drawImage(highlightedCanvas, 0, 0);
 
-            // draw the outline
-            const debugCanvas = document.createElement("canvas");
-            debugCanvas.width = canvas.width;
-            debugCanvas.height = canvas.height;
-            const dctx = debugCanvas.getContext("2d");
-            dctx.drawImage(canvas, 0, 0);
-            dctx.lineWidth = 4;
-            dctx.strokeStyle = "#00ff88";
-            dctx.beginPath();
-            dctx.moveTo(quad.topLeft[0], quad.topLeft[1]);
-            dctx.lineTo(quad.topRight[0], quad.topRight[1]);
-            dctx.lineTo(quad.bottomRight[0], quad.bottomRight[1]);
-            dctx.lineTo(quad.bottomLeft[0], quad.bottomLeft[1]);
-            dctx.closePath();
-            dctx.stroke();
-            preview.src = debugCanvas.toDataURL("image/jpeg", 0.9);
+          // Extract the paper with set dimensions
+          const extractedCanvas = scanner.extractPaper(img, 500, 700);
+          extracted.width = extractedCanvas.width;
+          extracted.height = extractedCanvas.height;
+          extracted.getContext("2d").drawImage(extractedCanvas, 0, 0);
 
-            // extract document
-            const scanned = jscanify.extract(canvas, quad);
-            scannedImg.src = scanned.toDataURL("image/jpeg", 0.9);
-            scannedImg.style.display = "block";
-          } else {
-            alert("⚠️ No document detected in uploaded image.");
-          }
+          alert("✅ Document processed. Check highlighted & extracted canvases below.");
         } catch (err) {
-          alert("❌ Detection error: " + err.message);
+          alert("❌ Error detecting paper: " + err.message);
         }
       };
       img.src = URL.createObjectURL(file);
@@ -129,5 +100,4 @@
     window.onload = init;
   </script>
 </body>
-
 </html>
