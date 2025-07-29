@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>JScanify Live Capture</title>
+  <title>JScanify Enhanced Live Capture</title>
 
-  <!-- Load OpenCV -->
+  <!-- OpenCV -->
   <script src="https://docs.opencv.org/4.7.0/opencv.js" async></script>
   <!-- JScanify -->
   <script src="https://cdn.jsdelivr.net/gh/ColonelParrot/jscanify@master/src/jscanify.min.js"></script>
@@ -37,19 +37,20 @@
       font-size: 15px;
       cursor: pointer;
     }
-    #highlighted, #extracted {
+    #highlighted, #extracted, #enhanced {
       display: none;
     }
   </style>
 </head>
 <body>
-  <h2>📸 Live Document Capture with JScanify</h2>
+  <h2>📸 Enhanced Document Capture</h2>
   <video id="video" autoplay playsinline muted></video>
   <button id="captureBtn">📸 Capture</button>
   <canvas id="canvas" style="display:none;"></canvas>
   <img id="preview" alt="Captured Frame"/>
   <canvas id="highlighted"></canvas>
   <canvas id="extracted"></canvas>
+  <canvas id="enhanced"></canvas>
 
   <script>
     const video = document.getElementById("video");
@@ -57,6 +58,7 @@
     const preview = document.getElementById("preview");
     const highlighted = document.getElementById("highlighted");
     const extracted = document.getElementById("extracted");
+    const enhanced = document.getElementById("enhanced");
     const captureBtn = document.getElementById("captureBtn");
 
     let scanner;
@@ -111,17 +113,42 @@
         highlighted.style.display = "block";
 
         // Extract paper
-        const extractedCanvas = scanner.extractPaper(canvas, 500, 700);
+        const extractedCanvas = scanner.extractPaper(canvas, 600, 800);
         extracted.width = extractedCanvas.width;
         extracted.height = extractedCanvas.height;
         extracted.getContext("2d").drawImage(extractedCanvas, 0, 0);
         extracted.style.display = "block";
 
-        alert("✅ Document captured & processed!");
+        // Enhance with OpenCV
+        enhanceWithOpenCV(extractedCanvas);
+
       } catch (err) {
         alert("❌ Detection error: " + err.message);
       }
     };
+
+    function enhanceWithOpenCV(sourceCanvas) {
+      try {
+        const src = cv.imread(sourceCanvas);
+        let gray = new cv.Mat();
+        let enhancedMat = new cv.Mat();
+
+        // Convert to grayscale
+        cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
+
+        // Adaptive threshold for crisp black/white
+        cv.adaptiveThreshold(gray, enhancedMat, 255,
+          cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, 21, 10);
+
+        // Write to canvas
+        cv.imshow(enhanced, enhancedMat);
+        enhanced.style.display = "block";
+
+        src.delete(); gray.delete(); enhancedMat.delete();
+      } catch (err) {
+        alert("❌ Enhancement failed: " + err.message);
+      }
+    }
 
     window.onload = init;
   </script>
