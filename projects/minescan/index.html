@@ -165,8 +165,7 @@
         // Otsu's threshold for cleaner docs
         cv.threshold(gray, thresh, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU);
 
-        // Blend threshold (75%) with grayscale (25%) to reduce harshness
-        cv.addWeighted(thresh, 0.75, gray, 0.25, 0, blended);
+        
 
         cv.imshow(enhanced, blended);
         enhanced.style.display = "block";
