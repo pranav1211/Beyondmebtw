@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>JScanify Enhanced Live Capture</title>
+  <title>OCR Scanner with JScanify + Tesseract</title>
 
   <!-- OpenCV -->
   <script src="https://docs.opencv.org/4.7.0/opencv.js" async></script>
   <!-- JScanify -->
   <script src="https://cdn.jsdelivr.net/gh/ColonelParrot/jscanify@master/src/jscanify.min.js"></script>
+  <!-- Tesseract.js -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js"></script>
 
   <style>
     body {
@@ -37,20 +39,30 @@
       font-size: 15px;
       cursor: pointer;
     }
-    #highlighted, #extracted, #enhanced {
+    #highlighted, #extracted, #enhanced, #resultBox {
       display: none;
+    }
+    #resultBox {
+      background: #fff;
+      color: #000;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+      max-width: 90vw;
+      white-space: pre-wrap;
     }
   </style>
 </head>
 <body>
-  <h2>📸 Enhanced Document Capture</h2>
+  <h2>📸 Live OCR Scanner</h2>
   <video id="video" autoplay playsinline muted></video>
-  <button id="captureBtn">📸 Capture</button>
+  <button id="captureBtn">📸 Capture & Scan</button>
   <canvas id="canvas" style="display:none;"></canvas>
   <img id="preview" alt="Captured Frame"/>
   <canvas id="highlighted"></canvas>
   <canvas id="extracted"></canvas>
   <canvas id="enhanced"></canvas>
+  <div id="resultBox"></div>
 
   <script>
     const video = document.getElementById("video");
@@ -60,6 +72,7 @@
     const extracted = document.getElementById("extracted");
     const enhanced = document.getElementById("enhanced");
     const captureBtn = document.getElementById("captureBtn");
+    const resultBox = document.getElementById("resultBox");
 
     let scanner;
 
@@ -144,9 +157,32 @@
         cv.imshow(enhanced, enhancedMat);
         enhanced.style.display = "block";
 
+        // OCR the enhanced result
+        runOCR(enhanced);
+
         src.delete(); gray.delete(); enhancedMat.delete();
       } catch (err) {
         alert("❌ Enhancement failed: " + err.message);
+      }
+    }
+
+    async function runOCR(canvasElement) {
+      try {
+        resultBox.style.display = "block";
+        resultBox.textContent = "🔍 Running OCR, please wait...";
+
+        const worker = await Tesseract.createWorker("eng", 1, {
+          logger: m => console.log(m),
+        });
+
+        const { data: { text } } = await worker.recognize(canvasElement);
+        await worker.terminate();
+
+        resultBox.textContent = text.trim() || "No text detected.";
+        resultBox.scrollIntoView({ behavior: "smooth" });
+
+      } catch (err) {
+        resultBox.textContent = "❌ OCR failed: " + err.message;
       }
     }
 
