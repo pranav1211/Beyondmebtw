@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>JScanify Upload Test</title>
+  <title>JScanify Live Capture</title>
 
   <!-- Load OpenCV -->
   <script src="https://docs.opencv.org/4.7.0/opencv.js" async></script>
-  <!-- Load JScanify from puffinsoft repo -->
-<script src="https://cdn.jsdelivr.net/gh/ColonelParrot/jscanify@master/src/jscanify.min.js"></script>
+  <!-- JScanify -->
+  <script src="https://cdn.jsdelivr.net/gh/ColonelParrot/jscanify@master/src/jscanify.min.js"></script>
 
   <style>
     body {
@@ -21,29 +21,43 @@
       align-items: center;
       padding: 20px;
     }
-    #preview, canvas {
+    video, #preview, canvas {
       margin-top: 20px;
       max-width: 90vw;
       border-radius: 12px;
       border: 2px solid #4facfe;
     }
-    input {
-      margin-top: 20px;
+    button {
+      margin-top: 15px;
+      padding: 12px 18px;
+      background: #4facfe;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    #highlighted, #extracted {
+      display: none;
     }
   </style>
 </head>
 <body>
-  <h2>📄 JScanify Upload Test</h2>
-  <input type="file" id="fileInput" accept="image/*"/>
-  <img id="preview" alt="Uploaded Image"/>
+  <h2>📸 Live Document Capture with JScanify</h2>
+  <video id="video" autoplay playsinline muted></video>
+  <button id="captureBtn">📸 Capture</button>
+  <canvas id="canvas" style="display:none;"></canvas>
+  <img id="preview" alt="Captured Frame"/>
   <canvas id="highlighted"></canvas>
   <canvas id="extracted"></canvas>
 
   <script>
-    const fileInput = document.getElementById("fileInput");
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
     const preview = document.getElementById("preview");
     const highlighted = document.getElementById("highlighted");
     const extracted = document.getElementById("extracted");
+    const captureBtn = document.getElementById("captureBtn");
 
     let scanner;
 
@@ -58,43 +72,55 @@
     }
 
     async function init() {
-      await waitForOpenCV();
-      if (typeof jscanify === "undefined") {
-        alert("❌ JScanify did not load.");
-        return;
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        video.srcObject = stream;
+
+        await waitForOpenCV();
+        if (typeof jscanify === "undefined") {
+          alert("❌ JScanify did not load.");
+          return;
+        }
+        scanner = new jscanify();
+        alert("✅ Camera ready & JScanify initialized.");
+      } catch (err) {
+        alert("❌ Camera error: " + err.message);
       }
-      scanner = new jscanify();
-      alert("✅ JScanify initialized. Upload a document image to test.");
     }
 
-    fileInput.onchange = () => {
-      const file = fileInput.files[0];
-      if (!file) return;
+    captureBtn.onclick = () => {
+      if (!scanner) {
+        alert("❌ Scanner not initialized.");
+        return;
+      }
 
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.onload = () => {
-        preview.src = img.src;
+      const ctx = canvas.getContext("2d");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        try {
-          // Highlight detected paper
-          const highlightedCanvas = scanner.highlightPaper(img);
-          highlighted.width = highlightedCanvas.width;
-          highlighted.height = highlightedCanvas.height;
-          highlighted.getContext("2d").drawImage(highlightedCanvas, 0, 0);
+      const dataURL = canvas.toDataURL("image/jpeg", 0.9);
+      preview.src = dataURL;
 
-          // Extract the paper with set dimensions
-          const extractedCanvas = scanner.extractPaper(img, 500, 700);
-          extracted.width = extractedCanvas.width;
-          extracted.height = extractedCanvas.height;
-          extracted.getContext("2d").drawImage(extractedCanvas, 0, 0);
+      try {
+        // Highlight paper
+        const highlightedCanvas = scanner.highlightPaper(canvas);
+        highlighted.width = highlightedCanvas.width;
+        highlighted.height = highlightedCanvas.height;
+        highlighted.getContext("2d").drawImage(highlightedCanvas, 0, 0);
+        highlighted.style.display = "block";
 
-          alert("✅ Document processed. Check highlighted & extracted canvases below.");
-        } catch (err) {
-          alert("❌ Error detecting paper: " + err.message);
-        }
-      };
-      img.src = URL.createObjectURL(file);
+        // Extract paper
+        const extractedCanvas = scanner.extractPaper(canvas, 500, 700);
+        extracted.width = extractedCanvas.width;
+        extracted.height = extractedCanvas.height;
+        extracted.getContext("2d").drawImage(extractedCanvas, 0, 0);
+        extracted.style.display = "block";
+
+        alert("✅ Document captured & processed!");
+      } catch (err) {
+        alert("❌ Detection error: " + err.message);
+      }
     };
 
     window.onload = init;
