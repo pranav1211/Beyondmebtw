@@ -20,10 +20,26 @@ try {
   thepasskey = "default-secure-key";
 }
 
+// Main section data structure
 let jsdata = {
   mainPost: {},
-  featured: Array(4).fill(null).map(() => ({})), // Create separate objects
-  projects: Array(4).fill(null).map(() => ({}))   // Create separate objects
+  featured: Array(4).fill(null).map(() => ({})),
+  projects: Array(4).fill(null).map(() => ({}))
+};
+
+// Blog section data structure
+let blogData = {
+  f1arti: { subcategories: [], posts: [] },
+  movietv: { subcategories: [], posts: [] },
+  experience: { subcategories: [], posts: [] },
+  techart: { subcategories: [], posts: [] }
+};
+
+const blogUrls = {
+  f1arti: "https://beyondmebtw.com/blog/f1arti.json",
+  movietv: "https://beyondmebtw.com/blog/movietv.json",
+  experience: "https://beyondmebtw.com/blog/exerience.json",
+  techart: "https://beyondmebtw.com/blog/techart.json"
 };
 
 function loadJSON(callback) {
@@ -82,6 +98,47 @@ function loadJSON(callback) {
   });
 }
 
+function loadBlogJSON(category, callback) {
+  const url = blogUrls[category];
+  if (!url) {
+    console.error("Invalid blog category:", category);
+    return callback(new Error("Invalid category"));
+  }
+
+  const request = https.get(url, (res) => {
+    let data = "";
+    
+    res.on("data", (chunk) => {
+      data += chunk;
+    });
+    
+    res.on("end", () => {
+      try {
+        const parsedData = JSON.parse(data);
+        blogData[category] = {
+          subcategories: parsedData.subcategories || [],
+          posts: parsedData.posts || []
+        };
+        console.log(`Blog JSON data loaded successfully for ${category}.`);
+      } catch (err) {
+        console.error(`Error parsing blog JSON for ${category}:`, err);
+      }
+      callback();
+    });
+  });
+
+  request.on("error", (err) => {
+    console.error(`Error fetching blog JSON for ${category}:`, err);
+    callback();
+  });
+
+  request.setTimeout(10000, () => {
+    console.error(`Request timeout for ${category}`);
+    request.destroy();
+    callback();
+  });
+}
+
 function updateData(name, date, excerpt, thumbnail, link, formId) {
   const updateFields = (target, updates) => {
     for (const [key, value] of Object.entries(updates)) {
@@ -133,6 +190,67 @@ function updateData(name, date, excerpt, thumbnail, link, formId) {
   }
 }
 
+function updateBlogPost(category, uid, title, date, excerpt, thumbnail, link, subcategory, secondaryCategory, secondarySubcategory, isNewPost = false) {
+  if (!blogData[category]) {
+    throw new Error(`Invalid blog category: ${category}`);
+  }
+
+  const postData = {
+    uid: uid || `${category}_${Date.now()}`,
+    title: title || "",
+    date: date || "",
+    excerpt: excerpt || "",
+    thumbnail: thumbnail || "",
+    link: link || "",
+    subcategory: subcategory || ""
+  };
+
+  // Add optional fields if provided
+  if (secondaryCategory) postData.secondaryCategory = secondaryCategory;
+  if (secondarySubcategory) postData.secondarySubcategory = secondarySubcategory;
+
+  if (isNewPost) {
+    // Add new post
+    blogData[category].posts.push(postData);
+    console.log(`Added new post to ${category}:`, postData);
+  } else {
+    // Update existing post
+    const postIndex = blogData[category].posts.findIndex(post => 
+      post.uid === uid || post.title === title
+    );
+    
+    if (postIndex === -1) {
+      throw new Error(`Post not found in ${category} with uid/title: ${uid || title}`);
+    }
+
+    // Update only provided fields
+    const existingPost = blogData[category].posts[postIndex];
+    Object.keys(postData).forEach(key => {
+      if (postData[key] !== "") {
+        existingPost[key] = postData[key];
+      }
+    });
+
+    console.log(`Updated post in ${category}:`, existingPost);
+  }
+}
+
+function findBlogPost(category, identifier) {
+  if (!blogData[category]) {
+    throw new Error(`Invalid blog category: ${category}`);
+  }
+
+  const post = blogData[category].posts.find(post => 
+    post.uid === identifier || post.title === identifier
+  );
+
+  if (!post) {
+    throw new Error(`Post not found in ${category} with uid/title: ${identifier}`);
+  }
+
+  return post;
+}
+
 function writeJSONFile(callback) {
   const jsonPath = path.join(__dirname, "latest.json");
   
@@ -142,6 +260,19 @@ function writeJSONFile(callback) {
     callback(null);
   } catch (error) {
     console.error("Error writing JSON file:", error);
+    callback(error);
+  }
+}
+
+function writeBlogJSONFile(category, callback) {
+  const jsonPath = path.join(__dirname, `${category}.json`);
+  
+  try {
+    fs.writeFileSync(jsonPath, JSON.stringify(blogData[category], null, 2), "utf8");
+    console.log(`Blog data written to ${category}.json successfully`);
+    callback(null);
+  } catch (error) {
+    console.error(`Error writing blog JSON file for ${category}:`, error);
     callback(error);
   }
 }
@@ -207,6 +338,7 @@ const server = http.createServer((request, response) => {
         response.end(JSON.stringify({ success: false, message: "Authentication failed - Invalid key" }));
       }
     } 
+    // Handle main section updates
     else if (path === "/latestdata") {
       const parameters = url.searchParams;
       const name = parameters.get("name");
@@ -270,7 +402,89 @@ const server = http.createServer((request, response) => {
           response.end(`Error updating data: ${updateError.message}`);
         }
       });
-    } 
+    }
+    // Handle blog post search
+    else if (path === "/searchblogpost") {
+      const parameters = url.searchParams;
+      const category = parameters.get("category");
+      const identifier = parameters.get("identifier");
+      const key = parameters.get("key");
+
+      if (!key || key !== thepasskey) {
+        response.statusCode = 403;
+        response.end("Unauthorized access - Invalid key");
+        return;
+      }
+
+      if (!category || !identifier) {
+        response.statusCode = 400;
+        response.end("Missing category or identifier parameter");
+        return;
+      }
+
+      loadBlogJSON(category, () => {
+        try {
+          const post = findBlogPost(category, identifier);
+          response.writeHead(200, { "Content-Type": "application/json" });
+          response.end(JSON.stringify({ success: true, post }));
+        } catch (error) {
+          response.statusCode = 404;
+          response.setHeader("Content-Type", "application/json");
+          response.end(JSON.stringify({ success: false, message: error.message }));
+        }
+      });
+    }
+    // Handle blog post updates/additions
+    else if (path === "/blogdata") {
+      const parameters = url.searchParams;
+      const category = parameters.get("category");
+      const uid = parameters.get("uid");
+      const title = parameters.get("title");
+      const date = parameters.get("date");
+      const excerpt = parameters.get("excerpt");
+      const thumbnail = parameters.get("thumbnail");
+      const link = parameters.get("link");
+      const subcategory = parameters.get("subcategory");
+      const secondaryCategory = parameters.get("secondaryCategory");
+      const secondarySubcategory = parameters.get("secondarySubcategory");
+      const isNewPost = parameters.get("isNewPost") === "true";
+      const key = parameters.get("key");
+
+      if (!key || key !== thepasskey) {
+        response.statusCode = 403;
+        response.end("Unauthorized access - Invalid key");
+        return;
+      }
+
+      if (!category) {
+        response.statusCode = 400;
+        response.end("Missing category parameter");
+        return;
+      }
+
+      loadBlogJSON(category, () => {
+        try {
+          updateBlogPost(category, uid, title, date, excerpt, thumbnail, link, subcategory, secondaryCategory, secondarySubcategory, isNewPost);
+          
+          writeBlogJSONFile(category, (writeError) => {
+            if (writeError) {
+              response.statusCode = 500;
+              response.end("Error writing blog data to file");
+              return;
+            }
+
+            response.writeHead(200, { "Content-Type": "text/html" });
+            response.end(
+              `<html><body><h1>Blog post ${isNewPost ? 'added' : 'updated'} successfully.</h1><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>`
+            );
+          });
+        } catch (updateError) {
+          console.error("Error updating blog data:", updateError);
+          response.statusCode = 400;
+          response.end(`Error updating blog data: ${updateError.message}`);
+        }
+      });
+    }
     else if (path === "/health") {
       // Health check endpoint
       response.writeHead(200, { "Content-Type": "application/json" });

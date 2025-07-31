@@ -22,6 +22,12 @@
 
     <!-- Content Forms-->
     <div id="content-container" class="content-container" style="display:none;">
+        
+        <!-- Main Section -->
+        <div class="section-header">
+            <h1>Main Section</h1>
+        </div>
+        
         <div class="form-container">
             <!-- Latest Form -->
             <form action="/update" method="GET" id="latest">
@@ -32,6 +38,7 @@
                 <div class="latest-excerpt dispexcerpt"></div>
                 <div class="latest-link displink"></div>
                 <input type="hidden" name="instance" value="latest">
+                
                 <label for="name-latest">Post Name:</label>
                 <input type="text" id="name-latest" name="name">
 
@@ -53,7 +60,7 @@
                 <button type="submit">Submit</button>
             </form>
 
-            <!-- Featured 1 Form -->
+            <!-- Featured Forms -->
             <form action="/update" method="GET" id="featured1">
                 <h2>Featured 1</h2>
                 <div class="fepost0-title disptitle"></div>
@@ -62,6 +69,7 @@
                 <div class="fepost0-excerpt dispexcerpt"></div>
                 <div class="fepost0-link displink"></div>
                 <input type="hidden" name="instance" value="featured1">
+                
                 <label for="name-featured1">Post Name:</label>
                 <input type="text" id="name-featured1" name="name">
 
@@ -83,7 +91,6 @@
                 <button type="submit">Submit</button>
             </form>
 
-            <!-- Featured 2 Form -->
             <form action="/update" method="GET" id="featured2">
                 <h2>Featured 2</h2>
                 <div class="fepost1-title disptitle"></div>
@@ -92,6 +99,7 @@
                 <div class="fepost1-excerpt dispexcerpt"></div>
                 <div class="fepost1-link displink"></div>
                 <input type="hidden" name="instance" value="featured2">
+                
                 <label for="name-featured2">Post Name:</label>
                 <input type="text" id="name-featured2" name="name">
 
@@ -113,7 +121,6 @@
                 <button type="submit">Submit</button>
             </form>
 
-            <!-- Featured 3 Form -->
             <form action="/update" method="GET" id="featured3">
                 <h2>Featured 3</h2>
                 <div class="fepost2-title disptitle"></div>
@@ -122,6 +129,7 @@
                 <div class="fepost2-excerpt dispexcerpt"></div>
                 <div class="fepost2-link displink"></div>
                 <input type="hidden" name="instance" value="featured3">
+                
                 <label for="name-featured3">Post Name:</label>
                 <input type="text" id="name-featured3" name="name">
 
@@ -143,7 +151,6 @@
                 <button type="submit">Submit</button>
             </form>
 
-            <!-- Featured 4 Form -->
             <form action="/update" method="GET" id="featured4">
                 <h2>Featured 4</h2>
                 <div class="fepost3-title disptitle"></div>
@@ -152,6 +159,7 @@
                 <div class="fepost3-excerpt dispexcerpt"></div>
                 <div class="fepost3-link displink"></div>
                 <input type="hidden" name="instance" value="featured4">
+                
                 <label for="name-featured4">Post Name:</label>
                 <input type="text" id="name-featured4" name="name">
 
@@ -175,13 +183,14 @@
         </div>
 
         <div class="form-container">
-            <!-- Project 1 Form -->
+            <!-- Project Forms -->
             <form action="/update" method="GET" id="project1">
                 <h2>Project 1</h2>
                 <div class="feproj0-title disptitle"></div>
                 <div class="feproj0-excerpt dispexcerpt"></div>
                 <div class="feproj0-link displink"></div>
                 <input type="hidden" name="instance" value="project1">
+                
                 <label for="name-project1">Project Title:</label>
                 <input type="text" id="name-project1" name="name">
 
@@ -197,13 +206,13 @@
                 <button type="submit">Submit</button>
             </form>
 
-            <!-- Project 2 Form -->
             <form action="/update" method="GET" id="project2">
                 <h2>Project 2</h2>
                 <div class="feproj1-title disptitle"></div>
                 <div class="feproj1-excerpt dispexcerpt"></div>
                 <div class="feproj1-link displink"></div>
                 <input type="hidden" name="instance" value="project2">
+                
                 <label for="name-project2">Project Title:</label>
                 <input type="text" id="name-project2" name="name">
 
@@ -219,13 +228,13 @@
                 <button type="submit">Submit</button>
             </form>
 
-            <!-- Project 3 Form -->
             <form action="/update" method="GET" id="project3">
                 <h2>Project 3</h2>
                 <div class="feproj2-title disptitle"></div>
                 <div class="feproj2-excerpt dispexcerpt"></div>
                 <div class="feproj2-link displink"></div>
                 <input type="hidden" name="instance" value="project3">
+                
                 <label for="name-project3">Project Title:</label>
                 <input type="text" id="name-project3" name="name">
 
@@ -241,13 +250,13 @@
                 <button type="submit">Submit</button>
             </form>
 
-            <!-- Project 4 Form -->
             <form action="/update" method="GET" id="project4">
                 <h2>Project 4</h2>
                 <div class="feproj3-title disptitle"></div>
                 <div class="feproj3-excerpt dispexcerpt"></div>
                 <div class="feproj3-link displink"></div>
                 <input type="hidden" name="instance" value="project4">
+                
                 <label for="name-project4">Project Title:</label>
                 <input type="text" id="name-project4" name="name">
 
@@ -261,6 +270,123 @@
                 <input type="password" id="key-project4" name="key" required>
 
                 <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <!-- Blog Section -->
+        <div class="section-header">
+            <h1>Blog Section</h1>
+        </div>
+
+        <div class="form-container">
+            <!-- Blog Post Search/View Form -->
+            <form id="blog-search-form" class="blog-form">
+                <h2>View Blog Post</h2>
+                
+                <label for="search-category">Category:</label>
+                <select id="search-category" name="category" required>
+                    <option value="">Select Category</option>
+                    <option value="f1arti">F1 Articles</option>
+                    <option value="movietv">Movie/TV</option>
+                    <option value="experience">Experience</option>
+                    <option value="techart">Tech Articles</option>
+                </select>
+
+                <label for="search-identifier">UID or Title:</label>
+                <input type="text" id="search-identifier" name="identifier" required>
+
+                <label for="search-key">Password:</label>
+                <input type="password" id="search-key" name="key" required>
+
+                <button type="submit">Search Post</button>
+            </form>
+
+            <!-- Blog Post Display (Hidden initially) -->
+            <div id="blog-post-display" class="blog-post-display" style="display:none;">
+                <h2>Post Details</h2>
+                <div class="blog-post-info">
+                    <div class="blog-field">
+                        <strong>UID:</strong> <span id="display-uid"></span>
+                    </div>
+                    <div class="blog-field">
+                        <strong>Title:</strong> <span id="display-title"></span>
+                    </div>
+                    <div class="blog-field">
+                        <strong>Date:</strong> <span id="display-date"></span>
+                    </div>
+                    <div class="blog-field">
+                        <strong>Excerpt:</strong> <span id="display-excerpt"></span>
+                    </div>
+                    <div class="blog-field">
+                        <strong>Thumbnail:</strong> <span id="display-thumbnail"></span>
+                    </div>
+                    <div class="blog-field">
+                        <strong>Link:</strong> <span id="display-link"></span>
+                    </div>
+                    <div class="blog-field">
+                        <strong>Subcategory:</strong> <span id="display-subcategory"></span>
+                    </div>
+                    <div class="blog-field">
+                        <strong>Secondary Category:</strong> <span id="display-secondary-category"></span>
+                    </div>
+                    <div class="blog-field">
+                        <strong>Secondary Subcategory:</strong> <span id="display-secondary-subcategory"></span>
+                    </div>
+                </div>
+                <button id="update-post-btn" type="button">Update This Post</button>
+            </div>
+
+            <!-- Blog Post Add/Update Form -->
+            <form id="blog-form" class="blog-form">
+                <h2 id="blog-form-title">Add/Update Blog Post</h2>
+                
+                <label for="blog-category">Category:</label>
+                <select id="blog-category" name="category" required>
+                    <option value="">Select Category</option>
+                    <option value="f1arti">F1 Articles</option>
+                    <option value="movietv">Movie/TV</option>
+                    <option value="experience">Experience</option>
+                    <option value="techart">Tech Articles</option>
+                </select>
+
+                <label for="blog-uid">UID:</label>
+                <input type="text" id="blog-uid" name="uid" placeholder="e.g., tech_001">
+
+                <label for="blog-title">Title:</label>
+                <input type="text" id="blog-title" name="title">
+
+                <label for="blog-date">Date:</label>
+                <input type="text" id="blog-date" name="date" placeholder="e.g., Sep 12, 2024">
+
+                <label for="blog-excerpt">Excerpt:</label>
+                <input type="text" id="blog-excerpt" name="excerpt">
+
+                <label for="blog-thumbnail">Thumbnail URL:</label>
+                <input type="text" id="blog-thumbnail" name="thumbnail">
+
+                <label for="blog-link">Link:</label>
+                <input type="text" id="blog-link" name="link">
+
+                <label for="blog-subcategory">Subcategory (Optional):</label>
+                <input type="text" id="blog-subcategory" name="subcategory">
+
+                <label for="blog-secondary-category">Secondary Category (Optional):</label>
+                <input type="text" id="blog-secondary-category" name="secondaryCategory">
+
+                <label for="blog-secondary-subcategory">Secondary Subcategory (Optional):</label>
+                <input type="text" id="blog-secondary-subcategory" name="secondarySubcategory">
+
+                <div class="form-actions">
+                    <label>
+                        <input type="checkbox" id="is-new-post" name="isNewPost"> Add as New Post
+                    </label>
+                </div>
+
+                <label for="blog-key">Password:</label>
+                <input type="password" id="blog-key" name="key" required>
+
+                <button type="submit">Submit</button>
+                <button type="button" id="clear-blog-form">Clear Form</button>
             </form>
         </div>
     </div>

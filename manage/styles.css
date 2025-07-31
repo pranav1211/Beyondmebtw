@@ -5,6 +5,22 @@ body {
     background-color: #f5f5f5;
 }
 
+.section-header {
+    text-align: center;
+    margin: 40px 0 20px;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.section-header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 600;
+}
+
 .form-container {
     display: flex;
     flex-wrap: wrap;
@@ -35,7 +51,7 @@ label {
     color: #333;
 }
 
-input {
+input, select {
     width: 100%;
     padding: 12px;
     margin-bottom: 20px;
@@ -46,7 +62,7 @@ input {
     transition: border-color 0.3s;
 }
 
-input:focus {
+input:focus, select:focus {
     outline: none;
     border-color: #007BFF;
     box-shadow: 0 0 3px rgba(0, 123, 255, 0.3);
@@ -63,10 +79,19 @@ button {
     font-size: 16px;
     font-weight: 600;
     transition: background-color 0.3s;
+    margin-bottom: 10px;
 }
 
 button:hover {
     background: #0056b3;
+}
+
+button[type="button"] {
+    background: #6c757d;
+}
+
+button[type="button"]:hover {
+    background: #5a6268;
 }
 
 /* Login form styling */
@@ -92,7 +117,7 @@ button:hover {
     transition: opacity 0.5s ease;
 }
 
-/* New elements styling */
+/* Display elements styling */
 .dispimg {
     width: 100%;
     height: fit-content;
@@ -133,6 +158,103 @@ button:hover {
     word-break: break-all;
 }
 
+/* Blog section specific styles */
+.blog-form {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    border: 2px solid #e91e63;
+}
+
+.blog-form h2 {
+    color: white;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    padding-bottom: 10px;
+}
+
+.blog-form label {
+    color: white;
+    font-weight: 700;
+}
+
+.blog-form input,
+.blog-form select {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.blog-form input:focus,
+.blog-form select:focus {
+    background: white;
+    border-color: #e91e63;
+    box-shadow: 0 0 5px rgba(233, 30, 99, 0.3);
+}
+
+.blog-post-display {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid #e91e63;
+    max-width: 500px;
+}
+
+.blog-post-display h2 {
+    color: #e91e63;
+    border-bottom: 2px solid #e91e63;
+    padding-bottom: 10px;
+}
+
+.blog-post-info {
+    margin-bottom: 20px;
+}
+
+.blog-field {
+    margin-bottom: 15px;
+    padding: 10px;
+    background: white;
+    border-radius: 5px;
+    border-left: 4px solid #e91e63;
+}
+
+.blog-field strong {
+    color: #e91e63;
+    display: inline-block;
+    min-width: 120px;
+}
+
+.blog-field span {
+    color: #333;
+    word-break: break-word;
+}
+
+.form-actions {
+    margin-bottom: 20px;
+}
+
+.form-actions label {
+    display: flex;
+    align-items: center;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.form-actions input[type="checkbox"] {
+    width: auto;
+    margin-right: 10px;
+    margin-bottom: 0;
+}
+
+/* Update button styling */
+#update-post-btn {
+    background: #28a745;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 15px;
+}
+
+#update-post-btn:hover {
+    background: #218838;
+}
+
 @media (max-width: 768px) {
     .form-container {
         flex-direction: column;
@@ -140,5 +262,9 @@ button:hover {
     
     form {
         width: 100%;
+    }
+
+    .section-header h1 {
+        font-size: 24px;
     }
 }
