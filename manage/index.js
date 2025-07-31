@@ -93,8 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const baseUrl = "https://manage.beyondmebtw.com/latestdata";
                 const queryString = queryStringParams.join("&");
                 const url = queryString ? `${baseUrl}?${queryString}` : baseUrl;
-
-                console.log("Constructed URL:", url);
+               
 
                 fetch(url)
                     .then((response) => {
@@ -172,7 +171,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const queryString = queryStringParams.join("&");
             const url = queryString ? `${baseUrl}?${queryString}` : baseUrl;
 
-            console.log("Constructed blog URL:", url);
             console.log("Is New Post (checkbox checked):", isNewPost);
             console.log("All form values:", {
                 category, uid, title, date, excerpt, thumbnail, link, 
