@@ -38,7 +38,7 @@ let blogData = {
 const blogUrls = {
   f1arti: "https://beyondmebtw.com/blog/f1arti.json",
   movietv: "https://beyondmebtw.com/blog/movietv.json",
-  experience: "https://beyondmebtw.com/blog/exerience.json",
+  experience: "https://beyondmebtw.com/blog/exeprience.json",
   techart: "https://beyondmebtw.com/blog/techart.json"
 };
 
@@ -250,7 +250,8 @@ function writeJSONFile(callback) {
 }
 
 function writeBlogJSONFile(category, callback) {
-  const jsonPath = path.join(__dirname, `${category}.json`);
+  const jsonPath = path.join("/bmbsifi/Beyondmebtw/blog", `${category}.json`);
+
 
   try {
     fs.writeFileSync(jsonPath, JSON.stringify(blogData[category], null, 2), "utf8");
