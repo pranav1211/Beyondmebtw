@@ -204,19 +204,23 @@ function updateData(name, date, excerpt, thumbnail, link, formId) {
   }
 }
 
-function updateBlogPost(category, uid, title, date, excerpt, thumbnail, link, subcategory, secondaryCategory, secondarySubcategory, isNewPost = false) {
+// Simplified function to only add new blog posts
+function addNewBlogPost(category, uid, title, date, excerpt, thumbnail, link, subcategory, secondaryCategory, secondarySubcategory) {
   if (!blogData[category]) {
     throw new Error(`Invalid blog category: ${category}`);
   }
 
-  console.log(`Processing blog post update for ${category}:`, {
-    uid, title, isNewPost
+  console.log(`Adding new blog post to ${category}:`, {
+    uid, title
   });
 
+  // Generate UID if not provided
+  const postUID = uid || `${category}_${Date.now()}`;
+
   const postData = {
-    uid: uid || `${category}_${Date.now()}`,
-    title: title || "",
-    date: date || "",
+    uid: postUID,
+    title: title || "Untitled Post",
+    date: date || new Date().toISOString().split('T')[0],
     excerpt: excerpt || "",
     thumbnail: thumbnail || "",
     link: link || "",
@@ -227,31 +231,9 @@ function updateBlogPost(category, uid, title, date, excerpt, thumbnail, link, su
   if (secondaryCategory) postData.secondaryCategory = secondaryCategory;
   if (secondarySubcategory) postData.secondarySubcategory = secondarySubcategory;
 
-  if (isNewPost) {
-    // Add new post
-    blogData[category].posts.push(postData);
-    console.log(`Added new post to ${category}:`, postData);
-  } else {
-    // Update existing post
-    const postIndex = blogData[category].posts.findIndex(post => 
-      post.uid === uid || post.title === title
-    );
-    
-    if (postIndex === -1) {
-      // If post not found and we're not explicitly adding new, add it anyway
-      console.log(`Post not found in ${category}, adding as new post:`, postData);
-      blogData[category].posts.push(postData);
-    } else {
-      // Update only provided fields
-      const existingPost = blogData[category].posts[postIndex];
-      Object.keys(postData).forEach(key => {
-        if (postData[key] !== "") {
-          existingPost[key] = postData[key];
-        }
-      });
-      console.log(`Updated existing post in ${category}:`, existingPost);
-    }
-  }
+  // Always add as new post - no checking for duplicates
+  blogData[category].posts.push(postData);
+  console.log(`Successfully added new post to ${category}:`, postData);
 }
 
 function writeJSONFile(callback) {
@@ -406,7 +388,7 @@ const server = http.createServer((request, response) => {
         }
       });
     }
-    // Handle blog post updates/additions
+    // Handle blog post additions only
     else if (path === "/blogdata") {
       const parameters = url.searchParams;
       const category = parameters.get("category");
@@ -419,11 +401,12 @@ const server = http.createServer((request, response) => {
       const subcategory = parameters.get("subcategory");
       const secondaryCategory = parameters.get("secondaryCategory");
       const secondarySubcategory = parameters.get("secondarySubcategory");
-      const isNewPost = parameters.get("isNewPost") === "true";
+      const isNewPost = parameters.get("isNewPost");
       const key = parameters.get("key");
 
       console.log("Blog data request received:", {
-        category, uid, title, isNewPost
+        category, uid, title, isNewPost, 
+        allParams: Object.fromEntries(parameters.entries())
       });
 
       if (!key || key !== thepasskey) {
@@ -438,9 +421,16 @@ const server = http.createServer((request, response) => {
         return;
       }
 
+      if (!title || !date || !excerpt || !thumbnail || !link) {
+        response.statusCode = 400;
+        response.end("Missing required fields: title, date, excerpt, thumbnail, and link are required");
+        return;
+      }
+
       loadBlogJSON(category, () => {
         try {
-          updateBlogPost(category, uid, title, date, excerpt, thumbnail, link, subcategory, secondaryCategory, secondarySubcategory, isNewPost);
+          // Always add as new post (simplified logic)
+          addNewBlogPost(category, uid, title, date, excerpt, thumbnail, link, subcategory, secondaryCategory, secondarySubcategory);
 
           writeBlogJSONFile(category, (writeError) => {
             if (writeError) {
@@ -455,21 +445,21 @@ const server = http.createServer((request, response) => {
                 console.error("Script execution failed, but blog data was saved");
                 response.writeHead(200, { "Content-Type": "text/html" });
                 response.end(
-                  `<html><body><h1>Blog post ${isNewPost ? 'added' : 'updated'} successfully.</h1><p>Note: Script execution failed but data was saved.</p><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>`
+                  `<html><body><h1>New blog post added successfully.</h1><p>Note: Script execution failed but data was saved.</p><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>`
                 );
                 return;
               }
 
               response.writeHead(200, { "Content-Type": "text/html" });
               response.end(
-                `<html><body><h1>Blog post ${isNewPost ? 'added' : 'updated'} successfully.</h1><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>`
+                `<html><body><h1>New blog post added successfully.</h1><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>`
               );
             });
           });
         } catch (updateError) {
-          console.error("Error updating blog data:", updateError);
+          console.error("Error adding blog data:", updateError);
           response.statusCode = 400;
-          response.end(`Error updating blog data: ${updateError.message}`);
+          response.end(`Error adding blog data: ${updateError.message}`);
         }
       });
     }

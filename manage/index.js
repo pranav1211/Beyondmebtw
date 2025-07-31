@@ -136,18 +136,36 @@ document.addEventListener("DOMContentLoaded", () => {
         blogForm.addEventListener("submit", (event) => {
             event.preventDefault();
 
-            const formData = new FormData(blogForm);
             const queryStringParams = [];
 
-            formData.forEach((value, key) => {
-                const trimmedValue = value.trim();
-                if (trimmedValue !== "") {
-                    queryStringParams.push(`${encodeURIComponent(key)}=${encodeURIComponent(trimmedValue)}`);
-                }
-            });
-
-            // Add the isNewPost parameter
+            // Get all form field values manually to ensure we capture everything correctly
+            const category = document.getElementById("blog-category").value.trim();
+            const uid = document.getElementById("blog-uid").value.trim();
+            const title = document.getElementById("blog-title").value.trim();
+            const date = document.getElementById("blog-date").value.trim();
+            const excerpt = document.getElementById("blog-excerpt").value.trim();
+            const thumbnail = document.getElementById("blog-thumbnail").value.trim();
+            const link = document.getElementById("blog-link").value.trim();
+            const subcategory = document.getElementById("blog-subcategory").value.trim();
+            const secondaryCategory = document.getElementById("blog-secondary-category").value.trim();
+            const secondarySubcategory = document.getElementById("blog-secondary-subcategory").value.trim();
+            const key = document.getElementById("blog-key").value.trim();
             const isNewPost = document.getElementById("is-new-post").checked;
+
+            // Add parameters only if they have values
+            if (category) queryStringParams.push(`category=${encodeURIComponent(category)}`);
+            if (uid) queryStringParams.push(`uid=${encodeURIComponent(uid)}`);
+            if (title) queryStringParams.push(`title=${encodeURIComponent(title)}`);
+            if (date) queryStringParams.push(`date=${encodeURIComponent(date)}`);
+            if (excerpt) queryStringParams.push(`excerpt=${encodeURIComponent(excerpt)}`);
+            if (thumbnail) queryStringParams.push(`thumbnail=${encodeURIComponent(thumbnail)}`);
+            if (link) queryStringParams.push(`link=${encodeURIComponent(link)}`);
+            if (subcategory) queryStringParams.push(`subcategory=${encodeURIComponent(subcategory)}`);
+            if (secondaryCategory) queryStringParams.push(`secondaryCategory=${encodeURIComponent(secondaryCategory)}`);
+            if (secondarySubcategory) queryStringParams.push(`secondarySubcategory=${encodeURIComponent(secondarySubcategory)}`);
+            if (key) queryStringParams.push(`key=${encodeURIComponent(key)}`);
+
+            // Always add the isNewPost parameter explicitly
             queryStringParams.push(`isNewPost=${isNewPost}`);
 
             const baseUrl = "https://manage.beyondmebtw.com/blogdata";
@@ -155,7 +173,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const url = queryString ? `${baseUrl}?${queryString}` : baseUrl;
 
             console.log("Constructed blog URL:", url);
-            console.log("Is New Post:", isNewPost);
+            console.log("Is New Post (checkbox checked):", isNewPost);
+            console.log("All form values:", {
+                category, uid, title, date, excerpt, thumbnail, link, 
+                subcategory, secondaryCategory, secondarySubcategory, isNewPost
+            });
 
             fetch(url)
                 .then((response) => {
@@ -186,8 +208,8 @@ document.addEventListener("DOMContentLoaded", () => {
         function clearBlogForm() {
             blogForm.reset();
             document.getElementById("blog-key").value = authKey;
-            document.getElementById("blog-form-title").textContent = "Add/Update Blog Post";
-            document.getElementById("is-new-post").checked = false;
+            document.getElementById("blog-form-title").textContent = "Add New Blog Post";
+            document.getElementById("is-new-post").checked = true; // Default to checked
         }
     }
 
