@@ -45,18 +45,18 @@ const blogUrls = {
 function loadJSON(callback) {
   const request = https.get("https://beyondmebtw.com/manage/latest.json", (res) => {
     let data = "";
-    
+
     res.on("data", (chunk) => {
       data += chunk;
     });
-    
+
     res.on("end", () => {
       try {
         const parsedData = JSON.parse(data);
-        
+
         // Validate and merge data
         jsdata.mainPost = parsedData.mainPost || {};
-        
+
         // Handle featured array
         if (Array.isArray(parsedData.featured)) {
           jsdata.featured = parsedData.featured.slice(0, 4); // Take first 4
@@ -66,7 +66,7 @@ function loadJSON(callback) {
         } else {
           jsdata.featured = Array(4).fill(null).map(() => ({}));
         }
-        
+
         // Handle projects array
         if (Array.isArray(parsedData.projects)) {
           jsdata.projects = parsedData.projects.slice(0, 4); // Take first 4
@@ -107,11 +107,11 @@ function loadBlogJSON(category, callback) {
 
   const request = https.get(url, (res) => {
     let data = "";
-    
+
     res.on("data", (chunk) => {
       data += chunk;
     });
-    
+
     res.on("end", () => {
       try {
         const parsedData = JSON.parse(data);
@@ -122,6 +122,11 @@ function loadBlogJSON(category, callback) {
         console.log(`Blog JSON data loaded successfully for ${category}.`);
       } catch (err) {
         console.error(`Error parsing blog JSON for ${category}:`, err);
+        // Initialize empty structure if parsing fails
+        blogData[category] = {
+          subcategories: [],
+          posts: []
+        };
       }
       callback();
     });
@@ -129,12 +134,21 @@ function loadBlogJSON(category, callback) {
 
   request.on("error", (err) => {
     console.error(`Error fetching blog JSON for ${category}:`, err);
+    // Initialize empty structure if request fails
+    blogData[category] = {
+      subcategories: [],
+      posts: []
+    };
     callback();
   });
 
   request.setTimeout(10000, () => {
     console.error(`Request timeout for ${category}`);
     request.destroy();
+    blogData[category] = {
+      subcategories: [],
+      posts: []
+    };
     callback();
   });
 }
@@ -195,6 +209,10 @@ function updateBlogPost(category, uid, title, date, excerpt, thumbnail, link, su
     throw new Error(`Invalid blog category: ${category}`);
   }
 
+  console.log(`Processing blog post update for ${category}:`, {
+    uid, title, isNewPost
+  });
+
   const postData = {
     uid: uid || `${category}_${Date.now()}`,
     title: title || "",
@@ -220,40 +238,25 @@ function updateBlogPost(category, uid, title, date, excerpt, thumbnail, link, su
     );
     
     if (postIndex === -1) {
-      throw new Error(`Post not found in ${category} with uid/title: ${uid || title}`);
+      // If post not found and we're not explicitly adding new, add it anyway
+      console.log(`Post not found in ${category}, adding as new post:`, postData);
+      blogData[category].posts.push(postData);
+    } else {
+      // Update only provided fields
+      const existingPost = blogData[category].posts[postIndex];
+      Object.keys(postData).forEach(key => {
+        if (postData[key] !== "") {
+          existingPost[key] = postData[key];
+        }
+      });
+      console.log(`Updated existing post in ${category}:`, existingPost);
     }
-
-    // Update only provided fields
-    const existingPost = blogData[category].posts[postIndex];
-    Object.keys(postData).forEach(key => {
-      if (postData[key] !== "") {
-        existingPost[key] = postData[key];
-      }
-    });
-
-    console.log(`Updated post in ${category}:`, existingPost);
   }
-}
-
-function findBlogPost(category, identifier) {
-  if (!blogData[category]) {
-    throw new Error(`Invalid blog category: ${category}`);
-  }
-
-  const post = blogData[category].posts.find(post => 
-    post.uid === identifier || post.title === identifier
-  );
-
-  if (!post) {
-    throw new Error(`Post not found in ${category} with uid/title: ${identifier}`);
-  }
-
-  return post;
 }
 
 function writeJSONFile(callback) {
   const jsonPath = path.join(__dirname, "latest.json");
-  
+
   try {
     fs.writeFileSync(jsonPath, JSON.stringify(jsdata, null, 2), "utf8");
     console.log("Data written to latest.json successfully");
@@ -266,7 +269,7 @@ function writeJSONFile(callback) {
 
 function writeBlogJSONFile(category, callback) {
   const jsonPath = path.join(__dirname, `${category}.json`);
-  
+
   try {
     fs.writeFileSync(jsonPath, JSON.stringify(blogData[category], null, 2), "utf8");
     console.log(`Blog data written to ${category}.json successfully`);
@@ -279,14 +282,14 @@ function writeBlogJSONFile(category, callback) {
 
 function executeScript(callback) {
   const scriptPath = '/shellfiles/jsonupdatebmb.sh';
-  
+
   // Check if script exists
   if (!fs.existsSync(scriptPath)) {
     console.error(`Script not found: ${scriptPath}`);
     return callback(new Error(`Script not found: ${scriptPath}`));
   }
 
-  exec(`sh ${scriptPath}`, { timeout: 10000 }, (error, stdout, stderr) => {
+  exec(`sh ${scriptPath}`, { timeout: 15000 }, (error, stdout, stderr) => {
     if (error) {
       console.error(`Error executing script: ${error}`);
       return callback(error);
@@ -372,7 +375,7 @@ const server = http.createServer((request, response) => {
       loadJSON(() => {
         try {
           updateData(name, date, excerpt, thumbnail, link, formid);
-          
+
           writeJSONFile((writeError) => {
             if (writeError) {
               response.statusCode = 500;
@@ -403,37 +406,6 @@ const server = http.createServer((request, response) => {
         }
       });
     }
-    // Handle blog post search
-    else if (path === "/searchblogpost") {
-      const parameters = url.searchParams;
-      const category = parameters.get("category");
-      const identifier = parameters.get("identifier");
-      const key = parameters.get("key");
-
-      if (!key || key !== thepasskey) {
-        response.statusCode = 403;
-        response.end("Unauthorized access - Invalid key");
-        return;
-      }
-
-      if (!category || !identifier) {
-        response.statusCode = 400;
-        response.end("Missing category or identifier parameter");
-        return;
-      }
-
-      loadBlogJSON(category, () => {
-        try {
-          const post = findBlogPost(category, identifier);
-          response.writeHead(200, { "Content-Type": "application/json" });
-          response.end(JSON.stringify({ success: true, post }));
-        } catch (error) {
-          response.statusCode = 404;
-          response.setHeader("Content-Type", "application/json");
-          response.end(JSON.stringify({ success: false, message: error.message }));
-        }
-      });
-    }
     // Handle blog post updates/additions
     else if (path === "/blogdata") {
       const parameters = url.searchParams;
@@ -450,6 +422,10 @@ const server = http.createServer((request, response) => {
       const isNewPost = parameters.get("isNewPost") === "true";
       const key = parameters.get("key");
 
+      console.log("Blog data request received:", {
+        category, uid, title, isNewPost
+      });
+
       if (!key || key !== thepasskey) {
         response.statusCode = 403;
         response.end("Unauthorized access - Invalid key");
@@ -465,7 +441,7 @@ const server = http.createServer((request, response) => {
       loadBlogJSON(category, () => {
         try {
           updateBlogPost(category, uid, title, date, excerpt, thumbnail, link, subcategory, secondaryCategory, secondarySubcategory, isNewPost);
-          
+
           writeBlogJSONFile(category, (writeError) => {
             if (writeError) {
               response.statusCode = 500;
@@ -473,10 +449,22 @@ const server = http.createServer((request, response) => {
               return;
             }
 
-            response.writeHead(200, { "Content-Type": "text/html" });
-            response.end(
-              `<html><body><h1>Blog post ${isNewPost ? 'added' : 'updated'} successfully.</h1><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>`
-            );
+            // Run the shell script after writing blog data
+            executeScript((scriptError) => {
+              if (scriptError) {
+                console.error("Script execution failed, but blog data was saved");
+                response.writeHead(200, { "Content-Type": "text/html" });
+                response.end(
+                  `<html><body><h1>Blog post ${isNewPost ? 'added' : 'updated'} successfully.</h1><p>Note: Script execution failed but data was saved.</p><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>`
+                );
+                return;
+              }
+
+              response.writeHead(200, { "Content-Type": "text/html" });
+              response.end(
+                `<html><body><h1>Blog post ${isNewPost ? 'added' : 'updated'} successfully.</h1><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>`
+              );
+            });
           });
         } catch (updateError) {
           console.error("Error updating blog data:", updateError);

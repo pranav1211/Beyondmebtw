@@ -279,63 +279,6 @@
         </div>
 
         <div class="form-container">
-            <!-- Blog Post Search/View Form -->
-            <form id="blog-search-form" class="blog-form">
-                <h2>View Blog Post</h2>
-                
-                <label for="search-category">Category:</label>
-                <select id="search-category" name="category" required>
-                    <option value="">Select Category</option>
-                    <option value="f1arti">F1 Articles</option>
-                    <option value="movietv">Movie/TV</option>
-                    <option value="experience">Experience</option>
-                    <option value="techart">Tech Articles</option>
-                </select>
-
-                <label for="search-identifier">UID or Title:</label>
-                <input type="text" id="search-identifier" name="identifier" required>
-
-                <label for="search-key">Password:</label>
-                <input type="password" id="search-key" name="key" required>
-
-                <button type="submit">Search Post</button>
-            </form>
-
-            <!-- Blog Post Display (Hidden initially) -->
-            <div id="blog-post-display" class="blog-post-display" style="display:none;">
-                <h2>Post Details</h2>
-                <div class="blog-post-info">
-                    <div class="blog-field">
-                        <strong>UID:</strong> <span id="display-uid"></span>
-                    </div>
-                    <div class="blog-field">
-                        <strong>Title:</strong> <span id="display-title"></span>
-                    </div>
-                    <div class="blog-field">
-                        <strong>Date:</strong> <span id="display-date"></span>
-                    </div>
-                    <div class="blog-field">
-                        <strong>Excerpt:</strong> <span id="display-excerpt"></span>
-                    </div>
-                    <div class="blog-field">
-                        <strong>Thumbnail:</strong> <span id="display-thumbnail"></span>
-                    </div>
-                    <div class="blog-field">
-                        <strong>Link:</strong> <span id="display-link"></span>
-                    </div>
-                    <div class="blog-field">
-                        <strong>Subcategory:</strong> <span id="display-subcategory"></span>
-                    </div>
-                    <div class="blog-field">
-                        <strong>Secondary Category:</strong> <span id="display-secondary-category"></span>
-                    </div>
-                    <div class="blog-field">
-                        <strong>Secondary Subcategory:</strong> <span id="display-secondary-subcategory"></span>
-                    </div>
-                </div>
-                <button id="update-post-btn" type="button">Update This Post</button>
-            </div>
-
             <!-- Blog Post Add/Update Form -->
             <form id="blog-form" class="blog-form">
                 <h2 id="blog-form-title">Add/Update Blog Post</h2>
@@ -378,8 +321,12 @@
 
                 <div class="form-actions">
                     <label>
-                        <input type="checkbox" id="is-new-post" name="isNewPost"> Add as New Post
+                        <input type="checkbox" id="is-new-post" name="isNewPost">
+                        <span>✓ ADD AS NEW POST</span>
                     </label>
+                    <div style="font-size: 12px; margin-top: 5px; opacity: 0.9;">
+                        Check this box to add a completely new blog post. Leave unchecked to update an existing post.
+                    </div>
                 </div>
 
                 <label for="blog-key">Password:</label>

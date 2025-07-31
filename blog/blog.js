@@ -11,10 +11,10 @@ let hasMorePosts = true;
 
 // JSON file mappings for each category
 const categoryJsonFiles = {
-    'movie-tv': 'movietv.json',
-    'f1': 'f1arti.json',
-    'experience': 'experience.json',
-    'tech': 'techart.json'
+    'movie-tv': 'https://beyondmebtw.com/blog/movietv.json',
+    'f1': 'https://beyondmebtw.com/blog/f1arti.json',
+    'experience': 'https://beyondmebtw.com/blog/experience.json',
+    'tech': 'https://beyondmebtw.com/blog/techart.json'
 };
 
 // Subcategory mappings
