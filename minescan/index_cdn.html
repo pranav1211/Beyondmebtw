@@ -244,11 +244,16 @@
                 return;
             }
 
-            const canvas = document.getElementById('originalCanvas');
-            
             try {
+                // Create a full-size canvas with the original image
+                const fullCanvas = document.createElement('canvas');
+                fullCanvas.width = originalImage.width;
+                fullCanvas.height = originalImage.height;
+                const fullCtx = fullCanvas.getContext('2d');
+                fullCtx.drawImage(originalImage, 0, 0);
+                
                 timeFunction('JScanify Highlight Paper', () => {
-                    const highlighted = scanner.highlightPaper(canvas);
+                    const highlighted = scanner.highlightPaper(fullCanvas);
                     const outputCanvas = document.getElementById('processedCanvas');
                     outputCanvas.width = highlighted.width;
                     outputCanvas.height = highlighted.height;
@@ -277,24 +282,29 @@
             
             metrics.totalStart = performance.now();
             
-            const canvas = document.getElementById('originalCanvas');
-            
             try {
                 updateStatus('Running benchmark...', 'info');
                 
+                // Create a full-size canvas with the original image for processing
+                const fullCanvas = document.createElement('canvas');
+                fullCanvas.width = originalImage.width;
+                fullCanvas.height = originalImage.height;
+                const fullCtx = fullCanvas.getContext('2d');
+                fullCtx.drawImage(originalImage, 0, 0);
+                
                 // Step 1: Get corner points (document detection)
                 const cornerPoints = timeFunction('JScanify Get Corner Points', () => {
-                    return scanner.getCornerPoints(canvas);
+                    return scanner.getCornerPoints(fullCanvas);
                 });
                 
                 // Step 2: Highlight paper (visual feedback)
                 const highlighted = timeFunction('JScanify Highlight Paper', () => {
-                    return scanner.highlightPaper(canvas);
+                    return scanner.highlightPaper(fullCanvas);
                 });
                 
                 // Step 3: Extract paper (perspective correction + enhancement)
                 const extracted = timeFunction('JScanify Extract Paper', () => {
-                    return scanner.extractPaper(canvas, canvas.width, canvas.height);
+                    return scanner.extractPaper(fullCanvas, fullCanvas.width, fullCanvas.height);
                 });
                 
                 metrics.totalEnd = performance.now();
