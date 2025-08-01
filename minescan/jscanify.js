@@ -9,12 +9,6 @@
 })(this, function () {
   "use strict";
 
-  /**
-   * Calculates distance between two points. Each point must have `x` and `y` property
-   * @param {*} p1 point 1
-   * @param {*} p2 point 2
-   * @returns distance between two points
-   */
   function distance(p1, p2) {
     return Math.hypot(p1.x - p2.x, p1.y - p2.y);
   }
@@ -22,37 +16,18 @@
   class jscanify {
     constructor() { }
 
-    /**
-     * Finds the contour of the paper within the image
-     * @param {*} img image to process (cv.Mat)
-     * @returns the biggest contour inside the image
-     */
     findPaperContour(img) {
       const imgGray = new cv.Mat();
-      cv.Canny(img, imgGray, 50, 200);
+      cv.cvtColor(img, imgGray, cv.COLOR_RGBA2GRAY, 0);
 
       const imgBlur = new cv.Mat();
-      cv.GaussianBlur(
-        imgGray,
-        imgBlur,
-        new cv.Size(3, 3),
-        0,
-        0,
-        cv.BORDER_DEFAULT
-      );
+      cv.GaussianBlur(imgGray, imgBlur, new cv.Size(3, 3), 0);
 
       const imgThresh = new cv.Mat();
-      cv.threshold(
-        imgBlur,
-        imgThresh,
-        0,
-        255,
-        cv.THRESH_OTSU
-      );
+      cv.Canny(imgBlur, imgThresh, 50, 200);
 
       let contours = new cv.MatVector();
       let hierarchy = new cv.Mat();
-
       cv.findContours(
         imgThresh,
         contours,
@@ -72,9 +47,7 @@
       }
 
       const maxContour =
-        maxContourIndex >= 0 ?
-          contours.get(maxContourIndex) :
-          null;
+        maxContourIndex >= 0 ? contours.get(maxContourIndex) : null;
 
       imgGray.delete();
       imgBlur.delete();
@@ -84,106 +57,88 @@
       return maxContour;
     }
 
-    /**
-     * Highlights the paper detected inside the image.
-     * @param {*} image image to process
-     * @param {*} options options for highlighting. Accepts `color` and `thickness` parameter
-     * @returns `HTMLCanvasElement` with original image and paper highlighted
-     */
     highlightPaper(image, options) {
       options = options || {};
       options.color = options.color || "orange";
       options.thickness = options.thickness || 10;
+
+      const offCanvas = document.createElement("canvas");
+      offCanvas.width = image.width;
+      offCanvas.height = image.height;
+      const offCtx = offCanvas.getContext("2d");
+      offCtx.drawImage(image, 0, 0);
+
+      const imgData = offCtx.getImageData(0, 0, offCanvas.width, offCanvas.height);
+      let src = cv.matFromImageData(imgData);
+
+      const maxContour = this.findPaperContour(src);
+
       const canvas = document.createElement("canvas");
+      canvas.width = src.cols;
+      canvas.height = src.rows;
       const ctx = canvas.getContext("2d");
-      const img = cv.imread(image);
+      ctx.drawImage(image, 0, 0);
 
-      const maxContour = this.findPaperContour(img);
-      cv.imshow(canvas, img);
       if (maxContour) {
-        const {
-          topLeftCorner,
-          topRightCorner,
-          bottomLeftCorner,
-          bottomRightCorner,
-        } = this.getCornerPoints(maxContour, img);
+        const { topLeftCorner, topRightCorner, bottomLeftCorner, bottomRightCorner } =
+          this.getCornerPoints(maxContour, src);
 
-        if (
-          topLeftCorner &&
-          topRightCorner &&
-          bottomLeftCorner &&
-          bottomRightCorner
-        ) {
+        if (topLeftCorner && topRightCorner && bottomLeftCorner && bottomRightCorner) {
           ctx.strokeStyle = options.color;
           ctx.lineWidth = options.thickness;
           ctx.beginPath();
-          ctx.moveTo(...Object.values(topLeftCorner));
-          ctx.lineTo(...Object.values(topRightCorner));
-          ctx.lineTo(...Object.values(bottomRightCorner));
-          ctx.lineTo(...Object.values(bottomLeftCorner));
-          ctx.lineTo(...Object.values(topLeftCorner));
+          ctx.moveTo(topLeftCorner.x, topLeftCorner.y);
+          ctx.lineTo(topRightCorner.x, topRightCorner.y);
+          ctx.lineTo(bottomRightCorner.x, bottomRightCorner.y);
+          ctx.lineTo(bottomLeftCorner.x, bottomLeftCorner.y);
+          ctx.closePath();
           ctx.stroke();
         }
       }
 
-      img.delete();
+      src.delete();
       return canvas;
     }
 
-    /**
-     * Extracts and undistorts the image detected within the frame.
-     * 
-     * Returns `null` if no paper is detected.
-     *  
-    * @param {*} image image to process
-     * @param {*} resultWidth desired result paper width
-     * @param {*} resultHeight desired result paper height
-     * @param {*} cornerPoints optional custom corner points, in case automatic corner points are incorrect
-     * @returns `HTMLCanvasElement` containing undistorted image
-     */
     extractPaper(image, resultWidth, resultHeight, cornerPoints) {
-      const canvas = document.createElement("canvas");
-      const img = cv.imread(image);
-      const maxContour = cornerPoints ? null : this.findPaperContour(img);
+      const offCanvas = document.createElement("canvas");
+      offCanvas.width = image.width;
+      offCanvas.height = image.height;
+      const offCtx = offCanvas.getContext("2d");
+      offCtx.drawImage(image, 0, 0);
 
-      if(maxContour == null && cornerPoints === undefined){
+      const imgData = offCtx.getImageData(0, 0, offCanvas.width, offCanvas.height);
+      let src = cv.matFromImageData(imgData);
+
+      const maxContour = cornerPoints ? null : this.findPaperContour(src);
+
+      if (maxContour == null && cornerPoints === undefined) {
+        src.delete();
         return null;
       }
 
-      const {
-        topLeftCorner,
-        topRightCorner,
-        bottomLeftCorner,
-        bottomRightCorner,
-      } = cornerPoints || this.getCornerPoints(maxContour, img);
-      let warpedDst = new cv.Mat();
+      const { topLeftCorner, topRightCorner, bottomLeftCorner, bottomRightCorner } =
+        cornerPoints || this.getCornerPoints(maxContour, src);
 
+      let warpedDst = new cv.Mat();
       let dsize = new cv.Size(resultWidth, resultHeight);
       let srcTri = cv.matFromArray(4, 1, cv.CV_32FC2, [
-        topLeftCorner.x,
-        topLeftCorner.y,
-        topRightCorner.x,
-        topRightCorner.y,
-        bottomLeftCorner.x,
-        bottomLeftCorner.y,
-        bottomRightCorner.x,
-        bottomRightCorner.y,
+        topLeftCorner.x, topLeftCorner.y,
+        topRightCorner.x, topRightCorner.y,
+        bottomLeftCorner.x, bottomLeftCorner.y,
+        bottomRightCorner.x, bottomRightCorner.y,
       ]);
 
       let dstTri = cv.matFromArray(4, 1, cv.CV_32FC2, [
-        0,
-        0,
-        resultWidth,
-        0,
-        0,
-        resultHeight,
-        resultWidth,
-        resultHeight,
+        0, 0,
+        resultWidth, 0,
+        0, resultHeight,
+        resultWidth, resultHeight,
       ]);
 
       let M = cv.getPerspectiveTransform(srcTri, dstTri);
       cv.warpPerspective(
-        img,
+        src,
         warpedDst,
         M,
         dsize,
@@ -192,70 +147,41 @@
         new cv.Scalar()
       );
 
+      const canvas = document.createElement("canvas");
       cv.imshow(canvas, warpedDst);
 
-      img.delete()
-      warpedDst.delete()
+      src.delete();
+      warpedDst.delete();
+      srcTri.delete();
+      dstTri.delete();
+      M.delete();
+
       return canvas;
     }
 
-    /**
-     * Calculates the corner points of a contour.
-     * @param {*} contour contour from {@link findPaperContour}
-     * @returns object with properties `topLeftCorner`, `topRightCorner`, `bottomLeftCorner`, `bottomRightCorner`, each with `x` and `y` property
-     */
     getCornerPoints(contour) {
       let rect = cv.minAreaRect(contour);
       const center = rect.center;
 
-      let topLeftCorner;
-      let topLeftCornerDist = 0;
-
-      let topRightCorner;
-      let topRightCornerDist = 0;
-
-      let bottomLeftCorner;
-      let bottomLeftCornerDist = 0;
-
-      let bottomRightCorner;
-      let bottomRightCornerDist = 0;
+      let topLeftCorner, topRightCorner, bottomLeftCorner, bottomRightCorner;
+      let tlDist = 0, trDist = 0, blDist = 0, brDist = 0;
 
       for (let i = 0; i < contour.data32S.length; i += 2) {
         const point = { x: contour.data32S[i], y: contour.data32S[i + 1] };
         const dist = distance(point, center);
-        if (point.x < center.x && point.y < center.y) {
-          // top left
-          if (dist > topLeftCornerDist) {
-            topLeftCorner = point;
-            topLeftCornerDist = dist;
-          }
-        } else if (point.x > center.x && point.y < center.y) {
-          // top right
-          if (dist > topRightCornerDist) {
-            topRightCorner = point;
-            topRightCornerDist = dist;
-          }
-        } else if (point.x < center.x && point.y > center.y) {
-          // bottom left
-          if (dist > bottomLeftCornerDist) {
-            bottomLeftCorner = point;
-            bottomLeftCornerDist = dist;
-          }
-        } else if (point.x > center.x && point.y > center.y) {
-          // bottom right
-          if (dist > bottomRightCornerDist) {
-            bottomRightCorner = point;
-            bottomRightCornerDist = dist;
-          }
+
+        if (point.x < center.x && point.y < center.y && dist > tlDist) {
+          topLeftCorner = point; tlDist = dist;
+        } else if (point.x > center.x && point.y < center.y && dist > trDist) {
+          topRightCorner = point; trDist = dist;
+        } else if (point.x < center.x && point.y > center.y && dist > blDist) {
+          bottomLeftCorner = point; blDist = dist;
+        } else if (point.x > center.x && point.y > center.y && dist > brDist) {
+          bottomRightCorner = point; brDist = dist;
         }
       }
 
-      return {
-        topLeftCorner,
-        topRightCorner,
-        bottomLeftCorner,
-        bottomRightCorner,
-      };
+      return { topLeftCorner, topRightCorner, bottomLeftCorner, bottomRightCorner };
     }
   }
 
