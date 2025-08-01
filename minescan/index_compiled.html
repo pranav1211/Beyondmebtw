@@ -76,6 +76,19 @@
             margin: 10px 0;
         }
         
+        .debug {
+            background: #fff3e0;
+            border: 1px solid #ff9800;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            text-align: left;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
         button {
             background: #1976d2;
             color: white;
@@ -109,7 +122,9 @@
 <body>
     <div class="container">
         <h1>Document Scanner with Custom OpenCV</h1>
-        <div id="status" class="loading">Loading OpenCV.js...</div>
+        <div id="status" class="loading">Initializing OpenCV.js...</div>
+        <div id="debug" class="debug" style="display: none;"></div>
+        <button onclick="toggleDebug()">Toggle Debug Info</button>
         
         <div class="upload-section">
             <h2>Upload Document Image</h2>
@@ -118,6 +133,7 @@
                 <button id="extractBtn" disabled>Extract Document</button>
                 <button id="highlightBtn" disabled>Highlight Document</button>
                 <button id="clearBtn">Clear Results</button>
+                <button onclick="forceInit()">Force Initialize</button>
             </div>
         </div>
     </div>
@@ -133,69 +149,146 @@
         let scanner = null;
         let isOpenCvReady = false;
         let currentImage = null;
+        let initAttempts = 0;
+        let debugMessages = [];
         
-        // Configure OpenCV.js Module before loading (CRITICAL for WASM builds)
+        function addDebugMessage(msg) {
+            debugMessages.push(new Date().toLocaleTimeString() + ': ' + msg);
+            console.log(msg);
+            updateDebugDisplay();
+        }
+        
+        function updateDebugDisplay() {
+            const debugDiv = document.getElementById('debug');
+            debugDiv.innerHTML = debugMessages.join('<br>');
+            debugDiv.scrollTop = debugDiv.scrollHeight;
+        }
+        
+        function toggleDebug() {
+            const debugDiv = document.getElementById('debug');
+            debugDiv.style.display = debugDiv.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Configure OpenCV.js Module with extensive debugging
         var Module = {
+            // CRITICAL: Define the WASM file location
+            locateFile: function(path, prefix) {
+                addDebugMessage('Locating file: ' + path + ' with prefix: ' + prefix);
+                if (path.endsWith('.wasm')) {
+                    // Make sure this points to your actual .wasm file location
+                    return 'opencv_js.wasm';
+                }
+                return prefix + path;
+            },
+            
             onRuntimeInitialized: function() {
-                console.log('OpenCV.js WASM runtime initialized');
-                console.log('OpenCV build info:', cv.getBuildInformation());
-                isOpenCvReady = true;
-                initializeScanner();
+                addDebugMessage('✅ OpenCV.js WASM runtime initialized successfully!');
+                try {
+                    addDebugMessage('OpenCV version: ' + cv.getBuildInformation().split('\n')[0]);
+                    isOpenCvReady = true;
+                    initializeScanner();
+                } catch (e) {
+                    addDebugMessage('❌ Error getting OpenCV build info: ' + e.message);
+                }
             },
             
-            // Handle loading progress
             onProgress: function(info) {
-                console.log('Loading progress:', info);
+                addDebugMessage('Loading progress: ' + JSON.stringify(info));
             },
             
-            // Handle errors
             onAbort: function(what) {
-                console.error('OpenCV loading aborted:', what);
-                showError('Failed to load OpenCV.js: ' + what);
+                addDebugMessage('❌ OpenCV loading aborted: ' + what);
+                showError('OpenCV.js failed to load: ' + what);
+            },
+            
+            print: function(text) {
+                addDebugMessage('OpenCV: ' + text);
+            },
+            
+            printErr: function(text) {
+                addDebugMessage('OpenCV Error: ' + text);
             }
         };
 
-        // Define onOpenCvReady function BEFORE loading the script
+        // Define onOpenCvReady function
         function onOpenCvReady() {
-            console.log('OpenCV script loaded');
+            addDebugMessage('📄 OpenCV script loaded');
             
-            // For non-WASM builds, cv might be immediately available
-            if (typeof cv !== 'undefined' && cv.getBuildInformation) {
-                console.log('Non-WASM OpenCV detected, initializing immediately');
-                console.log('OpenCV build info:', cv.getBuildInformation());
-                isOpenCvReady = true;
-                initializeScanner();
-            } else if (typeof cv !== 'undefined') {
-                console.log('WASM OpenCV detected, waiting for runtime initialization');
-                // WASM builds will trigger Module.onRuntimeInitialized
+            setTimeout(function() {
+                if (typeof cv !== 'undefined') {
+                    if (cv.getBuildInformation) {
+                        addDebugMessage('✅ Non-WASM OpenCV detected, initializing immediately');
+                        isOpenCvReady = true;
+                        initializeScanner();
+                    } else {
+                        addDebugMessage('⏳ WASM OpenCV detected, waiting for runtime initialization...');
+                        
+                        // Set a timeout in case Module.onRuntimeInitialized never fires
+                        setTimeout(function() {
+                            if (!isOpenCvReady) {
+                                addDebugMessage('⚠️ Timeout waiting for WASM initialization, attempting force init...');
+                                forceInit();
+                            }
+                        }, 10000); // 10 second timeout
+                    }
+                } else {
+                    addDebugMessage('❌ cv object not found after script load');
+                    showError('OpenCV.js failed to load properly');
+                }
+            }, 100);
+        }
+
+        // Force initialization function
+        function forceInit() {
+            addDebugMessage('🔧 Force initialization attempt #' + (++initAttempts));
+            
+            if (typeof cv !== 'undefined') {
+                try {
+                    // Try to use a basic OpenCV function to test if it's working
+                    const testMat = new cv.Mat(100, 100, cv.CV_8UC3);
+                    testMat.delete();
+                    
+                    addDebugMessage('✅ OpenCV is working! Force initialization successful');
+                    isOpenCvReady = true;
+                    initializeScanner();
+                } catch (e) {
+                    addDebugMessage('❌ OpenCV not ready yet: ' + e.message);
+                    if (initAttempts < 5) {
+                        setTimeout(forceInit, 2000);
+                    } else {
+                        showError('Failed to initialize OpenCV after multiple attempts');
+                    }
+                }
             } else {
-                showError('OpenCV.js failed to load properly');
+                addDebugMessage('❌ cv object still not available');
+                showError('OpenCV.js not loaded');
             }
         }
 
         // Initialize the scanner
         function initializeScanner() {
-            console.log('Attempting to initialize scanner...');
+            addDebugMessage('🔄 Attempting to initialize scanner...');
             
             if (!isOpenCvReady) {
-                console.log('OpenCV not ready yet, waiting...');
-                setTimeout(initializeScanner, 100);
+                addDebugMessage('⚠️ OpenCV not ready yet, waiting...');
+                setTimeout(initializeScanner, 500);
                 return;
             }
             
             if (typeof jscanify === 'undefined') {
-                console.log('jscanify not loaded yet, waiting...');
-                setTimeout(initializeScanner, 100);
+                addDebugMessage('⚠️ jscanify not loaded yet, waiting...');
+                setTimeout(initializeScanner, 500);
                 return;
             }
             
             try {
                 scanner = new jscanify();
-                showSuccess('Scanner initialized successfully!');
+                addDebugMessage('✅ Scanner initialized successfully!');
+                showSuccess('Scanner ready! You can now upload images.');
                 enableControls();
                 setupEventListeners();
             } catch (error) {
-                console.error('Scanner initialization error:', error);
+                addDebugMessage('❌ Scanner initialization error: ' + error.message);
                 showError('Failed to initialize scanner: ' + error.message);
             }
         }
@@ -205,6 +298,7 @@
             document.getElementById('imageInput').disabled = false;
             document.getElementById('extractBtn').disabled = false;
             document.getElementById('highlightBtn').disabled = false;
+            addDebugMessage('✅ Controls enabled');
         }
 
         // Setup event listeners
@@ -218,6 +312,8 @@
             extractBtn.addEventListener('click', extractDocument);
             highlightBtn.addEventListener('click', highlightDocument);
             clearBtn.addEventListener('click', clearResults);
+            
+            addDebugMessage('✅ Event listeners set up');
         }
 
         // Handle image upload
@@ -230,14 +326,18 @@
                 return;
             }
 
+            addDebugMessage('📁 Loading image: ' + file.name + ' (' + file.size + ' bytes)');
+
             const reader = new FileReader();
             reader.onload = function(e) {
                 const img = new Image();
                 img.onload = function() {
                     currentImage = img;
+                    addDebugMessage('✅ Image loaded: ' + img.width + 'x' + img.height + ' pixels');
                     showSuccess(`Image loaded: ${img.width}x${img.height} pixels`);
                 };
                 img.onerror = function() {
+                    addDebugMessage('❌ Failed to load image');
                     showError('Failed to load image');
                 };
                 img.src = e.target.result;
@@ -245,50 +345,54 @@
             reader.readAsDataURL(file);
         }
 
-        // Extract document with proper error handling
+        // Extract document with comprehensive error handling
         function extractDocument() {
             if (!currentImage || !scanner) {
                 showError('Please upload an image first');
                 return;
             }
 
+            addDebugMessage('🔄 Starting document extraction...');
+            showStatus('Processing document extraction...');
+
             try {
-                showStatus('Processing document extraction...');
-                
-                // Method 1: Try direct image processing
+                // Method 1: Direct jscanify processing
                 let resultCanvas;
                 try {
+                    addDebugMessage('Trying direct jscanify extraction...');
                     resultCanvas = scanner.extractPaper(currentImage, 500, 700);
-                    if (resultCanvas) {
+                    if (resultCanvas && resultCanvas.width > 0) {
+                        addDebugMessage('✅ Direct extraction successful');
                         displayResult('Extracted Document', resultCanvas);
                         showSuccess('Document extracted successfully!');
                         return;
                     }
                 } catch (directError) {
-                    console.log('Direct processing failed:', directError.message);
+                    addDebugMessage('❌ Direct extraction failed: ' + directError.message);
                 }
 
                 // Method 2: Canvas-based processing
+                addDebugMessage('Trying canvas-based extraction...');
                 const canvas = document.getElementById('hiddenCanvas');
                 const ctx = canvas.getContext('2d');
                 canvas.width = currentImage.width;
                 canvas.height = currentImage.height;
                 ctx.drawImage(currentImage, 0, 0);
 
-                // Create cv.Mat from canvas
                 const srcMat = cv.imread(canvas);
-                
+                addDebugMessage('✅ Created cv.Mat: ' + srcMat.cols + 'x' + srcMat.rows);
+
                 try {
-                    // Create output canvas manually if jscanify fails
+                    // Simple resize and display
                     const outputCanvas = document.createElement('canvas');
                     outputCanvas.width = 500;
                     outputCanvas.height = 700;
                     
-                    // Simple document processing (you can customize this)
                     const processedMat = new cv.Mat();
                     cv.resize(srcMat, processedMat, new cv.Size(500, 700));
                     cv.imshow(outputCanvas, processedMat);
                     
+                    addDebugMessage('✅ Canvas-based extraction successful');
                     displayResult('Extracted Document', outputCanvas);
                     showSuccess('Document extracted successfully!');
                     
@@ -298,6 +402,7 @@
                 }
                 
             } catch (error) {
+                addDebugMessage('❌ Extraction failed: ' + error.message);
                 console.error('Extract error:', error);
                 showError('Extraction failed: ' + error.message);
             }
@@ -310,47 +415,54 @@
                 return;
             }
 
+            addDebugMessage('🔄 Starting document highlighting...');
+            showStatus('Processing document highlighting...');
+
             try {
-                showStatus('Processing document highlighting...');
-                
                 let resultCanvas;
                 try {
+                    addDebugMessage('Trying direct jscanify highlighting...');
                     resultCanvas = scanner.highlightPaper(currentImage);
+                    if (resultCanvas && resultCanvas.width > 0) {
+                        addDebugMessage('✅ Direct highlighting successful');
+                        displayResult('Highlighted Document', resultCanvas);
+                        showSuccess('Document highlighted successfully!');
+                        return;
+                    }
                 } catch (error) {
-                    console.log('Direct highlighting failed, using fallback:', error.message);
-                    
-                    // Fallback: simple edge detection
-                    const canvas = document.getElementById('hiddenCanvas');
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = currentImage.width;
-                    canvas.height = currentImage.height;
-                    ctx.drawImage(currentImage, 0, 0);
+                    addDebugMessage('❌ Direct highlighting failed: ' + error.message);
+                }
 
-                    const srcMat = cv.imread(canvas);
-                    const grayMat = new cv.Mat();
-                    const edgesMat = new cv.Mat();
-                    
-                    cv.cvtColor(srcMat, grayMat, cv.COLOR_RGBA2GRAY);
-                    cv.Canny(grayMat, edgesMat, 50, 150);
-                    
-                    resultCanvas = document.createElement('canvas');
-                    resultCanvas.width = canvas.width;
-                    resultCanvas.height = canvas.height;
-                    cv.imshow(resultCanvas, edgesMat);
-                    
-                    srcMat.delete();
-                    grayMat.delete();
-                    edgesMat.delete();
-                }
+                // Fallback: Edge detection
+                addDebugMessage('Trying edge detection fallback...');
+                const canvas = document.getElementById('hiddenCanvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = currentImage.width;
+                canvas.height = currentImage.height;
+                ctx.drawImage(currentImage, 0, 0);
+
+                const srcMat = cv.imread(canvas);
+                const grayMat = new cv.Mat();
+                const edgesMat = new cv.Mat();
                 
-                if (resultCanvas) {
-                    displayResult('Highlighted Document', resultCanvas);
-                    showSuccess('Document highlighted successfully!');
-                } else {
-                    throw new Error('Failed to highlight document');
-                }
+                cv.cvtColor(srcMat, grayMat, cv.COLOR_RGBA2GRAY);
+                cv.Canny(grayMat, edgesMat, 50, 150);
+                
+                resultCanvas = document.createElement('canvas');
+                resultCanvas.width = canvas.width;
+                resultCanvas.height = canvas.height;
+                cv.imshow(resultCanvas, edgesMat);
+                
+                addDebugMessage('✅ Edge detection successful');
+                displayResult('Highlighted Document', resultCanvas);
+                showSuccess('Document highlighted successfully!');
+                
+                srcMat.delete();
+                grayMat.delete();
+                edgesMat.delete();
                 
             } catch (error) {
+                addDebugMessage('❌ Highlighting failed: ' + error.message);
                 console.error('Highlight error:', error);
                 showError('Highlighting failed: ' + error.message);
             }
@@ -367,7 +479,6 @@
             titleElement.textContent = title;
             resultDiv.appendChild(titleElement);
             
-            // Clone the canvas to display
             const displayCanvas = document.createElement('canvas');
             displayCanvas.width = canvas.width;
             displayCanvas.height = canvas.height;
@@ -376,7 +487,6 @@
             
             resultDiv.appendChild(displayCanvas);
             
-            // Add download button
             const downloadBtn = document.createElement('button');
             downloadBtn.textContent = 'Download';
             downloadBtn.onclick = function() {
@@ -423,6 +533,11 @@
             statusDiv.className = 'error';
         }
 
+        // Initialize on page load
+        window.addEventListener('load', function() {
+            addDebugMessage('📄 Page loaded');
+        });
+
         // Handle page unload
         window.addEventListener('beforeunload', function() {
             if (typeof cv !== 'undefined') {
@@ -435,12 +550,11 @@
         });
     </script>
 
-    <!-- Load your custom OpenCV build files -->
-    <!-- Make sure these paths point to your actual files -->
+    <!-- Load your custom OpenCV build -->
+    <!-- CRITICAL: Make sure opencv_js.wasm is in the same directory as opencv_js.js -->
     <script async src="opencv_js.js" onload="onOpenCvReady()"></script>
-    <!-- The .wasm file should be in the same directory and will load automatically -->
     
-    <!-- Load jscanify after OpenCV -->
+    <!-- Load jscanify -->
     <script src="https://cdn.jsdelivr.net/npm/jscanify@1.2.0/dist/jscanify.min.js"></script>
 </body>
 </html>
