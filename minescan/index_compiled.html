@@ -1,319 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document Scanner with Custom OpenCV</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        .upload-section {
-            border: 2px dashed #ccc;
-            padding: 20px;
-            text-align: center;
-            border-radius: 8px;
-        }
-        
-        .results-section {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .image-container {
-            flex: 1;
-            min-width: 300px;
-        }
-        
-        .image-container img, .image-container canvas {
-            max-width: 100%;
-            height: auto;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        
-        .stats {
-            background: #f5f5f5;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 10px;
-        }
-        
-        #fileInput {
-            margin: 10px 0;
-        }
-        
-        .loading {
-            color: #666;
-            font-style: italic;
-        }
-        
-        .status {
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-        }
-        
-        .status.loading {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            color: #856404;
-        }
-        
-        .status.ready {
-            background: #d1edff;
-            border: 1px solid #bee5eb;
-            color: #0c5460;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document Scanner with Custom OpenCV</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .container { display: flex; flex-direction: column; gap: 20px; }
+    .upload-section {
+      border: 2px dashed #ccc;
+      padding: 20px;
+      text-align: center;
+      border-radius: 8px;
+    }
+    .results-section { display: flex; gap: 20px; flex-wrap: wrap; }
+    .image-container { flex: 1; min-width: 300px; }
+    .image-container img, .image-container canvas {
+      max-width: 100%; height: auto;
+      border: 1px solid #ddd; border-radius: 4px;
+    }
+    .stats {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+    .loading { color: #666; font-style: italic; }
+    .status { padding: 10px; border-radius: 4px; margin-bottom: 15px; }
+    .status.loading { background: #fff3cd; border: 1px solid #ffeaa7; color: #856404; }
+    .status.ready { background: #d1edff; border: 1px solid #bee5eb; color: #0c5460; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Document Scanner with Custom OpenCV</h1>
-        
-        <div id="statusMessage" class="status loading">
-            Loading custom OpenCV build... Please wait.
-        </div>
-        
-        <div class="upload-section">
-            <h3>Upload an Image</h3>
-            <input type="file" id="fileInput" accept="image/*" disabled>
-            <p>Select an image file to detect document boundaries</p>
-        </div>
-        
-        <div id="loadingMessage" class="loading" style="display: none;">
-            Processing image... Please wait.
-        </div>
-        
-        <div class="results-section" id="resultsSection" style="display: none;">
-            <div class="image-container">
-                <h3>Original Image</h3>
-                <img id="originalImage" alt="Original">
-            </div>
-            
-            <div class="image-container">
-                <h3>Detected Document</h3>
-                <canvas id="resultCanvas"></canvas>
-            </div>
-        </div>
-        
-        <div class="stats" id="statsSection" style="display: none;">
-            <h3>Processing Statistics</h3>
-            <p><strong>Processing Time:</strong> <span id="processingTime">-</span> ms</p>
-            <p><strong>Document Detected:</strong> <span id="documentDetected">-</span></p>
-            <p><strong>Corners Found:</strong> <span id="cornersFound">-</span></p>
-            <p><strong>OpenCV Version:</strong> <span id="opencvVersion">-</span></p>
-        </div>
+  <div class="container">
+    <h1>Document Scanner with Custom OpenCV</h1>
+
+    <div id="statusMessage" class="status loading">
+      Loading custom OpenCV build... Please wait.
     </div>
 
-    <!-- Configure the Module object for custom OpenCV loading -->
-    <script>
-        var Module = {
-            onRuntimeInitialized: function() {
-                console.log('Custom OpenCV.js is ready');
-                
-                loadJscanify();
-            }
-        };
-        
-        let scanner;
-        let cvReady = false;
-        let jscanifyReady = false;
+    <div class="upload-section">
+      <h3>Upload an Image</h3>
+      <input type="file" id="fileInput" accept="image/*" disabled>
+      <p>Select an image file to detect document boundaries</p>
+    </div>
 
-        function loadJscanify() {
-            // Dynamically load jscanify after OpenCV is ready
-            const script = document.createElement('script');
-            script.src = 'jscanify.js'; // Replace with your local jscanify path
-            script.onload = function() {
-                console.log('jscanify loaded successfully');
-                initializeScanner();
-            };
-            script.onerror = function() {
-                console.error('Failed to load jscanify');
-                updateStatus('Error loading jscanify. Check the file path.', false);
-            };
-            document.head.appendChild(script);
+    <div id="loadingMessage" class="loading" style="display:none;">
+      Processing image... Please wait.
+    </div>
+
+    <div class="results-section" id="resultsSection" style="display:none;">
+      <div class="image-container">
+        <h3>Original Image</h3>
+        <img id="originalImage" alt="Original">
+      </div>
+      <div class="image-container">
+        <h3>Detected Document</h3>
+        <canvas id="resultCanvas"></canvas>
+      </div>
+    </div>
+
+    <div class="stats" id="statsSection" style="display:none;">
+      <h3>Processing Statistics</h3>
+      <p><strong>Processing Time:</strong> <span id="processingTime">-</span> ms</p>
+      <p><strong>Document Detected:</strong> <span id="documentDetected">-</span></p>
+      <p><strong>Corners Found:</strong> <span id="cornersFound">-</span></p>
+      <p><strong>OpenCV Version:</strong> <span id="opencvVersion">-</span></p>
+    </div>
+  </div>
+
+  <!-- Load OpenCV first -->
+  <script src="opencv.js"></script>
+
+  <script>
+    let scanner;
+    let cvReady = false;
+
+    cv['onRuntimeInitialized'] = () => {
+      console.log('Custom OpenCV.js is ready');
+      const script = document.createElement('script');
+      script.src = 'jscanify.js'; 
+      script.onload = () => {
+        console.log('jscanify loaded');
+        initializeScanner();
+      };
+      document.head.appendChild(script);
+    };
+
+    function initializeScanner() {
+      try {
+        scanner = new jscanify();
+        cvReady = true;
+        updateStatus('Ready to scan documents!', true);
+        document.getElementById('fileInput').disabled = false;
+        document.getElementById('opencvVersion').textContent = 'Custom Build';
+      } catch (err) {
+        console.error(err);
+        updateStatus('Error initializing scanner: ' + err.message, false);
+      }
+    }
+
+    function updateStatus(message, ready) {
+      const statusMessage = document.getElementById('statusMessage');
+      statusMessage.className = ready ? 'status ready' : 'status loading';
+      statusMessage.textContent = message;
+    }
+
+    document.getElementById('fileInput').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (!cvReady) return alert('OpenCV not ready yet.');
+
+      document.getElementById('loadingMessage').style.display = 'block';
+      document.getElementById('resultsSection').style.display = 'none';
+      document.getElementById('statsSection').style.display = 'none';
+
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const img = new Image();
+        img.onload = () => processImage(img);
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function processImage(img) {
+      const start = performance.now();
+      document.getElementById('originalImage').src = img.src;
+
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+      let src = cv.matFromImageData(imageData);
+      const contour = scanner.findPaperContour(src);
+      const time = Math.round(performance.now() - start);
+      drawResults(img, contour, time);
+      src.delete();
+
+      document.getElementById('loadingMessage').style.display = 'none';
+    }
+
+    function drawResults(img, contour, time) {
+      const resultCanvas = document.getElementById('resultCanvas');
+      const ctx = resultCanvas.getContext('2d');
+      resultCanvas.width = img.width;
+      resultCanvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+
+      let detected = false, cornersCount = 0;
+      if (contour) {
+        detected = true;
+        const corners = scanner.getCornerPoints(contour);
+        const points = [corners.topLeftCorner, corners.topRightCorner, corners.bottomRightCorner, corners.bottomLeftCorner].filter(Boolean);
+        cornersCount = points.length;
+
+        if (points.length === 4) {
+          ctx.strokeStyle = '#00ff00';
+          ctx.lineWidth = 3;
+          ctx.fillStyle = 'rgba(0,255,0,0.1)';
+          ctx.beginPath();
+          ctx.moveTo(points[0].x, points[0].y);
+          for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+          ctx.closePath(); ctx.fill(); ctx.stroke();
+
+          ctx.fillStyle = '#ff0000';
+          points.forEach((pt,i) => {
+            ctx.beginPath();
+            ctx.arc(pt.x, pt.y, 6, 0, 2*Math.PI);
+            ctx.fill();
+            ctx.fillStyle = '#fff';
+            ctx.font = '12px Arial';
+            ctx.fillText(i+1, pt.x - 4, pt.y + 4);
+            ctx.fillStyle = '#ff0000';
+          });
         }
+      } else {
+        ctx.fillStyle = 'rgba(255,0,0,0.8)';
+        ctx.font = '20px Arial';
+        ctx.fillText('No document detected', 20, 40);
+      }
 
-        function initializeScanner() {
-            try {
-                // Verify cv is available
-                if (typeof cv === 'undefined') {
-                    throw new Error('OpenCV (cv) object not found');
-                }
-                
-                // Verify jscanify is available
-                if (typeof jscanify === 'undefined') {
-                    throw new Error('jscanify not found - check if jscanify.min.js loaded correctly');
-                }
-                
-                cvReady = true;
-                jscanifyReady = true;
-                scanner = new jscanify();
-                
-                updateStatus('Custom OpenCV and jscanify loaded successfully! Ready to scan documents.', true);
-                
-                // Enable file input
-                document.getElementById('fileInput').disabled = false;
-                
-                // Display OpenCV version if available
-                document.getElementById('opencvVersion').textContent = 'Custom Build';
-                
-            } catch (error) {
-                console.error('Error initializing scanner:', error);
-                updateStatus('Error initializing scanner: ' + error.message, false);
-            }
-        }
-
-        function updateStatus(message, isReady) {
-            const statusMessage = document.getElementById('statusMessage');
-            statusMessage.className = isReady ? 'status ready' : 'status loading';
-            statusMessage.textContent = message;
-        }
-
-        document.getElementById('fileInput').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            if (!cvReady || !jscanifyReady || !scanner) {
-                alert('System is not ready yet. Please wait and try again.');
-                return;
-            }
-
-            // Show loading message
-            document.getElementById('loadingMessage').style.display = 'block';
-            document.getElementById('resultsSection').style.display = 'none';
-            document.getElementById('statsSection').style.display = 'none';
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    processImage(img);
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        });
-
-        function processImage(img) {
-            try {
-                // Start timing
-                const startTime = performance.now();
-
-                // Show original image
-                const originalImg = document.getElementById('originalImage');
-                originalImg.src = img.src;
-
-                // Create canvas for processing
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                canvas.width = img.width;
-                canvas.height = img.height;
-                ctx.drawImage(img, 0, 0);
-
-                // Get image data for jscanify
-                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-                // Process with jscanify (which will use your custom OpenCV)
-                const corners = scanner.findPaperContour(imageData);
-                
-                // Calculate processing time
-                const endTime = performance.now();
-                const processingTime = Math.round(endTime - startTime);
-
-                // Draw results
-                drawResults(img, corners, processingTime);
-
-                // Hide loading message
-                document.getElementById('loadingMessage').style.display = 'none';
-
-            } catch (error) {
-                console.error('Error processing image:', error);
-                document.getElementById('loadingMessage').style.display = 'none';
-                alert('Error processing image: ' + error.message);
-            }
-        }
-
-        function drawResults(img, corners, processingTime) {
-            const resultCanvas = document.getElementById('resultCanvas');
-            const ctx = resultCanvas.getContext('2d');
-            
-            // Set canvas size to match image
-            resultCanvas.width = img.width;
-            resultCanvas.height = img.height;
-            
-            // Draw the original image
-            ctx.drawImage(img, 0, 0);
-            
-            let documentDetected = false;
-            let cornersCount = 0;
-            
-            // Draw detected corners and box if found
-            if (corners && corners.length > 0) {
-                documentDetected = true;
-                cornersCount = corners.length;
-                
-                // Set drawing style for the detection box
-                ctx.strokeStyle = '#00ff00';
-                ctx.lineWidth = 3;
-                ctx.fillStyle = 'rgba(0, 255, 0, 0.1)';
-                
-                // Draw the contour
-                ctx.beginPath();
-                ctx.moveTo(corners[0].x, corners[0].y);
-                
-                for (let i = 1; i < corners.length; i++) {
-                    ctx.lineTo(corners[i].x, corners[i].y);
-                }
-                
-                ctx.closePath();
-                ctx.fill();
-                ctx.stroke();
-                
-                // Draw corner points
-                ctx.fillStyle = '#ff0000';
-                corners.forEach((corner, index) => {
-                    ctx.beginPath();
-                    ctx.arc(corner.x, corner.y, 8, 0, 2 * Math.PI);
-                    ctx.fill();
-                    
-                    // Label corners
-                    ctx.fillStyle = '#ffffff';
-                    ctx.font = '12px Arial';
-                    ctx.fillText(index + 1, corner.x - 4, corner.y + 4);
-                    ctx.fillStyle = '#ff0000';
-                });
-            } else {
-                // Draw message if no document detected
-                ctx.fillStyle = 'rgba(255, 0, 0, 0.8)';
-                ctx.font = '20px Arial';
-                ctx.fillText('No document detected', 20, 40);
-            }
-            
-            // Update statistics
-            document.getElementById('processingTime').textContent = processingTime;
-            document.getElementById('documentDetected').textContent = documentDetected ? 'Yes' : 'No';
-            document.getElementById('cornersFound').textContent = cornersCount;
-            
-            // Show results
-            document.getElementById('resultsSection').style.display = 'flex';
-            document.getElementById('statsSection').style.display = 'block';
-        }
-    </script>
-    
-    <!-- Load your CUSTOM OpenCV.js build first -->
-    <script async src="opencv.js" type="text/javascript"></script>
+      document.getElementById('processingTime').textContent = time;
+      document.getElementById('documentDetected').textContent = detected ? 'Yes' : 'No';
+      document.getElementById('cornersFound').textContent = cornersCount;
+      document.getElementById('resultsSection').style.display = 'flex';
+      document.getElementById('statsSection').style.display = 'block';
+    }
+  </script>
 </body>
 </html>
