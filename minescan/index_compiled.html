@@ -37,6 +37,8 @@
   </div>
 
   <script>
+
+    
     let scanner;
     let cvReady = false;
 
@@ -77,6 +79,7 @@
       };
       reader.readAsDataURL(file);
     });
+    
 
     function processImage(img) {
       document.getElementById("originalImage").src = img.src;
@@ -86,6 +89,8 @@
       resultCanvas.height = canvas.height;
       resultCanvas.getContext("2d").drawImage(canvas, 0, 0);
       document.getElementById("resultsSection").style.display = "flex";
+
+      console.log(cv.getBuildInformation());
     }
   </script>
 
