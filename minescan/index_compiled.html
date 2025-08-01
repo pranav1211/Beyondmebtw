@@ -13,14 +13,15 @@
         }
         
         .container {
-            text-align: center;
-            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
         
         .upload-section {
-            margin: 20px 0;
-            padding: 20px;
             border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
             border-radius: 8px;
         }
         
@@ -28,31 +29,29 @@
             display: flex;
             gap: 20px;
             flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 30px;
         }
         
-        .result-item {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            background: #f9f9f9;
+        .image-container {
+            flex: 1;
+            min-width: 300px;
         }
         
-        .result-item h3 {
-            margin-top: 0;
-            color: #333;
-        }
-        
-        canvas {
+        .image-container img, .image-container canvas {
             max-width: 100%;
             height: auto;
-            border: 1px solid #ccc;
+            border: 1px solid #ddd;
             border-radius: 4px;
         }
         
-        .hidden {
-            display: none;
+        .stats {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        #fileInput {
+            margin: 10px 0;
         }
         
         .loading {
@@ -60,496 +59,261 @@
             font-style: italic;
         }
         
-        .error {
-            color: #d32f2f;
-            background: #ffebee;
+        .status {
             padding: 10px;
             border-radius: 4px;
-            margin: 10px 0;
+            margin-bottom: 15px;
         }
         
-        .success {
-            color: #388e3c;
-            background: #e8f5e9;
-            padding: 10px;
-            border-radius: 4px;
-            margin: 10px 0;
+        .status.loading {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
         }
         
-        .debug {
-            background: #fff3e0;
-            border: 1px solid #ff9800;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 12px;
-            text-align: left;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        
-        button {
-            background: #1976d2;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            margin: 5px;
-        }
-        
-        button:hover {
-            background: #1565c0;
-        }
-        
-        button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-        
-        input[type="file"] {
-            margin: 10px 0;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            width: 100%;
-            max-width: 300px;
+        .status.ready {
+            background: #d1edff;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Document Scanner with Custom OpenCV</h1>
-        <div id="status" class="loading">Checking OpenCV files...</div>
-        <div id="debug" class="debug" style="display: none;"></div>
-        <button onclick="toggleDebug()">Toggle Debug Info</button>
+        
+        <div id="statusMessage" class="status loading">
+            Loading custom OpenCV build... Please wait.
+        </div>
         
         <div class="upload-section">
-            <h2>Upload Document Image</h2>
-            <input type="file" id="imageInput" accept="image/*" disabled>
-            <div>
-                <button id="extractBtn" disabled>Extract Document</button>
-                <button id="highlightBtn" disabled>Highlight Document</button>
-                <button id="clearBtn">Clear Results</button>
-                <button onclick="testWasmFiles()">Test WASM Files</button>
+            <h3>Upload an Image</h3>
+            <input type="file" id="fileInput" accept="image/*" disabled>
+            <p>Select an image file to detect document boundaries</p>
+        </div>
+        
+        <div id="loadingMessage" class="loading" style="display: none;">
+            Processing image... Please wait.
+        </div>
+        
+        <div class="results-section" id="resultsSection" style="display: none;">
+            <div class="image-container">
+                <h3>Original Image</h3>
+                <img id="originalImage" alt="Original">
+            </div>
+            
+            <div class="image-container">
+                <h3>Detected Document</h3>
+                <canvas id="resultCanvas"></canvas>
             </div>
         </div>
+        
+        <div class="stats" id="statsSection" style="display: none;">
+            <h3>Processing Statistics</h3>
+            <p><strong>Processing Time:</strong> <span id="processingTime">-</span> ms</p>
+            <p><strong>Document Detected:</strong> <span id="documentDetected">-</span></p>
+            <p><strong>Corners Found:</strong> <span id="cornersFound">-</span></p>
+            <p><strong>OpenCV Version:</strong> <span id="opencvVersion">-</span></p>
+        </div>
     </div>
-    
-    <!-- Hidden canvas for processing -->
-    <canvas id="hiddenCanvas" class="hidden"></canvas>
-    
-    <!-- Results section -->
-    <div class="results-section" id="resultsSection"></div>
 
+    <!-- Configure the Module object for custom OpenCV loading -->
     <script>
-        // Global variables
-        let scanner = null;
-        let isOpenCvReady = false;
-        let currentImage = null;
-        let debugMessages = [];
-        
-        function addDebugMessage(msg) {
-            debugMessages.push(new Date().toLocaleTimeString() + ': ' + msg);
-            console.log(msg);
-            updateDebugDisplay();
-        }
-        
-        function updateDebugDisplay() {
-            const debugDiv = document.getElementById('debug');
-            debugDiv.innerHTML = debugMessages.join('<br>');
-            debugDiv.scrollTop = debugDiv.scrollHeight;
-        }
-        
-        function toggleDebug() {
-            const debugDiv = document.getElementById('debug');
-            debugDiv.style.display = debugDiv.style.display === 'none' ? 'block' : 'none';
-        }
-
-        // Test if WASM files are accessible
-        async function testWasmFiles() {
-            addDebugMessage('🔍 Testing file accessibility...');
-            
-            const files = ['opencv_js.js', 'opencv_js.wasm'];
-            
-            for (const file of files) {
-                try {
-                    const response = await fetch(file, { method: 'HEAD' });
-                    if (response.ok) {
-                        addDebugMessage(`✅ ${file} - Accessible (${response.status})`);
-                    } else {
-                        addDebugMessage(`❌ ${file} - Not accessible (${response.status})`);
-                    }
-                } catch (error) {
-                    addDebugMessage(`❌ ${file} - Error: ${error.message}`);
-                }
-            }
-        }
-
-        // CRITICAL: Configure Module BEFORE loading OpenCV script
-        window.Module = {
-            // Explicitly set WASM file location
-            locateFile: function(path, prefix) {
-                addDebugMessage(`🔍 OpenCV requesting file: "${path}" with prefix: "${prefix}"`);
-                
-                if (path.endsWith('.wasm')) {
-                    // Return exact path to your WASM file
-                    const wasmPath = 'opencv_js.wasm';
-                    addDebugMessage(`📁 Returning WASM path: "${wasmPath}"`);
-                    return wasmPath;
-                }
-                return prefix + path;
-            },
-            
+        var Module = {
             onRuntimeInitialized: function() {
-                addDebugMessage('🎉 WASM Runtime successfully initialized!');
-                
-                // Verify OpenCV is working
-                try {
-                    if (typeof cv !== 'undefined' && cv.Mat) {
-                        const testMat = new cv.Mat(10, 10, cv.CV_8UC1);
-                        addDebugMessage(`✅ OpenCV test successful - Mat created: ${testMat.rows}x${testMat.cols}`);
-                        testMat.delete();
-                        
-                        isOpenCvReady = true;
-                        initializeScanner();
-                    } else {
-                        addDebugMessage('❌ cv.Mat still not available after runtime init');
-                    }
-                } catch (e) {
-                    addDebugMessage('❌ OpenCV test failed: ' + e.message);
-                }
-            },
-            
-            // Enhanced progress tracking
-            onProgress: function(info) {
-                if (info && typeof info === 'object') {
-                    const loaded = info.loaded || 0;
-                    const total = info.total || 0;
-                    if (total > 0) {
-                        const percent = Math.round((loaded / total) * 100);
-                        addDebugMessage(`📊 Loading: ${percent}% (${loaded}/${total} bytes)`);
-                    } else {
-                        addDebugMessage('📊 Loading progress: ' + JSON.stringify(info));
-                    }
-                } else {
-                    addDebugMessage('📊 Loading: ' + info);
-                }
-            },
-            
-            onAbort: function(what) {
-                addDebugMessage('💥 OpenCV loading aborted: ' + what);
-                showError('OpenCV failed to load: ' + what);
-            },
-            
-            print: function(text) {
-                addDebugMessage('📝 OpenCV: ' + text);
-            },
-            
-            printErr: function(text) {
-                addDebugMessage('🚨 OpenCV Error: ' + text);
-            },
-
-            // Memory and threading settings for WASM
-            INITIAL_MEMORY: 134217728, // 128MB
-            MAXIMUM_MEMORY: 268435456, // 256MB
-            
-            // Disable threading issues
-            PTHREAD_POOL_SIZE: 0
+                console.log('Custom OpenCV.js is ready');
+                // Load jscanify AFTER OpenCV is ready
+                loadJscanify();
+            }
         };
+        
+        let scanner;
+        let cvReady = false;
+        let jscanifyReady = false;
 
-        // Load OpenCV after Module is configured
-        function loadOpenCV() {
-            addDebugMessage('📦 Starting OpenCV load...');
-            
+        function loadJscanify() {
+            // Dynamically load jscanify after OpenCV is ready
             const script = document.createElement('script');
-            script.src = 'opencv_js.js';
-            script.async = true;
-            
+            script.src = 'jscanify.js'; // Replace with your local jscanify path
             script.onload = function() {
-                addDebugMessage('📄 OpenCV script loaded successfully');
-                
-                // Give WASM time to initialize
-                setTimeout(function() {
-                    if (!isOpenCvReady) {
-                        addDebugMessage('⚠️ WASM still not ready after script load, checking status...');
-                        checkOpenCVStatus();
-                    }
-                }, 2000);
+                console.log('jscanify loaded successfully');
+                initializeScanner();
             };
-            
             script.onerror = function() {
-                addDebugMessage('❌ Failed to load OpenCV script');
-                showError('Failed to load opencv_js.js - check file path');
+                console.error('Failed to load jscanify');
+                updateStatus('Error loading jscanify. Check the file path.', false);
             };
-            
             document.head.appendChild(script);
         }
 
-        function checkOpenCVStatus() {
-            if (typeof cv !== 'undefined') {
-                addDebugMessage('✅ cv object exists');
-                
-                if (cv.Mat) {
-                    addDebugMessage('✅ cv.Mat constructor available');
-                    try {
-                        const testMat = new cv.Mat(5, 5, cv.CV_8UC1);
-                        testMat.delete();
-                        addDebugMessage('✅ OpenCV is fully functional!');
-                        isOpenCvReady = true;
-                        initializeScanner();
-                        return;
-                    } catch (e) {
-                        addDebugMessage('❌ cv.Mat test failed: ' + e.message);
-                    }
-                } else {
-                    addDebugMessage('❌ cv.Mat constructor not available');
+        function initializeScanner() {
+            try {
+                // Verify cv is available
+                if (typeof cv === 'undefined') {
+                    throw new Error('OpenCV (cv) object not found');
                 }
                 
-                addDebugMessage('Available cv properties: ' + Object.keys(cv).slice(0, 10).join(', '));
-            } else {
-                addDebugMessage('❌ cv object not available');
-            }
-        }
-
-        // Initialize the scanner
-        function initializeScanner() {
-            addDebugMessage('🔄 Initializing scanner...');
-            
-            if (!isOpenCvReady) {
-                addDebugMessage('⚠️ OpenCV not ready, retrying...');
-                setTimeout(initializeScanner, 1000);
-                return;
-            }
-            
-            // Check if jscanify is loaded
-            if (typeof jscanify === 'undefined') {
-                addDebugMessage('⚠️ jscanify not loaded yet, waiting...');
-                setTimeout(initializeScanner, 500);
-                return;
-            }
-            
-            try {
+                // Verify jscanify is available
+                if (typeof jscanify === 'undefined') {
+                    throw new Error('jscanify not found - check if jscanify.min.js loaded correctly');
+                }
+                
+                cvReady = true;
+                jscanifyReady = true;
                 scanner = new jscanify();
-                addDebugMessage('✅ jscanify scanner initialized!');
-                showSuccess('✅ Scanner ready! Upload an image to get started.');
-                enableControls();
-                setupEventListeners();
+                
+                updateStatus('Custom OpenCV and jscanify loaded successfully! Ready to scan documents.', true);
+                
+                // Enable file input
+                document.getElementById('fileInput').disabled = false;
+                
+                // Display OpenCV version if available
+                document.getElementById('opencvVersion').textContent = 'Custom Build';
+                
             } catch (error) {
-                addDebugMessage('❌ Scanner initialization failed: ' + error.message);
-                showError('Failed to initialize scanner: ' + error.message);
+                console.error('Error initializing scanner:', error);
+                updateStatus('Error initializing scanner: ' + error.message, false);
             }
         }
 
-        // Enable form controls
-        function enableControls() {
-            document.getElementById('imageInput').disabled = false;
-            document.getElementById('extractBtn').disabled = false;
-            document.getElementById('highlightBtn').disabled = false;
+        function updateStatus(message, isReady) {
+            const statusMessage = document.getElementById('statusMessage');
+            statusMessage.className = isReady ? 'status ready' : 'status loading';
+            statusMessage.textContent = message;
         }
 
-        // Setup event listeners
-        function setupEventListeners() {
-            document.getElementById('imageInput').addEventListener('change', handleImageUpload);
-            document.getElementById('extractBtn').addEventListener('click', extractDocument);
-            document.getElementById('highlightBtn').addEventListener('click', highlightDocument);
-            document.getElementById('clearBtn').addEventListener('click', clearResults);
-        }
-
-        // Handle image upload
-        function handleImageUpload(event) {
+        document.getElementById('fileInput').addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (!file) return;
 
-            if (!file.type.startsWith('image/')) {
-                showError('Please select a valid image file');
+            if (!cvReady || !jscanifyReady || !scanner) {
+                alert('System is not ready yet. Please wait and try again.');
                 return;
             }
+
+            // Show loading message
+            document.getElementById('loadingMessage').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('statsSection').style.display = 'none';
 
             const reader = new FileReader();
             reader.onload = function(e) {
                 const img = new Image();
                 img.onload = function() {
-                    currentImage = img;
-                    showSuccess(`Image loaded: ${img.width}x${img.height} pixels`);
-                };
-                img.onerror = function() {
-                    showError('Failed to load image');
+                    processImage(img);
                 };
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
-        }
-
-        // Extract document
-        function extractDocument() {
-            if (!currentImage || !scanner) {
-                showError('Please upload an image first');
-                return;
-            }
-
-            try {
-                showStatus('Processing document extraction...');
-                
-                // Try jscanify first
-                let resultCanvas;
-                try {
-                    resultCanvas = scanner.extractPaper(currentImage, 500, 700);
-                } catch (error) {
-                    // Fallback to basic OpenCV processing
-                    const canvas = document.getElementById('hiddenCanvas');
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = currentImage.width;
-                    canvas.height = currentImage.height;
-                    ctx.drawImage(currentImage, 0, 0);
-
-                    const srcMat = cv.imread(canvas);
-                    const processedMat = new cv.Mat();
-                    cv.resize(srcMat, processedMat, new cv.Size(500, 700));
-                    
-                    resultCanvas = document.createElement('canvas');
-                    resultCanvas.width = 500;
-                    resultCanvas.height = 700;
-                    cv.imshow(resultCanvas, processedMat);
-                    
-                    srcMat.delete();
-                    processedMat.delete();
-                }
-                
-                if (resultCanvas) {
-                    displayResult('Extracted Document', resultCanvas);
-                    showSuccess('Document extracted successfully!');
-                }
-                
-            } catch (error) {
-                console.error('Extract error:', error);
-                showError('Extraction failed: ' + error.message);
-            }
-        }
-
-        // Highlight document
-        function highlightDocument() {
-            if (!currentImage || !scanner) {
-                showError('Please upload an image first');
-                return;
-            }
-
-            try {
-                showStatus('Processing document highlighting...');
-                
-                let resultCanvas;
-                try {
-                    resultCanvas = scanner.highlightPaper(currentImage);
-                } catch (error) {
-                    // Fallback edge detection
-                    const canvas = document.getElementById('hiddenCanvas');
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = currentImage.width;
-                    canvas.height = currentImage.height;
-                    ctx.drawImage(currentImage, 0, 0);
-
-                    const srcMat = cv.imread(canvas);
-                    const grayMat = new cv.Mat();
-                    const edgesMat = new cv.Mat();
-                    
-                    cv.cvtColor(srcMat, grayMat, cv.COLOR_RGBA2GRAY);
-                    cv.Canny(grayMat, edgesMat, 50, 150);
-                    
-                    resultCanvas = document.createElement('canvas');
-                    resultCanvas.width = canvas.width;
-                    resultCanvas.height = canvas.height;
-                    cv.imshow(resultCanvas, edgesMat);
-                    
-                    srcMat.delete();
-                    grayMat.delete();
-                    edgesMat.delete();
-                }
-                
-                if (resultCanvas) {
-                    displayResult('Highlighted Document', resultCanvas);
-                    showSuccess('Document highlighted successfully!');
-                }
-                
-            } catch (error) {
-                console.error('Highlight error:', error);
-                showError('Highlighting failed: ' + error.message);
-            }
-        }
-
-        // Display result
-        function displayResult(title, canvas) {
-            const resultsSection = document.getElementById('resultsSection');
-            
-            const resultDiv = document.createElement('div');
-            resultDiv.className = 'result-item';
-            
-            const titleElement = document.createElement('h3');
-            titleElement.textContent = title;
-            resultDiv.appendChild(titleElement);
-            
-            const displayCanvas = document.createElement('canvas');
-            displayCanvas.width = canvas.width;
-            displayCanvas.height = canvas.height;
-            const displayCtx = displayCanvas.getContext('2d');
-            displayCtx.drawImage(canvas, 0, 0);
-            
-            resultDiv.appendChild(displayCanvas);
-            
-            const downloadBtn = document.createElement('button');
-            downloadBtn.textContent = 'Download';
-            downloadBtn.onclick = function() {
-                const link = document.createElement('a');
-                link.download = title.toLowerCase().replace(' ', '_') + '.png';
-                link.href = displayCanvas.toDataURL();
-                link.click();
-            };
-            resultDiv.appendChild(downloadBtn);
-            
-            resultsSection.appendChild(resultDiv);
-        }
-
-        // Clear all results
-        function clearResults() {
-            document.getElementById('resultsSection').innerHTML = '';
-            currentImage = null;
-            document.getElementById('imageInput').value = '';
-            showStatus('Results cleared. Ready for new image.');
-        }
-
-        // Status functions
-        function showStatus(message) {
-            const statusDiv = document.getElementById('status');
-            statusDiv.textContent = message;
-            statusDiv.className = 'loading';
-        }
-
-        function showSuccess(message) {
-            const statusDiv = document.getElementById('status');
-            statusDiv.textContent = message;
-            statusDiv.className = 'success';
-        }
-
-        function showError(message) {
-            const statusDiv = document.getElementById('status');
-            statusDiv.textContent = message;
-            statusDiv.className = 'error';
-        }
-
-        // Initialize when page loads
-        window.addEventListener('load', function() {
-            addDebugMessage('📄 Page loaded, starting initialization...');
-            
-            // Test file accessibility first
-            testWasmFiles().then(() => {
-                // Load OpenCV after testing files
-                loadOpenCV();
-            });
         });
-    </script>
 
-    <!-- Load jscanify -->
-    <script src="https://cdn.jsdelivr.net/npm/jscanify@1.2.0/dist/jscanify.min.js"></script>
+        function processImage(img) {
+            try {
+                // Start timing
+                const startTime = performance.now();
+
+                // Show original image
+                const originalImg = document.getElementById('originalImage');
+                originalImg.src = img.src;
+
+                // Create canvas for processing
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+
+                // Get image data for jscanify
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+                // Process with jscanify (which will use your custom OpenCV)
+                const corners = scanner.findPaperContour(imageData);
+                
+                // Calculate processing time
+                const endTime = performance.now();
+                const processingTime = Math.round(endTime - startTime);
+
+                // Draw results
+                drawResults(img, corners, processingTime);
+
+                // Hide loading message
+                document.getElementById('loadingMessage').style.display = 'none';
+
+            } catch (error) {
+                console.error('Error processing image:', error);
+                document.getElementById('loadingMessage').style.display = 'none';
+                alert('Error processing image: ' + error.message);
+            }
+        }
+
+        function drawResults(img, corners, processingTime) {
+            const resultCanvas = document.getElementById('resultCanvas');
+            const ctx = resultCanvas.getContext('2d');
+            
+            // Set canvas size to match image
+            resultCanvas.width = img.width;
+            resultCanvas.height = img.height;
+            
+            // Draw the original image
+            ctx.drawImage(img, 0, 0);
+            
+            let documentDetected = false;
+            let cornersCount = 0;
+            
+            // Draw detected corners and box if found
+            if (corners && corners.length > 0) {
+                documentDetected = true;
+                cornersCount = corners.length;
+                
+                // Set drawing style for the detection box
+                ctx.strokeStyle = '#00ff00';
+                ctx.lineWidth = 3;
+                ctx.fillStyle = 'rgba(0, 255, 0, 0.1)';
+                
+                // Draw the contour
+                ctx.beginPath();
+                ctx.moveTo(corners[0].x, corners[0].y);
+                
+                for (let i = 1; i < corners.length; i++) {
+                    ctx.lineTo(corners[i].x, corners[i].y);
+                }
+                
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                
+                // Draw corner points
+                ctx.fillStyle = '#ff0000';
+                corners.forEach((corner, index) => {
+                    ctx.beginPath();
+                    ctx.arc(corner.x, corner.y, 8, 0, 2 * Math.PI);
+                    ctx.fill();
+                    
+                    // Label corners
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = '12px Arial';
+                    ctx.fillText(index + 1, corner.x - 4, corner.y + 4);
+                    ctx.fillStyle = '#ff0000';
+                });
+            } else {
+                // Draw message if no document detected
+                ctx.fillStyle = 'rgba(255, 0, 0, 0.8)';
+                ctx.font = '20px Arial';
+                ctx.fillText('No document detected', 20, 40);
+            }
+            
+            // Update statistics
+            document.getElementById('processingTime').textContent = processingTime;
+            document.getElementById('documentDetected').textContent = documentDetected ? 'Yes' : 'No';
+            document.getElementById('cornersFound').textContent = cornersCount;
+            
+            // Show results
+            document.getElementById('resultsSection').style.display = 'flex';
+            document.getElementById('statsSection').style.display = 'block';
+        }
+    </script>
+    
+    <!-- Load your CUSTOM OpenCV.js build first -->
+    <script async src="opencv.js" type="text/javascript"></script>
 </body>
 </html>
