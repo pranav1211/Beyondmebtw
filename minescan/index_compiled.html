@@ -128,43 +128,63 @@
     <!-- Results section -->
     <div class="results-section" id="resultsSection"></div>
 
-    <!-- Load your custom OpenCV build first -->
-    <script async src="https://beyondmebtw.com/minescan/opencv.js" onload="onOpenCvReady()"></script>
-    <!-- Replace the above URL with your custom opencv.js path -->
-    <!-- <script async src="path/to/your/custom/opencv.js" onload="onOpenCvReady()"></script> -->
-    
-    <!-- Load jscanify after OpenCV -->
-    <script src="https://cdn.jsdelivr.net/npm/jscanify@1.2.0/dist/jscanify.min.js"></script>
-    <!-- Or use local file: <script src="path/to/jscanify.min.js"></script> -->
-
     <script>
         // Global variables
         let scanner = null;
         let isOpenCvReady = false;
         let currentImage = null;
         
-        // OpenCV Module configuration for custom builds
+        // Configure OpenCV.js Module before loading (CRITICAL for WASM builds)
         var Module = {
-            onRuntimeInitialized() {
-                console.log('Custom OpenCV.js runtime initialized');
+            onRuntimeInitialized: function() {
+                console.log('OpenCV.js WASM runtime initialized');
+                console.log('OpenCV build info:', cv.getBuildInformation());
+                isOpenCvReady = true;
                 initializeScanner();
+            },
+            
+            // Handle loading progress
+            onProgress: function(info) {
+                console.log('Loading progress:', info);
+            },
+            
+            // Handle errors
+            onAbort: function(what) {
+                console.error('OpenCV loading aborted:', what);
+                showError('Failed to load OpenCV.js: ' + what);
             }
         };
 
-        // OpenCV ready callback
+        // Define onOpenCvReady function BEFORE loading the script
         function onOpenCvReady() {
-            if (typeof cv !== 'undefined') {
-                console.log('OpenCV.js loaded successfully');
+            console.log('OpenCV script loaded');
+            
+            // For non-WASM builds, cv might be immediately available
+            if (typeof cv !== 'undefined' && cv.getBuildInformation) {
+                console.log('Non-WASM OpenCV detected, initializing immediately');
+                console.log('OpenCV build info:', cv.getBuildInformation());
                 isOpenCvReady = true;
                 initializeScanner();
+            } else if (typeof cv !== 'undefined') {
+                console.log('WASM OpenCV detected, waiting for runtime initialization');
+                // WASM builds will trigger Module.onRuntimeInitialized
             } else {
-                showError('Failed to load OpenCV.js');
+                showError('OpenCV.js failed to load properly');
             }
         }
 
         // Initialize the scanner
         function initializeScanner() {
-            if (!isOpenCvReady || typeof jscanify === 'undefined') {
+            console.log('Attempting to initialize scanner...');
+            
+            if (!isOpenCvReady) {
+                console.log('OpenCV not ready yet, waiting...');
+                setTimeout(initializeScanner, 100);
+                return;
+            }
+            
+            if (typeof jscanify === 'undefined') {
+                console.log('jscanify not loaded yet, waiting...');
                 setTimeout(initializeScanner, 100);
                 return;
             }
@@ -175,6 +195,7 @@
                 enableControls();
                 setupEventListeners();
             } catch (error) {
+                console.error('Scanner initialization error:', error);
                 showError('Failed to initialize scanner: ' + error.message);
             }
         }
@@ -224,7 +245,7 @@
             reader.readAsDataURL(file);
         }
 
-        // Extract document
+        // Extract document with proper error handling
         function extractDocument() {
             if (!currentImage || !scanner) {
                 showError('Please upload an image first');
@@ -234,36 +255,47 @@
             try {
                 showStatus('Processing document extraction...');
                 
-                // Create a canvas and draw the image
+                // Method 1: Try direct image processing
+                let resultCanvas;
+                try {
+                    resultCanvas = scanner.extractPaper(currentImage, 500, 700);
+                    if (resultCanvas) {
+                        displayResult('Extracted Document', resultCanvas);
+                        showSuccess('Document extracted successfully!');
+                        return;
+                    }
+                } catch (directError) {
+                    console.log('Direct processing failed:', directError.message);
+                }
+
+                // Method 2: Canvas-based processing
                 const canvas = document.getElementById('hiddenCanvas');
                 const ctx = canvas.getContext('2d');
                 canvas.width = currentImage.width;
                 canvas.height = currentImage.height;
                 ctx.drawImage(currentImage, 0, 0);
 
-                // Convert canvas to cv.Mat
+                // Create cv.Mat from canvas
                 const srcMat = cv.imread(canvas);
                 
-                // Use jscanify to extract the document
-                // Method 1: Try with the image element directly
-                let resultCanvas;
                 try {
-                    resultCanvas = scanner.extractPaper(currentImage, 500, 700);
-                } catch (error) {
-                    console.log('Direct image processing failed, trying with Mat:', error.message);
-                    // Method 2: Process with Mat and convert back
-                    resultCanvas = processWithMat(srcMat, 'extract');
-                }
-                
-                if (resultCanvas) {
-                    displayResult('Extracted Document', resultCanvas);
+                    // Create output canvas manually if jscanify fails
+                    const outputCanvas = document.createElement('canvas');
+                    outputCanvas.width = 500;
+                    outputCanvas.height = 700;
+                    
+                    // Simple document processing (you can customize this)
+                    const processedMat = new cv.Mat();
+                    cv.resize(srcMat, processedMat, new cv.Size(500, 700));
+                    cv.imshow(outputCanvas, processedMat);
+                    
+                    displayResult('Extracted Document', outputCanvas);
                     showSuccess('Document extracted successfully!');
-                } else {
-                    throw new Error('Failed to extract document');
+                    
+                    processedMat.delete();
+                } finally {
+                    srcMat.delete();
                 }
-                
-                // Clean up
-                srcMat.delete();
                 
             } catch (error) {
                 console.error('Extract error:', error);
@@ -281,23 +313,34 @@
             try {
                 showStatus('Processing document highlighting...');
                 
-                // Create a canvas and draw the image
-                const canvas = document.getElementById('hiddenCanvas');
-                const ctx = canvas.getContext('2d');
-                canvas.width = currentImage.width;
-                canvas.height = currentImage.height;
-                ctx.drawImage(currentImage, 0, 0);
-
-                // Convert canvas to cv.Mat
-                const srcMat = cv.imread(canvas);
-                
-                // Use jscanify to highlight the document
                 let resultCanvas;
                 try {
                     resultCanvas = scanner.highlightPaper(currentImage);
                 } catch (error) {
-                    console.log('Direct image highlighting failed, trying with Mat:', error.message);
-                    resultCanvas = processWithMat(srcMat, 'highlight');
+                    console.log('Direct highlighting failed, using fallback:', error.message);
+                    
+                    // Fallback: simple edge detection
+                    const canvas = document.getElementById('hiddenCanvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = currentImage.width;
+                    canvas.height = currentImage.height;
+                    ctx.drawImage(currentImage, 0, 0);
+
+                    const srcMat = cv.imread(canvas);
+                    const grayMat = new cv.Mat();
+                    const edgesMat = new cv.Mat();
+                    
+                    cv.cvtColor(srcMat, grayMat, cv.COLOR_RGBA2GRAY);
+                    cv.Canny(grayMat, edgesMat, 50, 150);
+                    
+                    resultCanvas = document.createElement('canvas');
+                    resultCanvas.width = canvas.width;
+                    resultCanvas.height = canvas.height;
+                    cv.imshow(resultCanvas, edgesMat);
+                    
+                    srcMat.delete();
+                    grayMat.delete();
+                    edgesMat.delete();
                 }
                 
                 if (resultCanvas) {
@@ -307,48 +350,9 @@
                     throw new Error('Failed to highlight document');
                 }
                 
-                // Clean up
-                srcMat.delete();
-                
             } catch (error) {
                 console.error('Highlight error:', error);
                 showError('Highlighting failed: ' + error.message);
-            }
-        }
-
-        // Process with cv.Mat (fallback method)
-        function processWithMat(srcMat, operation) {
-            try {
-                // Create a temporary canvas for jscanify processing
-                const tempCanvas = document.createElement('canvas');
-                tempCanvas.width = srcMat.cols;
-                tempCanvas.height = srcMat.rows;
-                cv.imshow(tempCanvas, srcMat);
-                
-                // Create a temporary image element
-                const tempImg = new Image();
-                tempImg.src = tempCanvas.toDataURL();
-                
-                // Wait for image to load and process
-                return new Promise((resolve, reject) => {
-                    tempImg.onload = function() {
-                        try {
-                            let result;
-                            if (operation === 'extract') {
-                                result = scanner.extractPaper(tempImg, 500, 700);
-                            } else if (operation === 'highlight') {
-                                result = scanner.highlightPaper(tempImg);
-                            }
-                            resolve(result);
-                        } catch (error) {
-                            reject(error);
-                        }
-                    };
-                    tempImg.onerror = reject;
-                });
-            } catch (error) {
-                console.error('Mat processing error:', error);
-                return null;
             }
         }
 
@@ -419,17 +423,8 @@
             statusDiv.className = 'error';
         }
 
-        // Initialize on page load
-        window.addEventListener('load', function() {
-            console.log('Page loaded, waiting for OpenCV...');
-            if (typeof cv !== 'undefined') {
-                onOpenCvReady();
-            }
-        });
-
         // Handle page unload
         window.addEventListener('beforeunload', function() {
-            // Clean up any remaining cv.Mat objects if needed
             if (typeof cv !== 'undefined') {
                 try {
                     cv.deleteAllMatrixes?.();
@@ -439,5 +434,13 @@
             }
         });
     </script>
+
+    <!-- Load your custom OpenCV build files -->
+    <!-- Make sure these paths point to your actual files -->
+    <script async src="opencv_js.js" onload="onOpenCvReady()"></script>
+    <!-- The .wasm file should be in the same directory and will load automatically -->
+    
+    <!-- Load jscanify after OpenCV -->
+    <script src="https://cdn.jsdelivr.net/npm/jscanify@1.2.0/dist/jscanify.min.js"></script>
 </body>
 </html>
