@@ -44,20 +44,45 @@
         button:hover {
             background: #0056b3;
         }
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
         .timing {
             font-weight: bold;
             color: #28a745;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+        }
+        .error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
         }
     </style>
 </head>
 <body>
     <h1>JScanify Performance Test - CDN Version</h1>
     
+    <div class="status" id="statusDiv">
+        Loading libraries...
+    </div>
+    
     <div class="controls">
-        <input type="file" id="imageInput" accept="image/*">
-        <button onclick="runJScanifyBenchmark()">Run JScanify Benchmark</button>
-        <button onclick="runHighlightTest()">Test Highlight Paper</button>
-        <button onclick="clearResults()">Clear Results</button>
+        <input type="file" id="imageInput" accept="image/*" disabled>
+        <button onclick="runJScanifyBenchmark()" id="benchmarkBtn" disabled>Run JScanify Benchmark</button>
+        <button onclick="runHighlightTest()" id="highlightBtn" disabled>Test Highlight Paper</button>
+        <button onclick="clearResults()" id="clearBtn" disabled>Clear Results</button>
     </div>
 
     <div class="container">
@@ -74,7 +99,7 @@
     <div class="metrics">
         <h3>JScanify Performance Metrics (CDN Version)</h3>
         <div id="metrics">
-            <p>Upload an image and click "Run JScanify Benchmark" to see performance results</p>
+            <p>Waiting for libraries to load...</p>
         </div>
     </div>
 
@@ -84,42 +109,89 @@
     </div>
 
     <!-- Load OpenCV.js and JScanify from CDN -->
-    <script src="https://docs.opencv.org/4.7.0/opencv.js" async></script>
-    <script src="https://cdn.jsdelivr.net/gh/ColonelParrot/jscanify@master/src/jscanify.min.js"></script>
+    <script async src="https://docs.opencv.org/4.7.0/opencv.js" onload="onOpenCVLoaded()"></script>
     
     <script>
         let cv;
         let originalImage;
         let scanner;
         const metrics = {};
+        let openCVLoaded = false;
+        let jscanifyLoaded = false;
 
-        function onOpenCvReady() {
+        function updateStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('statusDiv');
+            statusDiv.className = `status ${type}`;
+            statusDiv.textContent = message;
+        }
+
+        function enableControls() {
+            document.getElementById('imageInput').disabled = false;
+            document.getElementById('benchmarkBtn').disabled = false;
+            document.getElementById('highlightBtn').disabled = false;
+            document.getElementById('clearBtn').disabled = false;
+        }
+
+        function onOpenCVLoaded() {
+            console.log('OpenCV.js loaded');
             cv = window.cv;
-            console.log('OpenCV.js CDN version loaded');
-            
-            // Initialize JScanify
-            if (typeof jscanify !== 'undefined') {
-                scanner = new jscanify();
-                console.log('JScanify initialized');
-                document.getElementById('metrics').innerHTML = '<p>OpenCV.js CDN + JScanify ready. Upload an image to start testing.</p>';
-            } else {
-                console.log('Waiting for JScanify...');
-                setTimeout(onOpenCvReady, 500);
-            }
+            openCVLoaded = true;
+            updateStatus('OpenCV loaded, loading JScanify...');
+            loadJScanify();
         }
 
-        // Wait for both OpenCV and JScanify to load
-        function checkLibrariesLoaded() {
-            if (typeof cv !== 'undefined' && typeof jscanify !== 'undefined') {
-                onOpenCvReady();
-            } else {
-                setTimeout(checkLibrariesLoaded, 500);
-            }
+        function loadJScanify() {
+            // Load JScanify from CDN
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/gh/ColonelParrot/jscanify@master/src/jscanify.min.js';
+            script.onload = function() {
+                console.log('JScanify script loaded');
+                initializeJScanify();
+            };
+            script.onerror = function() {
+                console.error('Failed to load JScanify from CDN');
+                updateStatus('Failed to load JScanify from CDN', 'error');
+            };
+            document.head.appendChild(script);
         }
 
+        function initializeJScanify() {
+            // Wait a moment for JScanify to be available
+            setTimeout(() => {
+                if (typeof jscanify !== 'undefined') {
+                    try {
+                        scanner = new jscanify();
+                        jscanifyLoaded = true;
+                        console.log('JScanify initialized successfully');
+                        updateStatus('All libraries loaded successfully! Upload an image to start testing.', 'success');
+                        enableControls();
+                        document.getElementById('metrics').innerHTML = '<p>OpenCV.js CDN + JScanify ready. Upload an image to start testing.</p>';
+                    } catch (error) {
+                        console.error('Error initializing JScanify:', error);
+                        updateStatus('Error initializing JScanify: ' + error.message, 'error');
+                    }
+                } else {
+                    console.log('JScanify not yet available, retrying...');
+                    setTimeout(initializeJScanify, 500);
+                }
+            }, 100);
+        }
+
+        // Fallback initialization
         window.addEventListener('load', () => {
-            setTimeout(checkLibrariesLoaded, 1000);
+            setTimeout(() => {
+                if (!openCVLoaded) {
+                    updateStatus('OpenCV is taking longer to load...', 'info');
+                }
+            }, 3000);
         });
+
+        // Set up OpenCV ready callback
+        window.onOpenCvReady = function() {
+            if (!openCVLoaded) {
+                onOpenCVLoaded();
+            }
+        };
 
         document.getElementById('imageInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -130,6 +202,7 @@
                     img.onload = function() {
                         displayOriginalImage(img);
                         originalImage = img;
+                        updateStatus('Image loaded successfully! Ready for processing.', 'success');
                     };
                     img.src = event.target.result;
                 };
@@ -161,28 +234,44 @@
         }
 
         function runHighlightTest() {
-            if (!scanner || !originalImage) {
-                alert('Please wait for libraries to load and upload an image first');
+            if (!jscanifyLoaded || !scanner) {
+                updateStatus('JScanify is not properly loaded. Please refresh the page.', 'error');
+                return;
+            }
+            
+            if (!originalImage) {
+                updateStatus('Please upload an image first.', 'error');
                 return;
             }
 
             const canvas = document.getElementById('originalCanvas');
             
-            timeFunction('JScanify Highlight Paper', () => {
-                const highlighted = scanner.highlightPaper(canvas);
-                const outputCanvas = document.getElementById('processedCanvas');
-                outputCanvas.width = highlighted.width;
-                outputCanvas.height = highlighted.height;
-                const ctx = outputCanvas.getContext('2d');
-                ctx.drawImage(highlighted, 0, 0);
-            });
+            try {
+                timeFunction('JScanify Highlight Paper', () => {
+                    const highlighted = scanner.highlightPaper(canvas);
+                    const outputCanvas = document.getElementById('processedCanvas');
+                    outputCanvas.width = highlighted.width;
+                    outputCanvas.height = highlighted.height;
+                    const ctx = outputCanvas.getContext('2d');
+                    ctx.drawImage(highlighted, 0, 0);
+                });
 
-            displaySingleMetric('Highlight Paper');
+                displaySingleMetric('Highlight Paper');
+                updateStatus('Highlight test completed successfully!', 'success');
+            } catch (error) {
+                console.error('Error in highlight test:', error);
+                updateStatus('Error in highlight test: ' + error.message, 'error');
+            }
         }
 
         function runJScanifyBenchmark() {
-            if (!scanner || !originalImage) {
-                alert('Please wait for libraries to load and upload an image first');
+            if (!jscanifyLoaded || !scanner) {
+                updateStatus('JScanify is not properly loaded. Please refresh the page.', 'error');
+                return;
+            }
+            
+            if (!originalImage) {
+                updateStatus('Please upload an image first.', 'error');
                 return;
             }
             
@@ -191,6 +280,8 @@
             const canvas = document.getElementById('originalCanvas');
             
             try {
+                updateStatus('Running benchmark...', 'info');
+                
                 // Step 1: Get corner points (document detection)
                 const cornerPoints = timeFunction('JScanify Get Corner Points', () => {
                     return scanner.getCornerPoints(canvas);
@@ -217,9 +308,11 @@
                 ctx.drawImage(extracted, 0, 0);
                 
                 displayMetrics();
+                updateStatus('Benchmark completed successfully!', 'success');
                 
             } catch (error) {
                 console.error('Error during JScanify processing:', error);
+                updateStatus('Error during processing: ' + error.message, 'error');
                 document.getElementById('metrics').innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
             }
         }
@@ -267,6 +360,12 @@
             document.getElementById('metrics').innerHTML = '<p>Results cleared. Upload an image and run benchmark again.</p>';
             document.getElementById('detailedTimings').innerHTML = '';
             Object.keys(metrics).forEach(key => delete metrics[key]);
+            
+            if (originalImage) {
+                updateStatus('Results cleared. Ready for new test.', 'info');
+            } else {
+                updateStatus('Results cleared. Upload an image to start testing.', 'info');
+            }
         }
     </script>
 </body>
