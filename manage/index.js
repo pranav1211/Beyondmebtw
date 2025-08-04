@@ -216,12 +216,34 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function loadBlogPosts() {
-        // Load blog posts from different category JSON files
+        // Load blog posts from different category latest JSON files
         const categories = [
-            { name: 'f1arti', file: 'f1arti.json', subcategories: ['2025', 'general'] },
-            { name: 'movietv', file: 'movietv.json', subcategories: ['movies', 'tv'] },
-            { name: 'experience', file: 'experience.json', subcategories: [] },
-            { name: 'techart', file: 'techart.json', subcategories: [] }
+            { 
+                name: 'f1arti', 
+                file: 'f1arti-latest.json', 
+                subcategories: [
+                    { name: '2025', elementId: 'f1-2025-latest' },
+                    { name: 'general', elementId: 'f1-general-latest' }
+                ]
+            },
+            { 
+                name: 'movietv', 
+                file: 'movietv-latest.json', 
+                subcategories: [
+                    { name: 'movies', elementId: 'movie-latest' },
+                    { name: 'tv', elementId: 'tv-latest' }
+                ]
+            },
+            { 
+                name: 'experience', 
+                file: 'experience-latest.json', 
+                elementId: 'experience-latest'
+            },
+            { 
+                name: 'techart', 
+                file: 'techart-latest.json', 
+                elementId: 'tech-latest'
+            }
         ];
 
         categories.forEach(category => {
@@ -233,126 +255,45 @@ document.addEventListener("DOMContentLoaded", () => {
                     return response.json();
                 })
                 .then(data => {
-                    if (category.subcategories.length > 0) {
+                    if (category.subcategories && Array.isArray(category.subcategories)) {
                         // Handle categories with subcategories
                         category.subcategories.forEach(subcategory => {
-                            const elementId = getElementId(category.name, subcategory);
-                            const latestPost = getLatestPostBySubcategory(data, subcategory);
-                            displayPost(elementId, latestPost);
+                            const latestPost = getLatestPostFromStructuredData(data, subcategory.name);
+                            displayPost(subcategory.elementId, latestPost);
                         });
                     } else {
                         // Handle categories without subcategories
-                        const elementId = getElementId(category.name);
-                        const latestPost = getLatestPost(data);
-                        displayPost(elementId, latestPost);
+                        const latestPost = data.mainPost || (data.latest && data.latest[0]) || null;
+                        displayPost(category.elementId, latestPost);
                     }
                 })
                 .catch(error => {
                     console.error(`Error loading ${category.file}:`, error);
                     // Display error message in the respective sections
-                    if (category.subcategories.length > 0) {
+                    if (category.subcategories && Array.isArray(category.subcategories)) {
                         category.subcategories.forEach(subcategory => {
-                            const elementId = getElementId(category.name, subcategory);
-                            displayError(elementId, `Error loading ${category.name} - ${subcategory}`);
+                            displayError(subcategory.elementId, `Error loading ${category.name} - ${subcategory.name}`);
                         });
                     } else {
-                        const elementId = getElementId(category.name);
-                        displayError(elementId, `Error loading ${category.name}`);
+                        displayError(category.elementId, `Error loading ${category.name}`);
                     }
                 });
         });
     }
 
-    function getElementId(category, subcategory = null) {
-        const mapping = {
-            'f1arti': {
-                '2025': 'f1-2025-latest',
-                'general': 'f1-general-latest'
-            },
-            'movietv': {
-                'movies': 'movie-latest',
-                'tv': 'tv-latest'
-            },
-            'experience': 'experience-latest',
-            'techart': 'tech-latest'
-        };
-
-        if (subcategory) {
-            return mapping[category][subcategory];
-        } else {
-            return mapping[category];
+    function getLatestPostFromStructuredData(data, subcategoryName) {
+        // For structured data like latest.json format
+        if (data.subcategories && data.subcategories[subcategoryName]) {
+            return data.subcategories[subcategoryName].mainPost || data.subcategories[subcategoryName].latest;
         }
-    }
-
-    function parseDate(dateString) {
-        // Handle date format like "Jun 29, 2025"
-        if (!dateString) return new Date(0); // Return epoch if no date
         
-        try {
-            // First try to parse as is
-            let date = new Date(dateString);
-            if (!isNaN(date.getTime())) {
-                return date;
-            }
-            
-            // If that fails, try to parse manually
-            const parts = dateString.trim().split(/[\s,]+/);
-            if (parts.length >= 3) {
-                const month = parts[0];
-                const day = parseInt(parts[1]);
-                const year = parseInt(parts[2]);
-                
-                const monthMap = {
-                    'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
-                    'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
-                };
-                
-                if (monthMap[month] !== undefined) {
-                    return new Date(year, monthMap[month], day);
-                }
-            }
-            
-            return new Date(0); // Return epoch if parsing fails
-        } catch (error) {
-            console.error('Error parsing date:', dateString, error);
-            return new Date(0);
+        // If the data has a different structure, try to find the subcategory data
+        if (data[subcategoryName]) {
+            return data[subcategoryName].mainPost || data[subcategoryName].latest || data[subcategoryName];
         }
-    }
-
-    function getLatestPostBySubcategory(data, subcategory) {
-        if (!data || !Array.isArray(data)) {
-            return null;
-        }
-
-        // Filter posts by subcategory and get the latest one
-        const filteredPosts = data.filter(post => {
-            if (subcategory === '2025') {
-                return post.subcategory === '2025';
-            } else if (subcategory === 'general') {
-                return !post.subcategory || post.subcategory === '' || post.subcategory === 'general';
-            } else if (subcategory === 'movies') {
-                return post.subcategory === 'movies' || post.subcategory === 'movie';
-            } else if (subcategory === 'tv') {
-                return post.subcategory === 'tv' || post.subcategory === 'television';
-            }
-            return false;
-        });
-
-        if (filteredPosts.length === 0) {
-            return null;
-        }
-
-        // Sort by date using custom date parser and return the latest
-        return filteredPosts.sort((a, b) => parseDate(b.date) - parseDate(a.date))[0];
-    }
-
-    function getLatestPost(data) {
-        if (!data || !Array.isArray(data) || data.length === 0) {
-            return null;
-        }
-
-        // Sort by date using custom date parser and return the latest
-        return data.sort((a, b) => parseDate(b.date) - parseDate(a.date))[0];
+        
+        // Fallback to mainPost if available
+        return data.mainPost || null;
     }
 
     function displayPost(elementId, post) {
