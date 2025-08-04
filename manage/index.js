@@ -60,7 +60,9 @@ document.addEventListener("DOMContentLoaded", () => {
         // Set up form submissions for content forms
         setupContentForms();
         setupBlogForms();
-        loadBlogPosts();
+        
+        // Load latest.json once and use it for both showdata and loadBlogPosts
+        loadLatestData();
     }
 
     function setupContentForms() {
@@ -195,8 +197,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     // Reset the form but keep the password filled
                     clearBlogForm();
                     
-                    // Reload blog posts to show the updated data
-                    loadBlogPosts();
+                    // Reload latest data to show the updated data
+                    loadLatestData();
                 })
                 .catch((error) => {
                     alert(`Error: ${error.message}`);
@@ -215,85 +217,158 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function loadBlogPosts() {
-        // Load blog posts from different category latest JSON files
-        const categories = [
-            { 
-                name: 'f1arti', 
-                file: 'latest.json', 
+    // Combined function to load latest.json once and handle both showdata and loadBlogPosts
+    function loadLatestData() {
+        fetch('latest.json')  
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch latest.json: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                // Handle main site data (original showdata functionality)
+                showMainSiteData(data);
+                
+                // Handle blog posts data (loadBlogPosts functionality)
+                loadBlogPostsFromData(data);
+            })
+            .catch((error) => {
+                console.error('Error loading latest.json:', error);
+            });
+    }
+
+    function showMainSiteData(data) {
+        // Main Post
+        const mainPost = data.mainPost;
+        const mainTitle = mainPost.title;
+        const mainDate = mainPost.date;
+        const dateObject = new Date(mainDate);
+        const formattedDate = new Intl.DateTimeFormat('en-US', {
+            month: 'short',
+            day: '2-digit',
+            year: 'numeric',
+        }).format(dateObject);
+
+        const mainExcerpt = mainPost.excerpt;
+        const mainThumbnail = mainPost.thumbnail;
+        const mainLink = mainPost.link;
+
+        // Only update if elements exist (in case this is called on a different page)
+        const latestTitle = document.querySelector('.latest-title');
+        const latestDate = document.querySelector('.latest-date');
+        const latestExcerpt = document.querySelector('.latest-excerpt');
+        const latestImg = document.querySelector('.latest-img');
+        const latestLink = document.querySelector('.latest-link');
+
+        if (latestTitle) latestTitle.innerText = mainTitle;
+        if (latestDate) latestDate.innerText = formattedDate;
+        if (latestExcerpt) latestExcerpt.innerText = mainExcerpt;
+        if (latestImg) latestImg.src = mainThumbnail;
+        if (latestLink) latestLink.innerText = mainLink;
+
+        // Featured Posts
+        const featuredPosts = data.featured;
+        for (let i = 0; i < 4; i++) {
+            const divid = `fepost${i}`;
+            const post = featuredPosts[i];
+
+            const titleEl = document.querySelector(`.${divid}-title`);
+            const dateEl = document.querySelector(`.${divid}-date`);
+            const excerptEl = document.querySelector(`.${divid}-excerpt`);
+            const imgEl = document.querySelector(`.${divid}-img`);
+            const linkEl = document.querySelector(`.${divid}-link`);
+
+            if (titleEl) titleEl.innerText = post.title;
+
+            if (dateEl) {
+                const FeatDate = post.date;
+                const dateObject = new Date(FeatDate);
+                const formattedDateFeat = new Intl.DateTimeFormat('en-US', {
+                    month: 'short',
+                    day: '2-digit',
+                    year: 'numeric',
+                }).format(dateObject);
+                dateEl.innerText = formattedDateFeat;
+            }
+
+            if (excerptEl) excerptEl.innerText = post.excerpt;
+            if (imgEl) imgEl.src = `https://beyondmebtw.com/assets/images/thumbnails/${post.thumbnail}`;
+            if (linkEl) linkEl.innerHTML = post.link;
+        }
+
+        // Featured Projects
+        const featuredProjects = data.projects;
+        for (let i = 0; i < 4; i++) {
+            const divid = `feproj${i}`;
+            const project = featuredProjects[i];
+
+            const titleEl = document.querySelector(`.${divid}-title`);
+            const excerptEl = document.querySelector(`.${divid}-excerpt`);
+            const linkEl = document.querySelector(`.${divid}-link`);
+
+            if (titleEl) titleEl.innerText = project.title;
+            if (excerptEl) excerptEl.innerText = project.excerpt;
+            if (linkEl) linkEl.innerHTML = project.link;
+        }
+    }
+
+    function loadBlogPostsFromData(data) {
+        // Check if categories data exists
+        if (!data.categories) {
+            console.error('No categories data found in latest.json');
+            return;
+        }
+
+        const categories = data.categories;
+
+        // Map category data to display elements
+        const categoryMappings = [
+            {
+                categoryKey: 'f1arti',
                 subcategories: [
-                    { name: '2025', elementId: 'f1-2025-latest' },
-                    { name: 'general', elementId: 'f1-general-latest' }
+                    { subcategoryKey: '2025', elementId: 'f1-2025-latest' },
+                    { subcategoryKey: 'general', elementId: 'f1-general-latest' }
                 ]
             },
-            { 
-                name: 'movietv', 
-                file: 'latest.json', 
+            {
+                categoryKey: 'movietv',
                 subcategories: [
-                    { name: 'movies', elementId: 'movie-latest' },
-                    { name: 'tv', elementId: 'tv-latest' }
+                    { subcategoryKey: 'movies', elementId: 'movie-latest' },
+                    { subcategoryKey: 'tv', elementId: 'tv-latest' }
                 ]
             },
-            { 
-                name: 'experience', 
-                file: 'latest.json', 
+            {
+                categoryKey: 'experience',
                 elementId: 'experience-latest'
             },
-            { 
-                name: 'techart', 
-                file: 'latest.json', 
+            {
+                categoryKey: 'techart',
                 elementId: 'tech-latest'
             }
         ];
 
-        categories.forEach(category => {
-            fetch(category.file)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Failed to fetch ${category.file}: ${response.statusText}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (category.subcategories && Array.isArray(category.subcategories)) {
-                        // Handle categories with subcategories
-                        category.subcategories.forEach(subcategory => {
-                            const latestPost = getLatestPostFromStructuredData(data, subcategory.name);
-                            displayPost(subcategory.elementId, latestPost);
-                        });
-                    } else {
-                        // Handle categories without subcategories
-                        const latestPost = data.mainPost || (data.latest && data.latest[0]) || null;
-                        displayPost(category.elementId, latestPost);
-                    }
-                })
-                .catch(error => {
-                    console.error(`Error loading ${category.file}:`, error);
-                    // Display error message in the respective sections
-                    if (category.subcategories && Array.isArray(category.subcategories)) {
-                        category.subcategories.forEach(subcategory => {
-                            displayError(subcategory.elementId, `Error loading ${category.name} - ${subcategory.name}`);
-                        });
-                    } else {
-                        displayError(category.elementId, `Error loading ${category.name}`);
-                    }
-                });
-        });
-    }
+        categoryMappings.forEach(mapping => {
+            const categoryData = categories[mapping.categoryKey];
+            
+            if (!categoryData) {
+                console.error(`Category ${mapping.categoryKey} not found in data`);
+                return;
+            }
 
-    function getLatestPostFromStructuredData(data, subcategoryName) {
-        // For structured data like latest.json format
-        if (data.subcategories && data.subcategories[subcategoryName]) {
-            return data.subcategories[subcategoryName].mainPost || data.subcategories[subcategoryName].latest;
-        }
-        
-        // If the data has a different structure, try to find the subcategory data
-        if (data[subcategoryName]) {
-            return data[subcategoryName].mainPost || data[subcategoryName].latest || data[subcategoryName];
-        }
-        
-        // Fallback to mainPost if available
-        return data.mainPost || null;
+            if (mapping.subcategories) {
+                // Handle categories with subcategories
+                mapping.subcategories.forEach(subcategory => {
+                    const subcategoryData = categoryData.subcategories && categoryData.subcategories[subcategory.subcategoryKey];
+                    const latestPost = subcategoryData ? subcategoryData.mainPost : null;
+                    displayPost(subcategory.elementId, latestPost);
+                });
+            } else {
+                // Handle categories without subcategories (direct mainPost)
+                const latestPost = categoryData.mainPost;
+                displayPost(mapping.elementId, latestPost);
+            }
+        });
     }
 
     function displayPost(elementId, post) {
@@ -317,80 +392,6 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
     }
 
-    function displayError(elementId, errorMessage) {
-        const element = document.getElementById(elementId);
-        if (element) {
-            element.innerHTML = `<div class="no-posts">${errorMessage}</div>`;
-        }
-    }
-
-    function showdata() {
-        fetch('latest.json')  
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch JSON: ${response.statusText}`);
-                }
-                return response.json();
-            })
-            .then((data) => {
-                // Main Post
-                const mainPost = data.mainPost;
-                const mainTitle = mainPost.title;
-                const mainDate = mainPost.date;
-                const dateObject = new Date(mainDate);
-                const formattedDate = new Intl.DateTimeFormat('en-US', {
-                    month: 'short',
-                    day: '2-digit',
-                    year: 'numeric',
-                }).format(dateObject);
-
-                const mainExcerpt = mainPost.excerpt;
-                const mainThumbnail = mainPost.thumbnail;
-                const mainLink = mainPost.link;
-
-                document.querySelector('.latest-title').innerText = mainTitle;
-                document.querySelector('.latest-date').innerText = formattedDate;
-                document.querySelector('.latest-excerpt').innerText = mainExcerpt;
-                document.querySelector('.latest-img').src = mainThumbnail;
-                document.querySelector('.latest-link').innerText = mainLink;
-
-                // Featured Posts
-                const featuredPosts = data.featured;
-                for (let i = 0; i < 4; i++) {
-                    const divid = `fepost${i}`;
-                    const post = featuredPosts[i];
-
-                    document.querySelector(`.${divid}-title`).innerText = post.title;
-
-                    const FeatDate = post.date;
-                    const dateObject = new Date(FeatDate);
-                    const formattedDateFeat = new Intl.DateTimeFormat('en-US', {
-                        month: 'short',
-                        day: '2-digit',
-                        year: 'numeric',
-                    }).format(dateObject);
-
-                    document.querySelector(`.${divid}-date`).innerText = formattedDateFeat;
-                    document.querySelector(`.${divid}-excerpt`).innerText = post.excerpt;
-                    document.querySelector(`.${divid}-img`).src = `https://beyondmebtw.com/assets/images/thumbnails/${post.thumbnail}`;
-                    document.querySelector(`.${divid}-link`).innerHTML = post.link;
-                }
-
-                // Featured Projects
-                const featuredProjects = data.projects;
-                for (let i = 0; i < 4; i++) {
-                    const divid = `feproj${i}`;
-                    const project = featuredProjects[i];
-
-                    document.querySelector(`.${divid}-title`).innerText = project.title;
-                    document.querySelector(`.${divid}-excerpt`).innerText = project.excerpt;
-                    document.querySelector(`.${divid}-link`).innerHTML = project.link;
-                }
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-    }
-
-    showdata();
+    // Load data initially when the page loads (for non-authenticated users)
+    loadLatestData();
 });

@@ -33,9 +33,10 @@ body {
 .form-container:has(.blog-form) {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    max-width: 1200px;
+    gap: 30px;
+    max-width: 1400px;
     margin: 0 auto 30px;
+    align-items: start;
 }
 
 form {
@@ -167,7 +168,7 @@ button[type="button"]:hover {
     word-break: break-all;
 }
 
-/* Blog form styling - more compact and square */
+/* Blog form styling - improved layout */
 .blog-form {
     background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     color: white;
@@ -175,24 +176,26 @@ button[type="button"]:hover {
     width: 100% !important;
     max-width: 100%;
     min-width: unset;
-    height: fit-content;
-    max-height: 500px;
+    height: auto;
+    max-height: 600px;
     overflow-y: auto;
+    box-sizing: border-box;
 }
 
 .blog-form h2 {
     color: white;
     border-bottom: 2px solid rgba(255, 255, 255, 0.3);
     padding-bottom: 10px;
-    font-size: 20px;
+    font-size: 22px;
     margin-bottom: 15px;
+    text-align: center;
 }
 
 .blog-form label {
     color: white;
     font-weight: 700;
     margin-bottom: 3px;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .blog-form input,
@@ -200,8 +203,9 @@ button[type="button"]:hover {
     background: rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.5);
     margin-bottom: 12px;
-    padding: 8px;
-    font-size: 13px;
+    padding: 10px;
+    font-size: 14px;
+    box-sizing: border-box;
 }
 
 .blog-form input:focus,
@@ -211,10 +215,10 @@ button[type="button"]:hover {
     box-shadow: 0 0 5px rgba(233, 30, 99, 0.3);
 }
 
-/* Compact checkbox styling */
+/* Improved checkbox styling */
 .form-actions {
     margin-bottom: 15px;
-    padding: 10px;
+    padding: 12px;
     background: rgba(255, 255, 255, 0.2);
     border-radius: 8px;
     border: 2px solid rgba(255, 255, 255, 0.4);
@@ -225,7 +229,7 @@ button[type="button"]:hover {
     align-items: center;
     font-weight: bold;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 15px;
     color: white;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
     margin-bottom: 0;
@@ -267,43 +271,44 @@ button[type="button"]:hover {
 }
 
 .form-actions div {
-    font-size: 11px;
+    font-size: 12px;
     margin-top: 5px;
     opacity: 0.9;
 }
 
 .blog-form button {
-    padding: 10px;
-    font-size: 14px;
-    margin-bottom: 8px;
+    padding: 12px;
+    font-size: 15px;
+    margin-bottom: 10px;
 }
 
-/* Blog display section - more compact */
+/* Blog display section - fixed layout */
 .blog-display {
     background: #fff;
-    padding: 20px;
+    padding: 25px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     width: 100% !important;
     max-width: 100%;
     min-width: unset;
-    height: fit-content;
-    max-height: 500px;
+    height: auto;
+    max-height: 600px;
     overflow-y: auto;
+    box-sizing: border-box;
 }
 
 .blog-display h2 {
     text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     color: #333;
-    font-size: 18px;
+    font-size: 20px;
     border-bottom: 2px solid #f093fb;
-    padding-bottom: 8px;
+    padding-bottom: 10px;
 }
 
 .category-section {
-    margin-bottom: 20px;
-    padding: 12px;
+    margin-bottom: 25px;
+    padding: 15px;
     background: #f8f9fa;
     border-radius: 8px;
     border-left: 4px solid #f093fb;
@@ -312,62 +317,126 @@ button[type="button"]:hover {
 .category-title {
     font-weight: 600;
     color: #333;
-    font-size: 15px;
-    margin-bottom: 12px;
+    font-size: 16px;
+    margin-bottom: 15px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 5px;
 }
 
 .subcategory-section {
-    margin-bottom: 15px;
+    margin-bottom: 18px;
 }
 
 .subcategory-title {
     font-weight: 500;
     color: #555;
-    font-size: 13px;
-    margin-bottom: 8px;
+    font-size: 14px;
+    margin-bottom: 10px;
     text-decoration: underline;
+    font-style: italic;
 }
 
 .post-item {
     background: white;
-    padding: 10px;
+    padding: 12px;
     margin-bottom: 10px;
     border-radius: 6px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border: 1px solid #e9ecef;
+    transition: transform 0.2s ease;
+}
+
+.post-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .post-uid {
-    font-size: 11px;
+    font-size: 12px;
     color: #6c757d;
     font-weight: 500;
-    margin-bottom: 4px;
+    margin-bottom: 5px;
     font-family: monospace;
+    background: #f8f9fa;
+    padding: 2px 6px;
+    border-radius: 3px;
+    display: inline-block;
 }
 
 .post-title {
-    font-size: 12px;
+    font-size: 14px;
     color: #333;
     font-weight: 600;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.post-date {
+    font-size: 12px;
+    color: #6c757d;
     margin-bottom: 6px;
+}
+
+.post-excerpt {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 8px;
     line-height: 1.3;
 }
 
 .post-thumbnail {
-    font-size: 10px;
+    font-size: 11px;
     color: #007BFF;
     word-break: break-all;
     line-height: 1.2;
+    text-decoration: underline;
 }
 
 .no-posts {
-    font-size: 11px;
+    font-size: 12px;
     color: #6c757d;
     font-style: italic;
     text-align: center;
-    padding: 8px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 5px;
+    border: 1px dashed #dee2e6;
+}
+
+/* Scrollbar styling for blog sections */
+.blog-form::-webkit-scrollbar,
+.blog-display::-webkit-scrollbar {
+    width: 8px;
+}
+
+.blog-form::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.blog-form::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+.blog-form::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.blog-display::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.blog-display::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.blog-display::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
 }
 
 @media (max-width: 768px) {
@@ -377,7 +446,7 @@ button[type="button"]:hover {
     
     .form-container:has(.blog-form) {
         grid-template-columns: 1fr;
-        gap: 15px;
+        gap: 20px;
     }
     
     form, .blog-display, .blog-form {
@@ -390,10 +459,10 @@ button[type="button"]:hover {
     }
     
     .blog-form {
-        max-height: 400px;
+        max-height: 500px;
     }
     
     .blog-display {
-        max-height: 400px;
+        max-height: 500px;
     }
 }
