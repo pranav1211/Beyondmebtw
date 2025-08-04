@@ -1,203 +1,253 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live Document Scanner + OCR</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OCR Scanner with Performance Metrics</title>
+
+  <!-- Local OpenCV -->
+  <script src="js/opencv.js" onload="onOpenCvReady();" type="text/javascript"></script>
+  <!-- JScanify -->
+  <script src="jscanify.js"></script>
+  <!-- Tesseract -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js"></script>
+
   <style>
-    body { 
-      font-family: Arial, sans-serif;
-      margin: 0; 
-      background: #f9f9f9; 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
     }
-    h1 { font-size: 1.3em; margin: 10px; text-align: center; }
-    #camera-container {
+    #videoWrapper {
       position: relative;
-      width: 100%;
-      max-width: 600px;
-      aspect-ratio: 3/4;
-      background: black;
+      max-width: 90vw;
+      border: 2px solid #4facfe;
+      border-radius: 12px;
       overflow: hidden;
-      border-radius: 10px;
+      margin-top: 20px;
     }
-    #video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    #video { width: 100%; height: auto; display: block; }
+    #overlayCanvas {
+      position: absolute; top: 0; left: 0; pointer-events: none;
     }
-    #overlay {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
+    .controls {
+      margin-top: 15px;
+      display: flex; gap: 10px;
+      flex-wrap: wrap; justify-content: center;
     }
     button {
-      margin: 15px;
-      padding: 12px 20px;
-      background: #007bff;
-      color: white;
-      font-size: 1em;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
+      padding: 10px 15px; border: none; border-radius: 8px;
+      background: #4facfe; color: white; font-size: 14px; cursor: pointer;
     }
-    #results {
-      max-width: 600px;
-      margin-top: 10px;
-      text-align: center;
+    #preview, canvas {
+      margin-top: 20px; max-width: 90vw;
+      border-radius: 12px; border: 2px solid #4facfe;
     }
-    canvas, img {
-      max-width: 100%;
-      border-radius: 8px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
+    #resultBox {
+      background: #fff; color: #000;
+      padding: 15px; border-radius: 10px;
+      margin-top: 20px; max-width: 90vw;
+      white-space: pre-wrap; display: none;
     }
-    #ocrOutput {
-      background: #fff;
-      padding: 10px;
-      border-radius: 6px;
-      font-size: 0.9em;
-      text-align: left;
-      white-space: pre-wrap;
-    }
-    #perfMetric {
-      font-size: 0.8em;
-      color: #333;
+    #perfBox {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #0f0;
     }
   </style>
 </head>
+
 <body>
-  <h1>Live Document Scanner + OCR</h1>
-
-  <div id="camera-container">
-    <video id="video" autoplay playsinline></video>
-    <canvas id="overlay"></canvas>
+  <h2>📸 OCR Scanner with Performance Metrics</h2>
+  <div id="videoWrapper">
+    <video id="video" autoplay playsinline muted></video>
+    <canvas id="overlayCanvas"></canvas>
   </div>
 
-  <button id="captureBtn">📸 Capture & Scan</button>
-  <div id="perfMetric">Frame Time: -- ms</div>
-
-  <div id="results">
-    <h3>Captured Document</h3>
-    <canvas id="captureCanvas"></canvas>
-    <h3>OCR Result</h3>
-    <div id="ocrOutput">No text detected yet.</div>
+  <div class="controls">
+    <button id="captureBtn">📸 Capture & Scan</button>
+    <button id="flashBtn">💡 Flash</button>
+    <button id="toggleModeBtn">🔄 Mode: Minimal</button>
   </div>
 
-  <!-- Local OpenCV.js -->
-  <script src="js/opencv.js" onload="onOpenCvReady();" type="text/javascript"></script>
-  <!-- Tesseract.js -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  
+  <canvas id="canvas" style="display:none;"></canvas>
+  <img id="preview" alt="Captured Frame" />
+  <canvas id="extracted"></canvas>
+  <canvas id="enhanced"></canvas>
+  <div id="resultBox"></div>
+  <div id="perfBox">Performance: --</div>
+
   <script>
-    let video = document.getElementById('video');
-    let overlay = document.getElementById('overlay');
-    let captureCanvas = document.getElementById('captureCanvas');
-    let ocrOutput = document.getElementById('ocrOutput');
-    let perfMetric = document.getElementById('perfMetric');
-    let ctx;
-    let streaming = false;
-    let src, gray, blurred, edges, contours, hierarchy;
+    const video = document.getElementById("video");
+    const overlayCanvas = document.getElementById("overlayCanvas");
+    const canvas = document.getElementById("canvas");
+    const preview = document.getElementById("preview");
+    const extracted = document.getElementById("extracted");
+    const enhanced = document.getElementById("enhanced");
+    const captureBtn = document.getElementById("captureBtn");
+    const flashBtn = document.getElementById("flashBtn");
+    const toggleModeBtn = document.getElementById("toggleModeBtn");
+    const resultBox = document.getElementById("resultBox");
+    const perfBox = document.getElementById("perfBox");
+
+    let scanner, track;
+    let enhancementMode = "minimal";
+    const frameCanvas = document.createElement("canvas");
+    const frameCtx = frameCanvas.getContext("2d");
 
     async function onOpenCvReady() {
+      window.cv = await window.cv;
       console.log("✅ OpenCV Ready");
-      startCamera();
+      init();
     }
 
-    async function startCamera() {
+    async function init() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
         video.srcObject = stream;
+        track = stream.getVideoTracks()[0];
+
+        if (typeof jscanify === "undefined") {
+          alert("❌ JScanify did not load.");
+          return;
+        }
+        scanner = new jscanify();
+
         video.onloadedmetadata = () => {
-          overlay.width = video.videoWidth;
-          overlay.height = video.videoHeight;
-          ctx = overlay.getContext('2d');
+          overlayCanvas.width = video.videoWidth;
+          overlayCanvas.height = video.videoHeight;
+          frameCanvas.width = video.videoWidth;
+          frameCanvas.height = video.videoHeight;
 
-          src = new cv.Mat(video.videoHeight, video.videoWidth, cv.CV_8UC4);
-          gray = new cv.Mat(video.videoHeight, video.videoWidth, cv.CV_8UC1);
-          blurred = new cv.Mat(video.videoHeight, video.videoWidth, cv.CV_8UC1);
-          edges = new cv.Mat(video.videoHeight, video.videoWidth, cv.CV_8UC1);
-          contours = new cv.MatVector();
-          hierarchy = new cv.Mat();
-
-          streaming = true;
-          processFrame();
+          drawOverlayLoop();
         };
       } catch (err) {
-        alert("Error accessing camera: " + err);
+        alert("❌ Camera error: " + err.message);
       }
     }
 
-    function processFrame() {
-      if (!streaming) return;
-      let begin = performance.now();
+    function drawOverlayLoop() {
+      const overlayCtx = overlayCanvas.getContext("2d");
+      overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
 
-      ctx.drawImage(video, 0, 0, overlay.width, overlay.height);
-      let frame = ctx.getImageData(0, 0, overlay.width, overlay.height);
-      src.data.set(frame.data);
-
-      cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
-      cv.GaussianBlur(gray, blurred, new cv.Size(5, 5), 0);
-      cv.Canny(blurred, edges, 75, 200);
-
-      cv.findContours(edges, contours, hierarchy, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE);
-
-      let biggestContour = null;
-      let maxArea = 0;
-      for (let i = 0; i < contours.size(); i++) {
-        let cnt = contours.get(i);
-        let peri = cv.arcLength(cnt, true);
-        let approx = new cv.Mat();
-        cv.approxPolyDP(cnt, approx, 0.02 * peri, true);
-        if (approx.rows === 4) { // quadrilateral
-          let area = cv.contourArea(approx);
-          if (area > maxArea) {
-            maxArea = area;
-            biggestContour = approx;
-          }
+      frameCtx.drawImage(video, 0, 0, frameCanvas.width, frameCanvas.height);
+      const t0 = performance.now();
+      try {
+        const quad = scanner.findDocument(frameCanvas);
+        if (quad) {
+          overlayCtx.lineWidth = 4;
+          overlayCtx.strokeStyle = "#00ff88";
+          overlayCtx.beginPath();
+          overlayCtx.moveTo(quad.topLeft[0], quad.topLeft[1]);
+          overlayCtx.lineTo(quad.topRight[0], quad.topRight[1]);
+          overlayCtx.lineTo(quad.bottomRight[0], quad.bottomRight[1]);
+          overlayCtx.lineTo(quad.bottomLeft[0], quad.bottomLeft[1]);
+          overlayCtx.closePath();
+          overlayCtx.stroke();
         }
+      } catch (err) {
+        // ignore if no document
       }
+      const t1 = performance.now();
+      perfBox.textContent = `Frame detection: ${(t1 - t0).toFixed(2)} ms`;
+      requestAnimationFrame(drawOverlayLoop);
+    }
 
-      ctx.clearRect(0, 0, overlay.width, overlay.height);
-      if (biggestContour) {
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = "lime";
-        ctx.beginPath();
-        for (let i = 0; i < 4; i++) {
-          let p1 = biggestContour.intPtr(i);
-          let p2 = biggestContour.intPtr((i+1)%4);
-          ctx.moveTo(p1[0], p1[1]);
-          ctx.lineTo(p2[0], p2[1]);
+    captureBtn.onclick = () => {
+      const ctx = canvas.getContext("2d");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      preview.src = canvas.toDataURL("image/jpeg", 0.9);
+
+      try {
+        const t0 = performance.now();
+        const extractedCanvas = scanner.extractPaper(canvas, 1200, 1600);
+        const t1 = performance.now();
+
+        perfBox.textContent = `Extraction: ${(t1 - t0).toFixed(2)} ms`;
+        extracted.width = extractedCanvas.width;
+        extracted.height = extractedCanvas.height;
+        extracted.getContext("2d").drawImage(extractedCanvas, 0, 0);
+        extracted.style.display = "block";
+
+        enhanceWithMode(extractedCanvas);
+      } catch (err) {
+        alert("❌ Detection error: " + err.message);
+      }
+    };
+
+    function enhanceWithMode(sourceCanvas) {
+      try {
+        const t0 = performance.now();
+        const src = cv.imread(sourceCanvas);
+        let gray = new cv.Mat();
+        let blurred = new cv.Mat();
+        let finalMat = new cv.Mat();
+
+        cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
+        cv.GaussianBlur(gray, blurred, new cv.Size(3, 3), 0);
+
+        if (enhancementMode === "crisp") {
+          cv.threshold(blurred, finalMat, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU);
+        } else {
+          finalMat = blurred.clone();
         }
-        ctx.stroke();
-        biggestContour.delete();
+
+        cv.imshow(enhanced, finalMat);
+        enhanced.style.display = "block";
+
+        const t1 = performance.now();
+        perfBox.textContent += ` | Enhancement: ${(t1 - t0).toFixed(2)} ms`;
+        runOCR(enhanced);
+
+        src.delete(); gray.delete(); blurred.delete(); finalMat.delete();
+      } catch (err) {
+        alert("❌ Enhancement failed: " + err.message);
       }
-
-      let end = performance.now();
-      perfMetric.textContent = `Frame Time: ${(end - begin).toFixed(2)} ms`;
-
-      requestAnimationFrame(processFrame);
     }
 
-    document.getElementById('captureBtn').addEventListener('click', () => {
-      captureCanvas.width = video.videoWidth;
-      captureCanvas.height = video.videoHeight;
-      let ctxCap = captureCanvas.getContext('2d');
-      ctxCap.drawImage(video, 0, 0, captureCanvas.width, captureCanvas.height);
+    async function runOCR(canvasElement) {
+      try {
+        resultBox.style.display = "block";
+        resultBox.textContent = "🔍 Running OCR...";
+        const t0 = performance.now();
 
-      runOCR();
-    });
+        const worker = await Tesseract.createWorker("eng", 1, { logger: m => console.log(m) });
+        const { data: { text } } = await worker.recognize(canvasElement);
+        await worker.terminate();
 
-    async function runOCR() {
-      ocrOutput.textContent = "🔄 Running OCR, please wait...";
-      const { data: { text } } = await Tesseract.recognize(captureCanvas, 'eng', {
-        logger: info => console.log(info)
-      });
-      ocrOutput.textContent = text.trim() || "⚠️ No text detected.";
+        const t1 = performance.now();
+        resultBox.textContent = text.trim() || "No text detected.";
+        perfBox.textContent += ` | OCR: ${(t1 - t0).toFixed(2)} ms`;
+      } catch (err) {
+        resultBox.textContent = "❌ OCR failed: " + err.message;
+      }
     }
+
+    toggleModeBtn.onclick = () => {
+      enhancementMode = enhancementMode === "minimal" ? "crisp" : "minimal";
+      toggleModeBtn.textContent = enhancementMode === "minimal" ? "🔄 Mode: Minimal" : "🔄 Mode: Crisp";
+    };
+
+    flashBtn.onclick = async () => {
+      if (!track) { alert("No camera track available."); return; }
+      const capabilities = track.getCapabilities();
+      if (!capabilities.torch) { alert("Flash not supported."); return; }
+      const current = track.getSettings().torch || false;
+      try {
+        await track.applyConstraints({ advanced: [{ torch: !current }] });
+        flashBtn.textContent = !current ? "🔦 Flash On" : "💡 Flash";
+      } catch (e) {
+        alert("Flash toggle failed.");
+      }
+    };
   </script>
 </body>
 </html>
