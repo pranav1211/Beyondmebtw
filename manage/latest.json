@@ -61,14 +61,15 @@
       "link": "https://beyondmebtw.com/projects/pairgame",
       "emoji": "🎮"
     }
-  ],"categories": {
+  ],
+  "categories": {
     "f1arti": {
       "subcategories": {
         "2025": {
           "mainPost": {
             "uid": "f12025re_13",
-            "title": "The 2025 Belgian GP Recap",                        
-            "thumbnail": "https://bmb-content-server.vercel.app/f1/2025/13.png"            
+            "title": "The 2025 Belgian GP Recap",
+            "thumbnail": "https://bmb-content-server.vercel.app/f1/2025/13.png"
           }
         },
         "general": {
@@ -101,8 +102,8 @@
     "experience": {
       "mainPost": {
         "uid": "exper_28",
-        "title": "Live Blog Update — Almost There",                
-        "thumbnail": "https://bmb-content-server.vercel.app/experience/exp28.png"        
+        "title": "Live Blog Update — Almost There",
+        "thumbnail": "https://bmb-content-server.vercel.app/experience/exp28.png"
       }
     },
     "techart": {
