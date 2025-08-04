@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const loginContainer = document.getElementById("login-container");
     const contentContainer = document.getElementById("content-container");
 
-    // Check if user is already logged in
+    // Check if user is already logged in    
     const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
     if (isLoggedIn) {
         showContentForms();
@@ -14,12 +14,18 @@ document.addEventListener("DOMContentLoaded", () => {
         event.preventDefault();
 
         const password = document.getElementById("login-password").value;
-
         const baseUrl = "https://manage.beyondmebtw.com/loginauth";
-        const queryString = `key=${encodeURIComponent(password)}`;
-        const url = `${baseUrl}?${queryString}`;
 
-        fetch(url)
+        // Changed to POST with JSON body
+        fetch(baseUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                key: password
+            })
+        })
             .then((response) => {
                 if (!response.ok) {
                     if (response.status === 403) {
@@ -60,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Set up form submissions for content forms
         setupContentForms();
         setupBlogForms();
-        
+
         // Load latest.json once and use it for both showdata and loadBlogPosts
         loadLatestData();
     }
@@ -78,27 +84,32 @@ document.addEventListener("DOMContentLoaded", () => {
                 event.preventDefault();
 
                 const formData = new FormData(form);
-                const queryStringParams = [];
-
+                const formDataObject = {};
                 const formId = form.id;
 
+                // Convert FormData to regular object
                 formData.forEach((value, key) => {
                     const trimmedValue = value.trim();
                     if (trimmedValue !== "") {
-                        queryStringParams.push(`${encodeURIComponent(key)}=${encodeURIComponent(trimmedValue)}`);
+                        formDataObject[key] = trimmedValue;
                     }
                 });
 
+                // Add form ID if it exists
                 if (formId) {
-                    queryStringParams.push(`formid=${encodeURIComponent(formId)}`);
+                    formDataObject.formid = formId;
                 }
 
                 const baseUrl = "https://manage.beyondmebtw.com/latestdata";
-                const queryString = queryStringParams.join("&");
-                const url = queryString ? `${baseUrl}?${queryString}` : baseUrl;
-               
 
-                fetch(url)
+                // Changed to POST with JSON body
+                fetch(baseUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formDataObject)
+                })
                     .then((response) => {
                         if (!response.ok) {
                             if (response.status === 403) {
@@ -126,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function setupBlogForms() {
         const authKey = sessionStorage.getItem("authKey");
-        
+
         // Blog form elements
         const blogForm = document.getElementById("blog-form");
         const clearBlogFormBtn = document.getElementById("clear-blog-form");
@@ -137,8 +148,6 @@ document.addEventListener("DOMContentLoaded", () => {
         // Blog form submission
         blogForm.addEventListener("submit", (event) => {
             event.preventDefault();
-
-            const queryStringParams = [];
 
             // Get all form field values manually to ensure we capture everything correctly
             const category = document.getElementById("blog-category").value.trim();
@@ -154,33 +163,40 @@ document.addEventListener("DOMContentLoaded", () => {
             const key = document.getElementById("blog-key").value.trim();
             const isNewPost = document.getElementById("is-new-post").checked;
 
-            // Add parameters only if they have values
-            if (category) queryStringParams.push(`category=${encodeURIComponent(category)}`);
-            if (uid) queryStringParams.push(`uid=${encodeURIComponent(uid)}`);
-            if (title) queryStringParams.push(`title=${encodeURIComponent(title)}`);
-            if (date) queryStringParams.push(`date=${encodeURIComponent(date)}`);
-            if (excerpt) queryStringParams.push(`excerpt=${encodeURIComponent(excerpt)}`);
-            if (thumbnail) queryStringParams.push(`thumbnail=${encodeURIComponent(thumbnail)}`);
-            if (link) queryStringParams.push(`link=${encodeURIComponent(link)}`);
-            if (subcategory) queryStringParams.push(`subcategory=${encodeURIComponent(subcategory)}`);
-            if (secondaryCategory) queryStringParams.push(`secondaryCategory=${encodeURIComponent(secondaryCategory)}`);
-            if (secondarySubcategory) queryStringParams.push(`secondarySubcategory=${encodeURIComponent(secondarySubcategory)}`);
-            if (key) queryStringParams.push(`key=${encodeURIComponent(key)}`);
-
-            // Always add the isNewPost parameter explicitly
-            queryStringParams.push(`isNewPost=${isNewPost}`);
+            // Create request body object with only non-empty values
+            const requestBody = {};
+            
+            if (category) requestBody.category = category;
+            if (uid) requestBody.uid = uid;
+            if (title) requestBody.title = title;
+            if (date) requestBody.date = date;
+            if (excerpt) requestBody.excerpt = excerpt;
+            if (thumbnail) requestBody.thumbnail = thumbnail;
+            if (link) requestBody.link = link;
+            if (subcategory) requestBody.subcategory = subcategory;
+            if (secondaryCategory) requestBody.secondaryCategory = secondaryCategory;
+            if (secondarySubcategory) requestBody.secondarySubcategory = secondarySubcategory;
+            if (key) requestBody.key = key;
+            
+            // Always add the isNewPost parameter
+            requestBody.isNewPost = isNewPost;
 
             const baseUrl = "https://manage.beyondmebtw.com/blogdata";
-            const queryString = queryStringParams.join("&");
-            const url = queryString ? `${baseUrl}?${queryString}` : baseUrl;
 
             console.log("Is New Post (checkbox checked):", isNewPost);
             console.log("All form values:", {
-                category, uid, title, date, excerpt, thumbnail, link, 
+                category, uid, title, date, excerpt, thumbnail, link,
                 subcategory, secondaryCategory, secondarySubcategory, isNewPost
             });
 
-            fetch(url)
+            // Changed to POST with JSON body
+            fetch(baseUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody)
+            })
                 .then((response) => {
                     if (!response.ok) {
                         if (response.status === 403) {
@@ -196,7 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     // Reset the form but keep the password filled
                     clearBlogForm();
-                    
+
                     // Reload latest data to show the updated data
                     loadLatestData();
                 })
@@ -219,7 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Combined function to load latest.json once and handle both showdata and loadBlogPosts
     function loadLatestData() {
-        fetch('latest.json')  
+        fetch('latest.json')
             .then((response) => {
                 if (!response.ok) {
                     throw new Error(`Failed to fetch latest.json: ${response.statusText}`);
@@ -229,7 +245,7 @@ document.addEventListener("DOMContentLoaded", () => {
             .then((data) => {
                 // Handle main site data (original showdata functionality)
                 showMainSiteData(data);
-                
+
                 // Handle blog posts data (loadBlogPosts functionality)
                 loadBlogPostsFromData(data);
             })
@@ -350,7 +366,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         categoryMappings.forEach(mapping => {
             const categoryData = categories[mapping.categoryKey];
-            
+
             if (!categoryData) {
                 console.error(`Category ${mapping.categoryKey} not found in data`);
                 return;
