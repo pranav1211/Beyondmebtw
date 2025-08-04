@@ -82,7 +82,7 @@ function createFeaturedPost(post, index) {
     const postElement = document.createElement('div');
     postElement.className = 'featured-post';
     postElement.innerHTML = `
-        <img src="${post.thumbnail}" alt="Featured post" class="featured-post-img">
+        <img src="https://beyondmebtw.com/assets/images/thumbnails/${post.thumbnail}" alt="Featured post" class="featured-post-img">
         <div class="featured-post-details">
             <h3 class="featured-post-title">${post.title}</h3>
             <p class="featured-post-date">${formattedDate}</p>
@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelector('.latest-post-title').innerText = mainPost.title;
             document.querySelector('.latest-post-date').innerText = formattedDate;
             document.querySelector('.latest-post-excerpt').innerText = mainPost.excerpt;
-            document.querySelector('.latest-post-img').src = "https://beyondmebtw.com/assets/images/thumbnails/" + mainPost.thumbnail;
+            document.querySelector('.latest-post-img').src = mainPost.thumbnail;
             
             document.querySelector('.latest-post-content').onclick = () => window.open(mainPost.link, '_blank');
             document.querySelector('.read-more').onclick = () => window.open(mainPost.link, '_blank');
