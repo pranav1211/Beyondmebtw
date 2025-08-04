@@ -220,7 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const categories = [
             { 
                 name: 'f1arti', 
-                file: 'f1arti-latest.json', 
+                file: 'latest.json', 
                 subcategories: [
                     { name: '2025', elementId: 'f1-2025-latest' },
                     { name: 'general', elementId: 'f1-general-latest' }
@@ -228,7 +228,7 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             { 
                 name: 'movietv', 
-                file: 'movietv-latest.json', 
+                file: 'latest.json', 
                 subcategories: [
                     { name: 'movies', elementId: 'movie-latest' },
                     { name: 'tv', elementId: 'tv-latest' }
@@ -236,12 +236,12 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             { 
                 name: 'experience', 
-                file: 'experience-latest.json', 
+                file: 'latest.json', 
                 elementId: 'experience-latest'
             },
             { 
                 name: 'techart', 
-                file: 'techart-latest.json', 
+                file: 'latest.json', 
                 elementId: 'tech-latest'
             }
         ];
