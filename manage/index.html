@@ -22,12 +22,12 @@
 
     <!-- Content Forms-->
     <div id="content-container" class="content-container" style="display:none;">
-        
+
         <!-- Main Section -->
         <div class="section-header">
             <h1>Main Section</h1>
         </div>
-        
+
         <div class="form-container">
             <!-- Latest Form -->
             <form action="/update" method="GET" id="latest">
@@ -38,7 +38,7 @@
                 <div class="latest-excerpt dispexcerpt"></div>
                 <div class="latest-link displink"></div>
                 <input type="hidden" name="instance" value="latest">
-                
+
                 <label for="name-latest">Post Name:</label>
                 <input type="text" id="name-latest" name="name">
 
@@ -78,7 +78,7 @@
             <!-- Blog Post Add Form -->
             <form id="blog-form" class="blog-form">
                 <h2 id="blog-form-title">Add New Blog Post</h2>
-                
+
                 <label for="blog-category">Category:</label>
                 <select id="blog-category" name="category" required>
                     <option value="">Select Category</option>
@@ -134,7 +134,85 @@
         </div>
     </div>
 
+    <script>
+        // Generate Featured Forms Template
+        function generateFeaturedForms() {
+            const container = document.getElementById('featured-forms-container');
 
+            for (let i = 1; i <= 4; i++) {
+                const formHTML = `
+                    <form action="/update" method="GET" id="featured${i}">
+                        <h2>Featured ${i}</h2>
+                        <div class="fepost${i - 1}-title disptitle"></div>
+                        <img class="fepost${i - 1}-img dispimg"></img>
+                        <div class="fepost${i - 1}-date dispdate"></div>
+                        <div class="fepost${i - 1}-excerpt dispexcerpt"></div>
+                        <div class="fepost${i - 1}-link displink"></div>
+                        <input type="hidden" name="instance" value="featured${i}">
+                        
+                        <label for="name-featured${i}">Post Name:</label>
+                        <input type="text" id="name-featured${i}" name="name">
+
+                        <label for="date-featured${i}">Publish Date:</label>
+                        <input type="date" id="date-featured${i}" name="date">
+
+                        <label for="excerpt-featured${i}">Excerpt:</label>
+                        <input type="text" id="excerpt-featured${i}" name="excerpt">
+
+                        <label for="thumbnail-featured${i}">Thumbnail Image name:</label>
+                        <input type="text" id="thumbnail-featured${i}" name="thumbnail">
+
+                        <label for="link${i}">Post Link:</label>
+                        <input type="text" id="link${i}" name="link">
+
+                        <label for="key-featured${i}">Password:</label>
+                        <input type="password" id="key-featured${i}" name="key" required>
+
+                        <button type="submit">Submit</button>
+                    </form>
+                `;
+                container.innerHTML += formHTML;
+            }
+        }
+
+        // Generate Project Forms Template
+        function generateProjectForms() {
+            const container = document.getElementById('project-forms-container');
+
+            for (let i = 1; i <= 4; i++) {
+                const formHTML = `
+                    <form action="/update" method="GET" id="project${i}">
+                        <h2>Project ${i}</h2>
+                        <div class="feproj${i - 1}-title disptitle"></div>
+                        <div class="feproj${i - 1}-excerpt dispexcerpt"></div>
+                        <div class="feproj${i - 1}-link displink"></div>
+                        <input type="hidden" name="instance" value="project${i}">
+                        
+                        <label for="name-project${i}">Project Title:</label>
+                        <input type="text" id="name-project${i}" name="name">
+
+                        <label for="excerpt-project${i}">Project Description:</label>
+                        <input type="text" id="excerpt-project${i}" name="excerpt">
+
+                        <label for="link-project${i}">Project Link:</label>
+                        <input type="text" id="link-project${i}" name="link">
+
+                        <label for="key-project${i}">Password:</label>
+                        <input type="password" id="key-project${i}" name="key" required>
+
+                        <button type="submit">Submit</button>
+                    </form>
+                `;
+                container.innerHTML += formHTML;
+            }
+        }
+
+        // Generate forms when page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            generateFeaturedForms();
+            generateProjectForms();
+        });
+    </script>
 </body>
 
 </html>
