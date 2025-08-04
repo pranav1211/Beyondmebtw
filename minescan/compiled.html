@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Document Scanner + OCR</title>
+  <style>
+    body { 
+      font-family: Arial, sans-serif;
+      margin: 0; 
+      background: #f9f9f9; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+    }
+    h1 { font-size: 1.3em; margin: 10px; text-align: center; }
+    #camera-container {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      aspect-ratio: 3/4;
+      background: black;
+      overflow: hidden;
+      border-radius: 10px;
+    }
+    #video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    #overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    button {
+      margin: 15px;
+      padding: 12px 20px;
+      background: #007bff;
+      color: white;
+      font-size: 1em;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #results {
+      max-width: 600px;
+      margin-top: 10px;
+      text-align: center;
+    }
+    canvas, img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+    }
+    #ocrOutput {
+      background: #fff;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.9em;
+      text-align: left;
+      white-space: pre-wrap;
+    }
+    #perfMetric {
+      font-size: 0.8em;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>Live Document Scanner + OCR</h1>
+
+  <div id="camera-container">
+    <video id="video" autoplay playsinline></video>
+    <canvas id="overlay"></canvas>
+  </div>
+
+  <button id="captureBtn">📸 Capture & Scan</button>
+  <div id="perfMetric">Frame Time: -- ms</div>
+
+  <div id="results">
+    <h3>Captured Document</h3>
+    <canvas id="captureCanvas"></canvas>
+    <h3>OCR Result</h3>
+    <div id="ocrOutput">No text detected yet.</div>
+  </div>
+
+  <!-- Local OpenCV.js -->
+  <script src="js/opencv.js" onload="onOpenCvReady();" type="text/javascript"></script>
+  <!-- Tesseract.js -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  
+  <script>
+    let video = document.getElementById('video');
+    let overlay = document.getElementById('overlay');
+    let captureCanvas = document.getElementById('captureCanvas');
+    let ocrOutput = document.getElementById('ocrOutput');
+    let perfMetric = document.getElementById('perfMetric');
+    let ctx;
+    let streaming = false;
+    let src, gray, blurred, edges, contours, hierarchy;
+
+    async function onOpenCvReady() {
+      console.log("✅ OpenCV Ready");
+      startCamera();
+    }
+
+    async function startCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        video.srcObject = stream;
+        video.onloadedmetadata = () => {
+          overlay.width = video.videoWidth;
+          overlay.height = video.videoHeight;
+          ctx = overlay.getContext('2d');
+
+          src = new cv.Mat(video.videoHeight, video.videoWidth, cv.CV_8UC4);
+          gray = new cv.Mat(video.videoHeight, video.videoWidth, cv.CV_8UC1);
+          blurred = new cv.Mat(video.videoHeight, video.videoWidth, cv.CV_8UC1);
+          edges = new cv.Mat(video.videoHeight, video.videoWidth, cv.CV_8UC1);
+          contours = new cv.MatVector();
+          hierarchy = new cv.Mat();
+
+          streaming = true;
+          processFrame();
+        };
+      } catch (err) {
+        alert("Error accessing camera: " + err);
+      }
+    }
+
+    function processFrame() {
+      if (!streaming) return;
+      let begin = performance.now();
+
+      ctx.drawImage(video, 0, 0, overlay.width, overlay.height);
+      let frame = ctx.getImageData(0, 0, overlay.width, overlay.height);
+      src.data.set(frame.data);
+
+      cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
+      cv.GaussianBlur(gray, blurred, new cv.Size(5, 5), 0);
+      cv.Canny(blurred, edges, 75, 200);
+
+      cv.findContours(edges, contours, hierarchy, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE);
+
+      let biggestContour = null;
+      let maxArea = 0;
+      for (let i = 0; i < contours.size(); i++) {
+        let cnt = contours.get(i);
+        let peri = cv.arcLength(cnt, true);
+        let approx = new cv.Mat();
+        cv.approxPolyDP(cnt, approx, 0.02 * peri, true);
+        if (approx.rows === 4) { // quadrilateral
+          let area = cv.contourArea(approx);
+          if (area > maxArea) {
+            maxArea = area;
+            biggestContour = approx;
+          }
+        }
+      }
+
+      ctx.clearRect(0, 0, overlay.width, overlay.height);
+      if (biggestContour) {
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = "lime";
+        ctx.beginPath();
+        for (let i = 0; i < 4; i++) {
+          let p1 = biggestContour.intPtr(i);
+          let p2 = biggestContour.intPtr((i+1)%4);
+          ctx.moveTo(p1[0], p1[1]);
+          ctx.lineTo(p2[0], p2[1]);
+        }
+        ctx.stroke();
+        biggestContour.delete();
+      }
+
+      let end = performance.now();
+      perfMetric.textContent = `Frame Time: ${(end - begin).toFixed(2)} ms`;
+
+      requestAnimationFrame(processFrame);
+    }
+
+    document.getElementById('captureBtn').addEventListener('click', () => {
+      captureCanvas.width = video.videoWidth;
+      captureCanvas.height = video.videoHeight;
+      let ctxCap = captureCanvas.getContext('2d');
+      ctxCap.drawImage(video, 0, 0, captureCanvas.width, captureCanvas.height);
+
+      runOCR();
+    });
+
+    async function runOCR() {
+      ocrOutput.textContent = "🔄 Running OCR, please wait...";
+      const { data: { text } } = await Tesseract.recognize(captureCanvas, 'eng', {
+        logger: info => console.log(info)
+      });
+      ocrOutput.textContent = text.trim() || "⚠️ No text detected.";
+    }
+  </script>
+</body>
+</html>
