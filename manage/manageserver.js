@@ -38,7 +38,7 @@ let blogData = {
 const blogUrls = {
   f1arti: "https://beyondmebtw.com/blog/f1arti.json",
   movietv: "https://beyondmebtw.com/blog/movietv.json",
-  experience: "https://beyondmebtw.com/blog/exeprience.json",
+  experience: "https://beyondmebtw.com/blog/experience.json",
   techart: "https://beyondmebtw.com/blog/techart.json"
 };
 
