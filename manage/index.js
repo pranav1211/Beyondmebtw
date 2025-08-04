@@ -284,6 +284,41 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    function parseDate(dateString) {
+        // Handle date format like "Jun 29, 2025"
+        if (!dateString) return new Date(0); // Return epoch if no date
+        
+        try {
+            // First try to parse as is
+            let date = new Date(dateString);
+            if (!isNaN(date.getTime())) {
+                return date;
+            }
+            
+            // If that fails, try to parse manually
+            const parts = dateString.trim().split(/[\s,]+/);
+            if (parts.length >= 3) {
+                const month = parts[0];
+                const day = parseInt(parts[1]);
+                const year = parseInt(parts[2]);
+                
+                const monthMap = {
+                    'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+                    'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+                };
+                
+                if (monthMap[month] !== undefined) {
+                    return new Date(year, monthMap[month], day);
+                }
+            }
+            
+            return new Date(0); // Return epoch if parsing fails
+        } catch (error) {
+            console.error('Error parsing date:', dateString, error);
+            return new Date(0);
+        }
+    }
+
     function getLatestPostBySubcategory(data, subcategory) {
         if (!data || !Array.isArray(data)) {
             return null;
@@ -307,8 +342,8 @@ document.addEventListener("DOMContentLoaded", () => {
             return null;
         }
 
-        // Sort by date (assuming date is in YYYY-MM-DD format) and return the latest
-        return filteredPosts.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+        // Sort by date using custom date parser and return the latest
+        return filteredPosts.sort((a, b) => parseDate(b.date) - parseDate(a.date))[0];
     }
 
     function getLatestPost(data) {
@@ -316,8 +351,8 @@ document.addEventListener("DOMContentLoaded", () => {
             return null;
         }
 
-        // Sort by date and return the latest
-        return data.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+        // Sort by date using custom date parser and return the latest
+        return data.sort((a, b) => parseDate(b.date) - parseDate(a.date))[0];
     }
 
     function displayPost(elementId, post) {
