@@ -60,6 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Set up form submissions for content forms
         setupContentForms();
         setupBlogForms();
+        loadBlogPosts();
     }
 
     function setupContentForms() {
@@ -193,6 +194,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     // Reset the form but keep the password filled
                     clearBlogForm();
+                    
+                    // Reload blog posts to show the updated data
+                    loadBlogPosts();
                 })
                 .catch((error) => {
                     alert(`Error: ${error.message}`);
@@ -208,6 +212,139 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("blog-key").value = authKey;
             document.getElementById("blog-form-title").textContent = "Add New Blog Post";
             document.getElementById("is-new-post").checked = true; // Default to checked
+        }
+    }
+
+    function loadBlogPosts() {
+        // Load blog posts from different category JSON files
+        const categories = [
+            { name: 'f1arti', file: 'f1arti.json', subcategories: ['2025', 'general'] },
+            { name: 'movietv', file: 'movietv.json', subcategories: ['movies', 'tv'] },
+            { name: 'experience', file: 'experience.json', subcategories: [] },
+            { name: 'techart', file: 'techart.json', subcategories: [] }
+        ];
+
+        categories.forEach(category => {
+            fetch(category.file)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch ${category.file}: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (category.subcategories.length > 0) {
+                        // Handle categories with subcategories
+                        category.subcategories.forEach(subcategory => {
+                            const elementId = getElementId(category.name, subcategory);
+                            const latestPost = getLatestPostBySubcategory(data, subcategory);
+                            displayPost(elementId, latestPost);
+                        });
+                    } else {
+                        // Handle categories without subcategories
+                        const elementId = getElementId(category.name);
+                        const latestPost = getLatestPost(data);
+                        displayPost(elementId, latestPost);
+                    }
+                })
+                .catch(error => {
+                    console.error(`Error loading ${category.file}:`, error);
+                    // Display error message in the respective sections
+                    if (category.subcategories.length > 0) {
+                        category.subcategories.forEach(subcategory => {
+                            const elementId = getElementId(category.name, subcategory);
+                            displayError(elementId, `Error loading ${category.name} - ${subcategory}`);
+                        });
+                    } else {
+                        const elementId = getElementId(category.name);
+                        displayError(elementId, `Error loading ${category.name}`);
+                    }
+                });
+        });
+    }
+
+    function getElementId(category, subcategory = null) {
+        const mapping = {
+            'f1arti': {
+                '2025': 'f1-2025-latest',
+                'general': 'f1-general-latest'
+            },
+            'movietv': {
+                'movies': 'movie-latest',
+                'tv': 'tv-latest'
+            },
+            'experience': 'experience-latest',
+            'techart': 'tech-latest'
+        };
+
+        if (subcategory) {
+            return mapping[category][subcategory];
+        } else {
+            return mapping[category];
+        }
+    }
+
+    function getLatestPostBySubcategory(data, subcategory) {
+        if (!data || !Array.isArray(data)) {
+            return null;
+        }
+
+        // Filter posts by subcategory and get the latest one
+        const filteredPosts = data.filter(post => {
+            if (subcategory === '2025') {
+                return post.subcategory === '2025';
+            } else if (subcategory === 'general') {
+                return !post.subcategory || post.subcategory === '' || post.subcategory === 'general';
+            } else if (subcategory === 'movies') {
+                return post.subcategory === 'movies' || post.subcategory === 'movie';
+            } else if (subcategory === 'tv') {
+                return post.subcategory === 'tv' || post.subcategory === 'television';
+            }
+            return false;
+        });
+
+        if (filteredPosts.length === 0) {
+            return null;
+        }
+
+        // Sort by date (assuming date is in YYYY-MM-DD format) and return the latest
+        return filteredPosts.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+    }
+
+    function getLatestPost(data) {
+        if (!data || !Array.isArray(data) || data.length === 0) {
+            return null;
+        }
+
+        // Sort by date and return the latest
+        return data.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+    }
+
+    function displayPost(elementId, post) {
+        const element = document.getElementById(elementId);
+        if (!element) {
+            console.error(`Element with ID ${elementId} not found`);
+            return;
+        }
+
+        if (!post) {
+            element.innerHTML = '<div class="no-posts">No posts available</div>';
+            return;
+        }
+
+        element.innerHTML = `
+            <div class="post-item">
+                <div class="post-uid">UID: ${post.uid || 'N/A'}</div>
+                <div class="post-title">${post.title || 'No title'}</div>
+                <div class="post-thumbnail">${post.thumbnail || 'No thumbnail'}</div>
+            </div>
+        `;
+    }
+
+    function displayError(elementId, errorMessage) {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.innerHTML = `<div class="no-posts">${errorMessage}</div>`;
         }
     }
 
