@@ -14,6 +14,8 @@
     .image-container { flex: 1; min-width: 300px; }
     .image-container img, .image-container canvas { max-width: 100%; border: 1px solid #ddd; border-radius: 4px; }
     #perfMetric { font-size: 0.9em; color: #333; margin-top: 10px; }
+    #reprocessBtn { margin-top: 10px; padding: 8px 14px; border: none; background: #007bff; color: white; border-radius: 5px; cursor: pointer; }
+    #reprocessBtn:disabled { background: #ccc; cursor: not-allowed; }
   </style>
 </head>
 <body>
@@ -34,12 +36,14 @@
     <div class="image-container">
       <h3>Detected Document</h3>
       <canvas id="resultCanvas"></canvas>
+      <button id="reprocessBtn" disabled>🔄 Reprocess</button>
       <div id="perfMetric"></div>
     </div>
   </div>
 
   <script>
     let scanner;
+    let lastImage = null; // store the last uploaded image
 
     function updateStatus(message, ready=false) {
       const el = document.getElementById('statusMessage');
@@ -76,14 +80,22 @@
       const reader = new FileReader();
       reader.onload = e => {
         const img = new Image();
-        img.onload = () => processImage(img);
+        img.onload = () => {
+          lastImage = img; // store the uploaded image
+          processImage(img);
+          document.getElementById("reprocessBtn").disabled = false;
+        };
         img.src = e.target.result;
       };
       reader.readAsDataURL(file);
     });
 
+    document.getElementById("reprocessBtn").addEventListener("click", () => {
+      if (lastImage) processImage(lastImage);
+    });
+
     function processImage(img) {
-      const start = performance.now();  // start timing
+      const start = performance.now();
 
       document.getElementById("originalImage").src = img.src;
       const canvas = scanner.highlightPaper(img, { color: "lime", thickness: 4 });
@@ -94,9 +106,8 @@
       resultCanvas.getContext("2d").drawImage(canvas, 0, 0);
       document.getElementById("resultsSection").style.display = "flex";
 
-      const end = performance.now();  // end timing
+      const end = performance.now();
       const timeTaken = (end - start).toFixed(2);
-
       document.getElementById("perfMetric").textContent = `Processing Time: ${timeTaken} ms`;
 
       console.log(cv.getBuildInformation());
