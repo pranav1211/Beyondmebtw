@@ -42,7 +42,6 @@
       width: 100%; 
       height: auto; 
       display: block;
-      transform: scaleX(-1); /* Mirror the video for selfie-like experience */
     }
     
     .camera-controls { 
@@ -148,9 +147,7 @@
       </div>
       
       <div class="camera-controls">
-        <button id="startCameraBtn" class="btn btn-primary">📷 Start Camera</button>
         <button id="captureBtn" class="btn btn-success" disabled>📸 Capture Document</button>
-        <button id="switchCameraBtn" class="btn btn-secondary" disabled>🔄 Switch Camera</button>
       </div>
       
       <div class="file-upload">
@@ -180,8 +177,7 @@
     let scanner;
     let lastImage = null;
     let videoStream = null;
-    let currentCamera = 'environment'; // Start with back camera
-    let cameras = [];
+    let currentCamera = 'environment'; // Only back camera
 
     function updateStatus(message, ready=false) {
       const el = document.getElementById('statusMessage');
@@ -195,15 +191,15 @@
         console.log("OpenCV.js runtime initialized");
         updateStatus("OpenCV.js is ready. Initializing jscanify...", true);
 
-        // load jscanify AFTER cv is ready
         const script = document.createElement("script");
         script.src = "jscanify.js"; 
         script.onload = async () => {
           scanner = new jscanify();
-          await initializeCamera();
+          await startCamera();
           updateStatus("Ready to scan documents!", true);
           document.getElementById("cameraSection").style.display = "block";
           document.getElementById("fileInput").disabled = false;
+          document.getElementById("captureBtn").disabled = false;
         };
         script.onerror = () => updateStatus("Failed to load jscanify.js");
         document.head.appendChild(script);
@@ -211,20 +207,6 @@
       } catch (err) {
         updateStatus("Failed to initialize OpenCV.js: " + err);
         console.error(err);
-      }
-    }
-
-    async function initializeCamera() {
-      try {
-        // Get list of cameras
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        cameras = devices.filter(device => device.kind === 'videoinput');
-        
-        if (cameras.length > 1) {
-          document.getElementById("switchCameraBtn").disabled = false;
-        }
-      } catch (err) {
-        console.log("Camera enumeration failed:", err);
       }
     }
 
@@ -246,29 +228,9 @@
         const videoElement = document.getElementById('videoElement');
         videoElement.srcObject = videoStream;
         
-        document.getElementById("startCameraBtn").textContent = "🛑 Stop Camera";
-        document.getElementById("captureBtn").disabled = false;
-        
       } catch (err) {
         console.error("Error accessing camera:", err);
         alert("Could not access camera. Please ensure you've granted permission and try again.");
-      }
-    }
-
-    function stopCamera() {
-      if (videoStream) {
-        videoStream.getTracks().forEach(track => track.stop());
-        videoStream = null;
-        document.getElementById('videoElement').srcObject = null;
-        document.getElementById("startCameraBtn").textContent = "📷 Start Camera";
-        document.getElementById("captureBtn").disabled = true;
-      }
-    }
-
-    function switchCamera() {
-      currentCamera = currentCamera === 'environment' ? 'user' : 'environment';
-      if (videoStream) {
-        startCamera();
       }
     }
 
@@ -279,23 +241,20 @@
       canvas.height = video.videoHeight;
       
       const ctx = canvas.getContext('2d');
-      // Flip the image back to normal orientation
-      ctx.scale(-1, 1);
-      ctx.drawImage(video, -canvas.width, 0);
-      
+      ctx.drawImage(video, 0, 0); // No flip now
+
       canvas.toBlob(blob => {
         const img = new Image();
         img.onload = () => {
           lastImage = img;
-          processImage(img);
-          document.getElementById("reprocessBtn").disabled = false;
-          stopCamera();
+          // Run process twice automatically
+          processImage(img, true);
         };
         img.src = URL.createObjectURL(blob);
       });
     }
 
-    function processImage(img) {
+    function processImage(img, autoTwice=false) {
       const start = performance.now();
 
       document.getElementById("originalImage").src = img.src;
@@ -311,7 +270,9 @@
       const timeTaken = (end - start).toFixed(2);
       document.getElementById("perfMetric").textContent = `Processing Time: ${timeTaken} ms`;
 
-      console.log(cv.getBuildInformation());
+      if (autoTwice) {
+        setTimeout(() => processImage(img, false), 200); // Run second time
+      }
     }
 
     function newScan() {
@@ -320,17 +281,7 @@
       lastImage = null;
     }
 
-    // Event listeners
-    document.getElementById("startCameraBtn").addEventListener("click", () => {
-      if (videoStream) {
-        stopCamera();
-      } else {
-        startCamera();
-      }
-    });
-
     document.getElementById("captureBtn").addEventListener("click", captureImage);
-    document.getElementById("switchCameraBtn").addEventListener("click", switchCamera);
     document.getElementById("reprocessBtn").addEventListener("click", () => {
       if (lastImage) processImage(lastImage);
     });
@@ -344,8 +295,7 @@
         const img = new Image();
         img.onload = () => {
           lastImage = img;
-          processImage(img);
-          document.getElementById("reprocessBtn").disabled = false;
+          processImage(img, true); // auto reprocess twice
         };
         img.src = e.target.result;
       };
@@ -353,7 +303,6 @@
     });
   </script>
 
-  <!-- Load your OpenCV.js build -->
   <script src="opencv.js" onload="onOpenCvReady();" type="text/javascript"></script>
 </body>
 </html>
