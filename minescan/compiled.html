@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OCR Scanner with JScanify</title>
 
-    <!-- OpenCV from CDN -->
+    <!-- OpenCV local -->
     <script src="opencv.js" onload="onOpenCvReady();" type="text/javascript"></script>
     <!-- JScanify - you need to include this file -->
     <script src="jscanify.js"></script>
@@ -155,6 +155,7 @@
         }
 
         function onOpenCvReady() {
+            window.cv = window.cv || cv;
             if (typeof cv !== 'undefined' && cv.imread) {
                 cvReady = true;
                 console.log("✅ OpenCV ready");
