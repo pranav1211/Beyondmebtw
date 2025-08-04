@@ -29,6 +29,12 @@ body {
     justify-content: center;
 }
 
+/* Container for dynamically generated forms */
+#featured-forms-container,
+#project-forms-container {
+    display: contents;
+}
+
 form {
     background: #fff;
     padding: 20px;
