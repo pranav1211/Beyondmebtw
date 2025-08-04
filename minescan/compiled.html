@@ -2,299 +2,412 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OCR Scanner with Modes</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OCR Scanner with JScanify</title>
 
-  <!-- OpenCV -->
-  <script src="opencv.js" onload="onOpenCvReady();" type="text/javascript"></script>
-  <!-- JScanify -->
-  <script src="jscanify.js"></script>
-  <!-- Tesseract -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js"></script>
+    <!-- OpenCV from CDN -->
+    <script src="opencv.js" onload="onOpenCvReady();" type="text/javascript"></script>
+    <!-- JScanify - you need to include this file -->
+    <script src="jscanify.js"></script>
+    <!-- Tesseract -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js"></script>
 
-  <style>
-    body {
-      margin: 0;
-      background: #000;
-      color: #fff;
-      font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-    }
+    <style>
+        body {
+            margin: 0;
+            background: #000;
+            color: #fff;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
 
-    #videoWrapper {
-      position: relative;
-      max-width: 90vw;
-      border: 2px solid #4facfe;
-      border-radius: 12px;
-      overflow: hidden;
-      margin-top: 20px;
-    }
+        #videoWrapper {
+            position: relative;
+            max-width: 90vw;
+            border: 2px solid #4facfe;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
 
-    #video {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
+        #video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
 
-    #overlayCanvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-    }
 
-    .controls {
-      margin-top: 15px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
 
-    button {
-      padding: 10px 15px;
-      border: none;
-      border-radius: 8px;
-      background: #4facfe;
-      color: white;
-      font-size: 14px;
-      cursor: pointer;
-    }
+        .controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
 
-    #preview,
-    canvas {
-      margin-top: 20px;
-      max-width: 90vw;
-      border-radius: 12px;
-      border: 2px solid #4facfe;
-    }
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            background: #4facfe;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
 
-    #resultBox {
-      background: #fff;
-      color: #000;
-      padding: 15px;
-      border-radius: 10px;
-      margin-top: 20px;
-      max-width: 90vw;
-      white-space: pre-wrap;
-      display: none;
-    }
-  </style>
+        button:hover {
+            background: #3b8fd9;
+        }
+
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+
+        #preview,
+        canvas {
+            margin-top: 20px;
+            max-width: 90vw;
+            border-radius: 12px;
+            border: 2px solid #4facfe;
+        }
+
+        #resultBox {
+            background: #fff;
+            color: #000;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            max-width: 90vw;
+            white-space: pre-wrap;
+            display: none;
+            font-family: monospace;
+        }
+
+        #status {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #0f0;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 
 <body>
-  <h2>📸 OCR Scanner</h2>
-  <div id="videoWrapper">
-    <video id="video" autoplay playsinline muted></video>
-    <canvas id="overlayCanvas"></canvas>
-  </div>
+    <h2>📸 OCR Scanner with Document Detection</h2>
+    
+    <div id="status">Initializing...</div>
+    
+    <div id="videoWrapper" class="hidden">
+        <video id="video" autoplay playsinline muted></video>
+    </div>
 
-  <div class="controls">
-    <button id="captureBtn">📸 Capture & Scan</button>
-    <button id="flashBtn">💡 Flash</button>
-    <button id="toggleModeBtn">🔄 Mode: Minimal</button>
-  </div>
+    <div class="controls">
+        <button id="captureBtn" disabled>📸 Capture & Scan</button>
+        <button id="flashBtn" disabled>💡 Flash</button>
+        <button id="switchCameraBtn" disabled>🔄 Switch Camera</button>
+    </div>
 
-  <canvas id="canvas" style="display:none;"></canvas>
-  <img id="preview" alt="Captured Frame" />
-  <canvas id="extracted"></canvas>
-  <canvas id="enhanced"></canvas>
-  <div id="resultBox"></div>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <img id="preview" class="hidden" alt="Captured Frame" />
+    <canvas id="extracted" class="hidden"></canvas>
+    <canvas id="processed" class="hidden"></canvas>
+    <div id="resultBox"></div>
 
-  <script>
-    const video = document.getElementById("video");
-    const overlayCanvas = document.getElementById("overlayCanvas");
-    const canvas = document.getElementById("canvas");
-    const preview = document.getElementById("preview");
-    const extracted = document.getElementById("extracted");
-    const enhanced = document.getElementById("enhanced");
-    const captureBtn = document.getElementById("captureBtn");
-    const flashBtn = document.getElementById("flashBtn");
-    const toggleModeBtn = document.getElementById("toggleModeBtn");
-    const resultBox = document.getElementById("resultBox");
+    <script>
+        const video = document.getElementById("video");
+        const videoWrapper = document.getElementById("videoWrapper");
+        const canvas = document.getElementById("canvas");
+        const preview = document.getElementById("preview");
+        const extracted = document.getElementById("extracted");
+        const processed = document.getElementById("processed");
+        const captureBtn = document.getElementById("captureBtn");
+        const flashBtn = document.getElementById("flashBtn");
+        const switchCameraBtn = document.getElementById("switchCameraBtn");
+        const resultBox = document.getElementById("resultBox");
+        const status = document.getElementById("status");
 
-    let scanner, track;
-    let enhancementMode = "minimal";
+        let stream = null;
+        let track = null;
+        let tesseractWorker = null;
+        let scanner = null;
+        let isBackCamera = true;
+        let cvReady = false;
+        let jscanifyReady = false;
 
-    // hidden frame canvas
-    const frameCanvas = document.createElement("canvas");
-    const frameCtx = frameCanvas.getContext("2d");
-
-    function waitForOpenCV() {
-      return new Promise((resolve) => {
-        if (typeof cv !== "undefined" && cv.Mat) {
-          resolve();
-        } else {
-          cv.onRuntimeInitialized = resolve;
+        // Check if JScanify is loaded
+        function checkJScanify() {
+            if (typeof jscanify !== "undefined") {
+                scanner = new jscanify();
+                jscanifyReady = true;
+                console.log("✅ JScanify ready");
+                return true;
+            }
+            return false;
         }
-      });
-    }
 
-    async function init() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: "environment" }
-        });
-        video.srcObject = stream;
-        track = stream.getVideoTracks()[0];
-
-        await waitForOpenCV();
-        if (typeof jscanify === "undefined") {
-          alert("❌ JScanify did not load.");
-          return;
+        function onOpenCvReady() {
+            if (typeof cv !== 'undefined' && cv.imread) {
+                cvReady = true;
+                console.log("✅ OpenCV ready");
+            } else {
+                setTimeout(onOpenCvReady, 100);
+            }
         }
-        scanner = new jscanify();
 
-        video.onloadedmetadata = () => {
-          overlayCanvas.width = video.videoWidth;
-          overlayCanvas.height = video.videoHeight;
+        // Initialize everything
+        async function init() {
+            try {
+                status.textContent = "Loading components...";
+                
+                // Check JScanify
+                if (!checkJScanify()) {
+                    // Wait a bit and try again
+                    setTimeout(() => {
+                        if (!checkJScanify()) {
+                            status.textContent = "❌ JScanify not loaded. Make sure jscanify.js is in the same folder.";
+                            return;
+                        }
+                        continueInit();
+                    }, 1000);
+                } else {
+                    continueInit();
+                }
+            } catch (err) {
+                status.textContent = "❌ Initialization failed: " + err.message;
+                console.error(err);
+            }
+        }
 
-          frameCanvas.width = video.videoWidth;
-          frameCanvas.height = video.videoHeight;
+        async function continueInit() {
+            try {
+                await initTesseract();
+                await initCamera();
+                enableControls();
+            } catch (err) {
+                status.textContent = "❌ Initialization failed: " + err.message;
+                console.error(err);
+            }
+        }
 
-          drawOverlayLoop();
+        async function initTesseract() {
+            status.textContent = "Loading OCR engine...";
+            tesseractWorker = await Tesseract.createWorker();
+            await tesseractWorker.loadLanguage('eng');
+            await tesseractWorker.initialize('eng');
+            console.log("✅ Tesseract ready");
+        }
+
+        async function initCamera() {
+            status.textContent = "Starting camera...";
+            try {
+                const constraints = {
+                    video: {
+                        facingMode: isBackCamera ? "environment" : "user",
+                        width: { ideal: 1920 },
+                        height: { ideal: 1080 }
+                    }
+                };
+
+                stream = await navigator.mediaDevices.getUserMedia(constraints);
+                video.srcObject = stream;
+                track = stream.getVideoTracks()[0];
+
+                video.onloadedmetadata = () => {
+                    videoWrapper.classList.remove("hidden");
+                    status.textContent = "✅ Camera ready - Point at a document";
+                };
+
+            } catch (err) {
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    video.srcObject = stream;
+                    track = stream.getVideoTracks()[0];
+                    
+                    video.onloadedmetadata = () => {
+                        videoWrapper.classList.remove("hidden");
+                        status.textContent = "✅ Camera ready (fallback mode) - Point at a document";
+                    };
+                } catch (fallbackErr) {
+                    throw new Error("No camera access: " + fallbackErr.message);
+                }
+            }
+        }
+
+        function enableControls() {
+            captureBtn.disabled = false;
+            flashBtn.disabled = false;
+            switchCameraBtn.disabled = false;
+        }
+
+        captureBtn.onclick = async () => {
+            if (!video.videoWidth || !jscanifyReady) {
+                alert("Not ready for capture");
+                return;
+            }
+
+            captureBtn.disabled = true;
+            status.textContent = "📸 Capturing...";
+
+            try {
+                // Capture frame
+                const ctx = canvas.getContext("2d");
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                preview.src = canvas.toDataURL("image/jpeg", 0.9);
+                preview.classList.remove("hidden");
+
+                status.textContent = "🔍 Detecting document...";
+
+                // Extract document using JScanify
+                const extractedCanvas = scanner.extractPaper(canvas, 1200, 1600);
+                
+                if (extractedCanvas) {
+                    // Show extracted document
+                    extracted.width = extractedCanvas.width;
+                    extracted.height = extractedCanvas.height;
+                    extracted.getContext("2d").drawImage(extractedCanvas, 0, 0);
+                    extracted.classList.remove("hidden");
+
+                    // Apply basic processing if OpenCV is available
+                    if (cvReady) {
+                        await processWithOpenCV(extractedCanvas);
+                    } else {
+                        await runOCR(extractedCanvas);
+                    }
+                } else {
+                    status.textContent = "⚠️ No document detected, processing full image...";
+                    await runOCR(canvas);
+                }
+
+            } catch (err) {
+                status.textContent = "❌ Processing failed: " + err.message;
+                console.error(err);
+            } finally {
+                captureBtn.disabled = false;
+            }
         };
 
-        alert("✅ Camera ready & JScanify initialized.");
-      } catch (err) {
-        alert("❌ Camera error: " + err.message);
-      }
-    }
+        async function processWithOpenCV(sourceCanvas) {
+            try {
+                status.textContent = "🔧 Enhancing image...";
+                
+                const src = cv.imread(sourceCanvas);
+                const gray = new cv.Mat();
+                const enhanced = new cv.Mat();
 
-    function drawOverlayLoop() {
-      const overlayCtx = overlayCanvas.getContext("2d");
-      overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+                // Convert to grayscale
+                cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
+                
+                // Apply adaptive threshold for better text contrast
+                cv.adaptiveThreshold(gray, enhanced, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, 11, 2);
 
-      frameCtx.drawImage(video, 0, 0, frameCanvas.width, frameCanvas.height);
+                // Show processed image
+                cv.imshow(processed, enhanced);
+                processed.classList.remove("hidden");
 
-      try {
-        const quad = scanner.findDocument(frameCanvas);
-        if (quad) {
-          overlayCtx.lineWidth = 4;
-          overlayCtx.strokeStyle = "#00ff88";
-          overlayCtx.beginPath();
-          overlayCtx.moveTo(quad.topLeft[0], quad.topLeft[1]);
-          overlayCtx.lineTo(quad.topRight[0], quad.topRight[1]);
-          overlayCtx.lineTo(quad.bottomRight[0], quad.bottomRight[1]);
-          overlayCtx.lineTo(quad.bottomLeft[0], quad.bottomLeft[1]);
-          overlayCtx.closePath();
-          overlayCtx.stroke();
-        }
-      } catch (err) {
-        // No document detected, do nothing
-      }
+                // Run OCR on processed image
+                await runOCR(processed);
 
-      requestAnimationFrame(drawOverlayLoop);
-    }
+                // Clean up
+                src.delete();
+                gray.delete();
+                enhanced.delete();
 
-    captureBtn.onclick = () => {
-      const ctx = canvas.getContext("2d");
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      preview.src = canvas.toDataURL("image/jpeg", 0.9);
-
-      try {
-        const extractedCanvas = scanner.extractPaper(canvas, 1200, 1600);
-        extracted.width = extractedCanvas.width;
-        extracted.height = extractedCanvas.height;
-        extracted.getContext("2d").drawImage(extractedCanvas, 0, 0);
-        extracted.style.display = "block";
-
-        enhanceWithMode(extractedCanvas);
-      } catch (err) {
-        alert("❌ Detection error: " + err.message);
-      }
-    };
-
-    function enhanceWithMode(sourceCanvas) {
-      try {
-        const src = cv.imread(sourceCanvas);
-        let gray = new cv.Mat();
-        let blurred = new cv.Mat();
-        let finalMat = new cv.Mat();
-
-        cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
-        cv.GaussianBlur(gray, blurred, new cv.Size(3, 3), 0);
-
-        if (enhancementMode === "crisp") {
-          cv.threshold(
-            blurred,
-            finalMat,
-            0,
-            255,
-            cv.THRESH_BINARY + cv.THRESH_OTSU
-          );
-        } else {
-          finalMat = blurred.clone();
+            } catch (err) {
+                console.error("OpenCV processing failed:", err);
+                await runOCR(sourceCanvas);
+            }
         }
 
-        cv.imshow(enhanced, finalMat);
-        enhanced.style.display = "block";
-        runOCR(enhanced);
+        async function runOCR(canvasElement) {
+            if (!tesseractWorker) {
+                status.textContent = "❌ OCR not ready";
+                return;
+            }
 
-        src.delete();
-        gray.delete();
-        blurred.delete();
-        finalMat.delete();
-      } catch (err) {
-        alert("❌ Enhancement failed: " + err.message);
-      }
-    }
+            try {
+                status.textContent = "🔍 Reading text...";
+                resultBox.style.display = "block";
+                resultBox.textContent = "Reading text...";
 
-    async function runOCR(canvasElement) {
-      try {
-        resultBox.style.display = "block";
-        resultBox.textContent = "🔍 Running OCR, please wait...";
+                const { data: { text } } = await tesseractWorker.recognize(canvasElement);
+                
+                const cleanText = text.trim();
+                resultBox.textContent = cleanText || "No text detected.";
+                status.textContent = cleanText ? "✅ Text extracted successfully" : "⚠️ No text found";
 
-        const worker = await Tesseract.createWorker("eng", 1, {
-          logger: (m) => console.log(m)
+            } catch (err) {
+                resultBox.textContent = "❌ OCR failed: " + err.message;
+                status.textContent = "❌ OCR failed";
+                console.error(err);
+            }
+        }
+
+        flashBtn.onclick = async () => {
+            if (!track) {
+                alert("No camera available.");
+                return;
+            }
+
+            try {
+                const capabilities = track.getCapabilities();
+                if (!capabilities.torch) {
+                    alert("Flash not supported on this device.");
+                    return;
+                }
+
+                const current = track.getSettings().torch || false;
+                await track.applyConstraints({ advanced: [{ torch: !current }] });
+                flashBtn.textContent = !current ? "🔦 Flash On" : "💡 Flash";
+                
+            } catch (e) {
+                alert("Flash toggle failed: " + e.message);
+            }
+        };
+
+        switchCameraBtn.onclick = async () => {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            
+            isBackCamera = !isBackCamera;
+            switchCameraBtn.disabled = true;
+            
+            try {
+                await initCamera();
+                status.textContent = `✅ Switched to ${isBackCamera ? 'back' : 'front'} camera`;
+            } catch (err) {
+                status.textContent = "❌ Camera switch failed: " + err.message;
+            } finally {
+                switchCameraBtn.disabled = false;
+            }
+        };
+
+        // Start initialization when page loads
+        window.addEventListener('load', init);
+
+        // Cleanup when page unloads
+        window.addEventListener('beforeunload', () => {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            if (tesseractWorker) {
+                tesseractWorker.terminate();
+            }
         });
 
-        const {
-          data: { text }
-        } = await worker.recognize(canvasElement);
-        await worker.terminate();
-
-        resultBox.textContent = text.trim() || "No text detected.";
-        resultBox.scrollIntoView({ behavior: "smooth" });
-      } catch (err) {
-        resultBox.textContent = "❌ OCR failed: " + err.message;
-      }
-    }
-
-    toggleModeBtn.onclick = () => {
-      enhancementMode = enhancementMode === "minimal" ? "crisp" : "minimal";
-      toggleModeBtn.textContent =
-        enhancementMode === "minimal" ? "🔄 Mode: Minimal" : "🔄 Mode: Crisp";
-    };
-
-    flashBtn.onclick = async () => {
-      if (!track) {
-        alert("No camera track available.");
-        return;
-      }
-      const capabilities = track.getCapabilities();
-      if (!capabilities.torch) {
-        alert("Flash not supported on this device.");
-        return;
-      }
-      const current = track.getSettings().torch || false;
-      try {
-        await track.applyConstraints({ advanced: [{ torch: !current }] });
-        flashBtn.textContent = !current ? "🔦 Flash On" : "💡 Flash";
-      } catch (e) {
-        alert("Flash toggle failed.");
-      }
-    };
-
-    window.onload = init;
-  </script>
+    </script>
 </body>
 
 </html>
