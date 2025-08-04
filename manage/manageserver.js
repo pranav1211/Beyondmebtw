@@ -24,7 +24,8 @@ try {
 let jsdata = {
   mainPost: {},
   featured: Array(4).fill(null).map(() => ({})),
-  projects: Array(4).fill(null).map(() => ({}))
+  projects: Array(4).fill(null).map(() => ({})),
+  categories: {} // Add categories to the initial structure
 };
 
 // Blog section data structure
@@ -64,7 +65,32 @@ function getJSONBody(request, callback) {
   });
 }
 
+// Function to load existing local data first
+function loadExistingData() {
+  const jsonPath = path.join(__dirname, "latest.json");
+  
+  try {
+    if (fs.existsSync(jsonPath)) {
+      const existingData = JSON.parse(fs.readFileSync(jsonPath, "utf8"));
+      
+      // Preserve existing data structure, especially categories
+      jsdata.mainPost = existingData.mainPost || {};
+      jsdata.featured = existingData.featured || Array(4).fill(null).map(() => ({}));
+      jsdata.projects = existingData.projects || Array(4).fill(null).map(() => ({}));
+      jsdata.categories = existingData.categories || {}; // Preserve categories
+      
+      console.log("Existing local data loaded successfully");
+    }
+  } catch (error) {
+    console.error("Error loading existing data:", error);
+    // Keep default structure if loading fails
+  }
+}
+
 function loadJSON(callback) {
+  // First load existing local data to preserve categories
+  loadExistingData();
+  
   const request = https.get("https://beyondmebtw.com/manage/latest.json", (res) => {
     let data = "";
 
@@ -76,7 +102,7 @@ function loadJSON(callback) {
       try {
         const parsedData = JSON.parse(data);
 
-        // Validate and merge data - preserve existing data structure
+        // Validate and merge data - preserve existing data structure INCLUDING categories
         jsdata.mainPost = { ...jsdata.mainPost, ...parsedData.mainPost } || jsdata.mainPost;
 
         // Handle featured array - preserve existing entries
@@ -93,7 +119,14 @@ function loadJSON(callback) {
           }
         }
 
-        console.log("JSON data loaded successfully from URL.");
+        // IMPORTANT: Preserve categories from existing data - don't overwrite from remote
+        // Only merge if remote data has categories and we want to update them
+        if (parsedData.categories) {
+          jsdata.categories = { ...jsdata.categories, ...parsedData.categories };
+        }
+        // If parsedData doesn't have categories, jsdata.categories remains unchanged
+
+        console.log("JSON data loaded successfully from URL and merged with existing data.");
       } catch (err) {
         console.error("Error parsing JSON from URL:", err);
       }
@@ -256,8 +289,9 @@ function writeJSONFile(callback) {
   const jsonPath = path.join(__dirname, "latest.json");
 
   try {
+    // Ensure we're writing the complete jsdata object including categories
     fs.writeFileSync(jsonPath, JSON.stringify(jsdata, null, 2), "utf8");
-    console.log("Data written to latest.json successfully");
+    console.log("Data written to latest.json successfully (including categories)");
     callback(null);
   } catch (error) {
     console.error("Error writing JSON file:", error);
