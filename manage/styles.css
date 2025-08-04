@@ -163,6 +163,8 @@ button[type="button"]:hover {
     background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     color: white;
     border: 2px solid #e91e63;
+    height: fit-content;
+    max-height: 600px;
 }
 
 .blog-form h2 {
@@ -174,12 +176,14 @@ button[type="button"]:hover {
 .blog-form label {
     color: white;
     font-weight: 700;
+    margin-bottom: 5px;
 }
 
 .blog-form input,
 .blog-form select {
     background: rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.5);
+    margin-bottom: 15px;
 }
 
 .blog-form input:focus,
@@ -258,12 +262,103 @@ button[type="button"]:hover {
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
+/* Blog display section styles */
+.blog-display {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    min-width: 300px;
+    height: fit-content;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.blog-display h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 18px;
+    border-bottom: 2px solid #f093fb;
+    padding-bottom: 10px;
+}
+
+.category-section {
+    margin-bottom: 25px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #f093fb;
+}
+
+.category-title {
+    font-weight: 600;
+    color: #333;
+    font-size: 16px;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.subcategory-section {
+    margin-bottom: 20px;
+}
+
+.subcategory-title {
+    font-weight: 500;
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 10px;
+    text-decoration: underline;
+}
+
+.post-item {
+    background: white;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e9ecef;
+}
+
+.post-uid {
+    font-size: 12px;
+    color: #6c757d;
+    font-weight: 500;
+    margin-bottom: 5px;
+    font-family: monospace;
+}
+
+.post-title {
+    font-size: 13px;
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+.post-thumbnail {
+    font-size: 11px;
+    color: #007BFF;
+    word-break: break-all;
+    line-height: 1.2;
+}
+
+.no-posts {
+    font-size: 12px;
+    color: #6c757d;
+    font-style: italic;
+    text-align: center;
+    padding: 10px;
+}
+
 @media (max-width: 768px) {
     .form-container {
         flex-direction: column;
     }
     
-    form {
+    form, .blog-display {
         width: 100%;
     }
 
