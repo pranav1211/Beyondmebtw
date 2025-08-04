@@ -61,5 +61,57 @@
       "link": "https://beyondmebtw.com/projects/pairgame",
       "emoji": "🎮"
     }
-  ]
+  ],
+    "categories": {
+    "f1arti": {
+      "subcategories": {
+        "2025": {
+          "mainPost": {
+            "uid": "f12025re_13",
+            "title": "The 2025 Belgian GP Recap",
+            "thumbnail": "https://bmb-content-server.vercel.app/f1/2025/13.png"
+          }
+        },
+        "general": {
+          "mainPost": {
+            "uid": "f1gen_2",
+            "title": "F1 75 Recap — Unveiling the colors of speed",
+            "thumbnail": "https://bmb-content-server.vercel.app/f1/general/gen2.webp"
+          }
+        }
+      }
+    },
+    "movietv": {
+      "subcategories": {
+        "movies": {
+          "mainPost": {
+            "uid": "movies_47",
+            "title": "Thunderbolts Review : Almost Perfect",
+            "thumbnail": "https://bmb-content-server.vercel.app/movietv/movie/mov47.webp"
+          }
+        },
+        "tv": {
+          "mainPost": {
+            "uid": "tv_6",
+            "title": "Drive To Survive Season 7 : It's Alright",
+            "thumbnail": "https://bmb-content-server.vercel.app/movietv/tv/tv7.webp"
+          }
+        }
+      }
+    },
+    "experience": {
+      "mainPost": {
+        "uid": "exper_28",
+        "title": "Live Blog Update — Almost There",
+        "thumbnail": "https://bmb-content-server.vercel.app/experience/exp28.png"
+      }
+    },
+    "techart": {
+      "mainPost": {
+        "uid": "tech_001",
+        "title": "Automating Git Calls with Webhooks",
+        "thumbnail": "https://bmb-content-server.vercel.app/tech/tech1.png"
+      }
+    }
+  }
 }
