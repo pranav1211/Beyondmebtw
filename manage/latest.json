@@ -3,7 +3,7 @@
     "title": "Thunderbolts Review : Almost Perfect",
     "date": "2025-08-04",
     "excerpt": "Thunderbolts is a genuinely good film, it's fun, action-packed, and handles serious topics without feeling forced. But it still feels like it could have been so much better. The movie...",
-    "thumbnail": "https://bmb-content-server.vercel.app/movietv/movie/mov47.webp",
+    "thumbnail": "https://content.beyondmebtw.com/movietv/movie/mov47.webp",
     "link": "https://medium.com/@beyondmebtw/thunderbolts-review-almost-perfect-c82848e69d85"
   },
   "featured": [
@@ -69,14 +69,14 @@
           "mainPost": {
             "uid": "f12025re_13",
             "title": "The 2025 Belgian GP Recap",
-            "thumbnail": "https://bmb-content-server.vercel.app/f1/2025/13.png"
+            "thumbnail": "https://content.beyondmebtw.com/f1/2025/13.png"
           }
         },
         "general": {
           "mainPost": {
             "uid": "f1gen_2",
             "title": "F1 75 Recap — Unveiling the colors of speed",
-            "thumbnail": "https://bmb-content-server.vercel.app/f1/general/gen2.webp"
+            "thumbnail": "https://content.beyondmebtw.com/f1/general/gen2.webp"
           }
         }
       }
@@ -87,14 +87,14 @@
           "mainPost": {
             "uid": "movies_47",
             "title": "Thunderbolts Review : Almost Perfect",
-            "thumbnail": "https://bmb-content-server.vercel.app/movietv/movie/mov47.webp"
+            "thumbnail": "https://content.beyondmebtw.com/movietv/movie/mov47.webp"
           }
         },
         "tv": {
           "mainPost": {
             "uid": "tv_6",
             "title": "Drive To Survive Season 7 : It's Alright",
-            "thumbnail": "https://bmb-content-server.vercel.app/movietv/tv/tv7.webp"
+            "thumbnail": "https://content.beyondmebtw.com/movietv/tv/tv7.webp"
           }
         }
       }
@@ -103,14 +103,14 @@
       "mainPost": {
         "uid": "exper_28",
         "title": "Live Blog Update — Almost There",
-        "thumbnail": "https://bmb-content-server.vercel.app/experience/exp28.png"
+        "thumbnail": "https://content.beyondmebtw.com/experience/exp28.png"
       }
     },
     "techart": {
       "mainPost": {
         "uid": "tech_001",
         "title": "Automating Git Calls with Webhooks",
-        "thumbnail": "https://bmb-content-server.vercel.app/tech/tech1.png"
+        "thumbnail": "https://content.beyondmebtw.com/tech/tech1.png"
       }
     }
   }
