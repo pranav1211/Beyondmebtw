@@ -491,7 +491,7 @@
       }
     });
 
-    function enhanceDocumentForOCR(canvas, contrastFactor = 1.4, threshold = 160) {
+    function enhanceDocumentForOCR(canvas, contrastFactor = 0.5, threshold = 160) {
       if (!cv) return canvas;
 
       try {
