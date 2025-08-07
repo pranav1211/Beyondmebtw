@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Real-time Mobile Document Scanner</title>
   <style>
     body {
@@ -12,6 +13,7 @@
       margin: 0;
       background: #f5f5f5;
     }
+
     .container {
       max-width: 500px;
       margin: 0 auto;
@@ -20,6 +22,7 @@
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
+
     .status {
       padding: 15px;
       margin: 15px;
@@ -27,25 +30,30 @@
       font-weight: 500;
       text-align: center;
     }
+
     .status.loading {
       background: #fff3cd;
       border: 1px solid #ffeaa7;
       color: #856404;
     }
+
     .status.ready {
       background: #d1edff;
       border: 1px solid #bee5eb;
       color: #0c5460;
     }
+
     .status.detecting {
       background: #d4edda;
       border: 1px solid #c3e6cb;
       color: #155724;
     }
+
     .camera-section {
       padding: 20px;
       text-align: center;
     }
+
     #videoContainer {
       position: relative;
       background: #000;
@@ -54,11 +62,13 @@
       margin-bottom: 20px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
+
     #videoElement {
       width: 100%;
       height: auto;
       display: block;
     }
+
     #overlayCanvas {
       position: absolute;
       top: 0;
@@ -67,6 +77,7 @@
       height: 100%;
       pointer-events: none;
     }
+
     .camera-controls {
       display: flex;
       justify-content: space-between;
@@ -74,6 +85,7 @@
       margin-bottom: 20px;
       padding: 0 20px;
     }
+
     .btn {
       padding: 12px 20px;
       border: none;
@@ -84,10 +96,12 @@
       transition: all 0.3s ease;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
+
     .btn-primary {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
     }
+
     .btn-success {
       background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
       color: white;
@@ -95,33 +109,40 @@
       margin: 0 10px;
       max-width: 200px;
     }
+
     .btn-secondary {
       background: #6c757d;
       color: white;
     }
+
     .btn:disabled {
       background: #ccc;
       cursor: not-allowed;
       transform: none;
       box-shadow: none;
     }
+
     .results-section {
       padding: 20px;
       display: none;
     }
+
     .image-container {
       margin-bottom: 20px;
     }
+
     .image-container h3 {
       margin-bottom: 10px;
       color: #333;
     }
+
     .image-container canvas {
       width: 100%;
       border: 1px solid #ddd;
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
+
     pre {
       background: #f8f9fa;
       padding: 10px;
@@ -132,6 +153,7 @@
       max-height: 300px;
       overflow-y: auto;
     }
+
     .fps-counter {
       position: absolute;
       top: 10px;
@@ -143,13 +165,35 @@
       font-size: 12px;
       font-weight: bold;
     }
+
     .processing-indicator {
       text-align: center;
       padding: 20px;
       display: none;
     }
+
+    .enhancement-controls {
+      margin: 15px 0;
+      padding: 10px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .enhancement-controls label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #333;
+      font-size: 14px;
+    }
+
+    .enhancement-controls input[type="range"] {
+      width: 100%;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
+
 <body>
   <div class="container">
     <div id="statusMessage" class="status loading">Loading OpenCV and jscanify... Please wait.</div>
@@ -172,6 +216,17 @@
     </div>
 
     <div class="results-section" id="resultsSection">
+      <div class="enhancement-controls">
+        <label for="contrastSlider">Contrast Enhancement: <span id="contrastValue">3.0</span></label>
+        <input type="range" id="contrastSlider" min="1.0" max="5.0" step="0.1" value="3.0">
+
+        <label for="thresholdSlider">Threshold: <span id="thresholdValue">127</span></label>
+        <input type="range" id="thresholdSlider" min="80" max="180" step="5" value="127">
+
+        <button id="reprocessBtn" class="btn btn-secondary" style="width: 100%; margin-top: 10px;">🔄 Reprocess with New
+          Settings</button>
+      </div>
+
       <div class="image-container">
         <h3>📄 Extracted & Enhanced Document</h3>
         <canvas id="resultCanvas"></canvas>
@@ -193,6 +248,7 @@
     let overlayCanvas, overlayCtx, video;
     let frameCount = 0, lastFpsTime = 0;
     let detectionLoop = null;
+    let capturedImageData = null; // Store the captured image for reprocessing
 
     // Custom document detection for grid overlay only
     class GridDetector {
@@ -223,19 +279,19 @@
           cv.GaussianBlur(gray, blur, new cv.Size(5, 5), 0);
           cv.Canny(blur, edges, 75, 200);
           cv.findContours(edges, contours, hierarchy, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE);
-          
+
           let bestContour = null;
           let maxArea = 0;
-          
+
           for (let i = 0; i < contours.size(); i++) {
             const contour = contours.get(i);
             const area = cv.contourArea(contour);
-            
+
             if (area > 1000) {
               const peri = cv.arcLength(contour, true);
               const approx = new cv.Mat();
               cv.approxPolyDP(contour, approx, 0.02 * peri, true);
-              
+
               if (approx.rows === 4 && area > maxArea) {
                 maxArea = area;
                 if (bestContour) bestContour.delete();
@@ -244,10 +300,10 @@
               approx.delete();
             }
           }
-          
-          src.delete(); gray.delete(); blur.delete(); edges.delete(); 
+
+          src.delete(); gray.delete(); blur.delete(); edges.delete();
           contours.delete(); hierarchy.delete();
-          
+
           return bestContour;
         } catch (err) {
           console.error('Grid detection error:', err);
@@ -257,17 +313,17 @@
 
       getCornerPoints(contour) {
         if (!contour || contour.rows !== 4) return null;
-        
+
         const points = [];
         for (let i = 0; i < 4; i++) {
           const point = contour.data32S.slice(i * 2, i * 2 + 2);
           points.push({ x: point[0], y: point[1] });
         }
-        
+
         points.sort((a, b) => a.y - b.y);
         const top = points.slice(0, 2).sort((a, b) => a.x - b.x);
         const bottom = points.slice(2, 4).sort((a, b) => a.x - b.x);
-        
+
         return [top[0], top[1], bottom[1], bottom[0]];
       }
     }
@@ -284,9 +340,10 @@
       try {
         window.cv = await window.cv;
         updateStatus("OpenCV ready. Loading jscanify...", 'ready');
-        
+
+        // Load jscanify from CDN
         const script = document.createElement("script");
-        script.src = "jscanify.js";
+        script.src = "https://cdn.jsdelivr.net/gh/ColonelParrot/jscanify@master/src/jscanify.min.js";
         script.onload = async () => {
           scanner = new jscanify();
           detector.init();
@@ -296,7 +353,7 @@
           document.getElementById("cameraSection").style.display = "block";
           document.getElementById("captureBtn").disabled = false;
         };
-        script.onerror = () => updateStatus("Failed to load jscanify.js");
+        script.onerror = () => updateStatus("Failed to load jscanify.js from CDN");
         document.head.appendChild(script);
       } catch (err) {
         updateStatus("Initialization failed: " + err);
@@ -307,7 +364,7 @@
       video = document.getElementById('videoElement');
       overlayCanvas = document.getElementById('overlayCanvas');
       overlayCtx = overlayCanvas.getContext('2d');
-      
+
       video.addEventListener('loadedmetadata', () => {
         overlayCanvas.width = video.videoWidth;
         overlayCanvas.height = video.videoHeight;
@@ -321,24 +378,24 @@
           const tempCtx = tempCanvas.getContext('2d');
           tempCanvas.width = video.videoWidth;
           tempCanvas.height = video.videoHeight;
-          
+
           tempCtx.drawImage(video, 0, 0);
-          
+
           const contour = detector.detectDocument(tempCanvas);
-          
+
           overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
-          
+
           if (contour) {
             const points = detector.getCornerPoints(contour);
             if (points && points.length === 4) {
               const scaleX = overlayCanvas.width / tempCanvas.width;
               const scaleY = overlayCanvas.height / tempCanvas.height;
-              
+
               overlayCtx.strokeStyle = 'lime';
               overlayCtx.lineWidth = 4;
               overlayCtx.shadowBlur = 10;
               overlayCtx.shadowColor = 'black';
-              
+
               overlayCtx.beginPath();
               overlayCtx.moveTo(points[0].x * scaleX, points[0].y * scaleY);
               for (let i = 1; i < 4; i++) {
@@ -346,7 +403,7 @@
               }
               overlayCtx.closePath();
               overlayCtx.stroke();
-              
+
               overlayCtx.fillStyle = 'red';
               overlayCtx.shadowBlur = 5;
               points.forEach(point => {
@@ -357,7 +414,7 @@
             }
             contour.delete();
           }
-          
+
           frameCount++;
           const now = performance.now();
           if (now - lastFpsTime >= 1000) {
@@ -365,14 +422,14 @@
             frameCount = 0;
             lastFpsTime = now;
           }
-          
+
         } catch (err) {
           console.error('Frame processing error:', err);
         }
-        
+
         detectionLoop = requestAnimationFrame(processFrame);
       };
-      
+
       processFrame();
     }
 
@@ -415,13 +472,104 @@
       }
     });
 
-    async function captureAndProcess() {
+    function enhanceDocumentForOCR(canvas, contrastFactor = 3.0, threshold = 127) {
+      if (!cv) return canvas;
+
+      try {
+        const src = cv.imread(canvas);
+        let processed = new cv.Mat();
+
+        // Convert to grayscale
+        cv.cvtColor(src, processed, cv.COLOR_RGBA2GRAY);
+
+        // Apply Gaussian blur to reduce noise
+        let blurred = new cv.Mat();
+        cv.GaussianBlur(processed, blurred, new cv.Size(3, 3), 0);
+
+        // Enhance contrast using CLAHE (Contrast Limited Adaptive Histogram Equalization)
+        let clahe = new cv.CLAHE(contrastFactor, new cv.Size(8, 8));
+        clahe.apply(blurred, processed);
+
+        // Apply bilateral filter to smooth while preserving edges
+        let filtered = new cv.Mat();
+        cv.bilateralFilter(processed, filtered, 9, 75, 75);
+
+        // Apply adaptive thresholding for better text separation
+        let thresholded = new cv.Mat();
+        cv.adaptiveThreshold(filtered, thresholded, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, 11, 2);
+
+        // Optional: Apply morphological operations to clean up
+        let kernel = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(2, 2));
+        let morphed = new cv.Mat();
+        cv.morphologyEx(thresholded, morphed, cv.MORPH_CLOSE, kernel);
+
+        // Convert back to RGBA for display
+        let result = new cv.Mat();
+        cv.cvtColor(morphed, result, cv.COLOR_GRAY2RGBA);
+
+        const resultCanvas = document.createElement('canvas');
+        cv.imshow(resultCanvas, result);
+
+        // Cleanup
+        src.delete(); processed.delete(); blurred.delete(); filtered.delete();
+        thresholded.delete(); morphed.delete(); result.delete(); kernel.delete(); clahe.delete();
+
+        return resultCanvas;
+      } catch (err) {
+        console.error('Enhancement error:', err);
+        return canvas;
+      }
+    }
+
+    async function processDocument(imageData) {
       const t0 = performance.now();
-      
+
+      try {
+        // Create image from data
+        const img = new Image();
+        return new Promise((resolve, reject) => {
+          img.onload = async () => {
+            try {
+              // Use jscanify to extract the document
+              const extractedCanvas = scanner.extractPaper(img, 800, 1200);
+
+              // Get enhancement parameters
+              const contrastFactor = parseFloat(document.getElementById('contrastSlider').value);
+              const threshold = parseInt(document.getElementById('thresholdSlider').value);
+
+              // Enhance the extracted document for OCR
+              const enhancedCanvas = enhanceDocumentForOCR(extractedCanvas, contrastFactor, threshold);
+
+              // Display result
+              const outCanvas = document.getElementById("resultCanvas");
+              outCanvas.width = enhancedCanvas.width;
+              outCanvas.height = enhancedCanvas.height;
+              outCanvas.getContext("2d").drawImage(enhancedCanvas, 0, 0);
+
+              const t1 = performance.now();
+              document.getElementById("perfMetric").textContent = `Processing Time: ${(t1 - t0).toFixed(2)} ms | Contrast: ${contrastFactor} | Threshold: ${threshold}`;
+
+              // Perform OCR
+              await performOCR(enhancedCanvas);
+
+              resolve();
+            } catch (err) {
+              reject(err);
+            }
+          };
+          img.onerror = reject;
+          img.src = imageData;
+        });
+      } catch (err) {
+        throw err;
+      }
+    }
+
+    async function captureAndProcess() {
       // Show processing indicator
       document.getElementById("processingIndicator").style.display = "block";
       document.getElementById("captureBtn").disabled = true;
-      
+
       try {
         // Capture current frame
         const canvas = document.createElement("canvas");
@@ -430,83 +578,31 @@
         canvas.height = video.videoHeight;
         ctx.drawImage(video, 0, 0);
 
-        // Create image from canvas
-        const img = new Image();
-        img.onload = async () => {
-          try {
-            // Use jscanify to extract the document
-            const extractedCanvas = scanner.extractPaper(img, 800, 1200);
-            
-            // Enhance the extracted document
-            const enhancedCanvas = enhanceContrast(extractedCanvas);
-            
-            // Display result
-            const outCanvas = document.getElementById("resultCanvas");
-            outCanvas.width = enhancedCanvas.width;
-            outCanvas.height = enhancedCanvas.height;
-            outCanvas.getContext("2d").drawImage(enhancedCanvas, 0, 0);
-            
-            const t1 = performance.now();
-            document.getElementById("perfMetric").textContent = `Processing Time: ${(t1 - t0).toFixed(2)} ms`;
-            
-            // Show results and perform OCR
-            document.getElementById("resultsSection").style.display = "block";
-            document.getElementById("processingIndicator").style.display = "none";
-            
-            await performOCR(enhancedCanvas);
-            
-          } catch (err) {
-            console.error('Processing error:', err);
-            document.getElementById("processingIndicator").style.display = "none";
-            alert('Failed to process document. Please try again.');
-          }
-          
-          document.getElementById("captureBtn").disabled = false;
-        };
-        
-        img.src = canvas.toDataURL();
-        
-      } catch (err) {
-        console.error('Capture error:', err);
+        // Store the captured image data for reprocessing
+        capturedImageData = canvas.toDataURL();
+
+        await processDocument(capturedImageData);
+
+        // Show results
+        document.getElementById("resultsSection").style.display = "block";
         document.getElementById("processingIndicator").style.display = "none";
-        document.getElementById("captureBtn").disabled = false;
-        alert('Failed to capture image. Please try again.');
-      }
-    }
 
-    function enhanceContrast(canvas) {
-      if (!cv) return canvas;
-      
-      try {
-        const src = cv.imread(canvas);
-        let ycrcb = new cv.Mat();
-        cv.cvtColor(src, ycrcb, cv.COLOR_RGBA2YCrCb);
-
-        let channels = new cv.MatVector();
-        cv.split(ycrcb, channels);
-        let clahe = new cv.CLAHE(2.0, new cv.Size(8, 8));
-        clahe.apply(channels.get(0), channels.get(0));
-        cv.merge(channels, ycrcb);
-
-        let dst = new cv.Mat();
-        cv.cvtColor(ycrcb, dst, cv.COLOR_YCrCb2RGBA);
-        
-        const resultCanvas = document.createElement('canvas');
-        cv.imshow(resultCanvas, dst);
-
-        src.delete(); ycrcb.delete(); dst.delete(); channels.delete(); clahe.delete();
-        return resultCanvas;
       } catch (err) {
-        console.error('Enhancement error:', err);
-        return canvas;
+        console.error('Processing error:', err);
+        document.getElementById("processingIndicator").style.display = "none";
+        alert('Failed to process document. Please try again.');
       }
+
+      document.getElementById("captureBtn").disabled = false;
     }
 
     async function performOCR(canvas) {
       document.getElementById("ocrResult").textContent = "🔍 Recognizing text...";
       try {
         const { data: { text } } = await Tesseract.recognize(canvas, 'eng', {
-          logger: m => console.log(m)
+          logger: m => console.log(m),
+          tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,!?@#$%^&*()_+-=[]{}|;:\'",.<>/? \n',
+          tessedit_pageseg_mode: Tesseract.PSM.AUTO
         });
         document.getElementById("ocrResult").textContent = text.trim() || "No text found.";
       } catch (err) {
@@ -519,11 +615,39 @@
       document.getElementById("resultsSection").style.display = "none";
       document.getElementById("ocrResult").textContent = "No text extracted yet.";
       document.getElementById("processingIndicator").style.display = "none";
+      capturedImageData = null;
+    }
+
+    async function reprocessDocument() {
+      if (!capturedImageData) return;
+
+      document.getElementById("processingIndicator").style.display = "block";
+      document.getElementById("reprocessBtn").disabled = true;
+
+      try {
+        await processDocument(capturedImageData);
+      } catch (err) {
+        console.error('Reprocessing error:', err);
+        alert('Failed to reprocess document.');
+      }
+
+      document.getElementById("processingIndicator").style.display = "none";
+      document.getElementById("reprocessBtn").disabled = false;
     }
 
     // Event listeners
     document.getElementById("captureBtn").addEventListener("click", captureAndProcess);
     document.getElementById("newScanBtn").addEventListener("click", newScan);
+    document.getElementById("reprocessBtn").addEventListener("click", reprocessDocument);
+
+    // Update slider value displays
+    document.getElementById('contrastSlider').addEventListener('input', (e) => {
+      document.getElementById('contrastValue').textContent = e.target.value;
+    });
+
+    document.getElementById('thresholdSlider').addEventListener('input', (e) => {
+      document.getElementById('thresholdValue').textContent = e.target.value;
+    });
 
     // Cleanup on page unload
     window.addEventListener('beforeunload', () => {
@@ -539,4 +663,5 @@
   <script src="opencv.js" onload="onOpenCvReady();" type="text/javascript"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js"></script>
 </body>
+
 </html>
