@@ -491,7 +491,7 @@
       }
     });
 
-    function enhanceDocumentForOCR(canvas, contrastFactor = 1.0, threshold = 120) {
+    function enhanceDocumentForOCR(canvas, contrastFactor = 2.5, threshold = 120) {
       if (!cv) return canvas;
 
       try {
@@ -501,37 +501,40 @@
         // Convert to grayscale
         cv.cvtColor(src, processed, cv.COLOR_RGBA2GRAY);
 
-        // Apply Gaussian blur to reduce noise
+        // Apply lighter Gaussian blur to preserve text sharpness
         let blurred = new cv.Mat();
         cv.GaussianBlur(processed, blurred, new cv.Size(3, 3), 0);
 
-        // Enhance contrast using CLAHE (Contrast Limited Adaptive Histogram Equalization)
+        // Enhance contrast using CLAHE with higher contrast for better text separation
         let clahe = new cv.CLAHE(contrastFactor, new cv.Size(8, 8));
         clahe.apply(blurred, processed);
 
-        // Apply bilateral filter to smooth while preserving edges
-        let filtered = new cv.Mat();
-        cv.bilateralFilter(processed, filtered, 9, 75, 75);
-
-        // Apply adaptive thresholding for better text separation
+        // Skip bilateral filter as it can blur text edges
+        // Apply adaptive thresholding with larger block size for better character separation
         let thresholded = new cv.Mat();
-        cv.adaptiveThreshold(filtered, thresholded, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, 11, 2);
+        cv.adaptiveThreshold(processed, thresholded, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, 15, 3);
 
-        // Optional: Apply morphological operations to clean up
-        let kernel = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(2, 2));
+        // Use opening instead of closing to separate merged characters
+        let kernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, new cv.Size(1, 1));
         let morphed = new cv.Mat();
-        cv.morphologyEx(thresholded, morphed, cv.MORPH_CLOSE, kernel);
+        cv.morphologyEx(thresholded, morphed, cv.MORPH_OPEN, kernel);
+
+        // Optional: Apply a very light closing to fill small gaps in characters
+        let kernel2 = cv.getStructuringElement(cv.MORPH_ELLIPSE, new cv.Size(1, 1));
+        let final = new cv.Mat();
+        cv.morphologyEx(morphed, final, cv.MORPH_CLOSE, kernel2);
 
         // Convert back to RGBA for display
         let result = new cv.Mat();
-        cv.cvtColor(morphed, result, cv.COLOR_GRAY2RGBA);
+        cv.cvtColor(final, result, cv.COLOR_GRAY2RGBA);
 
         const resultCanvas = document.createElement('canvas');
         cv.imshow(resultCanvas, result);
 
         // Cleanup
-        src.delete(); processed.delete(); blurred.delete(); filtered.delete();
-        thresholded.delete(); morphed.delete(); result.delete(); kernel.delete(); clahe.delete();
+        src.delete(); processed.delete(); blurred.delete();
+        thresholded.delete(); morphed.delete(); final.delete(); result.delete(); 
+        kernel.delete(); kernel2.delete(); clahe.delete();
 
         return resultCanvas;
       } catch (err) {
