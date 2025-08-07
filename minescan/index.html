@@ -172,24 +172,19 @@
       display: none;
     }
 
-    .enhancement-controls {
-      margin: 15px 0;
-      padding: 10px;
-      background: #f8f9fa;
-      border-radius: 8px;
-    }
-
-    .enhancement-controls label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: 500;
-      color: #333;
+    .processing-steps {
+      margin: 10px 0;
       font-size: 14px;
+      color: #666;
     }
 
-    .enhancement-controls input[type="range"] {
-      width: 100%;
-      margin-bottom: 10px;
+    .step {
+      margin: 5px 0;
+    }
+
+    .step.active {
+      color: #28a745;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -212,21 +207,16 @@
     </div>
 
     <div class="processing-indicator" id="processingIndicator">
-      <div style="color: #666;">🔄 Processing document...</div>
+      <div style="color: #666; margin-bottom: 15px;">🔄 Processing document...</div>
+      <div class="processing-steps">
+        <div class="step" id="step1">📷 Capturing image...</div>
+        <div class="step" id="step2">📄 Extracting document...</div>
+        <div class="step" id="step3">🔧 Enhancing image...</div>
+        <div class="step" id="step4">🔍 Performing OCR...</div>
+      </div>
     </div>
 
     <div class="results-section" id="resultsSection">
-      <div class="enhancement-controls">
-        <label for="contrastSlider">Contrast Enhancement: <span id="contrastValue">3.0</span></label>
-        <input type="range" id="contrastSlider" min="1.0" max="5.0" step="0.1" value="3.0">
-
-        <label for="thresholdSlider">Threshold: <span id="thresholdValue">127</span></label>
-        <input type="range" id="thresholdSlider" min="0" max="180" step="5" value="127">
-
-        <button id="reprocessBtn" class="btn btn-secondary" style="width: 100%; margin-top: 10px;">🔄 Reprocess with New
-          Settings</button>
-      </div>
-
       <div class="image-container">
         <h3>📄 Extracted & Enhanced Document</h3>
         <canvas id="resultCanvas"></canvas>
@@ -248,7 +238,7 @@
     let overlayCanvas, overlayCtx, video;
     let frameCount = 0, lastFpsTime = 0;
     let detectionLoop = null;
-    let capturedImageData = null; // Store the captured image for reprocessing
+    let tesseractWorker = null; // Pre-initialize Tesseract worker
 
     // Custom document detection for grid overlay only
     class GridDetector {
@@ -336,10 +326,39 @@
       el.className = `status ${type}`;
     }
 
+    function updateProcessingStep(stepId) {
+      // Clear all active steps
+      document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+      // Set current step as active
+      document.getElementById(stepId).classList.add('active');
+    }
+
+    // Pre-initialize Tesseract worker for faster OCR
+    async function initTesseractWorker() {
+      try {
+        tesseractWorker = await Tesseract.createWorker('eng', 1, {
+          logger: m => console.log(m),
+          errorHandler: err => console.error(err)
+        });
+        
+        await tesseractWorker.setParameters({
+          tessedit_pageseg_mode: Tesseract.PSM.AUTO,
+          tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,!?@#$%^&*()_+-=[]{}|;:\'",.<>/? \n'
+        });
+        
+        console.log('Tesseract worker initialized');
+      } catch (err) {
+        console.error('Failed to initialize Tesseract worker:', err);
+      }
+    }
+
     async function onOpenCvReady() {
       try {
         window.cv = await window.cv;
         updateStatus("OpenCV ready. Loading jscanify...", 'ready');
+
+        // Initialize Tesseract worker in parallel
+        initTesseractWorker();
 
         // Load jscanify from CDN
         const script = document.createElement("script");
@@ -472,7 +491,7 @@
       }
     });
 
-    function enhanceDocumentForOCR(canvas, contrastFactor = 3.0, threshold = 127) {
+    function enhanceDocumentForOCR(canvas) {
       if (!cv) return canvas;
 
       try {
@@ -482,23 +501,18 @@
         // Convert to grayscale
         cv.cvtColor(src, processed, cv.COLOR_RGBA2GRAY);
 
-        // Apply Gaussian blur to reduce noise
+        // Apply Gaussian blur to reduce noise (smaller kernel for speed)
         let blurred = new cv.Mat();
         cv.GaussianBlur(processed, blurred, new cv.Size(3, 3), 0);
 
-        // Enhance contrast using CLAHE (Contrast Limited Adaptive Histogram Equalization)
-        let clahe = new cv.CLAHE(contrastFactor, new cv.Size(8, 8));
-        clahe.apply(blurred, processed);
+        // Simple contrast enhancement (faster than CLAHE)
+        blurred.convertTo(processed, -1, 1.0, 0); // contrast = 1.0 as requested
 
-        // Apply bilateral filter to smooth while preserving edges
-        let filtered = new cv.Mat();
-        cv.bilateralFilter(processed, filtered, 9, 75, 75);
-
-        // Apply adaptive thresholding for better text separation
+        // Apply adaptive thresholding with threshold = 120
         let thresholded = new cv.Mat();
-        cv.adaptiveThreshold(filtered, thresholded, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, 11, 2);
+        cv.threshold(processed, thresholded, 120, 255, cv.THRESH_BINARY);
 
-        // Optional: Apply morphological operations to clean up
+        // Minimal morphological operations for speed
         let kernel = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(2, 2));
         let morphed = new cv.Mat();
         cv.morphologyEx(thresholded, morphed, cv.MORPH_CLOSE, kernel);
@@ -511,8 +525,8 @@
         cv.imshow(resultCanvas, result);
 
         // Cleanup
-        src.delete(); processed.delete(); blurred.delete(); filtered.delete();
-        thresholded.delete(); morphed.delete(); result.delete(); kernel.delete(); clahe.delete();
+        src.delete(); processed.delete(); blurred.delete();
+        thresholded.delete(); morphed.delete(); result.delete(); kernel.delete();
 
         return resultCanvas;
       } catch (err) {
@@ -525,20 +539,24 @@
       const t0 = performance.now();
 
       try {
+        updateProcessingStep('step1');
+        
         // Create image from data
         const img = new Image();
         return new Promise((resolve, reject) => {
           img.onload = async () => {
             try {
-              // Use jscanify to extract the document
-              const extractedCanvas = scanner.extractPaper(img, 800, 1200);
-
-              // Get enhancement parameters
-              const contrastFactor = parseFloat(document.getElementById('contrastSlider').value);
-              const threshold = parseInt(document.getElementById('thresholdSlider').value);
+              const t1 = performance.now();
+              updateProcessingStep('step2');
+              
+              // Use jscanify to extract the document with smaller output size for speed
+              const extractedCanvas = scanner.extractPaper(img, 600, 800); // Reduced from 800x1200
+              
+              const t2 = performance.now();
+              updateProcessingStep('step3');
 
               // Enhance the extracted document for OCR
-              const enhancedCanvas = enhanceDocumentForOCR(extractedCanvas, contrastFactor, threshold);
+              const enhancedCanvas = enhanceDocumentForOCR(extractedCanvas);
 
               // Display result
               const outCanvas = document.getElementById("resultCanvas");
@@ -546,11 +564,20 @@
               outCanvas.height = enhancedCanvas.height;
               outCanvas.getContext("2d").drawImage(enhancedCanvas, 0, 0);
 
-              const t1 = performance.now();
-              document.getElementById("perfMetric").textContent = `Processing Time: ${(t1 - t0).toFixed(2)} ms | Contrast: ${contrastFactor} | Threshold: ${threshold}`;
+              const t3 = performance.now();
+              updateProcessingStep('step4');
 
               // Perform OCR
               await performOCR(enhancedCanvas);
+
+              const t4 = performance.now();
+              
+              // Display complete processing time
+              document.getElementById("perfMetric").textContent = 
+                `Total Processing Time: ${(t4 - t0).toFixed(0)} ms | ` +
+                `Extraction: ${(t2 - t1).toFixed(0)} ms | ` +
+                `Enhancement: ${(t3 - t2).toFixed(0)} ms | ` +
+                `OCR: ${(t4 - t3).toFixed(0)} ms`;
 
               resolve();
             } catch (err) {
@@ -571,15 +598,18 @@
       document.getElementById("captureBtn").disabled = true;
 
       try {
-        // Capture current frame
+        // Capture current frame with smaller resolution for speed
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        ctx.drawImage(video, 0, 0);
+        
+        // Reduce capture size for faster processing
+        const scale = Math.min(1280 / video.videoWidth, 720 / video.videoHeight, 1);
+        canvas.width = video.videoWidth * scale;
+        canvas.height = video.videoHeight * scale;
+        
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        // Store the captured image data for reprocessing
-        capturedImageData = canvas.toDataURL();
+        const capturedImageData = canvas.toDataURL('image/jpeg', 0.9); // Use JPEG with compression
 
         await processDocument(capturedImageData);
 
@@ -597,13 +627,21 @@
     }
 
     async function performOCR(canvas) {
-      document.getElementById("ocrResult").textContent = "🔍 Recognizing text...";
       try {
-        const { data: { text } } = await Tesseract.recognize(canvas, 'eng', {
-          logger: m => console.log(m),
-          tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,!?@#$%^&*()_+-=[]{}|;:\'",.<>/? \n',
-          tessedit_pageseg_mode: Tesseract.PSM.AUTO
-        });
+        let result;
+        
+        if (tesseractWorker) {
+          // Use pre-initialized worker for faster OCR
+          result = await tesseractWorker.recognize(canvas);
+        } else {
+          // Fallback to regular Tesseract if worker not available
+          result = await Tesseract.recognize(canvas, 'eng', {
+            logger: m => console.log(m),
+            tessedit_pageseg_mode: Tesseract.PSM.AUTO
+          });
+        }
+        
+        const text = result.data.text;
         document.getElementById("ocrResult").textContent = text.trim() || "No text found.";
       } catch (err) {
         document.getElementById("ocrResult").textContent = "⚠️ OCR failed.";
@@ -615,39 +653,13 @@
       document.getElementById("resultsSection").style.display = "none";
       document.getElementById("ocrResult").textContent = "No text extracted yet.";
       document.getElementById("processingIndicator").style.display = "none";
-      capturedImageData = null;
-    }
-
-    async function reprocessDocument() {
-      if (!capturedImageData) return;
-
-      document.getElementById("processingIndicator").style.display = "block";
-      document.getElementById("reprocessBtn").disabled = true;
-
-      try {
-        await processDocument(capturedImageData);
-      } catch (err) {
-        console.error('Reprocessing error:', err);
-        alert('Failed to reprocess document.');
-      }
-
-      document.getElementById("processingIndicator").style.display = "none";
-      document.getElementById("reprocessBtn").disabled = false;
+      // Clear processing steps
+      document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
     }
 
     // Event listeners
     document.getElementById("captureBtn").addEventListener("click", captureAndProcess);
     document.getElementById("newScanBtn").addEventListener("click", newScan);
-    document.getElementById("reprocessBtn").addEventListener("click", reprocessDocument);
-
-    // Update slider value displays
-    document.getElementById('contrastSlider').addEventListener('input', (e) => {
-      document.getElementById('contrastValue').textContent = e.target.value;
-    });
-
-    document.getElementById('thresholdSlider').addEventListener('input', (e) => {
-      document.getElementById('thresholdValue').textContent = e.target.value;
-    });
 
     // Cleanup on page unload
     window.addEventListener('beforeunload', () => {
@@ -656,6 +668,9 @@
       }
       if (videoStream) {
         videoStream.getTracks().forEach(track => track.stop());
+      }
+      if (tesseractWorker) {
+        tesseractWorker.terminate();
       }
     });
   </script>
