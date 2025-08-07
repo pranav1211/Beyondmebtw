@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mobile Document Scanner</title>
   <style>
     body {
@@ -12,23 +12,14 @@
       margin: 0;
       background: #f5f5f5;
     }
-
     .container {
       max-width: 500px;
       margin: 0 auto;
       background: white;
       border-radius: 10px;
       overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
-
-    .header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-
     .status {
       padding: 15px;
       margin: 15px;
@@ -36,39 +27,33 @@
       font-weight: 500;
       text-align: center;
     }
-
     .status.loading {
       background: #fff3cd;
       border: 1px solid #ffeaa7;
       color: #856404;
     }
-
     .status.ready {
       background: #d1edff;
       border: 1px solid #bee5eb;
       color: #0c5460;
     }
-
     .camera-section {
       padding: 20px;
       text-align: center;
     }
-
     #videoContainer {
       position: relative;
       background: #000;
       border-radius: 12px;
       overflow: hidden;
       margin-bottom: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
-
     #videoElement {
       width: 100%;
       height: auto;
       display: block;
     }
-
     .camera-controls {
       display: flex;
       gap: 15px;
@@ -76,89 +61,57 @@
       flex-wrap: wrap;
       margin-bottom: 20px;
     }
-
     .btn {
-      padding: 12px 24px;
+      padding: 12px 20px;
       border: none;
       border-radius: 25px;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
-
     .btn-primary {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
     }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-
     .btn-success {
       background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
       color: white;
     }
-
-    .btn-success:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-
     .btn-secondary {
       background: #6c757d;
       color: white;
     }
-
-    .btn-secondary:hover {
-      background: #5a6268;
-    }
-
     .btn:disabled {
       background: #ccc;
       cursor: not-allowed;
       transform: none;
       box-shadow: none;
     }
-
     .file-upload {
       margin-top: 20px;
       padding: 20px;
       border-top: 2px dashed #ddd;
     }
-
     .results-section {
       padding: 20px;
       display: none;
     }
-
     .image-container {
       margin-bottom: 20px;
     }
-
     .image-container h3 {
       margin-bottom: 10px;
       color: #333;
     }
-
     .image-container img,
     .image-container canvas {
       width: 100%;
       border: 1px solid #ddd;
       border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
-
-    #perfMetric {
-      font-size: 0.9em;
-      color: #666;
-      margin-top: 10px;
-      text-align: center;
-    }
-
     pre {
       background: #f8f9fa;
       padding: 10px;
@@ -167,31 +120,10 @@
       color: #333;
       font-size: 14px;
     }
-
-    @media (max-width: 480px) {
-      .container {
-        margin: 0;
-        border-radius: 0;
-      }
-
-      .camera-controls {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .btn {
-        width: 200px;
-      }
-    }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <h1>📱 Document Scanner</h1>
-      <p>Capture documents with your camera</p>
-    </div>
-
     <div id="statusMessage" class="status loading">Loading OpenCV... Please wait.</div>
 
     <div class="camera-section" id="cameraSection" style="display:none;">
@@ -200,11 +132,12 @@
       </div>
 
       <div class="camera-controls">
-        <button id="captureBtn" class="btn btn-success" disabled>📸 Capture Document</button>
+        <button id="captureBtn" class="btn btn-success" disabled>📸 Capture</button>
+        <button id="flashToggleBtn" class="btn btn-secondary" disabled>💡 Flash Off</button>
       </div>
 
       <div class="file-upload">
-        <input type="file" id="fileInput" accept="image/*" disabled>
+        <input type="file" id="fileInput" accept="image/*" disabled />
         <p style="margin: 10px 0 0 0; color: #666; font-size: 14px;">Or select an image file</p>
       </div>
     </div>
@@ -212,29 +145,27 @@
     <div class="results-section" id="resultsSection">
       <div class="image-container">
         <h3>📄 Captured Image</h3>
-        <img id="originalImage" alt="Original">
+        <img id="originalImage" alt="Original" />
       </div>
       <div class="image-container">
-        <h3>✨ Detected Document</h3>
+        <h3>✨ Enhanced + Detected Document</h3>
         <canvas id="resultCanvas"></canvas>
         <button id="reprocessBtn" class="btn btn-secondary" disabled>🔄 Reprocess</button>
         <div id="perfMetric"></div>
       </div>
       <div class="image-container">
-        <h3>📝 Extracted Text (OCR)</h3>
+        <h3>📝 OCR Result</h3>
         <pre id="ocrResult">No text extracted yet.</pre>
       </div>
       <div style="text-align: center; margin-top: 20px;">
-        <button id="newScanBtn" class="btn btn-primary">📷 Scan Another Document</button>
+        <button id="newScanBtn" class="btn btn-primary">📷 New Scan</button>
       </div>
     </div>
   </div>
 
   <script>
-    let scanner;
-    let lastImage = null;
-    let videoStream = null;
-    let currentCamera = 'environment';
+    let scanner, lastImage = null, videoStream = null, currentCamera = 'environment';
+    let flashOn = false, imageCapture = null;
 
     function updateStatus(message, ready = false) {
       const el = document.getElementById('statusMessage');
@@ -245,14 +176,14 @@
     async function onOpenCvReady() {
       try {
         window.cv = await window.cv;
-        updateStatus("OpenCV.js is ready. Initializing jscanify...", true);
+        updateStatus("OpenCV ready. Loading scanner...", true);
 
         const script = document.createElement("script");
         script.src = "jscanify.js";
         script.onload = async () => {
           scanner = new jscanify();
           await startCamera();
-          updateStatus("Ready to scan documents!", true);
+          updateStatus("Ready!", true);
           document.getElementById("cameraSection").style.display = "block";
           document.getElementById("fileInput").disabled = false;
           document.getElementById("captureBtn").disabled = false;
@@ -260,79 +191,107 @@
         script.onerror = () => updateStatus("Failed to load jscanify.js");
         document.head.appendChild(script);
       } catch (err) {
-        updateStatus("Failed to initialize OpenCV.js: " + err);
-        console.error(err);
+        updateStatus("OpenCV init failed: " + err);
       }
     }
 
     async function startCamera() {
       try {
-        if (videoStream) {
-          videoStream.getTracks().forEach(track => track.stop());
-        }
+        if (videoStream) videoStream.getTracks().forEach(track => track.stop());
 
         const constraints = {
           video: {
             facingMode: currentCamera,
             width: { ideal: 1280 },
-            height: { ideal: 720 }
+            height: { ideal: 720 },
+            advanced: [{ torch: flashOn }]
           }
         };
 
         videoStream = await navigator.mediaDevices.getUserMedia(constraints);
-        const videoElement = document.getElementById('videoElement');
-        videoElement.srcObject = videoStream;
+        const video = document.getElementById('videoElement');
+        video.srcObject = videoStream;
+
+        const [track] = videoStream.getVideoTracks();
+        imageCapture = new ImageCapture(track);
+        document.getElementById("flashToggleBtn").disabled = false;
       } catch (err) {
-        console.error("Error accessing camera:", err);
-        alert("Could not access camera. Please ensure you've granted permission and try again.");
+        alert("Camera error: " + err);
       }
     }
 
+    document.getElementById("flashToggleBtn").addEventListener("click", async () => {
+      if (!imageCapture || !imageCapture.track.getCapabilities().torch) {
+        alert("Flash not supported on this device.");
+        return;
+      }
+      flashOn = !flashOn;
+      try {
+        await imageCapture.track.applyConstraints({ advanced: [{ torch: flashOn }] });
+        document.getElementById("flashToggleBtn").textContent = flashOn ? "💡 Flash On" : "💡 Flash Off";
+      } catch (err) {
+        console.error("Flash toggle failed:", err);
+      }
+    });
+
     function captureImage() {
-      const video = document.getElementById('videoElement');
-      const canvas = document.createElement('canvas');
+      const video = document.getElementById("videoElement");
+      const canvas = document.createElement("canvas");
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(video, 0, 0);
-
+      canvas.getContext("2d").drawImage(video, 0, 0);
       canvas.toBlob(blob => {
         const img = new Image();
         img.onload = () => {
           lastImage = img;
-          processImage(img, true);
+          processImage(img);
         };
         img.src = URL.createObjectURL(blob);
       });
     }
 
-    function processImage(img, autoTwice = false) {
-      const start = performance.now();
-
+    function processImage(img) {
+      const t0 = performance.now();
       document.getElementById("originalImage").src = img.src;
+
       const canvas = scanner.highlightPaper(img, { color: "lime", thickness: 4 });
+      const contrastCanvas = enhanceContrast(canvas);
 
-      const resultCanvas = document.getElementById("resultCanvas");
-      resultCanvas.width = canvas.width;
-      resultCanvas.height = canvas.height;
-      resultCanvas.getContext("2d").drawImage(canvas, 0, 0);
+      const outCanvas = document.getElementById("resultCanvas");
+      outCanvas.width = contrastCanvas.width;
+      outCanvas.height = contrastCanvas.height;
+      outCanvas.getContext("2d").drawImage(contrastCanvas, 0, 0);
+
       document.getElementById("resultsSection").style.display = "block";
-
-      const end = performance.now();
-      document.getElementById("perfMetric").textContent = `Processing Time: ${(end - start).toFixed(2)} ms`;
-
-      if (autoTwice) {
-        setTimeout(() => processImage(img, false), 200);
-      }
-
       document.getElementById("reprocessBtn").disabled = false;
 
-      performOCR(canvas);
+      const t1 = performance.now();
+      document.getElementById("perfMetric").textContent = `Processing Time: ${(t1 - t0).toFixed(2)} ms`;
+
+      performOCR(outCanvas);
+    }
+
+    function enhanceContrast(canvas) {
+      const src = cv.imread(canvas);
+      let ycrcb = new cv.Mat();
+      cv.cvtColor(src, ycrcb, cv.COLOR_RGBA2YCrCb);
+
+      let channels = new cv.MatVector();
+      cv.split(ycrcb, channels);
+      let clahe = new cv.CLAHE(2.0, new cv.Size(8, 8));
+      clahe.apply(channels.get(0), channels.get(0));
+      cv.merge(channels, ycrcb);
+
+      let dst = new cv.Mat();
+      cv.cvtColor(ycrcb, dst, cv.COLOR_YCrCb2RGBA);
+      cv.imshow(canvas, dst);
+
+      src.delete(); ycrcb.delete(); dst.delete(); channels.delete(); clahe.delete();
+      return canvas;
     }
 
     async function performOCR(canvas) {
-      document.getElementById("ocrResult").textContent = "🔍 Processing OCR...";
+      document.getElementById("ocrResult").textContent = "🔍 Recognizing text...";
       try {
         const { data: { text } } = await Tesseract.recognize(canvas, 'eng', {
           logger: m => console.log(m)
@@ -346,8 +305,8 @@
 
     function newScan() {
       document.getElementById("resultsSection").style.display = "none";
-      document.getElementById("reprocessBtn").disabled = true;
       document.getElementById("ocrResult").textContent = "No text extracted yet.";
+      document.getElementById("reprocessBtn").disabled = true;
       lastImage = null;
     }
 
@@ -356,18 +315,17 @@
       if (lastImage) processImage(lastImage);
     });
     document.getElementById("newScanBtn").addEventListener("click", newScan);
-
-    document.getElementById("fileInput").addEventListener("change", function (event) {
-      const file = event.target.files[0];
+    document.getElementById("fileInput").addEventListener("change", e => {
+      const file = e.target.files[0];
       if (!file || !scanner) return;
       const reader = new FileReader();
-      reader.onload = e => {
+      reader.onload = ev => {
         const img = new Image();
         img.onload = () => {
           lastImage = img;
-          processImage(img, true);
+          processImage(img);
         };
-        img.src = e.target.result;
+        img.src = ev.target.result;
       };
       reader.readAsDataURL(file);
     });
