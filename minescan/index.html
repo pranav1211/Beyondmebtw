@@ -505,8 +505,8 @@
         let blurred = new cv.Mat();
         cv.GaussianBlur(processed, blurred, new cv.Size(3, 3), 0);
 
-        // Simple contrast enhancement (faster than CLAHE)
-        blurred.convertTo(processed, -1, 0.5, 0); // contrast = 1.0 as requested
+        
+        
 
         // Apply adaptive thresholding with threshold = 120
         let thresholded = new cv.Mat();
