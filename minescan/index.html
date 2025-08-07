@@ -501,40 +501,63 @@
         // Convert to grayscale
         cv.cvtColor(src, processed, cv.COLOR_RGBA2GRAY);
 
-        // Apply lighter Gaussian blur to preserve text sharpness
+        // Apply lighter Gaussian blur to reduce noise and small artifacts
         let blurred = new cv.Mat();
-        cv.GaussianBlur(processed, blurred, new cv.Size(3, 3), 0);
+        cv.GaussianBlur(processed, blurred, new cv.Size(5, 5), 0);
 
-        // Enhance contrast using CLAHE with higher contrast for better text separation
+        // Enhance contrast using CLAHE
         let clahe = new cv.CLAHE(contrastFactor, new cv.Size(8, 8));
         clahe.apply(blurred, processed);
 
-        // Skip bilateral filter as it can blur text edges
-        // Apply adaptive thresholding with larger block size for better character separation
+        // Apply adaptive thresholding with larger block size
         let thresholded = new cv.Mat();
         cv.adaptiveThreshold(processed, thresholded, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, 15, 3);
 
-        // Use opening instead of closing to separate merged characters
-        let kernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, new cv.Size(1, 1));
-        let morphed = new cv.Mat();
-        cv.morphologyEx(thresholded, morphed, cv.MORPH_OPEN, kernel);
+        // Remove small noise (black dots) using opening with larger kernel
+        let denoiseKernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, new cv.Size(2, 2));
+        let denoised = new cv.Mat();
+        cv.morphologyEx(thresholded, denoised, cv.MORPH_OPEN, denoiseKernel);
 
-        // Optional: Apply a very light closing to fill small gaps in characters
-        let kernel2 = cv.getStructuringElement(cv.MORPH_ELLIPSE, new cv.Size(1, 1));
+        // Light closing to connect broken character parts without merging characters
+        let connectKernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, new cv.Size(1, 1));
         let final = new cv.Mat();
-        cv.morphologyEx(morphed, final, cv.MORPH_CLOSE, kernel2);
+        cv.morphologyEx(denoised, final, cv.MORPH_CLOSE, connectKernel);
+
+        // Additional noise removal - remove very small connected components (dots)
+        let contours = new cv.MatVector();
+        let hierarchy = new cv.Mat();
+        cv.findContours(final, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+        
+        // Create mask to remove small components
+        let mask = cv.Mat.zeros(final.rows, final.cols, cv.CV_8UC1);
+        mask.setTo(new cv.Scalar(255)); // Start with white background
+        
+        for (let i = 0; i < contours.size(); i++) {
+          let contour = contours.get(i);
+          let area = cv.contourArea(contour);
+          
+          // Remove very small components (likely noise dots)
+          if (area < 20) {
+            cv.drawContours(mask, contours, i, new cv.Scalar(0), -1);
+          }
+        }
+        
+        // Apply mask to remove small dots
+        let cleaned = new cv.Mat();
+        cv.bitwise_and(final, mask, cleaned);
 
         // Convert back to RGBA for display
         let result = new cv.Mat();
-        cv.cvtColor(final, result, cv.COLOR_GRAY2RGBA);
+        cv.cvtColor(cleaned, result, cv.COLOR_GRAY2RGBA);
 
         const resultCanvas = document.createElement('canvas');
         cv.imshow(resultCanvas, result);
 
         // Cleanup
         src.delete(); processed.delete(); blurred.delete();
-        thresholded.delete(); morphed.delete(); final.delete(); result.delete(); 
-        kernel.delete(); kernel2.delete(); clahe.delete();
+        thresholded.delete(); denoised.delete(); final.delete(); cleaned.delete(); result.delete(); 
+        denoiseKernel.delete(); connectKernel.delete(); mask.delete();
+        contours.delete(); hierarchy.delete(); clahe.delete();
 
         return resultCanvas;
       } catch (err) {
