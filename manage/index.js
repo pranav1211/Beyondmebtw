@@ -15,8 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const password = document.getElementById("login-password").value;
         const baseUrl = "https://manage.beyondmebtw.com/loginauth";
-
-        // Changed to POST with JSON body
+        
         fetch(baseUrl, {
             method: 'POST',
             headers: {
@@ -35,8 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 return response.text();
             })
-            .then(() => {
-                // Store authentication state
+            .then(() => {                
                 sessionStorage.setItem("isLoggedIn", "true");
                 sessionStorage.setItem("authKey", password);
 
