@@ -358,7 +358,7 @@ function updateLatestJSONCategories(category, uid, title, thumbnail, subcategory
   const latestPostData = {
     uid: uid,
     name: title, // Using 'name' as that's what's used in the existing structure
-    thumbnail: `https://beyondmebtw.com/assets/images/thumbnails/${thumbnail}`
+    thumbnail: thumbnail
   };
 
   // Handle categories with subcategories
