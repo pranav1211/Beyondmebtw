@@ -339,11 +339,32 @@ function executeScript(callback) {
 function updateLatestJSONCategories(category, uid, title, thumbnail, subcategory) {
   console.log(`Updating latest.json categories for ${category}:`, { uid, title, thumbnail, subcategory });
 
-  // Normalize ALL inputs to lowercase first, then capitalize first letter
-  const normalizedCategory = category.toLowerCase().charAt(0).toUpperCase() + category.toLowerCase().slice(1);
-  const normalizedSubcategory = subcategory ? 
-    subcategory.toLowerCase().charAt(0).toUpperCase() + subcategory.toLowerCase().slice(1) : 
-    null;
+  // Normalize categories with special handling for specific cases
+  const normalizeCategory = (cat) => {
+    const lower = cat.toLowerCase();
+    switch (lower) {
+      case 'f1arti':
+        return 'F1arti'; // Special case: F1arti not F1Arti
+      case 'movietv':
+        return 'Movietv'; // Keep as Movietv
+      case 'experience':
+        return 'Experience';
+      case 'techart':
+        return 'Techart';
+      default:
+        return lower.charAt(0).toUpperCase() + lower.slice(1);
+    }
+  };
+
+  const normalizeSubcategory = (subcat) => {
+    if (!subcat) return null;
+    const lower = subcat.toLowerCase();
+    // Add any special subcategory cases here if needed
+    return lower.charAt(0).toUpperCase() + lower.slice(1);
+  };
+
+  const normalizedCategory = normalizeCategory(category);
+  const normalizedSubcategory = normalizeSubcategory(subcategory);
 
   // Also get lowercase versions for comparison
   const categoryLower = category.toLowerCase();
@@ -367,12 +388,12 @@ function updateLatestJSONCategories(category, uid, title, thumbnail, subcategory
   // Create the post data for latest.json (using 'title' not 'name')
   const latestPostData = {
     uid: uid,
-    title: title, // Changed from 'name' to 'title'
+    title: title, 
     thumbnail: thumbnail
   };
 
   // Handle categories with subcategories (use lowercase for comparison)
-  if (normalizedSubcategory && (categoryLower === 'f1arti' || categoryLower === 'movietv' || categoryLower === 'experience' || categoryLower === 'techart')) {
+  if (normalizedSubcategory && (categoryLower === 'f1arti' || categoryLower === 'movietv'|| categoryLower === 'experience' || categoryLower === 'techart')) {
     // Initialize subcategories structure if it doesn't exist
     if (!jsdata.categories[normalizedCategory].subcategories) {
       jsdata.categories[normalizedCategory].subcategories = {};
