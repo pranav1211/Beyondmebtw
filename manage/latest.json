@@ -83,7 +83,7 @@
     },
     "movietv": {
       "subcategories": {
-        "Movies": {
+        "movies": {
           "mainPost": {
             "uid": "movies_49",
             "name": "Wicked (2024) Movie Review",
