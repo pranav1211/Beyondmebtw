@@ -339,7 +339,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Map category data to display elements
         const categoryMappings = [
             {
-                categoryKey: 'F1arti',
+                categoryKey: 'f1arti',
                 subcategories: [
                     { subcategoryKey: '2025 Season', elementId: 'f1-2025-latest' },
                     { subcategoryKey: 'general', elementId: 'f1-general-latest' }
