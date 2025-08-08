@@ -359,8 +359,17 @@ function updateLatestJSONCategories(category, uid, title, thumbnail, subcategory
   const normalizeSubcategory = (subcat) => {
     if (!subcat) return null;
     const lower = subcat.toLowerCase();
-    // Add any special subcategory cases here if needed
-    return lower.charAt(0).toUpperCase() + lower.slice(1);
+    
+    // Special handling for known subcategories to match existing structure
+    switch (lower) {
+      case '2025 season':
+        return '2025 season'; // Keep exactly as is in existing JSON
+      case 'general':
+        return 'general'; // Keep as lowercase
+      // Add other known subcategories here as needed
+      default:
+        return lower.charAt(0).toUpperCase() + lower.slice(1);
+    }
   };
 
   const normalizedCategory = normalizeCategory(category);
