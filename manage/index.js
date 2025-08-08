@@ -341,7 +341,7 @@ document.addEventListener("DOMContentLoaded", () => {
             {
                 categoryKey: 'f1arti',
                 subcategories: [
-                    { subcategoryKey: '2025', elementId: 'f1-2025-latest' },
+                    { subcategoryKey: '2025 Season', elementId: 'f1-2025-latest' },
                     { subcategoryKey: 'general', elementId: 'f1-general-latest' }
                 ]
             },
