@@ -336,28 +336,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const categories = data.categories;
 
-        // Map category data to display elements
+        // Map category data to display elements - using the exact case from latest.json
         const categoryMappings = [
             {
-                categoryKey: 'F1arti',
+                categoryKey: 'f1arti', // Lowercase to match latest.json
                 subcategories: [
                     { subcategoryKey: '2025 Season', elementId: 'f1-2025-latest' },
                     { subcategoryKey: 'general', elementId: 'f1-general-latest' }
                 ]
             },
             {
-                categoryKey: 'movietv',
+                categoryKey: 'movietv', // Lowercase to match latest.json
                 subcategories: [
                     { subcategoryKey: 'movies', elementId: 'movie-latest' },
                     { subcategoryKey: 'tv', elementId: 'tv-latest' }
                 ]
             },
             {
-                categoryKey: 'experience',
+                categoryKey: 'experience', // Lowercase to match latest.json
                 elementId: 'experience-latest'
             },
             {
-                categoryKey: 'techart',
+                categoryKey: 'techart', // Lowercase to match latest.json
                 elementId: 'tech-latest'
             }
         ];
