@@ -341,7 +341,7 @@ document.addEventListener("DOMContentLoaded", () => {
             {
                 categoryKey: 'f1arti', // Lowercase to match latest.json
                 subcategories: [
-                    { subcategoryKey: '2025 Season', elementId: 'f1-2025-latest' },
+                    { subcategoryKey: '2025 season', elementId: 'f1-2025-latest' },
                     { subcategoryKey: 'general', elementId: 'f1-general-latest' }
                 ]
             },
