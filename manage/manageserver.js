@@ -336,6 +336,64 @@ function executeScript(callback) {
   });
 }
 
+// Add this new function after the existing functions and before the server creation
+
+function updateLatestJSONCategories(category, uid, title, thumbnail, subcategory) {
+  console.log(`Updating latest.json categories for ${category}:`, { uid, title, thumbnail, subcategory });
+
+  // Initialize categories structure if it doesn't exist
+  if (!jsdata.categories) {
+    jsdata.categories = {};
+  }
+
+  // Initialize the category if it doesn't exist
+  if (!jsdata.categories[category]) {
+    jsdata.categories[category] = {
+      mainPost: {},
+      subcategories: {}
+    };
+  }
+
+  // Create the post data for latest.json (only uid, title/name, and image url)
+  const latestPostData = {
+    uid: uid,
+    name: title, // Using 'name' as that's what's used in the existing structure
+    thumbnail: `https://beyondmebtw.com/assets/images/thumbnails/${thumbnail}`
+  };
+
+  // Handle categories with subcategories
+  if (subcategory && (category === 'f1arti' || category === 'movietv')) {
+    // Initialize subcategories structure if it doesn't exist
+    if (!jsdata.categories[category].subcategories) {
+      jsdata.categories[category].subcategories = {};
+    }
+
+    // Initialize the specific subcategory if it doesn't exist
+    if (!jsdata.categories[category].subcategories[subcategory]) {
+      jsdata.categories[category].subcategories[subcategory] = {
+        mainPost: {}
+      };
+    }
+
+    // Update the subcategory's mainPost
+    jsdata.categories[category].subcategories[subcategory].mainPost = {
+      ...jsdata.categories[category].subcategories[subcategory].mainPost,
+      ...latestPostData
+    };
+
+    console.log(`Updated subcategory ${subcategory} in ${category}:`, latestPostData);
+  } else {
+    // Handle categories without subcategories (experience, techart)
+    // Update the main category's mainPost
+    jsdata.categories[category].mainPost = {
+      ...jsdata.categories[category].mainPost,
+      ...latestPostData
+    };
+
+    console.log(`Updated main category ${category}:`, latestPostData);
+  }
+}
+
 const server = http.createServer((request, response) => {
   const url = new URL(request.url, `http://${request.headers.host}`);
   const path = url.pathname;
@@ -450,65 +508,79 @@ const server = http.createServer((request, response) => {
     }
     // Handle blog post additions only
     else if (path === "/blogdata") {
-      if (request.method === "POST") {
-        return getJSONBody(request, (err, body) => {
-          if (err) {
-            console.error("JSON parsing error:", err);
-            response.statusCode = 400;
-            return response.end("Bad JSON");
-          }
+  if (request.method === "POST") {
+    return getJSONBody(request, (err, body) => {
+      if (err) {
+        console.error("JSON parsing error:", err);
+        response.statusCode = 400;
+        return response.end("Bad JSON");
+      }
 
-          const {
-            category,
-            uid,
-            title,
-            date,
-            excerpt,
-            thumbnail,
-            link,
-            subcategory,
-            secondaryCategory,
-            secondarySubcategory,
-            isNewPost,
-            key
-          } = body;
+      const {
+        category,
+        uid,
+        title,
+        date,
+        excerpt,
+        thumbnail,
+        link,
+        subcategory,
+        secondaryCategory,
+        secondarySubcategory,
+        isNewPost,
+        key
+      } = body;
 
-          console.log("Blog data request received:", {
-            category, uid, title, isNewPost,
-            allParams: body
-          });
+      console.log("Blog data request received:", {
+        category, uid, title, isNewPost,
+        allParams: body
+      });
 
-          if (!key || key !== thepasskey) {
-            response.statusCode = 403;
-            response.end("Unauthorized access - Invalid key");
-            return;
-          }
+      if (!key || key !== thepasskey) {
+        response.statusCode = 403;
+        response.end("Unauthorized access - Invalid key");
+        return;
+      }
 
-          if (!category) {
-            response.statusCode = 400;
-            response.end("Missing category parameter");
-            return;
-          }
+      if (!category) {
+        response.statusCode = 400;
+        response.end("Missing category parameter");
+        return;
+      }
 
-          if (!title || !date || !excerpt || !thumbnail || !link) {
-            response.statusCode = 400;
-            response.end("Missing required fields: title, date, excerpt, thumbnail, and link are required");
-            return;
-          }
+      if (!title || !date || !excerpt || !thumbnail || !link) {
+        response.statusCode = 400;
+        response.end("Missing required fields: title, date, excerpt, thumbnail, and link are required");
+        return;
+      }
 
-          loadBlogJSON(category, () => {
-            try {
-              // Always add as new post (simplified logic)
-              addNewBlogPost(category, uid, title, date, excerpt, thumbnail, link, subcategory, secondaryCategory, secondarySubcategory);
+      // Load both blog JSON and main JSON data
+      loadBlogJSON(category, () => {
+        loadJSON(() => {
+          try {
+            // Add the new blog post to category-specific data
+            addNewBlogPost(category, uid, title, date, excerpt, thumbnail, link, subcategory, secondaryCategory, secondarySubcategory);
 
-              writeBlogJSONFile(category, (writeError) => {
-                if (writeError) {
+            // Update latest.json categories section
+            updateLatestJSONCategories(category, uid, title, thumbnail, subcategory);
+
+            // Write both the blog JSON file and the main latest.json file
+            writeBlogJSONFile(category, (blogWriteError) => {
+              if (blogWriteError) {
+                response.statusCode = 500;
+                response.end("Error writing blog data to file");
+                return;
+              }
+
+              // Write the updated latest.json file
+              writeJSONFile((latestWriteError) => {
+                if (latestWriteError) {
                   response.statusCode = 500;
-                  response.end("Error writing blog data to file");
+                  response.end("Error writing latest.json data to file");
                   return;
                 }
 
-                // Run the shell script after writing blog data
+                // Run the shell script after writing both files
                 executeScript((scriptError) => {
                   if (scriptError) {
                     console.error("Script execution failed, but blog data was saved");
@@ -521,22 +593,24 @@ const server = http.createServer((request, response) => {
 
                   response.writeHead(200, { "Content-Type": "text/html" });
                   response.end(
-                    `<html><body><h1>New blog post added successfully.</h1><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>`
+                    `<html><body><h1>New blog post added successfully.</h1><p>Both category JSON and latest.json updated.</p><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>`
                   );
                 });
               });
-            } catch (updateError) {
-              console.error("Error adding blog data:", updateError);
-              response.statusCode = 400;
-              response.end(`Error adding blog data: ${updateError.message}`);
-            }
-          });
+            });
+          } catch (updateError) {
+            console.error("Error adding blog data:", updateError);
+            response.statusCode = 400;
+            response.end(`Error adding blog data: ${updateError.message}`);
+          }
         });
-      } else {
-        response.statusCode = 405;
-        response.end("Method Not Allowed - Use POST");
-      }
-    }
+      });
+    });
+  } else {
+    response.statusCode = 405;
+    response.end("Method Not Allowed - Use POST");
+  }
+}
     else if (path === "/health") {
       // Health check endpoint
       response.writeHead(200, { "Content-Type": "application/json" });
