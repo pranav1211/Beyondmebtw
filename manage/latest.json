@@ -62,10 +62,10 @@
       "emoji": "🎮"
     }
   ],
-  "categories": {
-    "F1arti": {
+ "categories": {
+    "f1arti": {
       "subcategories": {
-        "2025 Season": {
+        "2025 season": {
           "mainPost": {
             "uid": "f12025re_13",
             "title": "The 2025 Belgian GP Recap",
@@ -75,7 +75,7 @@
         "general": {
           "mainPost": {
             "uid": "f1gen_2",
-            "title": "F1 75 Recap — Unveiling the colors of speed",
+            "title": "F1 75 Recap — Unveiling the colors of speed",
             "thumbnail": "https://content.beyondmebtw.com/f1/general/gen2.webp"
           }
         }
