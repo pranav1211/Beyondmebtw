@@ -112,6 +112,18 @@
         "title": "Automating Git Calls with Webhooks",
         "thumbnail": "https://content.beyondmebtw.com/tech/tech1.png"
       }
+    },
+    "F1arti": {
+      "mainPost": {},
+      "subcategories": {
+        "2025 season": {
+          "mainPost": {
+            "uid": "f12025re_14",
+            "title": "The 2025 Hungarian Grand Prix Recap",
+            "thumbnail": "https://content.beyondmebtw.com/f1/2025/14.webp"
+          }
+        }
+      }
     }
   }
 }
