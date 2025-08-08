@@ -7,6 +7,12 @@ Check out the site : www.Beyondmebtw.com
 
 ## Changelog:
 
+### 2.7 (08/08/25)
+- added a latest posts area so for reference
+- setup a domain for the content server, content.beyondmebtw.com for ease
+- have to fix an issue with captilization to ensure no issue during data updation
+- add a function so that the latest posts part in the manage tab also gets updated when a new post is added.
+
 ### 2.6 (29/07/25)
 - Revamped the blog page, now shows all posts
 - removed latest posts grid
