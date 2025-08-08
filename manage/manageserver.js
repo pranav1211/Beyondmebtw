@@ -341,56 +341,58 @@ function executeScript(callback) {
 function updateLatestJSONCategories(category, uid, title, thumbnail, subcategory) {
   console.log(`Updating latest.json categories for ${category}:`, { uid, title, thumbnail, subcategory });
 
+  // Normalize category and subcategory to match latest.json format (first letter capitalized)
+  const normalizedCategory = category.toLowerCase().charAt(0).toUpperCase() + category.toLowerCase().slice(1);
+  const normalizedSubcategory = subcategory ? 
+    subcategory.toLowerCase().charAt(0).toUpperCase() + subcategory.toLowerCase().slice(1) : 
+    null;
+
+  console.log(`Normalized names - Category: ${normalizedCategory}, Subcategory: ${normalizedSubcategory}`);
+
   // Initialize categories structure if it doesn't exist
   if (!jsdata.categories) {
     jsdata.categories = {};
   }
 
-  // Initialize the category if it doesn't exist
-  if (!jsdata.categories[category]) {
-    jsdata.categories[category] = {
+  // Initialize the category if it doesn't exist (using normalized name)
+  if (!jsdata.categories[normalizedCategory]) {
+    jsdata.categories[normalizedCategory] = {
       mainPost: {},
       subcategories: {}
     };
   }
 
-  // Create the post data for latest.json (only uid, title/name, and image url)
+  // Create the post data for latest.json (using 'title' not 'name')
   const latestPostData = {
     uid: uid,
-    name: title, // Using 'name' as that's what's used in the existing structure
+    title: title, // Changed from 'name' to 'title'
     thumbnail: thumbnail
   };
 
   // Handle categories with subcategories
-  if (subcategory && (category === 'f1arti' || category === 'movietv')) {
+  if (normalizedSubcategory && (category.toLowerCase() === 'f1arti' || category.toLowerCase() === 'movietv')) {
     // Initialize subcategories structure if it doesn't exist
-    if (!jsdata.categories[category].subcategories) {
-      jsdata.categories[category].subcategories = {};
+    if (!jsdata.categories[normalizedCategory].subcategories) {
+      jsdata.categories[normalizedCategory].subcategories = {};
     }
 
-    // Initialize the specific subcategory if it doesn't exist
-    if (!jsdata.categories[category].subcategories[subcategory]) {
-      jsdata.categories[category].subcategories[subcategory] = {
+    // Initialize the specific subcategory if it doesn't exist (using normalized name)
+    if (!jsdata.categories[normalizedCategory].subcategories[normalizedSubcategory]) {
+      jsdata.categories[normalizedCategory].subcategories[normalizedSubcategory] = {
         mainPost: {}
       };
     }
 
-    // Update the subcategory's mainPost
-    jsdata.categories[category].subcategories[subcategory].mainPost = {
-      ...jsdata.categories[category].subcategories[subcategory].mainPost,
-      ...latestPostData
-    };
+    // Replace (not merge) the subcategory's mainPost
+    jsdata.categories[normalizedCategory].subcategories[normalizedSubcategory].mainPost = latestPostData;
 
-    console.log(`Updated subcategory ${subcategory} in ${category}:`, latestPostData);
+    console.log(`Replaced subcategory ${normalizedSubcategory} in ${normalizedCategory}:`, latestPostData);
   } else {
     // Handle categories without subcategories (experience, techart)
-    // Update the main category's mainPost
-    jsdata.categories[category].mainPost = {
-      ...jsdata.categories[category].mainPost,
-      ...latestPostData
-    };
+    // Replace (not merge) the main category's mainPost
+    jsdata.categories[normalizedCategory].mainPost = latestPostData;
 
-    console.log(`Updated main category ${category}:`, latestPostData);
+    console.log(`Replaced main category ${normalizedCategory}:`, latestPostData);
   }
 }
 
