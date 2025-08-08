@@ -336,16 +336,18 @@ function executeScript(callback) {
   });
 }
 
-// Add this new function after the existing functions and before the server creation
-
 function updateLatestJSONCategories(category, uid, title, thumbnail, subcategory) {
   console.log(`Updating latest.json categories for ${category}:`, { uid, title, thumbnail, subcategory });
 
-  // Normalize category and subcategory to match latest.json format (first letter capitalized)
+  // Normalize ALL inputs to lowercase first, then capitalize first letter
   const normalizedCategory = category.toLowerCase().charAt(0).toUpperCase() + category.toLowerCase().slice(1);
   const normalizedSubcategory = subcategory ? 
     subcategory.toLowerCase().charAt(0).toUpperCase() + subcategory.toLowerCase().slice(1) : 
     null;
+
+  // Also get lowercase versions for comparison
+  const categoryLower = category.toLowerCase();
+  const subcategoryLower = subcategory ? subcategory.toLowerCase() : null;
 
   console.log(`Normalized names - Category: ${normalizedCategory}, Subcategory: ${normalizedSubcategory}`);
 
@@ -369,8 +371,8 @@ function updateLatestJSONCategories(category, uid, title, thumbnail, subcategory
     thumbnail: thumbnail
   };
 
-  // Handle categories with subcategories
-  if (normalizedSubcategory && (category.toLowerCase() === 'f1arti' || category.toLowerCase() === 'movietv')) {
+  // Handle categories with subcategories (use lowercase for comparison)
+  if (normalizedSubcategory && (categoryLower === 'f1arti' || categoryLower === 'movietv' || categoryLower === 'experience' || categoryLower === 'techart')) {
     // Initialize subcategories structure if it doesn't exist
     if (!jsdata.categories[normalizedCategory].subcategories) {
       jsdata.categories[normalizedCategory].subcategories = {};
