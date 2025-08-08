@@ -388,12 +388,12 @@ function updateLatestJSONCategories(category, uid, title, thumbnail, subcategory
   // Create the post data for latest.json (using 'title' not 'name')
   const latestPostData = {
     uid: uid,
-    title: title, 
+    title: title, // Changed from 'name' to 'title'
     thumbnail: thumbnail
   };
 
   // Handle categories with subcategories (use lowercase for comparison)
-  if (normalizedSubcategory && (categoryLower === 'f1arti' || categoryLower === 'movietv'|| categoryLower === 'experience' || categoryLower === 'techart')) {
+  if (normalizedSubcategory && (categoryLower === 'f1arti' || categoryLower === 'movietv')) {
     // Initialize subcategories structure if it doesn't exist
     if (!jsdata.categories[normalizedCategory].subcategories) {
       jsdata.categories[normalizedCategory].subcategories = {};
@@ -406,13 +406,15 @@ function updateLatestJSONCategories(category, uid, title, thumbnail, subcategory
       };
     }
 
-    // Replace (not merge) the subcategory's mainPost
+    // Completely replace the subcategory's mainPost (clear it first)
+    jsdata.categories[normalizedCategory].subcategories[normalizedSubcategory].mainPost = {};
     jsdata.categories[normalizedCategory].subcategories[normalizedSubcategory].mainPost = latestPostData;
 
     console.log(`Replaced subcategory ${normalizedSubcategory} in ${normalizedCategory}:`, latestPostData);
   } else {
     // Handle categories without subcategories (experience, techart)
-    // Replace (not merge) the main category's mainPost
+    // Completely replace the main category's mainPost (clear it first)
+    jsdata.categories[normalizedCategory].mainPost = {};
     jsdata.categories[normalizedCategory].mainPost = latestPostData;
 
     console.log(`Replaced main category ${normalizedCategory}:`, latestPostData);
