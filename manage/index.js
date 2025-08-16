@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const password = document.getElementById("login-password").value;
         const baseUrl = "https://manage.beyondmebtw.com/loginauth";
-        
+
         fetch(baseUrl, {
             method: 'POST',
             headers: {
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 return response.text();
             })
-            .then(() => {                
+            .then(() => {
                 sessionStorage.setItem("isLoggedIn", "true");
                 sessionStorage.setItem("authKey", password);
 
@@ -47,12 +47,16 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     });
 
+    // unhide after authentication
     function showContentForms() {
         // Hide login form
         loginContainer.style.display = "none";
 
         // Show content forms
         contentContainer.style.display = "block";
+
+        createReusableForms(); // Add this line
+
 
         // Fill all password fields with the authenticated password
         const authKey = sessionStorage.getItem("authKey");
@@ -68,6 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Load latest.json once and use it for both showdata and loadBlogPosts
         loadLatestData();
     }
+
 
     function setupContentForms() {
         const forms = document.querySelectorAll("#content-container form:not(.blog-form)");
@@ -133,6 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // Blog form setup
     function setupBlogForms() {
         const authKey = sessionStorage.getItem("authKey");
 
@@ -163,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Create request body object with only non-empty values
             const requestBody = {};
-            
+
             if (category) requestBody.category = category;
             if (uid) requestBody.uid = uid;
             if (title) requestBody.title = title;
@@ -175,7 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (secondaryCategory) requestBody.secondaryCategory = secondaryCategory;
             if (secondarySubcategory) requestBody.secondarySubcategory = secondarySubcategory;
             if (key) requestBody.key = key;
-            
+
             // Always add the isNewPost parameter
             requestBody.isNewPost = isNewPost;
 
@@ -250,6 +256,91 @@ document.addEventListener("DOMContentLoaded", () => {
             .catch((error) => {
                 console.error('Error loading latest.json:', error);
             });
+    }
+
+    function createReusableForms() {
+        createFeaturedPostsForms();
+        createFeaturedProjectsForms();
+    }
+
+    function createFeaturedPostsForms() {
+        const container = document.getElementById('featured-posts-container');
+        if (!container) return;
+
+        // Clear existing content
+        container.innerHTML = '<h3>Featured Posts</h3>';
+
+        for (let i = 1; i <= 4; i++) {
+            const formHTML = `
+            <form action="/update" method="GET" id="featured${i}" class="reusable-form">
+                <h2>Featured ${i}</h2>
+                <div class="fepost${i - 1}-title disptitle"></div>
+                <img class="fepost${i - 1}-img dispimg"></img>
+                <div class="fepost${i - 1}-date dispdate"></div>
+                <div class="fepost${i - 1}-excerpt dispexcerpt"></div>
+                <div class="fepost${i - 1}-link displink"></div>
+                <input type="hidden" name="instance" value="featured${i}">
+
+                <label for="name-featured${i}">Post Name:</label>
+                <input type="text" id="name-featured${i}" name="name">
+
+                <label for="date-featured${i}">Publish Date:</label>
+                <input type="date" id="date-featured${i}" name="date">
+
+                <label for="excerpt-featured${i}">Excerpt:</label>
+                <input type="text" id="excerpt-featured${i}" name="excerpt">
+
+                <label for="thumbnail-featured${i}">Thumbnail Image name:</label>
+                <input type="text" id="thumbnail-featured${i}" name="thumbnail">
+
+                <label for="link${i}">Post Link:</label>
+                <input type="text" id="link${i}" name="link">
+
+                <label for="key-featured${i}">Password:</label>
+                <input type="password" id="key-featured${i}" name="key" required>
+
+                <button type="submit">Submit</button>
+            </form>
+        `;
+
+            container.insertAdjacentHTML('beforeend', formHTML);
+        }
+    }
+
+    function createFeaturedProjectsForms() {
+        const container = document.getElementById('featured-projects-container');
+        if (!container) return;
+
+        // Clear existing content
+        container.innerHTML = '<h3>Featured Projects</h3>';
+
+        for (let i = 1; i <= 4; i++) {
+            const formHTML = `
+            <form action="/update" method="GET" id="project${i}" class="reusable-form">
+                <h2>Project ${i}</h2>
+                <div class="feproj${i - 1}-title disptitle"></div>
+                <div class="feproj${i - 1}-excerpt dispexcerpt"></div>
+                <div class="feproj${i - 1}-link displink"></div>
+                <input type="hidden" name="instance" value="project${i}">
+
+                <label for="name-project${i}">Project Title:</label>
+                <input type="text" id="name-project${i}" name="name">
+
+                <label for="excerpt-project${i}">Project Description:</label>
+                <input type="text" id="excerpt-project${i}" name="excerpt">
+
+                <label for="link-project${i}">Project Link:</label>
+                <input type="text" id="link-project${i}" name="link">
+
+                <label for="key-project${i}">Password:</label>
+                <input type="password" id="key-project${i}" name="key" required>
+
+                <button type="submit">Submit</button>
+            </form>
+        `;
+
+            container.insertAdjacentHTML('beforeend', formHTML);
+        }
     }
 
     function showMainSiteData(data) {
