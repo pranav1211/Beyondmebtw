@@ -54,6 +54,15 @@ form h2 {
     color: #000000;
 }
 
+form h3 {
+    text-align: center;
+    margin: 20px 0 15px;
+    color: #667eea;
+    font-size: 20px;
+    border-bottom: 2px solid #667eea;
+    padding-bottom: 8px;
+}
+
 label {
     display: block;
     margin-bottom: 8px;
@@ -61,7 +70,7 @@ label {
     color: #333;
 }
 
-input, select {
+input, select, textarea {
     width: 100%;
     padding: 12px;
     margin-bottom: 20px;
@@ -70,9 +79,15 @@ input, select {
     box-sizing: border-box;
     font-size: 14px;
     transition: border-color 0.3s;
+    resize: vertical;
+    font-family: inherit;
 }
 
-input:focus, select:focus {
+textarea {
+    min-height: 80px;
+}
+
+input:focus, select:focus, textarea:focus {
     outline: none;
     border-color: #007BFF;
     box-shadow: 0 0 3px rgba(0, 123, 255, 0.3);
@@ -127,45 +142,89 @@ button[type="button"]:hover {
     transition: opacity 0.5s ease;
 }
 
-/* Display elements styling */
-.dispimg {
-    width: 100%;
-    height: fit-content;
-    margin-bottom: 15px;
+/* Current data display styling */
+.current-data {
+    background: #f8f9fa;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.post-preview, .project-preview {
+    text-align: center;
+}
+
+.post-preview img {
+    max-width: 150px;
+    height: auto;
     border-radius: 5px;
+    margin-bottom: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.disptitle {
-    font-size: 18px;
-    font-weight: 600;
-    margin: 15px 0 10px;
+.post-preview h3, .post-preview h4 {
+    margin: 10px 0;
     color: #333;
-    text-align: center;
-}
-
-.dispdate {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 10px;
-    text-align: center;
-}
-
-.dispexcerpt {
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.4;
+}
+
+.post-preview .date {
+    color: #666;
+    font-size: 12px;
+    margin: 5px 0;
+}
+
+.post-preview .excerpt, .project-preview .excerpt {
     color: #555;
-    margin-bottom: 15px;
+    font-size: 13px;
+    line-height: 1.3;
+    margin: 8px 0;
     text-align: justify;
 }
 
-.displink {
-    font-size: 14px;
+.post-preview a, .project-preview a {
     color: #007BFF;
+    text-decoration: none;
+    font-size: 12px;
+    word-break: break-word;
+}
+
+.post-preview a:hover, .project-preview a:hover {
     text-decoration: underline;
-    display: block;
-    margin-bottom: 15px;
-    word-break: break-all;
+}
+
+.project-preview h4 {
+    margin: 10px 0;
+    color: #333;
+    font-size: 16px;
+}
+
+.no-content {
+    color: #6c757d;
+    font-style: italic;
+    text-align: center;
+    margin: 0;
+}
+
+/* Container sections for featured posts and projects */
+#featured-posts-container, #featured-projects-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+#featured-posts-container h3, #featured-projects-container h3 {
+    width: 100%;
+    text-align: center;
+    margin: 20px 0 15px;
+    color: #667eea;
+    font-size: 22px;
+    border-bottom: 3px solid #667eea;
+    padding-bottom: 10px;
 }
 
 /* Blog form styling - improved layout */
@@ -199,7 +258,8 @@ button[type="button"]:hover {
 }
 
 .blog-form input,
-.blog-form select {
+.blog-form select,
+.blog-form textarea {
     background: rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.5);
     margin-bottom: 12px;
@@ -209,7 +269,8 @@ button[type="button"]:hover {
 }
 
 .blog-form input:focus,
-.blog-form select:focus {
+.blog-form select:focus,
+.blog-form textarea:focus {
     background: white;
     border-color: #e91e63;
     box-shadow: 0 0 5px rgba(233, 30, 99, 0.3);
@@ -452,6 +513,16 @@ button[type="button"]:hover {
     form, .blog-display, .blog-form {
         width: 100%;
         min-width: unset;
+    }
+
+    #featured-posts-container, #featured-projects-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #featured-posts-container form, #featured-projects-container form {
+        width: 100%;
+        max-width: 400px;
     }
 
     .section-header h1 {
