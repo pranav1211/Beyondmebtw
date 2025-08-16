@@ -298,7 +298,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         container.innerHTML = `
             <div class="post-preview">
-                <img src="${mainPost.thumbnail}" alt="${mainPost.title}" style="max-width: 200px; height: auto;">
+                <img src="${mainPost.thumbnail}" alt="${mainPost.title}" onerror="this.style.display='none'">
                 <h3>${mainPost.title}</h3>
                 <p class="date">${formattedDate}</p>
                 <p class="excerpt">${mainPost.excerpt}</p>

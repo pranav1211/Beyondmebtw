@@ -156,8 +156,9 @@ button[type="button"]:hover {
 }
 
 .post-preview img {
-    max-width: 150px;
-    height: auto;
+    width: 150px;
+    height: 100px;
+    object-fit: cover;
     border-radius: 5px;
     margin-bottom: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -500,33 +501,10 @@ button[type="button"]:hover {
     background: #a8a8a8;
 }
 
-@media (max-width: 768px) {
-    .form-container {
-        flex-direction: column;
-    }
-    
+@media (max-width: 1024px) {
     .form-container:has(.blog-form) {
         grid-template-columns: 1fr;
         gap: 20px;
-    }
-    
-    form, .blog-display, .blog-form {
-        width: 100%;
-        min-width: unset;
-    }
-
-    #featured-posts-container, #featured-projects-container {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    #featured-posts-container form, #featured-projects-container form {
-        width: 100%;
-        max-width: 400px;
-    }
-
-    .section-header h1 {
-        font-size: 24px;
     }
     
     .blog-form {
