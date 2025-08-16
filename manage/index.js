@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     });
 
-    // unhide after authentication
+    // Show content forms after authentication
     function showContentForms() {
         // Hide login form
         loginContainer.style.display = "none";
@@ -55,24 +55,13 @@ document.addEventListener("DOMContentLoaded", () => {
         // Show content forms
         contentContainer.style.display = "block";
 
-        createReusableForms(); // Add this line
-
-
-        // Fill all password fields with the authenticated password
-        const authKey = sessionStorage.getItem("authKey");
-        const passwordFields = document.querySelectorAll('input[type="password"][name="key"]');
-        passwordFields.forEach(field => {
-            field.value = authKey;
-        });
-
-        // Set up form submissions for content forms
+        // Set up form submissions
         setupContentForms();
         setupBlogForms();
 
-        // Load latest.json once and use it for both showdata and loadBlogPosts
+        // Load and display data
         loadLatestData();
     }
-
 
     function setupContentForms() {
         const forms = document.querySelectorAll("#content-container form:not(.blog-form)");
@@ -128,7 +117,13 @@ document.addEventListener("DOMContentLoaded", () => {
                         // Reset the form but keep the password filled
                         const authKey = sessionStorage.getItem("authKey");
                         form.reset();
-                        form.querySelector('input[name="key"]').value = authKey;
+                        const passwordField = form.querySelector('input[name="key"]');
+                        if (passwordField) {
+                            passwordField.value = authKey;
+                        }
+
+                        // Reload data to show updates
+                        loadLatestData();
                     })
                     .catch((error) => {
                         alert(`Error: ${error.message}`);
@@ -146,8 +141,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const blogForm = document.getElementById("blog-form");
         const clearBlogFormBtn = document.getElementById("clear-blog-form");
 
+        if (!blogForm || !clearBlogFormBtn) return;
+
         // Fill blog password fields
-        document.getElementById("blog-key").value = authKey;
+        const blogKeyField = document.getElementById("blog-key");
+        if (blogKeyField) {
+            blogKeyField.value = authKey;
+        }
 
         // Blog form submission
         blogForm.addEventListener("submit", (event) => {
@@ -231,13 +231,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
         function clearBlogForm() {
             blogForm.reset();
-            document.getElementById("blog-key").value = authKey;
-            document.getElementById("blog-form-title").textContent = "Add New Blog Post";
-            document.getElementById("is-new-post").checked = true; // Default to checked
+            if (blogKeyField) {
+                blogKeyField.value = authKey;
+            }
+            const titleElement = document.getElementById("blog-form-title");
+            if (titleElement) {
+                titleElement.textContent = "Add New Blog Post";
+            }
+            const newPostCheckbox = document.getElementById("is-new-post");
+            if (newPostCheckbox) {
+                newPostCheckbox.checked = true;
+            }
         }
     }
 
-    // Combined function to load latest.json once and handle both showdata and loadBlogPosts
+    // Combined function to load latest.json once and handle both data display and blog posts
     function loadLatestData() {
         fetch('latest.json')
             .then((response) => {
@@ -273,6 +281,32 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    function displayCurrentData(data) {
+        // Display Latest Post
+        displayLatestPost(data.mainPost);
+    }
+
+    function displayLatestPost(mainPost) {
+        const container = document.getElementById('latest-display');
+        if (!container || !mainPost) return;
+
+        const formattedDate = new Date(mainPost.date).toLocaleDateString('en-US', {
+            month: 'short',
+            day: '2-digit',
+            year: 'numeric'
+        });
+
+        container.innerHTML = `
+            <div class="post-preview">
+                <img src="${mainPost.thumbnail}" alt="${mainPost.title}" style="max-width: 200px; height: auto;">
+                <h3>${mainPost.title}</h3>
+                <p class="date">${formattedDate}</p>
+                <p class="excerpt">${mainPost.excerpt}</p>
+                <a href="${mainPost.link}" target="_blank">View Post</a>
+            </div>
+        `;
+    }
+
     function createFeaturedPostsForms(featuredPosts = []) {
         const container = document.getElementById('featured-posts-container');
         if (!container) return;
@@ -288,44 +322,44 @@ document.addEventListener("DOMContentLoaded", () => {
             }) : '';
 
             const formHTML = `
-            <form id="featured${i + 1}" class="content-form">
-                <h2>Featured Post ${i + 1}</h2>
-                
-                <div class="current-data">
-                    ${post.title ? `
-                        <div class="post-preview">
-                            <img src="${post.thumbnail}" alt="${post.title}" style="max-width: 150px; height: auto;">
-                            <h4>${post.title}</h4>
-                            <p class="date">${formattedDate}</p>
-                            <p class="excerpt">${post.excerpt}</p>
-                            <a href="${post.link}" target="_blank">View Post</a>
-                        </div>
-                    ` : '<p>No post assigned</p>'}
-                </div>
-                
-                <input type="hidden" name="instance" value="featured${i + 1}">
-                
-                <label for="name-featured${i + 1}">Post Name:</label>
-                <input type="text" id="name-featured${i + 1}" name="name">
-                
-                <label for="date-featured${i + 1}">Publish Date:</label>
-                <input type="date" id="date-featured${i + 1}" name="date">
-                
-                <label for="excerpt-featured${i + 1}">Excerpt:</label>
-                <textarea id="excerpt-featured${i + 1}" name="excerpt" rows="3"></textarea>
-                
-                <label for="thumbnail-featured${i + 1}">Thumbnail URL:</label>
-                <input type="text" id="thumbnail-featured${i + 1}" name="thumbnail">
-                
-                <label for="link-featured${i + 1}">Post Link:</label>
-                <input type="text" id="link-featured${i + 1}" name="link">
-                
-                <label for="key-featured${i + 1}">Password:</label>
-                <input type="password" id="key-featured${i + 1}" name="key" required>
-                
-                <button type="submit">Update Featured Post ${i + 1}</button>
-            </form>
-        `;
+                <form id="featured${i + 1}" class="content-form">
+                    <h2>Featured Post ${i + 1}</h2>
+                    
+                    <div class="current-data">
+                        ${post.title ? `
+                            <div class="post-preview">
+                                <img src="${post.thumbnail}" alt="${post.title}" onerror="this.style.display='none'">
+                                <h4>${post.title}</h4>
+                                <p class="date">${formattedDate}</p>
+                                <p class="excerpt">${post.excerpt}</p>
+                                <a href="${post.link}" target="_blank">View Post</a>
+                            </div>
+                        ` : '<p class="no-content">No post assigned</p>'}
+                    </div>
+                    
+                    <input type="hidden" name="instance" value="featured${i + 1}">
+                    
+                    <label for="name-featured${i + 1}">Post Name:</label>
+                    <input type="text" id="name-featured${i + 1}" name="name">
+                    
+                    <label for="date-featured${i + 1}">Publish Date:</label>
+                    <input type="date" id="date-featured${i + 1}" name="date">
+                    
+                    <label for="excerpt-featured${i + 1}">Excerpt:</label>
+                    <textarea id="excerpt-featured${i + 1}" name="excerpt" rows="3"></textarea>
+                    
+                    <label for="thumbnail-featured${i + 1}">Thumbnail URL:</label>
+                    <input type="text" id="thumbnail-featured${i + 1}" name="thumbnail">
+                    
+                    <label for="link-featured${i + 1}">Post Link:</label>
+                    <input type="text" id="link-featured${i + 1}" name="link">
+                    
+                    <label for="key-featured${i + 1}">Password:</label>
+                    <input type="password" id="key-featured${i + 1}" name="key" required>
+                    
+                    <button type="submit">Update Featured Post ${i + 1}</button>
+                </form>
+            `;
 
             container.insertAdjacentHTML('beforeend', formHTML);
         }
@@ -341,73 +375,40 @@ document.addEventListener("DOMContentLoaded", () => {
             const project = projects[i] || {};
 
             const formHTML = `
-            <form id="project${i + 1}" class="content-form">
-                <h2>Featured Project ${i + 1}</h2>
-                
-                <div class="current-data">
-                    ${project.title ? `
-                        <div class="project-preview">
-                            <h4>${project.emoji || '📁'} ${project.title}</h4>
-                            <p class="excerpt">${project.excerpt}</p>
-                            <a href="${project.link}" target="_blank">View Project</a>
-                        </div>
-                    ` : '<p>No project assigned</p>'}
-                </div>
-                
-                <input type="hidden" name="instance" value="project${i + 1}">
-                
-                <label for="name-project${i + 1}">Project Title:</label>
-                <input type="text" id="name-project${i + 1}" name="name">
-                
-                <label for="excerpt-project${i + 1}">Project Description:</label>
-                <textarea id="excerpt-project${i + 1}" name="excerpt" rows="3"></textarea>
-                
-                <label for="link-project${i + 1}">Project Link:</label>
-                <input type="text" id="link-project${i + 1}" name="link">
-                
-                <label for="key-project${i + 1}">Password:</label>
-                <input type="password" id="key-project${i + 1}" name="key" required>
-                
-                <button type="submit">Update Project ${i + 1}</button>
-            </form>
-        `;
+                <form id="project${i + 1}" class="content-form">
+                    <h2>Featured Project ${i + 1}</h2>
+                    
+                    <div class="current-data">
+                        ${project.title ? `
+                            <div class="project-preview">
+                                <h4>${project.emoji || '📁'} ${project.title}</h4>
+                                <p class="excerpt">${project.excerpt}</p>
+                                <a href="${project.link}" target="_blank">View Project</a>
+                            </div>
+                        ` : '<p class="no-content">No project assigned</p>'}
+                    </div>
+                    
+                    <input type="hidden" name="instance" value="project${i + 1}">
+                    
+                    <label for="name-project${i + 1}">Project Title:</label>
+                    <input type="text" id="name-project${i + 1}" name="name">
+                    
+                    <label for="excerpt-project${i + 1}">Project Description:</label>
+                    <textarea id="excerpt-project${i + 1}" name="excerpt" rows="3"></textarea>
+                    
+                    <label for="link-project${i + 1}">Project Link:</label>
+                    <input type="text" id="link-project${i + 1}" name="link">
+                    
+                    <label for="key-project${i + 1}">Password:</label>
+                    <input type="password" id="key-project${i + 1}" name="key" required>
+                    
+                    <button type="submit">Update Project ${i + 1}</button>
+                </form>
+            `;
 
             container.insertAdjacentHTML('beforeend', formHTML);
         }
     }
-
-    function displayLatestPost(mainPost) {
-        const container = document.getElementById('latest-display');
-        if (!container || !mainPost) return;
-
-        const formattedDate = new Date(mainPost.date).toLocaleDateString('en-US', {
-            month: 'short',
-            day: '2-digit',
-            year: 'numeric'
-        });
-
-        container.innerHTML = `
-        <div class="post-preview">
-            <img src="${mainPost.thumbnail}" alt="${mainPost.title}" style="max-width: 200px; height: auto;">
-            <h3>${mainPost.title}</h3>
-            <p class="date">${formattedDate}</p>
-            <p class="excerpt">${mainPost.excerpt}</p>
-            <a href="${mainPost.link}" target="_blank">View Post</a>
-        </div>
-    `;
-    }
-
-    function displayCurrentData(data) {
-        // Display Latest Post
-        displayLatestPost(data.mainPost);
-
-        // Display Featured Posts
-        displayFeaturedPosts(data.featured);
-
-        // Display Featured Projects
-        displayFeaturedProjects(data.projects);
-    }
-
 
     function loadBlogPostsFromData(data) {
         // Check if categories data exists
