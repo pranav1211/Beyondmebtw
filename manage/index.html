@@ -23,21 +23,50 @@
     <!-- Content Forms-->
     <div id="content-container" class="content-container" style="display:none;">
 
-        <!-- Main Section -->
+        <!-- Replace the entire Main Section with this -->
         <div class="section-header">
             <h1>Main Section</h1>
         </div>
 
-
         <div class="form-container">
+            <!-- Latest Post Form -->
+            <form id="latest" class="content-form">
+                <h2>Latest Post</h2>
+                <div id="latest-display" class="current-data">
+                    <!-- Current data will be displayed here -->
+                </div>
+
+                <input type="hidden" name="instance" value="latest">
+
+                <label for="name-latest">Post Name:</label>
+                <input type="text" id="name-latest" name="name">
+
+                <label for="date-latest">Publish Date:</label>
+                <input type="date" id="date-latest" name="date">
+
+                <label for="excerpt-latest">Excerpt:</label>
+                <textarea id="excerpt-latest" name="excerpt" rows="3"></textarea>
+
+                <label for="thumbnail-latest">Thumbnail URL:</label>
+                <input type="text" id="thumbnail-latest" name="thumbnail">
+
+                <label for="link-latest">Post Link:</label>
+                <input type="text" id="link-latest" name="link">
+
+                <label for="key-latest">Password:</label>
+                <input type="password" id="key-latest" name="key" required>
+
+                <button type="submit">Update Latest Post</button>
+            </form>
+
             <!-- Featured Posts Container -->
             <div id="featured-posts-container">
-                <h3>Featured Posts</h3>
+                <!-- Featured posts forms will be generated here -->
             </div>
 
             <!-- Featured Projects Container -->
             <div id="featured-projects-container">
-                <h3>Featured Projects</h3>
+                <!-- Featured projects forms will be generated here -->
             </div>
         </div>
 

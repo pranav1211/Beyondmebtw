@@ -247,59 +247,83 @@ document.addEventListener("DOMContentLoaded", () => {
                 return response.json();
             })
             .then((data) => {
-                // Handle main site data (original showdata functionality)
-                showMainSiteData(data);
+                // Display current data and create forms with that data
+                displayCurrentData(data);
+                createFeaturedPostsForms(data.featured);
+                createFeaturedProjectsForms(data.projects);
 
-                // Handle blog posts data (loadBlogPosts functionality)
+                // Handle blog posts data
                 loadBlogPostsFromData(data);
+
+                // Fill password fields after forms are created
+                fillPasswordFields();
             })
             .catch((error) => {
                 console.error('Error loading latest.json:', error);
             });
     }
 
-    function createReusableForms() {
-        createFeaturedPostsForms();
-        createFeaturedProjectsForms();
+    function fillPasswordFields() {
+        const authKey = sessionStorage.getItem("authKey");
+        if (authKey) {
+            const passwordFields = document.querySelectorAll('input[type="password"][name="key"]');
+            passwordFields.forEach(field => {
+                field.value = authKey;
+            });
+        }
     }
 
-    function createFeaturedPostsForms() {
+    function createFeaturedPostsForms(featuredPosts = []) {
         const container = document.getElementById('featured-posts-container');
         if (!container) return;
 
-        // Clear existing content
         container.innerHTML = '<h3>Featured Posts</h3>';
 
-        for (let i = 1; i <= 4; i++) {
+        for (let i = 0; i < 4; i++) {
+            const post = featuredPosts[i] || {};
+            const formattedDate = post.date ? new Date(post.date).toLocaleDateString('en-US', {
+                month: 'short',
+                day: '2-digit',
+                year: 'numeric'
+            }) : '';
+
             const formHTML = `
-            <form action="/update" method="GET" id="featured${i}" class="reusable-form">
-                <h2>Featured ${i}</h2>
-                <div class="fepost${i - 1}-title disptitle"></div>
-                <img class="fepost${i - 1}-img dispimg"></img>
-                <div class="fepost${i - 1}-date dispdate"></div>
-                <div class="fepost${i - 1}-excerpt dispexcerpt"></div>
-                <div class="fepost${i - 1}-link displink"></div>
-                <input type="hidden" name="instance" value="featured${i}">
-
-                <label for="name-featured${i}">Post Name:</label>
-                <input type="text" id="name-featured${i}" name="name">
-
-                <label for="date-featured${i}">Publish Date:</label>
-                <input type="date" id="date-featured${i}" name="date">
-
-                <label for="excerpt-featured${i}">Excerpt:</label>
-                <input type="text" id="excerpt-featured${i}" name="excerpt">
-
-                <label for="thumbnail-featured${i}">Thumbnail Image name:</label>
-                <input type="text" id="thumbnail-featured${i}" name="thumbnail">
-
-                <label for="link${i}">Post Link:</label>
-                <input type="text" id="link${i}" name="link">
-
-                <label for="key-featured${i}">Password:</label>
-                <input type="password" id="key-featured${i}" name="key" required>
-
-                <button type="submit">Submit</button>
+            <form id="featured${i + 1}" class="content-form">
+                <h2>Featured Post ${i + 1}</h2>
+                
+                <div class="current-data">
+                    ${post.title ? `
+                        <div class="post-preview">
+                            <img src="${post.thumbnail}" alt="${post.title}" style="max-width: 150px; height: auto;">
+                            <h4>${post.title}</h4>
+                            <p class="date">${formattedDate}</p>
+                            <p class="excerpt">${post.excerpt}</p>
+                            <a href="${post.link}" target="_blank">View Post</a>
+                        </div>
+                    ` : '<p>No post assigned</p>'}
+                </div>
+                
+                <input type="hidden" name="instance" value="featured${i + 1}">
+                
+                <label for="name-featured${i + 1}">Post Name:</label>
+                <input type="text" id="name-featured${i + 1}" name="name">
+                
+                <label for="date-featured${i + 1}">Publish Date:</label>
+                <input type="date" id="date-featured${i + 1}" name="date">
+                
+                <label for="excerpt-featured${i + 1}">Excerpt:</label>
+                <textarea id="excerpt-featured${i + 1}" name="excerpt" rows="3"></textarea>
+                
+                <label for="thumbnail-featured${i + 1}">Thumbnail URL:</label>
+                <input type="text" id="thumbnail-featured${i + 1}" name="thumbnail">
+                
+                <label for="link-featured${i + 1}">Post Link:</label>
+                <input type="text" id="link-featured${i + 1}" name="link">
+                
+                <label for="key-featured${i + 1}">Password:</label>
+                <input type="password" id="key-featured${i + 1}" name="key" required>
+                
+                <button type="submit">Update Featured Post ${i + 1}</button>
             </form>
         `;
 
@@ -307,35 +331,44 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function createFeaturedProjectsForms() {
+    function createFeaturedProjectsForms(projects = []) {
         const container = document.getElementById('featured-projects-container');
         if (!container) return;
 
-        // Clear existing content
         container.innerHTML = '<h3>Featured Projects</h3>';
 
-        for (let i = 1; i <= 4; i++) {
+        for (let i = 0; i < 4; i++) {
+            const project = projects[i] || {};
+
             const formHTML = `
-            <form action="/update" method="GET" id="project${i}" class="reusable-form">
-                <h2>Project ${i}</h2>
-                <div class="feproj${i - 1}-title disptitle"></div>
-                <div class="feproj${i - 1}-excerpt dispexcerpt"></div>
-                <div class="feproj${i - 1}-link displink"></div>
-                <input type="hidden" name="instance" value="project${i}">
-
-                <label for="name-project${i}">Project Title:</label>
-                <input type="text" id="name-project${i}" name="name">
-
-                <label for="excerpt-project${i}">Project Description:</label>
-                <input type="text" id="excerpt-project${i}" name="excerpt">
-
-                <label for="link-project${i}">Project Link:</label>
-                <input type="text" id="link-project${i}" name="link">
-
-                <label for="key-project${i}">Password:</label>
-                <input type="password" id="key-project${i}" name="key" required>
-
-                <button type="submit">Submit</button>
+            <form id="project${i + 1}" class="content-form">
+                <h2>Featured Project ${i + 1}</h2>
+                
+                <div class="current-data">
+                    ${project.title ? `
+                        <div class="project-preview">
+                            <h4>${project.emoji || '📁'} ${project.title}</h4>
+                            <p class="excerpt">${project.excerpt}</p>
+                            <a href="${project.link}" target="_blank">View Project</a>
+                        </div>
+                    ` : '<p>No project assigned</p>'}
+                </div>
+                
+                <input type="hidden" name="instance" value="project${i + 1}">
+                
+                <label for="name-project${i + 1}">Project Title:</label>
+                <input type="text" id="name-project${i + 1}" name="name">
+                
+                <label for="excerpt-project${i + 1}">Project Description:</label>
+                <textarea id="excerpt-project${i + 1}" name="excerpt" rows="3"></textarea>
+                
+                <label for="link-project${i + 1}">Project Link:</label>
+                <input type="text" id="link-project${i + 1}" name="link">
+                
+                <label for="key-project${i + 1}">Password:</label>
+                <input type="password" id="key-project${i + 1}" name="key" required>
+                
+                <button type="submit">Update Project ${i + 1}</button>
             </form>
         `;
 
@@ -343,80 +376,38 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function showMainSiteData(data) {
-        // Main Post
-        const mainPost = data.mainPost;
-        const mainTitle = mainPost.title;
-        const mainDate = mainPost.date;
-        const dateObject = new Date(mainDate);
-        const formattedDate = new Intl.DateTimeFormat('en-US', {
+    function displayLatestPost(mainPost) {
+        const container = document.getElementById('latest-display');
+        if (!container || !mainPost) return;
+
+        const formattedDate = new Date(mainPost.date).toLocaleDateString('en-US', {
             month: 'short',
             day: '2-digit',
-            year: 'numeric',
-        }).format(dateObject);
+            year: 'numeric'
+        });
 
-        const mainExcerpt = mainPost.excerpt;
-        const mainThumbnail = mainPost.thumbnail;
-        const mainLink = mainPost.link;
-
-        // Only update if elements exist (in case this is called on a different page)
-        const latestTitle = document.querySelector('.latest-title');
-        const latestDate = document.querySelector('.latest-date');
-        const latestExcerpt = document.querySelector('.latest-excerpt');
-        const latestImg = document.querySelector('.latest-img');
-        const latestLink = document.querySelector('.latest-link');
-
-        if (latestTitle) latestTitle.innerText = mainTitle;
-        if (latestDate) latestDate.innerText = formattedDate;
-        if (latestExcerpt) latestExcerpt.innerText = mainExcerpt;
-        if (latestImg) latestImg.src = mainThumbnail;
-        if (latestLink) latestLink.innerText = mainLink;
-
-        // Featured Posts
-        const featuredPosts = data.featured;
-        for (let i = 0; i < 4; i++) {
-            const divid = `fepost${i}`;
-            const post = featuredPosts[i];
-
-            const titleEl = document.querySelector(`.${divid}-title`);
-            const dateEl = document.querySelector(`.${divid}-date`);
-            const excerptEl = document.querySelector(`.${divid}-excerpt`);
-            const imgEl = document.querySelector(`.${divid}-img`);
-            const linkEl = document.querySelector(`.${divid}-link`);
-
-            if (titleEl) titleEl.innerText = post.title;
-
-            if (dateEl) {
-                const FeatDate = post.date;
-                const dateObject = new Date(FeatDate);
-                const formattedDateFeat = new Intl.DateTimeFormat('en-US', {
-                    month: 'short',
-                    day: '2-digit',
-                    year: 'numeric',
-                }).format(dateObject);
-                dateEl.innerText = formattedDateFeat;
-            }
-
-            if (excerptEl) excerptEl.innerText = post.excerpt;
-            if (imgEl) imgEl.src = `https://beyondmebtw.com/assets/images/thumbnails/${post.thumbnail}`;
-            if (linkEl) linkEl.innerHTML = post.link;
-        }
-
-        // Featured Projects
-        const featuredProjects = data.projects;
-        for (let i = 0; i < 4; i++) {
-            const divid = `feproj${i}`;
-            const project = featuredProjects[i];
-
-            const titleEl = document.querySelector(`.${divid}-title`);
-            const excerptEl = document.querySelector(`.${divid}-excerpt`);
-            const linkEl = document.querySelector(`.${divid}-link`);
-
-            if (titleEl) titleEl.innerText = project.title;
-            if (excerptEl) excerptEl.innerText = project.excerpt;
-            if (linkEl) linkEl.innerHTML = project.link;
-        }
+        container.innerHTML = `
+        <div class="post-preview">
+            <img src="${mainPost.thumbnail}" alt="${mainPost.title}" style="max-width: 200px; height: auto;">
+            <h3>${mainPost.title}</h3>
+            <p class="date">${formattedDate}</p>
+            <p class="excerpt">${mainPost.excerpt}</p>
+            <a href="${mainPost.link}" target="_blank">View Post</a>
+        </div>
+    `;
     }
+
+    function displayCurrentData(data) {
+        // Display Latest Post
+        displayLatestPost(data.mainPost);
+
+        // Display Featured Posts
+        displayFeaturedPosts(data.featured);
+
+        // Display Featured Projects
+        displayFeaturedProjects(data.projects);
+    }
+
 
     function loadBlogPostsFromData(data) {
         // Check if categories data exists
