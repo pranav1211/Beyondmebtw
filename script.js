@@ -82,7 +82,7 @@ function createFeaturedPost(post, index) {
     const postElement = document.createElement('div');
     postElement.className = 'featured-post';
     postElement.innerHTML = `
-        <img src="https://beyondmebtw.com/assets/images/thumbnails/${post.thumbnail}" alt="Featured post" class="featured-post-img">
+        <img src="post.thumbnail" alt="Featured post" class="featured-post-img">
         <div class="featured-post-details">
             <h3 class="featured-post-title">${post.title}</h3>
             <p class="featured-post-date">${formattedDate}</p>
