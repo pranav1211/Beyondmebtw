@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Posts</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="index.js" defer></script>
+</head>
+
+<body>
+    <!-- Login Form -->
+    <div id="login-container" class="login-container">
+        <form id="login-form" class="login-form">
+            <h2>Admin Login</h2>
+            <label for="login-password">Password:</label>
+            <input type="password" id="login-password" name="key" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <!-- Content Forms-->
+    <div id="content-container" class="content-container" style="display:none;">
+        <div class="main-section-container">
+            <!-- Latest Post Form -->
+            <form id="latest" class="content-form">
+                <h2>Latest Post</h2>
+                <div id="latest-display" class="current-data">
+                    <!-- Current data will be displayed here -->
+                </div>
+
+                <input type="hidden" name="instance" value="latest">
+
+                <label for="name-latest">Post Name:</label>
+                <input type="text" id="name-latest" name="name">
+
+                <label for="date-latest">Publish Date:</label>
+                <input type="date" id="date-latest" name="date">
+
+                <label for="excerpt-latest">Excerpt:</label>
+                <textarea id="excerpt-latest" name="excerpt" rows="3"></textarea>
+
+                <label for="thumbnail-latest">Thumbnail URL:</label>
+                <input type="text" id="thumbnail-latest" name="thumbnail">
+
+                <label for="link-latest">Post Link:</label>
+                <input type="text" id="link-latest" name="link">
+
+                <label for="key-latest">Password:</label>
+                <input type="password" id="key-latest" name="key" required>
+
+                <button type="submit">Update Latest Post</button>
+            </form>
+
+            <!-- Featured Posts Container -->
+            <div id="featured-posts-container">
+                <!-- Featured posts forms will be generated here -->
+            </div>
+        </div>
+
+        <!-- Blog Section -->
+        <div class="section-header">
+            <h1>Blog Section</h1>
+        </div>
+
+        <div class="form-container">
+            <!-- Blog Post Add Form -->
+            <form id="blog-form" class="blog-form">
+                <h2 id="blog-form-title">Add New Blog Post</h2>
+
+                <label for="blog-category">Category:</label>
+                <select id="blog-category" name="category" required>
+                    <option value="">Select Category</option>
+                    <option value="f1arti">F1 Articles</option>
+                    <option value="movietv">Movie/TV</option>
+                    <option value="experience">Experience</option>
+                    <option value="techart">Tech Articles</option>
+                </select>
+
+                <label for="blog-uid">UID:</label>
+                <input type="text" id="blog-uid" name="uid" placeholder="e.g., tech_001" required>
+
+                <label for="blog-title">Title:</label>
+                <input type="text" id="blog-title" name="title" required>
+
+                <label for="blog-date">Date:</label>
+                <input type="date" id="blog-date" name="date" required>
+
+                <label for="blog-excerpt">Excerpt:</label>
+                <input type="text" id="blog-excerpt" name="excerpt" required>
+
+                <label for="blog-thumbnail">Thumbnail URL:</label>
+                <input type="text" id="blog-thumbnail" name="thumbnail" required>
+
+                <label for="blog-link">Link:</label>
+                <input type="text" id="blog-link" name="link" required>
+
+                <label for="blog-subcategory">Subcategory (Optional):</label>
+                <input type="text" id="blog-subcategory" name="subcategory">
+
+                <label for="blog-secondary-category">Secondary Category (Optional):</label>
+                <input type="text" id="blog-secondary-category" name="secondaryCategory">
+
+                <label for="blog-secondary-subcategory">Secondary Subcategory (Optional):</label>
+                <input type="text" id="blog-secondary-subcategory" name="secondarySubcategory">
+
+                <div class="form-actions">
+                    <label>
+                        <input type="checkbox" id="is-new-post" name="isNewPost" checked>
+                        <span>✓ ADD AS NEW POST</span>
+                    </label>
+                    <div style="font-size: 12px; margin-top: 5px; opacity: 0.9;">
+                        This form only adds new blog posts. Make sure all required fields are filled.
+                    </div>
+                </div>
+
+                <label for="blog-key">Password:</label>
+                <input type="password" id="blog-key" name="key" required>
+
+                <button type="submit">Add New Post</button>
+                <button type="button" id="clear-blog-form">Clear Form</button>
+            </form>
+
+            <!-- Blog Display Section -->
+            <div class="blog-display">
+                <h2>Latest Posts by Category</h2>
+
+                <!-- F1 Articles Section -->
+                <div class="category-section">
+                    <div class="category-title">F1 Articles</div>
+
+                    <div class="subcategory-section">
+                        <div class="subcategory-title">2025 Season</div>
+                        <div id="f1-2025-latest" class="no-posts">Loading...</div>
+                    </div>
+
+                    <div class="subcategory-section">
+                        <div class="subcategory-title">General</div>
+                        <div id="f1-general-latest" class="no-posts">Loading...</div>
+                    </div>
+                </div>
+
+                <!-- Movie/TV Section -->
+                <div class="category-section">
+                    <div class="category-title">Movie/TV</div>
+
+                    <div class="subcategory-section">
+                        <div class="subcategory-title">Movies</div>
+                        <div id="movie-latest" class="no-posts">Loading...</div>
+                    </div>
+
+                    <div class="subcategory-section">
+                        <div class="subcategory-title">TV</div>
+                        <div id="tv-latest" class="no-posts">Loading...</div>
+                    </div>
+                </div>
+
+                <!-- Experience Section -->
+                <div class="category-section">
+                    <div class="category-title">Experience</div>
+                    <div id="experience-latest" class="no-posts">Loading...</div>
+                </div>
+
+                <!-- Tech Articles Section -->
+                <div class="category-section">
+                    <div class="category-title">Tech Articles</div>
+                    <div id="tech-latest" class="no-posts">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,23 +1,25 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Login form handling
-    const loginForm = document.getElementById("login-form");
-    const loginContainer = document.getElementById("login-container");
-    const contentContainer = document.getElementById("content-container");
+    // Get current page info
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 
-    // Check if user is already logged in    
-    const isLoggedIn = true;
-    // const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
-    if (isLoggedIn) {
-        showContentForms();
+    // Universal authentication check
+    function checkAuthentication() {        
+        const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
+
+        // If not on index page and not authenticated, redirect to index
+        if (currentPage !== 'index.html' && !isLoggedIn) {
+            window.location.href = 'index.html';
+            return false;
+        }
+
+        return isLoggedIn;
     }
 
-    loginForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-
-        const password = document.getElementById("login-password").value;
+    // Universal login function
+    function handleLogin(password) {
         const baseUrl = "https://manage.beyondmebtw.com/loginauth";
 
-        fetch(baseUrl, {
+        return fetch(baseUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -38,25 +40,97 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(() => {
                 sessionStorage.setItem("isLoggedIn", "true");
                 sessionStorage.setItem("authKey", password);
-
-                // Show content forms
-                showContentForms();
-            })
-            .catch((error) => {
-                alert(`Error: ${error.message}`);
-                console.error(error);
+                return true;
             });
-    });
+    }
 
-    // Show content forms after authentication
-    function showContentForms() {
-        // Hide login form
-        loginContainer.style.display = "none";
+    // Initialize based on current page
+    if (currentPage === 'index.html') {
+        initializeIndexPage();
+    } else if (currentPage === 'manage.html') {
+        if (checkAuthentication()) {
+            initializeManagePage();
+        }
+    } else if (currentPage === 'minis.html') {
+        if (checkAuthentication()) {
+            initializeMinisPage();
+        }
+    } else if (currentPage === 'posts.html') {
+        if (checkAuthentication()) {
+            initializePostsPage();
+        }
+    }
 
-        // Show content forms
-        contentContainer.style.display = "block";
+    // INDEX PAGE INITIALIZATION
+    function initializeIndexPage() {
+        const loginForm = document.getElementById("login-form");
+        const loginContainer = document.getElementById("login-container");
+        const navContainer = document.getElementById("nav-container");
+        const errorMessage = document.getElementById("error-message");
 
-        // Set up form submissions
+        // Check if user is already logged in
+        const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
+        if (isLoggedIn) {
+            showNavigation();
+        }
+
+        if (loginForm) {
+            loginForm.addEventListener("submit", (event) => {
+                event.preventDefault();
+
+                const password = document.getElementById("login-password").value;
+                const loginBtn = loginForm.querySelector('.login-btn');
+                const originalText = loginBtn.textContent;
+
+                loginBtn.textContent = 'Authenticating...';
+                loginBtn.disabled = true;
+
+                handleLogin(password)
+                    .then(() => {
+                        if (errorMessage) errorMessage.style.display = 'none';
+                        showNavigation();
+                    })
+                    .catch((error) => {
+                        if (errorMessage) {
+                            errorMessage.textContent = error.message;
+                            errorMessage.style.display = 'block';
+                        }
+                        console.error(error);
+                    })
+                    .finally(() => {
+                        loginBtn.textContent = originalText;
+                        loginBtn.disabled = false;
+                    });
+            });
+        }
+
+        function showNavigation() {
+            if (loginContainer) loginContainer.style.display = "none";
+            if (navContainer) navContainer.style.display = "flex";
+        }
+
+        // Add click handlers for navigation buttons
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if (sessionStorage.getItem("isLoggedIn") !== "true") {
+                    e.preventDefault();
+                    alert("Please log in first.");
+                    location.reload();
+                }
+            });
+        });
+    }
+
+    // MANAGE PAGE INITIALIZATION (your existing code)
+    function initializeManagePage() {
+        const loginContainer = document.getElementById("login-container");
+        const contentContainer = document.getElementById("content-container");
+
+        // Skip login form, go straight to content
+        if (loginContainer) loginContainer.style.display = "none";
+        if (contentContainer) contentContainer.style.display = "block";
+
+        // Set up forms
         setupContentForms();
         setupBlogForms();
 
@@ -64,11 +138,25 @@ document.addEventListener("DOMContentLoaded", () => {
         loadLatestData();
     }
 
+    // MINIS PAGE INITIALIZATION
+    function initializeMinisPage() {
+        // Add your minis page specific code here
+        console.log('Minis page initialized');
+        // You can add minis-specific functionality here
+    }
+
+    // POSTS PAGE INITIALIZATION
+    function initializePostsPage() {
+        // Add your posts page specific code here
+        console.log('Posts page initialized');
+        // You can add posts-specific functionality here
+    }
+
+    // EXISTING MANAGE PAGE FUNCTIONS (keeping your original code)
     function setupContentForms() {
         const forms = document.querySelectorAll("#content-container form:not(.blog-form)");
 
         forms.forEach(form => {
-            // Skip blog forms
             if (form.classList.contains('blog-form') || form.id === 'blog-form') {
                 return;
             }
@@ -80,7 +168,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 const formDataObject = {};
                 const formId = form.id;
 
-                // Convert FormData to regular object
                 formData.forEach((value, key) => {
                     const trimmedValue = value.trim();
                     if (trimmedValue !== "") {
@@ -88,14 +175,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 });
 
-                // Add form ID if it exists
                 if (formId) {
                     formDataObject.formid = formId;
                 }
 
                 const baseUrl = "https://manage.beyondmebtw.com/latestdata";
 
-                // Changed to POST with JSON body
                 fetch(baseUrl, {
                     method: 'POST',
                     headers: {
@@ -115,7 +200,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     .then(() => {
                         alert("Data updated successfully!");
 
-                        // Reset the form but keep the password filled
                         const authKey = sessionStorage.getItem("authKey");
                         form.reset();
                         const passwordField = form.querySelector('input[name="key"]');
@@ -123,7 +207,6 @@ document.addEventListener("DOMContentLoaded", () => {
                             passwordField.value = authKey;
                         }
 
-                        // Reload data to show updates
                         loadLatestData();
                     })
                     .catch((error) => {
@@ -134,27 +217,21 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Blog form setup
     function setupBlogForms() {
         const authKey = sessionStorage.getItem("authKey");
-
-        // Blog form elements
         const blogForm = document.getElementById("blog-form");
         const clearBlogFormBtn = document.getElementById("clear-blog-form");
 
         if (!blogForm || !clearBlogFormBtn) return;
 
-        // Fill blog password fields
         const blogKeyField = document.getElementById("blog-key");
         if (blogKeyField) {
             blogKeyField.value = authKey;
         }
 
-        // Blog form submission
         blogForm.addEventListener("submit", (event) => {
             event.preventDefault();
 
-            // Get all form field values manually to ensure we capture everything correctly
             const category = document.getElementById("blog-category").value.trim();
             const uid = document.getElementById("blog-uid").value.trim();
             const title = document.getElementById("blog-title").value.trim();
@@ -168,7 +245,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const key = document.getElementById("blog-key").value.trim();
             const isNewPost = document.getElementById("is-new-post").checked;
 
-            // Create request body object with only non-empty values
             const requestBody = {};
 
             if (category) requestBody.category = category;
@@ -183,18 +259,10 @@ document.addEventListener("DOMContentLoaded", () => {
             if (secondarySubcategory) requestBody.secondarySubcategory = secondarySubcategory;
             if (key) requestBody.key = key;
 
-            // Always add the isNewPost parameter
             requestBody.isNewPost = isNewPost;
 
             const baseUrl = "https://manage.beyondmebtw.com/blogdata";
 
-            console.log("Is New Post (checkbox checked):", isNewPost);
-            console.log("All form values:", {
-                category, uid, title, date, excerpt, thumbnail, link,
-                subcategory, secondaryCategory, secondarySubcategory, isNewPost
-            });
-
-            // Changed to POST with JSON body
             fetch(baseUrl, {
                 method: 'POST',
                 headers: {
@@ -214,11 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 .then(() => {
                     const isNewPost = document.getElementById("is-new-post").checked;
                     alert(`Blog post ${isNewPost ? 'added' : 'updated'} successfully!`);
-
-                    // Reset the form but keep the password filled
                     clearBlogForm();
-
-                    // Reload latest data to show the updated data
                     loadLatestData();
                 })
                 .catch((error) => {
@@ -227,7 +291,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
         });
 
-        // Clear blog form button
         clearBlogFormBtn.addEventListener("click", clearBlogForm);
 
         function clearBlogForm() {
@@ -246,7 +309,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Combined function to load latest.json once and handle both data display and blog posts
     function loadLatestData() {
         fetch('latest.json')
             .then((response) => {
@@ -256,14 +318,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 return response.json();
             })
             .then((data) => {
-                // Display current data and create forms with that data
                 displayCurrentData(data);
                 createFeaturedPostsForms(data.featured);
-
-                // Handle blog posts data
                 loadBlogPostsFromData(data);
-
-                // Fill password fields after forms are created
                 fillPasswordFields();
             })
             .catch((error) => {
@@ -282,7 +339,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function displayCurrentData(data) {
-        // Display Latest Post
         displayLatestPost(data.mainPost);
     }
 
@@ -311,7 +367,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const container = document.getElementById('featured-posts-container');
         if (!container) return;
 
-        container.innerHTML = '<h3>Featured Posts</h3>';
+        container.innerHTML = '';
 
         for (let i = 0; i < 4; i++) {
             const post = featuredPosts[i] || {};
@@ -366,7 +422,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function loadBlogPostsFromData(data) {
-        // Check if categories data exists
         if (!data.categories) {
             console.error('No categories data found in latest.json');
             return;
@@ -374,28 +429,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const categories = data.categories;
 
-        // Map category data to display elements - using the exact case from latest.json
         const categoryMappings = [
             {
-                categoryKey: 'f1arti', // Lowercase to match latest.json
+                categoryKey: 'f1arti',
                 subcategories: [
                     { subcategoryKey: '2025 season', elementId: 'f1-2025-latest' },
                     { subcategoryKey: 'general', elementId: 'f1-general-latest' }
                 ]
             },
             {
-                categoryKey: 'movietv', // Lowercase to match latest.json
+                categoryKey: 'movietv',
                 subcategories: [
                     { subcategoryKey: 'movies', elementId: 'movie-latest' },
                     { subcategoryKey: 'tv', elementId: 'tv-latest' }
                 ]
             },
             {
-                categoryKey: 'experience', // Lowercase to match latest.json
+                categoryKey: 'experience',
                 elementId: 'experience-latest'
             },
             {
-                categoryKey: 'techart', // Lowercase to match latest.json
+                categoryKey: 'techart',
                 elementId: 'tech-latest'
             }
         ];
@@ -409,14 +463,12 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             if (mapping.subcategories) {
-                // Handle categories with subcategories
                 mapping.subcategories.forEach(subcategory => {
                     const subcategoryData = categoryData.subcategories && categoryData.subcategories[subcategory.subcategoryKey];
                     const latestPost = subcategoryData ? subcategoryData.mainPost : null;
                     displayPost(subcategory.elementId, latestPost);
                 });
             } else {
-                // Handle categories without subcategories (direct mainPost)
                 const latestPost = categoryData.mainPost;
                 displayPost(mapping.elementId, latestPost);
             }
@@ -444,6 +496,8 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
     }
 
-    // Load data initially when the page loads (for non-authenticated users)
-    loadLatestData();
+    // Load data initially when the page loads (for index page without auth)
+    if (currentPage === 'index.html') {
+        loadLatestData();
+    }
 });
