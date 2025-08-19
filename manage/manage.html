@@ -10,18 +10,8 @@
 </head>
 
 <body>
-    <!-- Login Form -->
-    <div id="login-container" class="login-container">
-        <form id="login-form" class="login-form">
-            <h2>Admin Login</h2>
-            <label for="login-password">Password:</label>
-            <input type="password" id="login-password" name="key" required>
-            <button type="submit">Login</button>
-        </form>
-    </div>
-
-    <!-- Content Forms-->
-    <div id="content-container" class="content-container" style="display:none;">
+    <!-- Content Forms (no login form needed) -->
+    <div id="content-container" class="content-container">
         <div class="main-section-container">
             <!-- Latest Post Form -->
             <form id="latest" class="content-form">
@@ -169,6 +159,12 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Loading/Auth Check Message -->
+    <div id="auth-loading" style="display: none; text-align: center; padding: 50px;">
+        <h2>Checking authentication...</h2>
+        <p>Redirecting if not authenticated...</p>
     </div>
 </body>
 

@@ -1,17 +1,32 @@
 document.addEventListener("DOMContentLoaded", () => {
     // Get current page info
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-
+    
     // Universal authentication check
-    function checkAuthentication() {        
+    function checkAuthentication() {
         const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
-
+        
         // If not on index page and not authenticated, redirect to index
         if (currentPage !== 'index.html' && !isLoggedIn) {
-            window.location.href = 'index.html';
+            // Show loading message briefly before redirect
+            const authLoading = document.getElementById("auth-loading");
+            if (authLoading) {
+                authLoading.style.display = "block";
+            }
+            
+            // Hide content containers while redirecting
+            const contentContainer = document.getElementById("content-container");
+            if (contentContainer) {
+                contentContainer.style.display = "none";
+            }
+            
+            // Redirect after a brief delay
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
             return false;
         }
-
+        
         return isLoggedIn;
     }
 
@@ -28,20 +43,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 key: password
             })
         })
-            .then((response) => {
-                if (!response.ok) {
-                    if (response.status === 403) {
-                        throw new Error("Authentication failed. Incorrect password.");
-                    }
-                    throw new Error(`Server responded with status: ${response.status}`);
+        .then((response) => {
+            if (!response.ok) {
+                if (response.status === 403) {
+                    throw new Error("Authentication failed. Incorrect password.");
                 }
-                return response.text();
-            })
-            .then(() => {
-                sessionStorage.setItem("isLoggedIn", "true");
-                sessionStorage.setItem("authKey", password);
-                return true;
-            });
+                throw new Error(`Server responded with status: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(() => {
+            sessionStorage.setItem("isLoggedIn", "true");
+            sessionStorage.setItem("authKey", password);
+            return true;
+        });
     }
 
     // Initialize based on current page
@@ -77,11 +92,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (loginForm) {
             loginForm.addEventListener("submit", (event) => {
                 event.preventDefault();
-
+                
                 const password = document.getElementById("login-password").value;
                 const loginBtn = loginForm.querySelector('.login-btn');
                 const originalText = loginBtn.textContent;
-
+                
                 loginBtn.textContent = 'Authenticating...';
                 loginBtn.disabled = true;
 
@@ -123,11 +138,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // MANAGE PAGE INITIALIZATION (your existing code)
     function initializeManagePage() {
-        const loginContainer = document.getElementById("login-container");
         const contentContainer = document.getElementById("content-container");
+        const authLoading = document.getElementById("auth-loading");
 
-        // Skip login form, go straight to content
-        if (loginContainer) loginContainer.style.display = "none";
+        // Hide loading message and show content
+        if (authLoading) authLoading.style.display = "none";
         if (contentContainer) contentContainer.style.display = "block";
 
         // Set up forms
@@ -140,14 +155,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // MINIS PAGE INITIALIZATION
     function initializeMinisPage() {
-        // Add your minis page specific code here
+        // Hide auth loading if present
+        const authLoading = document.getElementById("auth-loading");
+        if (authLoading) authLoading.style.display = "none";
+        
+        // Show content if there's a content container
+        const contentContainer = document.getElementById("content-container");
+        if (contentContainer) contentContainer.style.display = "block";
+        
         console.log('Minis page initialized');
         // You can add minis-specific functionality here
     }
 
     // POSTS PAGE INITIALIZATION
     function initializePostsPage() {
-        // Add your posts page specific code here
+        // Hide auth loading if present
+        const authLoading = document.getElementById("auth-loading");
+        if (authLoading) authLoading.style.display = "none";
+        
+        // Show content if there's a content container
+        const contentContainer = document.getElementById("content-container");
+        if (contentContainer) contentContainer.style.display = "block";
+        
         console.log('Posts page initialized');
         // You can add posts-specific functionality here
     }
@@ -188,31 +217,31 @@ document.addEventListener("DOMContentLoaded", () => {
                     },
                     body: JSON.stringify(formDataObject)
                 })
-                    .then((response) => {
-                        if (!response.ok) {
-                            if (response.status === 403) {
-                                throw new Error("Authentication failed. Check your API key.");
-                            }
-                            throw new Error(`Server responded with status: ${response.status}`);
+                .then((response) => {
+                    if (!response.ok) {
+                        if (response.status === 403) {
+                            throw new Error("Authentication failed. Check your API key.");
                         }
-                        return response.text();
-                    })
-                    .then(() => {
-                        alert("Data updated successfully!");
+                        throw new Error(`Server responded with status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(() => {
+                    alert("Data updated successfully!");
 
-                        const authKey = sessionStorage.getItem("authKey");
-                        form.reset();
-                        const passwordField = form.querySelector('input[name="key"]');
-                        if (passwordField) {
-                            passwordField.value = authKey;
-                        }
+                    const authKey = sessionStorage.getItem("authKey");
+                    form.reset();
+                    const passwordField = form.querySelector('input[name="key"]');
+                    if (passwordField) {
+                        passwordField.value = authKey;
+                    }
 
-                        loadLatestData();
-                    })
-                    .catch((error) => {
-                        alert(`Error: ${error.message}`);
-                        console.error(error);
-                    });
+                    loadLatestData();
+                })
+                .catch((error) => {
+                    alert(`Error: ${error.message}`);
+                    console.error(error);
+                });
             });
         });
     }
@@ -270,25 +299,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 },
                 body: JSON.stringify(requestBody)
             })
-                .then((response) => {
-                    if (!response.ok) {
-                        if (response.status === 403) {
-                            throw new Error("Authentication failed. Check your password.");
-                        }
-                        throw new Error(`Server responded with status: ${response.status}`);
+            .then((response) => {
+                if (!response.ok) {
+                    if (response.status === 403) {
+                        throw new Error("Authentication failed. Check your password.");
                     }
-                    return response.text();
-                })
-                .then(() => {
-                    const isNewPost = document.getElementById("is-new-post").checked;
-                    alert(`Blog post ${isNewPost ? 'added' : 'updated'} successfully!`);
-                    clearBlogForm();
-                    loadLatestData();
-                })
-                .catch((error) => {
-                    alert(`Error: ${error.message}`);
-                    console.error(error);
-                });
+                    throw new Error(`Server responded with status: ${response.status}`);
+                }
+                return response.text();
+            })
+            .then(() => {
+                const isNewPost = document.getElementById("is-new-post").checked;
+                alert(`Blog post ${isNewPost ? 'added' : 'updated'} successfully!`);
+                clearBlogForm();
+                loadLatestData();
+            })
+            .catch((error) => {
+                alert(`Error: ${error.message}`);
+                console.error(error);
+            });
         });
 
         clearBlogFormBtn.addEventListener("click", clearBlogForm);
