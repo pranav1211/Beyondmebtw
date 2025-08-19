@@ -258,7 +258,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Display current data and create forms with that data
                 displayCurrentData(data);
                 createFeaturedPostsForms(data.featured);
-                createFeaturedProjectsForms(data.projects);
 
                 // Handle blog posts data
                 loadBlogPostsFromData(data);
@@ -358,51 +357,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     <input type="password" id="key-featured${i + 1}" name="key" required>
                     
                     <button type="submit">Update Featured Post ${i + 1}</button>
-                </form>
-            `;
-
-            container.insertAdjacentHTML('beforeend', formHTML);
-        }
-    }
-
-    function createFeaturedProjectsForms(projects = []) {
-        const container = document.getElementById('featured-projects-container');
-        if (!container) return;
-
-        container.innerHTML = '<h3>Featured Projects</h3>';
-
-        for (let i = 0; i < 4; i++) {
-            const project = projects[i] || {};
-
-            const formHTML = `
-                <form id="project${i + 1}" class="content-form">
-                    <h2>Featured Project ${i + 1}</h2>
-                    
-                    <div class="current-data">
-                        ${project.title ? `
-                            <div class="project-preview">
-                                <h4>${project.emoji || '📁'} ${project.title}</h4>
-                                <p class="excerpt">${project.excerpt}</p>
-                                <a href="${project.link}" target="_blank">View Project</a>
-                            </div>
-                        ` : '<p class="no-content">No project assigned</p>'}
-                    </div>
-                    
-                    <input type="hidden" name="instance" value="project${i + 1}">
-                    
-                    <label for="name-project${i + 1}">Project Title:</label>
-                    <input type="text" id="name-project${i + 1}" name="name">
-                    
-                    <label for="excerpt-project${i + 1}">Project Description:</label>
-                    <textarea id="excerpt-project${i + 1}" name="excerpt" rows="3"></textarea>
-                    
-                    <label for="link-project${i + 1}">Project Link:</label>
-                    <input type="text" id="link-project${i + 1}" name="link">
-                    
-                    <label for="key-project${i + 1}">Password:</label>
-                    <input type="password" id="key-project${i + 1}" name="key" required>
-                    
-                    <button type="submit">Update Project ${i + 1}</button>
                 </form>
             `;
 
