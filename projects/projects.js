@@ -3,14 +3,14 @@ import projectsData from './project-data.js';
 
 // Define category colors map
 const categoryColors = {
-  'Web Development': '#4285F4',  // Google Blue
-  'Mobile App': '#EA4335',       // Google Red
-  'Machine Learning': '#34A853', // Google Green
-  'Game Development': '#FBBC05', // Google Yellow
-  'IoT': '#9C27B0',              // Purple
-  'Backend': '#FF9800',          // Orange
-  'Design': '#E91E63',           // Pink
-  'Other': '#607D8B'             // Blue Grey
+  'Web Development': '#4285F4',
+  'Mobile App': '#EA4335',
+  'Machine Learning': '#34A853',
+  'Game Development': '#FBBC05',
+  'IoT': '#9C27B0',
+  'Backend': '#FF9800',
+  'Design': '#E91E63',
+  'Other': '#607D8B'
 };
 
 // Initialize Vue application
@@ -36,9 +36,17 @@ new Vue({
             if (!this.isExpandedView) {
                 this.isExpandedView = true;
             }
-            
+
             // Select the project
             this.selectedProject = projectId;
+
+            // Scroll to the top of the projects container
+            this.$nextTick(() => {
+                const container = this.$el.querySelector('.projects-container');
+                if (container) {
+                    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
         },
         closeExpandedView() {
             this.isExpandedView = false;
@@ -54,17 +62,16 @@ new Vue({
         nextImage(event) {
             if (event) event.stopPropagation();
             if (!this.selectedProjectData) return;
-            
+
             this.currentImageIndex = (this.currentImageIndex + 1) % this.selectedProjectData.images.length;
         },
         prevImage(event) {
             if (event) event.stopPropagation();
             if (!this.selectedProjectData) return;
-            
+
             this.currentImageIndex = (this.currentImageIndex - 1 + this.selectedProjectData.images.length) % this.selectedProjectData.images.length;
         },
         handleViewerBackgroundClick(event) {
-            // Only close if clicking directly on the background, not on content
             if (event.target.classList.contains('image-viewer')) {
                 this.closeImageViewer();
             }
@@ -83,7 +90,6 @@ new Vue({
         // Set active state for projects link
         projLink.style.backgroundColor = '#F4F2EF';
 
-        // Add click event listeners
         homeLink.addEventListener('click', () => {
             window.location = "https://beyondmebtw.com";
         });
