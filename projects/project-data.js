@@ -88,7 +88,7 @@ const projectsData = [
     shortDescription: "A haptic feedback experience for F1 fans",
     fullDescription: "• A digital recreation of the F1 haptic trailer, optimized for Android devices. \n • Features immersive haptic feedback synchronized with video content. \n • Developed using web technologies to ensure broad compatibility.",
     logo: "https://beyondmebtw.com/assets/images/favicon.ico",
-    images: ["/assets/images/projects/f1haptic.webp"],
+    images: ["/assets/images/projects/haptic.webp"],
     link: "https://beyondmebtw.com/projects/f1hapticandroid",
     githubLink: "https://github.com/pranav1211/F1-Haptic-Trailer",
     category: "Web Development",

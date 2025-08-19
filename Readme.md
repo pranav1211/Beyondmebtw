@@ -7,6 +7,10 @@ Check out the site : www.Beyondmebtw.com
 
 ## Changelog:
 
+### 2.8 (19/08/25)
+- added a feature in projects page where it scrolls to the top when view details are clicked on smaller devices
+- new project was added (haptic trailer : android recreation)
+
 ### 2.7 (08/08/25)
 - added a latest posts area so for reference
 - setup a domain for the content server, content.beyondmebtw.com for ease
