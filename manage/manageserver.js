@@ -45,11 +45,11 @@ const blogUrls = {
 // Helper function to parse JSON from request body
 function getJSONBody(request, callback) {
   let body = "";
-  
+
   request.on("data", (chunk) => {
     body += chunk.toString();
   });
-  
+
   request.on("end", () => {
     try {
       const jsonData = JSON.parse(body);
@@ -58,7 +58,7 @@ function getJSONBody(request, callback) {
       callback(error, null);
     }
   });
-  
+
   request.on("error", (error) => {
     callback(error, null);
   });
@@ -67,16 +67,16 @@ function getJSONBody(request, callback) {
 // Function to load existing local data first
 function loadExistingData() {
   const jsonPath = path.join(__dirname, "latest.json");
-  
+
   try {
     if (fs.existsSync(jsonPath)) {
       const existingData = JSON.parse(fs.readFileSync(jsonPath, "utf8"));
-      
+
       // Preserve existing data structure, especially categories (removed projects)
       jsdata.mainPost = existingData.mainPost || {};
       jsdata.featured = existingData.featured || Array(4).fill(null).map(() => ({}));
       jsdata.categories = existingData.categories || {}; // Preserve categories
-      
+
       console.log("Existing local data loaded successfully");
     }
   } catch (error) {
@@ -88,7 +88,7 @@ function loadExistingData() {
 function loadJSON(callback) {
   // First load existing local data to preserve categories
   loadExistingData();
-  
+
   const request = https.get("https://beyondmebtw.com/manage/latest.json", (res) => {
     let data = "";
 
@@ -318,12 +318,12 @@ function updateLatestJSONCategories(category, uid, title, thumbnail, subcategory
 
   // Keep category names exactly as they are sent from the form (lowercase)
   const categoryKey = category.toLowerCase();
-  
+
   // Normalize subcategory to match existing JSON structure
   const normalizeSubcategory = (subcat) => {
     if (!subcat) return null;
     const lower = subcat.toLowerCase();
-    
+
     // Special handling for known subcategories to match existing structure
     switch (lower) {
       case '2025 season':
@@ -412,20 +412,20 @@ const server = http.createServer((request, response) => {
     if (path === "/loginauth") {
       if (request.method === "POST") {
         return getJSONBody(request, (err, body) => {
-          if (err) { 
+          if (err) {
             console.error("JSON parsing error:", err);
-            response.statusCode = 400; 
-            return response.end("Bad JSON"); 
+            response.statusCode = 400;
+            return response.end("Bad JSON");
           }
 
           const key = body.key;
-          if (!key) { 
-            response.statusCode = 400; 
-            return response.end("Missing key"); 
+          if (!key) {
+            response.statusCode = 400;
+            return response.end("Missing key");
           }
-          if (key !== thepasskey) { 
-            response.statusCode = 403; 
-            return response.end("Invalid key"); 
+          if (key !== thepasskey) {
+            response.statusCode = 403;
+            return response.end("Invalid key");
           }
 
           response.writeHead(200, { "Content-Type": "application/json" });
@@ -608,11 +608,6 @@ const server = http.createServer((request, response) => {
         response.statusCode = 405;
         response.end("Method Not Allowed - Use POST");
       }
-    }
-    else if (path === "/health") {
-      // Health check endpoint
-      response.writeHead(200, { "Content-Type": "application/json" });
-      response.end(JSON.stringify({ status: "OK", timestamp: new Date().toISOString() }));
     }
     else {
       response.statusCode = 404;
