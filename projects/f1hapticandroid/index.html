@@ -429,23 +429,23 @@
 
     // Define vibration events (time in seconds)
     const vibrationEvents = [
-      { time: 6.8, duration: 100 },
-      { time: 8.0, duration: 100 },
-      { time: 12.8, duration: 1900 },
-      { time: 16.7, duration: 100 },
-      { time: 17.9, duration: 100 },
-      { time: 18.7, duration: 1300 },
-      { time: 21.9, duration: 3700 },
-      { time: 34.6, pattern: [200, 200, 200, 200, 200, 200, 200, 300, 200, 100, 200] },
+      { time: 6.8, duration: 100 },   // SEATBELT
+      { time: 8.0, duration: 100 },   // wheel
+      { time: 12.8, duration: 1900 }, // startup
+      { time: 16.7, duration: 100 },  // clutch
+      { time: 17.9, duration: 100 },  // gear
+      { time: 18.7, duration: 1300 }, // rollout
+      { time: 21.9, duration: 3700 }, // tv cam
+      { time: 34.6, pattern: [200, 200, 200, 200, 200, 200, 200, 300, 200, 100, 200] }, // pitstop
       { time: 48.1, pattern: [100, 100, 200] },
-      { time: 75.3, pattern: [100, 100, 2200] },
-      { time: 81.3, pattern: [300, 200, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100] },
-      { time: 89.0, pattern: [100, 100, 100] },
-      { time: 91.8, duration: 400 },
-      { time: 96.5, duration: 2700 },
-      { time: 105.2, pattern: [2900, 100, 2300] },
-      { time: 110.7, pattern: [100, 300, 100, 100, 100, 100, 5400] },
-      { time: 117.0, pattern: [100, 300, 100, 100, 3600] }
+      { time: 75.3, pattern: [100, 100, 2200] }, // chase
+      { time: 81.3, pattern: [300, 200, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100] }, // crash & gravel
+      { time: 89.0, pattern: [100, 100, 100] }, // jump crash
+      { time: 91.8, duration: 500 }, // vegas
+      { time: 96.5, duration: 2700 }, // monza
+      { time: 105.2, pattern: [2900, 50, 2350] }, // finale part 1
+      { time: 110.7, pattern: [100, 300, 100, 100, 100, 50, 5450] }, // finale part 2
+      { time: 117.0, pattern: [100, 300, 100, 0, 3600] } // backfire
     ];
 
     // Precompute event end times
