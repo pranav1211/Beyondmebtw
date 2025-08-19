@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F1 Haptic Trailer (Android Recreation)</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #000;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    header {
+      padding: 25px 20px;
+      background: #111;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin: 10px 0 20px 0;
+      color: #ff3c3c;
+      font-weight: bold;
+      text-shadow: 0 2px 10px rgba(255, 60, 60, 0.3);
+    }
+
+    .separator {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #ff3c3c, transparent);
+      margin: 20px 0;
+      width: 100%;
+    }
+
+    .description {
+      font-size: 1rem;
+      margin-bottom: 15px;
+      line-height: 1.5;
+      color: #ffffff;
+    }
+
+    .combined-info {
+      font-size: 0.9rem;
+      margin-bottom: 15px;
+      line-height: 1.5;
+      color: #ffcc00;
+      padding: 15px;
+      background: rgba(255, 204, 0, 0.1);
+      border-radius: 8px;
+      border-left: 4px solid #ffcc00;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .pc-warning {
+      font-size: 0.85rem;
+      color: #ffa500;
+      padding: 10px;
+      background: rgba(255, 165, 0, 0.1);
+      border-radius: 6px;
+      border-left: 3px solid #ffa500;
+      margin-bottom: 15px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      display: none;
+    }
+
+    @media (min-width: 1024px) {
+      .pc-warning {
+        display: block;
+      }
+
+      header {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      .combined-info {
+        max-width: 500px;
+      }
+
+      .pc-warning {
+        max-width: 500px;
+      }
+    }
+
+    .info-text {
+      margin: 0;
+    }
+
+    .vibration-test {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .test-btn {
+      background: #ff3c3c;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      font-size: 0.85rem;
+    }
+
+    .test-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .video-container {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    video {
+      width: 100%;
+      height: auto;
+      max-height: 70vh;
+      background: #000;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(255, 60, 60, 0.2);
+    }
+
+    .fullscreen-btn {
+      background: linear-gradient(135deg, #ff3c3c, #ff6b6b);
+      border: none;
+      padding: 15px 30px;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 15px rgba(255, 60, 60, 0.3);
+    }
+
+    .fullscreen-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 60, 60, 0.4);
+    }
+
+    .fullscreen-btn:active {
+      transform: translateY(0);
+    }
+
+    #vibeStatus {
+      font-size: 0.8rem;
+      color: #90EE90;
+      margin-top: 5px;
+    }
+
+    .thank-you {
+      font-size: 1.1rem;
+      padding: 20px;
+      color: #ffffff;
+      font-style: italic;
+    }
+
+    footer {
+      font-size: 0.8rem;
+      padding: 15px;
+      background: #111;
+      width: 100%;
+      margin-top: 10px;
+      box-sizing: border-box;
+      color: #888;
+      border-top: 1px solid #333;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .description,
+      .combined-info {
+        font-size: 0.9rem;
+      }
+
+      .vibration-test {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+      }
+
+      .fullscreen-btn {
+        padding: 12px 25px;
+        font-size: 0.9rem;
+
+        /* 👇 Add some gap from the screen edges */
+        margin: 0 15px;
+        width: auto;
+        /* prevents it from stretching full width */
+        max-width: calc(100% - 30px);
+      }
+
+      .video-container {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>F1 Haptic Trailer</h1>
+
+    <div class="separator"></div>
+
+    <div class="description">
+      This is a recreation of the F1 haptic trailer originally made for Apple devices, now adapted for Android devices.
+    </div>
+
+    <div class="pc-warning">
+      <strong>PC Users:</strong> This experience is designed for mobile devices with haptic feedback. On desktop, you'll
+      only get audio without vibrations.
+    </div>
+
+    <div class="combined-info">
+      <p class="info-text">
+        <strong>Setup:</strong> Turn off Silent/Do Not Disturb mode and increase volume for the best experience.
+      </p>
+      <div class="vibration-test">
+        <span>Test vibration:</span>
+        <div>
+          <button id="testVibration" class="test-btn">Test Vibration</button>
+          <div id="vibeStatus"></div>
+        </div>
+      </div>
+    </div>
+
+  </header>
+
+  <main>
+    <div class="video-container">
+      <video id="video" controls playsinline>
+        <source src="https://darxksggvdigcwu2.public.blob.vercel-storage.com/haptic.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <button id="fullscreenBtn" class="fullscreen-btn">🎬 Play & Go Fullscreen</button>
+    </div>
+
+    <div class="thank-you">
+      <!-- Thank you for experiencing this recreation. -->
+    </div>
+  </main>
+  <br><br><br><br><br><br><br>
+  <footer>
+    <p>
+      This project is a non-commercial, educational recreation of the Formula 1 haptic trailer designed for Apple
+      devices.
+      No copyright infringement is intended. This project is not affiliated with, endorsed by, or connected to Apple
+      Inc., Formula 1, or any of their subsidiaries or partners.
+    </p>
+    <p>© 2025 BeyondMeBtw created by <a href="https://beyondmebtw.com/about"
+        style="color: gray; text-decoration: none; font-weight: bold;" target="_blank">Pranav Veeraghanta.</a> All
+      rights reserved for the code and implementation.</p>
+  </footer>
+
+  <script>
+    const video = document.getElementById("video");
+    const testBtn = document.getElementById("testVibration");
+    const vibeStatus = document.getElementById("vibeStatus");
+    const fullscreenBtn = document.getElementById("fullscreenBtn");
+
+    // Vibration capability check
+    if (!("vibrate" in navigator)) {
+      vibeStatus.textContent = "⚠️ Your device/browser does not support vibration.";
+    }
+
+    testBtn.addEventListener("click", () => {
+      if ("vibrate" in navigator) {
+        navigator.vibrate([200, 100, 200]);
+        vibeStatus.textContent = "✅ Vibration test successful!";
+      } else {
+        vibeStatus.textContent = "❌ Vibration not supported.";
+      }
+    });
+
+    // Fullscreen functionality with play
+    fullscreenBtn.addEventListener("click", async () => {
+      try {
+        await video.play();
+        setTimeout(() => {
+          if (video.requestFullscreen) {
+            video.requestFullscreen();
+          } else if (video.webkitRequestFullscreen) {
+            video.webkitRequestFullscreen();
+          } else if (video.msRequestFullscreen) {
+            video.msRequestFullscreen();
+          }
+        }, 200);
+      } catch (error) {
+        console.log("Play failed:", error);
+        if (video.requestFullscreen) {
+          video.requestFullscreen();
+        } else if (video.webkitRequestFullscreen) {
+          video.webkitRequestFullscreen();
+        } else if (video.msRequestFullscreen) {
+          video.msRequestFullscreen();
+        }
+      }
+    });
+
+    // Define vibration events (time in seconds)
+    const vibrationEvents = [
+      { time: 6.8, duration: 100 },
+      { time: 8.0, duration: 100 },
+      { time: 12.8, duration: 1900 },
+      { time: 16.7, duration: 100 },
+      { time: 17.9, duration: 100 },
+      { time: 18.7, duration: 1300 },
+      { time: 21.9, duration: 3700 },
+      { time: 34.6, pattern: [200, 200, 200, 200, 200, 200, 200, 300, 200, 100, 200] },
+      { time: 48.1, pattern: [100, 100, 200] },
+      { time: 75.3, pattern: [100, 100, 2200] },
+      { time: 81.3, pattern: [300, 200, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100] },
+      { time: 89.0, pattern: [100, 100, 100] },
+      { time: 91.8, duration: 400 },
+      { time: 96.5, duration: 2700 },
+      { time: 105.2, pattern: [2900, 100, 2300] },
+      { time: 110.7, pattern: [100, 300, 100, 100, 100, 100, 5400] },
+      { time: 117.0, pattern: [100, 300, 100, 100, 3600] }
+    ];
+
+    // Precompute event end times
+    vibrationEvents.forEach(event => {
+      if (event.pattern) {
+        event.total = event.pattern.reduce((a, b) => a + b, 0);
+      } else {
+        event.total = event.duration;
+      }
+      event.end = event.time + event.total / 1000; // seconds
+    });
+
+    let currentVibe = null;
+    let rafId = null;
+
+    function stopVibration() {
+      navigator.vibrate(0);
+      currentVibe = null;
+    }
+
+    function checkVibrations() {
+      const t = video.currentTime;
+
+      // Cancel if video passed current event
+      if (currentVibe && t > currentVibe.end) {
+        stopVibration();
+      }
+
+      // See if new event should trigger
+      if (!currentVibe) {
+        const event = vibrationEvents.find(e => t >= e.time && t < e.end);
+        if (event) {
+          const elapsed = (t - event.time) * 1000; // ms into event
+          let remainingPattern;
+
+          if (event.pattern) {
+            // Skip parts of the pattern already elapsed
+            let acc = 0;
+            let idx = 0;
+            while (idx < event.pattern.length && acc + event.pattern[idx] <= elapsed) {
+              acc += event.pattern[idx];
+              idx++;
+            }
+            if (idx < event.pattern.length) {
+              remainingPattern = [...event.pattern.slice(idx)];
+              remainingPattern[0] = Math.max(0, remainingPattern[0] - (elapsed - acc));
+            }
+          } else {
+            // Simple duration
+            const remaining = Math.max(0, event.duration - elapsed);
+            remainingPattern = remaining;
+          }
+
+          if ((Array.isArray(remainingPattern) && remainingPattern.length > 0) || (typeof remainingPattern === "number" && remainingPattern > 0)) {
+            navigator.vibrate(remainingPattern);
+            currentVibe = event;
+          }
+        }
+      }
+
+      rafId = requestAnimationFrame(checkVibrations);
+    }
+
+    function startChecking() {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(checkVibrations);
+    }
+
+    video.addEventListener("play", () => {
+      startChecking();
+    });
+
+    video.addEventListener("pause", () => {
+      stopVibration();
+      cancelAnimationFrame(rafId);
+    });
+
+    video.addEventListener("seeked", () => {
+      stopVibration();
+    });
+  </script>
+
+
+</body>
+
+</html>
