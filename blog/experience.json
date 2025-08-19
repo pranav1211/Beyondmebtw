@@ -251,7 +251,9 @@
                 "excerpt": "Since the mini blog interface isn't ready yet, I'm just carrying on my updates here. These are basically my casual, in‑the‑moment notes…",
                 "thumbnail": "https://content.beyondmebtw.com/experience/exp28.png",
                 "link": "https://medium.com/@beyondmebtw/live-blog-update-almost-there-f3b33da32aa6",
-                "subcategory": ""
+                "subcategory": "",
+                "secondaryCategory": "f1",
+                "secondarySubcategory": "General"
             }
         ]
     }
