@@ -20,11 +20,10 @@ try {
   thepasskey = "default-secure-key";
 }
 
-// Main section data structure
+// Main section data structure (removed projects)
 let jsdata = {
   mainPost: {},
   featured: Array(4).fill(null).map(() => ({})),
-  projects: Array(4).fill(null).map(() => ({})),
   categories: {} // Add categories to the initial structure
 };
 
@@ -73,10 +72,9 @@ function loadExistingData() {
     if (fs.existsSync(jsonPath)) {
       const existingData = JSON.parse(fs.readFileSync(jsonPath, "utf8"));
       
-      // Preserve existing data structure, especially categories
+      // Preserve existing data structure, especially categories (removed projects)
       jsdata.mainPost = existingData.mainPost || {};
       jsdata.featured = existingData.featured || Array(4).fill(null).map(() => ({}));
-      jsdata.projects = existingData.projects || Array(4).fill(null).map(() => ({}));
       jsdata.categories = existingData.categories || {}; // Preserve categories
       
       console.log("Existing local data loaded successfully");
@@ -102,20 +100,13 @@ function loadJSON(callback) {
       try {
         const parsedData = JSON.parse(data);
 
-        // Validate and merge data - preserve existing data structure INCLUDING categories
+        // Validate and merge data - preserve existing data structure INCLUDING categories (removed projects)
         jsdata.mainPost = { ...jsdata.mainPost, ...parsedData.mainPost } || jsdata.mainPost;
 
         // Handle featured array - preserve existing entries
         if (Array.isArray(parsedData.featured)) {
           for (let i = 0; i < Math.min(parsedData.featured.length, 4); i++) {
             jsdata.featured[i] = { ...jsdata.featured[i], ...parsedData.featured[i] };
-          }
-        }
-
-        // Handle projects array - preserve existing entries
-        if (Array.isArray(parsedData.projects)) {
-          for (let i = 0; i < Math.min(parsedData.projects.length, 4); i++) {
-            jsdata.projects[i] = { ...jsdata.projects[i], ...parsedData.projects[i] };
           }
         }
 
@@ -212,7 +203,7 @@ function updateData(name, date, excerpt, thumbnail, link, formId) {
   };
 
   const updates = {
-    // Main post and featured posts
+    // Main post and featured posts only (removed projects)
     latest: () => {
       updateFields(jsdata.mainPost, { title: name, date, excerpt, thumbnail, link });
     },
@@ -227,20 +218,6 @@ function updateData(name, date, excerpt, thumbnail, link, formId) {
     },
     featured4: () => {
       updateFields(jsdata.featured[3], { title: name, date, excerpt, thumbnail, link });
-    },
-
-    // Project posts
-    project1: () => {
-      updateFields(jsdata.projects[0], { title: name, excerpt, link });
-    },
-    project2: () => {
-      updateFields(jsdata.projects[1], { title: name, excerpt, link });
-    },
-    project3: () => {
-      updateFields(jsdata.projects[2], { title: name, excerpt, link });
-    },
-    project4: () => {
-      updateFields(jsdata.projects[3], { title: name, excerpt, link });
     }
   };
 
@@ -289,7 +266,7 @@ function writeJSONFile(callback) {
   const jsonPath = path.join(__dirname, "latest.json");
 
   try {
-    // Ensure we're writing the complete jsdata object including categories
+    // Ensure we're writing the complete jsdata object including categories (removed projects)
     fs.writeFileSync(jsonPath, JSON.stringify(jsdata, null, 2), "utf8");
     console.log("Data written to latest.json successfully (including categories)");
     callback(null);
@@ -529,109 +506,109 @@ const server = http.createServer((request, response) => {
     }
     // Handle blog post additions only
     else if (path === "/blogdata") {
-  if (request.method === "POST") {
-    return getJSONBody(request, (err, body) => {
-      if (err) {
-        console.error("JSON parsing error:", err);
-        response.statusCode = 400;
-        return response.end("Bad JSON");
-      }
+      if (request.method === "POST") {
+        return getJSONBody(request, (err, body) => {
+          if (err) {
+            console.error("JSON parsing error:", err);
+            response.statusCode = 400;
+            return response.end("Bad JSON");
+          }
 
-      const {
-        category,
-        uid,
-        title,
-        date,
-        excerpt,
-        thumbnail,
-        link,
-        subcategory,
-        secondaryCategory,
-        secondarySubcategory,
-        isNewPost,
-        key
-      } = body;
+          const {
+            category,
+            uid,
+            title,
+            date,
+            excerpt,
+            thumbnail,
+            link,
+            subcategory,
+            secondaryCategory,
+            secondarySubcategory,
+            isNewPost,
+            key
+          } = body;
 
-      console.log("Blog data request received:", {
-        category, uid, title, isNewPost,
-        allParams: body
-      });
+          console.log("Blog data request received:", {
+            category, uid, title, isNewPost,
+            allParams: body
+          });
 
-      if (!key || key !== thepasskey) {
-        response.statusCode = 403;
-        response.end("Unauthorized access - Invalid key");
-        return;
-      }
+          if (!key || key !== thepasskey) {
+            response.statusCode = 403;
+            response.end("Unauthorized access - Invalid key");
+            return;
+          }
 
-      if (!category) {
-        response.statusCode = 400;
-        response.end("Missing category parameter");
-        return;
-      }
+          if (!category) {
+            response.statusCode = 400;
+            response.end("Missing category parameter");
+            return;
+          }
 
-      if (!title || !date || !excerpt || !thumbnail || !link) {
-        response.statusCode = 400;
-        response.end("Missing required fields: title, date, excerpt, thumbnail, and link are required");
-        return;
-      }
+          if (!title || !date || !excerpt || !thumbnail || !link) {
+            response.statusCode = 400;
+            response.end("Missing required fields: title, date, excerpt, thumbnail, and link are required");
+            return;
+          }
 
-      // Load both blog JSON and main JSON data
-      loadBlogJSON(category, () => {
-        loadJSON(() => {
-          try {
-            // Add the new blog post to category-specific data
-            addNewBlogPost(category, uid, title, date, excerpt, thumbnail, link, subcategory, secondaryCategory, secondarySubcategory);
+          // Load both blog JSON and main JSON data
+          loadBlogJSON(category, () => {
+            loadJSON(() => {
+              try {
+                // Add the new blog post to category-specific data
+                addNewBlogPost(category, uid, title, date, excerpt, thumbnail, link, subcategory, secondaryCategory, secondarySubcategory);
 
-            // Update latest.json categories section
-            updateLatestJSONCategories(category, uid, title, thumbnail, subcategory);
+                // Update latest.json categories section
+                updateLatestJSONCategories(category, uid, title, thumbnail, subcategory);
 
-            // Write both the blog JSON file and the main latest.json file
-            writeBlogJSONFile(category, (blogWriteError) => {
-              if (blogWriteError) {
-                response.statusCode = 500;
-                response.end("Error writing blog data to file");
-                return;
-              }
-
-              // Write the updated latest.json file
-              writeJSONFile((latestWriteError) => {
-                if (latestWriteError) {
-                  response.statusCode = 500;
-                  response.end("Error writing latest.json data to file");
-                  return;
-                }
-
-                // Run the shell script after writing both files
-                executeScript((scriptError) => {
-                  if (scriptError) {
-                    console.error("Script execution failed, but blog data was saved");
-                    response.writeHead(200, { "Content-Type": "text/html" });
-                    response.end(
-                      `<html><body><h1>New blog post added successfully.</h1><p>Note: Script execution failed but data was saved.</p><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>`
-                    );
+                // Write both the blog JSON file and the main latest.json file
+                writeBlogJSONFile(category, (blogWriteError) => {
+                  if (blogWriteError) {
+                    response.statusCode = 500;
+                    response.end("Error writing blog data to file");
                     return;
                   }
 
-                  response.writeHead(200, { "Content-Type": "text/html" });
-                  response.end(
-                    `<html><body><h1>New blog post added successfully.</h1><p>Both category JSON and latest.json updated.</p><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>`
-                  );
+                  // Write the updated latest.json file
+                  writeJSONFile((latestWriteError) => {
+                    if (latestWriteError) {
+                      response.statusCode = 500;
+                      response.end("Error writing latest.json data to file");
+                      return;
+                    }
+
+                    // Run the shell script after writing both files
+                    executeScript((scriptError) => {
+                      if (scriptError) {
+                        console.error("Script execution failed, but blog data was saved");
+                        response.writeHead(200, { "Content-Type": "text/html" });
+                        response.end(
+                          `<html><body><h1>New blog post added successfully.</h1><p>Note: Script execution failed but data was saved.</p><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>`
+                        );
+                        return;
+                      }
+
+                      response.writeHead(200, { "Content-Type": "text/html" });
+                      response.end(
+                        `<html><body><h1>New blog post added successfully.</h1><p>Both category JSON and latest.json updated.</p><p>Redirecting back...</p><script>setTimeout(function(){ window.location.href = '/'; }, 3000);</script></body></html>`
+                      );
+                    });
+                  });
                 });
-              });
+              } catch (updateError) {
+                console.error("Error adding blog data:", updateError);
+                response.statusCode = 400;
+                response.end(`Error adding blog data: ${updateError.message}`);
+              }
             });
-          } catch (updateError) {
-            console.error("Error adding blog data:", updateError);
-            response.statusCode = 400;
-            response.end(`Error adding blog data: ${updateError.message}`);
-          }
+          });
         });
-      });
-    });
-  } else {
-    response.statusCode = 405;
-    response.end("Method Not Allowed - Use POST");
-  }
-}
+      } else {
+        response.statusCode = 405;
+        response.end("Method Not Allowed - Use POST");
+      }
+    }
     else if (path === "/health") {
       // Health check endpoint
       response.writeHead(200, { "Content-Type": "application/json" });
