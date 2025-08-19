@@ -348,7 +348,8 @@
         <strong>Setup:</strong> Turn off Silent/Do Not Disturb mode and increase volume for the best experience.
       </p>
       <div class="vibration-test">
-        <span>Test vibration:</span>
+        <span>Test vibration by clicking the button. If your device vibrates, then you can experience the haptic
+          feedback.</span>
         <div>
           <button id="testVibration" class="test-btn">Test Vibration</button>
           <div id="vibeStatus"></div>
@@ -398,9 +399,6 @@
     testBtn.addEventListener("click", () => {
       if ("vibrate" in navigator) {
         navigator.vibrate([200, 100, 200]);
-        vibeStatus.textContent = "✅ Vibration test successful!";
-      } else {
-        vibeStatus.textContent = "❌ Vibration not supported.";
       }
     });
 
