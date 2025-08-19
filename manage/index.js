@@ -5,7 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const contentContainer = document.getElementById("content-container");
 
     // Check if user is already logged in    
-    const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
+    const isLoggedIn = true;
+    // const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
     if (isLoggedIn) {
         showContentForms();
     }
