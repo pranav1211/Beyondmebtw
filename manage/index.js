@@ -70,10 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (checkAuthentication()) {
             initializeMinisPage();
         }
-    } else if (currentPage === 'posts.html') {
-        if (checkAuthentication()) {
-            initializePostsPage();
-        }
     }
 
     // INDEX PAGE INITIALIZATION
@@ -167,19 +163,6 @@ document.addEventListener("DOMContentLoaded", () => {
         // You can add minis-specific functionality here
     }
 
-    // POSTS PAGE INITIALIZATION
-    function initializePostsPage() {
-        // Hide auth loading if present
-        const authLoading = document.getElementById("auth-loading");
-        if (authLoading) authLoading.style.display = "none";
-        
-        // Show content if there's a content container
-        const contentContainer = document.getElementById("content-container");
-        if (contentContainer) contentContainer.style.display = "block";
-        
-        console.log('Posts page initialized');
-        // You can add posts-specific functionality here
-    }
 
     // EXISTING MANAGE PAGE FUNCTIONS (keeping your original code)
     function setupContentForms() {
