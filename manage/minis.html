@@ -1,8 +1,87 @@
-<html>
-    <head>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minis</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="index.js" defer></script>
+    <style>
+        /* Basic styling for minis page */
+        .minis-container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .minis-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .minis-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .back-button:hover {
+            background: #764ba2;
+        }
+
+        #auth-loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2rem;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Content Container -->
+    <div id="content-container" class="minis-container" style="display: none;">
+        <a href="index.html" class="back-button">← Back to Dashboard</a>
         
-    </head>
-    <body>
-        <div>coming soon</div>
-    </body>
+        <div class="minis-header">
+            <h1>Minis Page</h1>
+            <p>This is the minis section of your dashboard.</p>
+        </div>
+
+        <div class="minis-content">
+            <h2>Minis Content</h2>
+            <p>Add your minis-specific content here. This page is protected by authentication.</p>
+            
+            <!-- Add your minis functionality here -->
+            <div class="placeholder-content">
+                <h3>Features to add:</h3>
+                <ul>
+                    <li>Mini post management</li>
+                    <li>Quick updates</li>
+                    <li>Media uploads</li>
+                    <li>Draft management</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading/Auth Check Message -->
+    <div id="auth-loading">
+        <h2>Checking authentication...</h2>
+        <p>Redirecting if not authenticated...</p>
+    </div>
+</body>
+
 </html>
