@@ -16,6 +16,7 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
+      min-height: 100vh;
     }
 
     header {
@@ -23,6 +24,7 @@
       background: #111;
       width: 100%;
       box-sizing: border-box;
+      max-width: 1200px;
     }
 
     h1 {
@@ -45,6 +47,9 @@
       margin-bottom: 15px;
       line-height: 1.5;
       color: #ffffff;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .combined-info {
@@ -65,7 +70,7 @@
     }
 
     .pc-warning {
-      font-size: 0.85rem;
+      font-size: 1rem;
       color: #ffa500;
       padding: 10px;
       background: rgba(255, 165, 0, 0.1);
@@ -76,25 +81,6 @@
       margin-left: auto;
       margin-right: auto;
       display: none;
-    }
-
-    @media (min-width: 1024px) {
-      .pc-warning {
-        display: block;
-      }
-
-      header {
-        max-width: 900px;
-        margin: 0 auto;
-      }
-
-      .combined-info {
-        max-width: 500px;
-      }
-
-      .pc-warning {
-        max-width: 500px;
-      }
     }
 
     .info-text {
@@ -123,6 +109,13 @@
 
     .test-btn:hover {
       transform: scale(1.05);
+    }
+
+    main {
+      width: 100%;
+      max-width: 1200px;
+      padding: 0 20px;
+      box-sizing: border-box;
     }
 
     .video-container {
@@ -156,6 +149,8 @@
       text-transform: uppercase;
       letter-spacing: 1px;
       box-shadow: 0 4px 15px rgba(255, 60, 60, 0.3);
+      max-width: 300px;
+      margin: 0 auto;
     }
 
     .fullscreen-btn:hover {
@@ -178,19 +173,108 @@
       padding: 20px;
       color: #ffffff;
       font-style: italic;
+      max-width: 800px;
+      margin: 0 auto;
     }
 
     footer {
       font-size: 0.8rem;
-      padding: 15px;
+      padding: 15px 20px;
       background: #111;
       width: 100%;
       margin-top: 10px;
       box-sizing: border-box;
       color: #888;
       border-top: 1px solid #333;
+      max-width: 1200px;
     }
 
+    footer p {
+      max-width: 800px;
+      margin: 10px auto;
+      line-height: 1.4;
+    }
+
+    /* Desktop specific adjustments */
+    @media (min-width: 1024px) {
+      .pc-warning {
+        display: block;
+      }
+
+      header {
+        padding: 40px 40px;
+      }
+
+      h1 {
+        font-size: 2.8rem;
+        margin: 15px 0 25px 0;
+      }
+
+      .description {
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+      }
+
+      .combined-info {
+        font-size: 1rem;
+        padding: 20px;
+        max-width: 500px;
+      }
+
+      .pc-warning {
+        max-width: 500px;
+        font-size: 1rem;
+      }
+
+      .video-container {
+        gap: 20px;
+      }
+
+      video {
+        max-height: 60vh;
+      }
+
+      .fullscreen-btn {
+        padding: 18px 35px;
+        font-size: 1.1rem;
+      }
+
+      .thank-you {
+        font-size: 1.2rem;
+        padding: 30px;
+      }
+
+      footer {
+        padding: 20px 40px;
+        font-size: 0.85rem;
+      }
+    }
+
+    /* Large desktop screens */
+    @media (min-width: 1400px) {
+      h1 {
+        font-size: 3.2rem;
+      }
+
+      .description {
+        font-size: 1.2rem;
+      }
+
+      .combined-info {
+        font-size: 1.05rem;
+      }
+
+      .fullscreen-btn {
+        font-size: 1.15rem;
+        padding: 20px 40px;
+      }
+
+      .thank-you {
+        font-size: 1.3rem;
+      }
+    }
+
+    /* Mobile specific adjustments */
     @media (max-width: 768px) {
       h1 {
         font-size: 1.8rem;
@@ -210,16 +294,34 @@
       .fullscreen-btn {
         padding: 12px 25px;
         font-size: 0.9rem;
-
-        /* 👇 Add some gap from the screen edges */
         margin: 0 15px;
         width: auto;
-        /* prevents it from stretching full width */
         max-width: calc(100% - 30px);
       }
 
       .video-container {
         max-width: 100%;
+      }
+
+      main {
+        padding: 0 15px;
+      }
+
+      footer {
+        padding: 15px;
+      }
+    }
+
+    /* Ultra-wide screens */
+    @media (min-width: 1800px) {
+      body {
+        background: radial-gradient(ellipse at center, #111 0%, #000 70%);
+      }
+
+      header,
+      main,
+      footer {
+        max-width: 1400px;
       }
     }
   </style>
