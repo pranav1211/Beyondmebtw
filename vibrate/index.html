@@ -1,0 +1,169 @@
+<html>
+<head>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px;
+    }
+    video {
+      width: 100%;
+      max-width: 1500px;
+      margin-top: 10px;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      width: 100%;
+      max-width: 1500px;
+    }
+    button {
+      font-size: 32px;
+      padding: 12px 20px;
+      flex: 1;
+    }
+    .seekbar {
+      width: 100%;
+      max-width: 1500px;
+      margin-top: 10px;
+    }
+    input[type="range"] {
+      width: 100%;
+    }
+    .jump-controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      width: 100%;
+      max-width: 1500px;
+    }
+    .jump-controls input {
+      font-size: 24px;
+      padding: 8px;
+      flex: 1;
+    }
+    .jump-controls button {
+      flex: none;
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    <button id="playPauseBtn">Play</button>
+    <button id="restartBtn">Restart</button>
+  </div>
+
+  <video id="video" src="haptic.mp4"></video>
+
+  <!-- Seek bar -->
+  <div class="seekbar">
+    <input type="range" id="seekBar" value="0" min="0" step="0.1">
+  </div>
+
+  <!-- Jump to time -->
+  <div class="jump-controls">
+    <input type="number" id="jumpInput" placeholder="Enter seconds" step="0.1" min="0">
+    <button id="jumpBtn">Jump</button>
+  </div>
+
+  <script>
+    const video = document.getElementById("video");
+    const playPauseBtn = document.getElementById("playPauseBtn");
+    const restartBtn = document.getElementById("restartBtn");
+    const seekBar = document.getElementById("seekBar");
+    const jumpInput = document.getElementById("jumpInput");
+    const jumpBtn = document.getElementById("jumpBtn");
+
+    // Define vibration events (time in seconds, duration in ms)
+    const vibrationEvents = [
+      { time: 6.5, duration: 100 },   // SEATBELT
+      { time: 7.9, duration: 100 },   // wheel
+      { time: 12.8, duration: 1900 }, // startup
+      { time: 16.7, duration: 200 },  // clutch
+      { time: 17.8, duration: 200 },  // gear
+      { time: 18.7, duration: 1300 }, // rollout
+      { time: 21.9, duration: 3700 }, // tv cam
+      { time: 34.5, pattern: [200, 200, 200, 200, 200, 200, 200, 200, 200, 200] } // pitstop
+    ];
+
+    let triggered = new Set();
+
+    // Play / Pause toggle
+    playPauseBtn.addEventListener("click", () => {
+      if (video.paused) {
+        playPauseBtn.textContent = "Pause";
+        video.play();
+      } else {
+        playPauseBtn.textContent = "Play";
+        video.pause();
+      }
+    });
+
+    // Restart video
+    restartBtn.addEventListener("click", () => {
+      video.currentTime = 0;
+      triggered.clear();
+      video.play();
+      playPauseBtn.textContent = "Pause";
+    });
+
+    // Sync seek bar with video progress
+    video.addEventListener("timeupdate", () => {
+      seekBar.value = video.currentTime;
+      const currentTime = video.currentTime;
+
+      vibrationEvents.forEach((event, index) => {
+        if (currentTime >= event.time && !triggered.has(index)) {
+          if (event.pattern) {
+            navigator.vibrate(event.pattern);
+          } else {
+            const elapsed = (currentTime - event.time) * 1000; // ms since event started
+            const remaining = event.duration - elapsed;
+            if (remaining > 0) {
+              navigator.vibrate(remaining);
+            }
+          }
+          triggered.add(index);
+        }
+      });
+    });
+
+    // Set seek bar max once video metadata is loaded
+    video.addEventListener("loadedmetadata", () => {
+      seekBar.max = video.duration;
+    });
+
+    // Handle manual seeking
+    seekBar.addEventListener("input", () => {
+      video.currentTime = seekBar.value;
+      triggered.clear();
+    });
+
+    // Handle jump to exact time
+    jumpBtn.addEventListener("click", () => {
+      const time = parseFloat(jumpInput.value);
+      if (!isNaN(time) && time >= 0 && time <= video.duration) {
+        video.currentTime = time;
+        triggered.clear();
+      }
+    });
+
+    // Keep button text in sync with video state
+    video.addEventListener("play", () => {
+      playPauseBtn.textContent = "Pause";
+    });
+    video.addEventListener("pause", () => {
+      playPauseBtn.textContent = "Play";
+    });
+
+    // Reset triggers if seeking
+    video.addEventListener("seeked", () => {
+      triggered.clear();
+    });
+  </script>
+</body>
+</html>
