@@ -1,6 +1,8 @@
 const express = require('express');
 const fs = require('fs').promises;
+const fss = require('fs'); // For synchronous operations
 const path = require('path');
+const { exec } = require('child_process');
 
 class MinisServer {
     constructor() {
@@ -93,11 +95,83 @@ class MinisServer {
         }
     }
 
+    getManageKey() {
+        try {
+            // First try environment variable
+            let thepasskey = process.env.managekey;
+            
+            // If not found in environment, try reading from /etc/environment
+            if (!thepasskey) {
+                try {
+                    const envContent = fss.readFileSync("/etc/environment", "utf8");
+                    const managekeyLine = envContent
+                        .split("\n")
+                        .find((line) => line.startsWith("managekey="));
+                    
+                    if (managekeyLine) {
+                        thepasskey = managekeyLine.split("=")[1]?.trim();
+                    }
+                } catch (error) {
+                    console.error('Error reading /etc/environment:', error.message);
+                }
+            }
+
+            return thepasskey;
+        } catch (error) {
+            console.error('Error getting manage key:', error.message);
+            return null;
+        }
+    }
+
+    verifyPassword(providedPassword) {
+        const manageKey = this.getManageKey();
+        
+        if (!manageKey) {
+            console.error('Management key not found in environment or /etc/environment');
+            return false;
+        }
+
+        return providedPassword === manageKey;
+    }
+
+    executeScript(callback) {
+        const scriptPath = '/shellfiles/jsonupdatebmb.sh';
+
+        // Check if script exists
+        if (!fss.existsSync(scriptPath)) {
+            console.error(`Script not found: ${scriptPath}`);
+            return callback(new Error(`Script not found: ${scriptPath}`));
+        }
+
+        exec(`sh ${scriptPath}`, { timeout: 15000 }, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`Error executing script: ${error}`);
+                return callback(error);
+            }
+
+            console.log(`Script output: ${stdout}`);
+            if (stderr) {
+                console.error(`Script stderr: ${stderr}`);
+            }
+
+            callback(null);
+        });
+    }
+
     async createMini(data) {
-        const { title, content, tags = [] } = data;
+        const { title, content, tags = [], password } = data;
 
         if (!title || !content) {
             throw new Error('Title and content are required');
+        }
+
+        if (!password) {
+            throw new Error('Password is required');
+        }
+
+        // Verify password
+        if (!this.verifyPassword(password)) {
+            throw new Error('Invalid authentication key');
         }
 
         const filename = this.generateFilename();
@@ -141,12 +215,34 @@ ${content}`;
 
             console.log(`Successfully created mini: ${filename}`);
 
-            return {
-                success: true,
-                id,
-                filename,
-                metadata
-            };
+            // Execute the script after successful creation
+            return new Promise((resolve, reject) => {
+                this.executeScript((scriptError) => {
+                    if (scriptError) {
+                        console.error('Script execution failed, but mini was created:', scriptError);
+                        // Don't reject here - the mini was created successfully
+                        // Just log the error and continue
+                        resolve({
+                            success: true,
+                            id,
+                            filename,
+                            metadata,
+                            scriptExecuted: false,
+                            scriptError: scriptError.message
+                        });
+                    } else {
+                        console.log('Script executed successfully');
+                        resolve({
+                            success: true,
+                            id,
+                            filename,
+                            metadata,
+                            scriptExecuted: true
+                        });
+                    }
+                });
+            });
+
         } catch (error) {
             console.error(`Failed to create mini: ${error.message}`);
             throw new Error(`Failed to create mini: ${error.message}`);
@@ -216,6 +312,14 @@ ${content}`;
             // Log environment info
             console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
             console.log(`Node version: ${process.version}`);
+            
+            // Check if management key is available
+            const manageKey = this.getManageKey();
+            if (manageKey) {
+                console.log('Management key found and ready for authentication');
+            } else {
+                console.warn('WARNING: Management key not found - authentication will fail');
+            }
         });
 
         // Handle graceful shutdown
