@@ -50,7 +50,7 @@ body {
 }
 
 .page-title .minis {
-    font-size: 48px;
+    font-size: 58px;
 }
 
 .page-title .brand {
@@ -75,8 +75,9 @@ body {
     border: 1px solid rgba(232, 217, 205, 0.5);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     position: sticky;
-    top: 20px;
-    margin-left: 95px;
+    width: 100% ;
+    top: 20px;    
+    margin-left:-41% ;
 }
 
 .intro-section h2 {
@@ -97,16 +98,39 @@ body {
     min-height: 100vh;
 }
 
+/* Mini Post Container */
+.mini-post-container {
+    position: relative;
+    margin-bottom: 20px;
+    width: 130%;
+    margin-left: -45%;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Date Tab */
+.date-tab {
+    background-color: #E8D9CD;
+    color: #3b342d;
+    padding: 8px 20px;
+    border-radius: 15px 15px 0 0;
+    font-size: 16px;
+    font-weight: 600;
+    position: absolute;
+    top: -10px;
+    left: 25px;
+    z-index: 2;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
 /* Mini Post Card */
 .mini-post {
     background: rgba(255, 255, 255, 0.8);
     border-radius: 15px;
     padding: 25px;
-    margin-bottom: 20px;
     border: 1px solid rgba(232, 217, 205, 0.7);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
-    animation: fadeIn 0.5s ease-in-out;
+    position: relative;
 }
 
 .mini-post:hover {
@@ -114,38 +138,11 @@ body {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-.mini-post-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 15px;
-    gap: 20px;
-}
-
-.mini-post-datetime {
-    flex-shrink: 0;
-    text-align: right;
-}
-
-.mini-post-date {
-    color: #3b342d;
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 2px;
-}
-
-.mini-post-time {
-    color: #8b7355;
-    font-size: 16px;
-    font-weight: 500;
-}
-
 .mini-post-content {
     color: #3b342d;
     font-size: 18px;
     line-height: 1.6;
     margin-bottom: 15px;
-    flex: 1;
 }
 
 .mini-post-content h1,
@@ -196,10 +193,32 @@ body {
     margin: 15px 0;
 }
 
-.mini-post-tags {
+/* Image styling within post content */
+.mini-post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 15px 0;
+    display: block;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Meta section with tags and time */
+.mini-post-meta {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 8px;
+}
+
+.time-tag {
+    background-color: #3b342d;
+    color: #F4F2EF;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 14px;
+    font-weight: 600;
+    order: -1; /* Ensures time appears first */
 }
 
 .tag {
@@ -211,8 +230,13 @@ body {
     font-weight: 500;
 }
 
-/* Time-only post (same date as previous) */
-.mini-post.time-only .mini-post-date {
+/* Same date post styling */
+.mini-post-container.same-date {
+    margin-top: -5px;
+    margin-bottom: 10px;
+}
+
+.mini-post-container.same-date .date-tab {
     display: none;
 }
 
@@ -221,6 +245,12 @@ body {
     height: 1px;
     background: linear-gradient(to right, transparent, #E8D9CD, transparent);
     margin: 30px 0;
+    width: 130%;
+    margin-left: -45%;
+}
+
+.post-divider.reduced {
+    margin: 15px 0;
 }
 
 /* Loading and Load More */
@@ -333,13 +363,18 @@ body {
         margin-left: 0;
     }
 
-    .mini-post-header {
-        flex-direction: column;
-        align-items: flex-start;
+    .mini-post-container {
+        width: 100%;
+        margin-left: 0;
     }
 
-    .mini-post-datetime {
-        text-align: left;
+    .post-divider {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .date-tab {
+        left: 15px;
     }
 }
 
@@ -362,5 +397,10 @@ body {
 
     .intro-section {
         padding: 20px;
+    }
+
+    .date-tab {
+        font-size: 14px;
+        padding: 6px 15px;
     }
 }
