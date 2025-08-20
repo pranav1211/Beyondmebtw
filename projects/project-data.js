@@ -22,9 +22,21 @@ const projectsData = [
     githubLink: "https://github.com/pranav1211/Gradient-website",
     category: "Web Development",
     tags: ["React", "JavaScript", "UI/UX", "Next.js", "Tailwind CSS", "Vercel"]
-  },
-  {
+  },  {
     id: 3,
+    title: "Mini's",
+    shortDescription: "A live blogging platform",
+    fullDescription: "",
+    logo: "https://beyondmebtw.com/assets/images/minis.png",
+    images: ["/assets/images/projects/minisbybmb.webp"],
+    link: "https://minis.beyondmebtw.com",
+    githubLink: "https://github.com/pranav1211/beyondmebtw",
+    category: "Web Development",
+    tags: ["HTML", "CSS", "JavaScript", "Node.js", "Backend", "Nginx", "Ubuntu","Markdown/JSON"]
+  },
+
+  {
+    id: 4,
     title: "LUMEX AI",
     shortDescription: "An AI-Powered real-time visual assistant",
     fullDescription: "• This project is currently being built.\n• LUMEX (Live Understanding and Mobility EXpert) is an AI-powered real-time visual assistant designed to enhance user interaction with their environment.\n• Utilizes advanced computer vision and machine learning algorithms to provide contextual information, navigation assistance, and real-time object recognition.\n• Serves as a versatile tool for various applications such as smart homes, augmented reality, and personal assistance.\n• Leverages the power of Lidar and depth cameras to create a 3D understanding of the environment.\n• Enables features like obstacle detection and spatial awareness through advanced depth perception.",
@@ -36,7 +48,7 @@ const projectsData = [
     tags: ["Python", "Computer Vision", "Machine Learning", "Lidar", "Depth Cameras"]
   },
   {
-    id: 4,
+    id: 5,
     title: "Real Time Driver Monitoring System",
     shortDescription: "A monitoring system for driver fatigue and distraction",
     fullDescription: "An AI-powered solution that monitors driver alertness and behavior in real-time, detecting signs of fatigue and distraction to prevent accidents and improve road safety.",
@@ -48,7 +60,7 @@ const projectsData = [
     tags: ["Python", "Computer Vision", "Machine Learning"]
   },
   {
-    id: 5,
+    id: 6,
     title: "My Library",
     shortDescription: "A personal book collection management application",
     fullDescription: "• A digital library management system allowing users to catalog, search, and organize their book collections.\n• Features include reading progress tracking and book recommendations.\n• The book information is fetched from the Google Books API.",
@@ -60,7 +72,7 @@ const projectsData = [
     tags: ["JavaScript", "Node.js", "Database", "Vue.js"]
   },
   {
-    id: 6,
+    id: 7,
     title: "Pair Game",
     shortDescription: "A memory matching card game with engaging gameplay",
     fullDescription: "• An interactive memory card game where players need to match pairs of identical cards.\n• Features multiple difficulty levels, score tracking, and engaging animations.\n• Based on the classic memory game concept, This was built as a project for an interview as a tech member of the Gradient AI/ML club at BMSCE.",
@@ -71,7 +83,7 @@ const projectsData = [
     category: "Game Development",
     tags: ["Python", "HTML", "CSS"]
   },  {
-    id: 7,
+    id: 8,
     title: "Uncharted Lost Voyage",
     shortDescription: "An online treasure hunting game",
     fullDescription: "• A digital treasure hunt hosted during Utsav Ananta 2025, where participants raced against time to solve puzzles and outwit competitors. \n • Co-developed with event volunteers; I led puzzle design, system integration, deployment, marketing, and designed the event's visual artwork. \n • Successfully launched as a playable online game post-event under a dedicated subdomain of the GradientAIML.tech website.",
@@ -83,10 +95,10 @@ const projectsData = [
     tags: ["Next.js", "HTML", "CSS", "Vercel"]
   },
   {
-    id: 8,
+    id: 9,
     title: "F1 Haptic Trailer: Android Recreation",
     shortDescription: "A haptic feedback experience for F1 fans",
-    fullDescription: "• A digital recreation of the F1 haptic trailer, optimized for Android devices. \n • Features immersive haptic feedback synchronized with video content. \n • Developed using web technologies to ensure broad compatibility.",
+    fullDescription: "•Designed for Android devices and made as a web app \n• A digital recreation of the F1 haptic trailer, optimized for Android devices. \n • Features immersive haptic feedback synchronized with video content. \n • Developed using web technologies to ensure broad compatibility.",
     logo: "https://beyondmebtw.com/assets/images/favicon.ico",
     images: ["/assets/images/projects/haptic.webp"],
     link: "https://beyondmebtw.com/projects/f1hapticandroid",
