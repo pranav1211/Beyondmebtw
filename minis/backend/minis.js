@@ -1,3 +1,56 @@
+// minis.js with built-in authentication
+document.addEventListener("DOMContentLoaded", () => {
+    // Authentication check first
+    if (!checkAuthentication()) {
+        return; // Don't initialize the app if not authenticated
+    }
+
+    // Initialize the minis app
+    new MinisApp();
+});
+
+// Authentication functions
+function getCookie(name) {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
+
+function isAuthenticated() {
+    return getCookie('beyondme_auth') === "true";
+}
+
+function checkAuthentication() {
+    const isLoggedIn = isAuthenticated();
+    
+    if (!isLoggedIn) {
+        // Show loading message briefly before redirect
+        const authLoading = document.getElementById("auth-loading");
+        if (authLoading) {
+            authLoading.style.display = "block";
+        }
+        
+        // Hide content containers while redirecting
+        const contentContainer = document.getElementById("content-container");
+        if (contentContainer) {
+            contentContainer.style.display = "none";
+        }
+        
+        // Redirect after a brief delay
+        setTimeout(() => {
+            window.location.href = 'https://manage.beyondmebtw.com/index.html';
+        }, 1000);
+        return false;
+    }
+    
+    return true;
+}
+
 class MinisApp {
     constructor() {
         this.form = document.getElementById('contentForm');
@@ -7,6 +60,56 @@ class MinisApp {
         this.statusMessage = document.getElementById('statusMessage');
         
         this.initializeEventListeners();
+        this.createLogoutButton();
+    }
+
+    createLogoutButton() {
+        if (!document.getElementById("logout-btn")) {
+            const logoutBtn = document.createElement("button");
+            logoutBtn.id = "logout-btn";
+            logoutBtn.className = "logout-btn";
+            logoutBtn.textContent = "Logout";
+            logoutBtn.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 10px 20px;
+                background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+                z-index: 1000;
+                transition: all 0.3s ease;
+            `;
+            
+            logoutBtn.addEventListener('mouseover', () => {
+                logoutBtn.style.transform = 'translateY(-2px)';
+                logoutBtn.style.boxShadow = '0 4px 12px rgba(255, 107, 107, 0.3)';
+            });
+            
+            logoutBtn.addEventListener('mouseout', () => {
+                logoutBtn.style.transform = 'translateY(0)';
+                logoutBtn.style.boxShadow = 'none';
+            });
+            
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.logout();
+            });
+            
+            document.body.appendChild(logoutBtn);
+        }
+    }
+
+    logout() {
+        // Clear cookies
+        document.cookie = 'beyondme_auth=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=.beyondmebtw.com';
+        document.cookie = 'beyondme_auth_key=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=.beyondmebtw.com';
+        
+        // Redirect to login page
+        window.location.href = 'https://manage.beyondmebtw.com/index.html';
     }
 
     initializeEventListeners() {
@@ -210,8 +313,3 @@ class MinisApp {
         this.statusMessage.style.display = 'none';
     }
 }
-
-// Initialize the app when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    new MinisApp();
-});
