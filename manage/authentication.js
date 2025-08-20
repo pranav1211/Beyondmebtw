@@ -177,7 +177,7 @@ class AuthenticationSystem {
 
     // Check if we need to redirect based on authentication status
     setupIndexPageAuth() {
-        const loginForm = document.getElementById("login-form");
+        const loginForm = document.getElementById("login-form");        
         const loginContainer = document.getElementById("login-container");
         const navContainer = document.getElementById("nav-container");
         const errorMessage = document.getElementById("error-message");
