@@ -60,7 +60,7 @@ class AuthenticationSystem {
         // Define protected pages and their redirect targets
         const protectedPages = {
             'manage.html': 'https://manage.beyondmebtw.com/index.html',
-            'minis.html': 'https://minis.beyondmebtw.com/backend/minis.html'
+            'minis.html': 'https://manage.beyondmebtw.com/index.html'
         };
         
         // Check if current page is protected and user is not authenticated
@@ -118,19 +118,15 @@ class AuthenticationSystem {
     // Logout function
     logout() {
         this.clearAuthentication();
-        // Redirect to appropriate index page based on current domain
-        const hostname = window.location.hostname;
-        if (hostname.includes('manage.beyondmebtw.com')) {
-            window.location.href = 'https://manage.beyondmebtw.com/index.html';
-        } else if (hostname.includes('minis.beyondmebtw.com')) {
-            window.location.href = 'https://manage.beyondmebtw.com/index.html';
-        } else {
-            window.location.href = 'index.html';
-        }
+        // Always redirect to manage.beyondmebtw.com index page
+        window.location.href = 'https://manage.beyondmebtw.com/index.html';
     }
 
     // Initialize authentication system
     init() {
+        // Handle page access first
+        this.handlePageAccess();
+        
         // Add logout functionality if logout button exists
         const logoutBtn = document.getElementById('logout-btn');
         if (logoutBtn) {
@@ -144,18 +140,7 @@ class AuthenticationSystem {
         this.fillPasswordFields();
     }
 
-    // Fill password fields with stored auth key
-    fillPasswordFields() {
-        const authKey = this.getAuthKey();
-        if (authKey) {
-            const passwordFields = document.querySelectorAll('input[type="password"][name="key"]');
-            passwordFields.forEach(field => {
-                field.value = authKey;
-            });
-        }
-    }
-
-    // Check if we need to redirect based on authentication status
+    // Handle initial page access and authentication redirects
     handlePageAccess() {
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
         const isLoggedIn = this.isAuthenticated();
@@ -171,7 +156,84 @@ class AuthenticationSystem {
             return true;
         }
         
-        return this.checkAuthentication();
+        // For protected pages, check authentication
+        if (currentPage === 'manage.html' || currentPage === 'minis.html') {
+            return this.checkAuthentication();
+        }
+        
+        return true;
+    }
+
+    // Fill password fields with stored auth key
+    fillPasswordFields() {
+        const authKey = this.getAuthKey();
+        if (authKey) {
+            const passwordFields = document.querySelectorAll('input[type="password"][name="key"]');
+            passwordFields.forEach(field => {
+                field.value = authKey;
+            });
+        }
+    }
+
+    // Check if we need to redirect based on authentication status
+    setupIndexPageAuth() {
+        const loginForm = document.getElementById("login-form");
+        const loginContainer = document.getElementById("login-container");
+        const navContainer = document.getElementById("nav-container");
+        const errorMessage = document.getElementById("error-message");
+
+        // Check if user is already logged in
+        const isLoggedIn = this.isAuthenticated();
+        if (isLoggedIn) {
+            this.showNavigation();
+        }
+
+        if (loginForm) {
+            loginForm.addEventListener("submit", async (event) => {
+                event.preventDefault();
+                
+                const password = document.getElementById("login-password").value;
+                const loginBtn = loginForm.querySelector('.login-btn');
+                const originalText = loginBtn.textContent;
+                
+                loginBtn.textContent = 'Authenticating...';
+                loginBtn.disabled = true;
+
+                try {
+                    await this.handleLogin(password);
+                    if (errorMessage) errorMessage.style.display = 'none';
+                    this.showNavigation();
+                } catch (error) {
+                    if (errorMessage) {
+                        errorMessage.textContent = error.message;
+                        errorMessage.style.display = 'block';
+                    }
+                    console.error(error);
+                } finally {
+                    loginBtn.textContent = originalText;
+                    loginBtn.disabled = false;
+                }
+            });
+        }
+
+        // Add click handlers for navigation buttons
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if (!this.isAuthenticated()) {
+                    e.preventDefault();
+                    alert("Please log in first.");
+                    location.reload();
+                }
+            });
+        });
+    }
+
+    showNavigation() {
+        const loginContainer = document.getElementById("login-container");
+        const navContainer = document.getElementById("nav-container");
+        
+        if (loginContainer) loginContainer.style.display = "none";
+        if (navContainer) navContainer.style.display = "flex";
     }
 }
 

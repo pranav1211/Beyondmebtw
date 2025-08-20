@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,7 +25,7 @@
         .container {
             background: rgba(255, 255, 255, 0.95);
             padding: 3rem;
-            border-radius: 20px;            
+            border-radius: 20px;
             text-align: center;
             max-width: 500px;
             width: 90%;
@@ -78,7 +79,7 @@
 
         input[type="password"]:focus {
             outline: none;
-            border-color: #667eea;            
+            border-color: #667eea;
         }
 
         .login-btn {
@@ -97,7 +98,7 @@
 
         .login-btn:hover {
             transform: translateY(-2px);
-            
+
         }
 
         .login-btn:disabled {
@@ -129,7 +130,7 @@
         }
 
         .nav-btn:hover {
-            transform: translateY(-3px);            
+            transform: translateY(-3px);
             background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
         }
 
@@ -142,7 +143,7 @@
         }
 
         .posts-btn:hover {
-            background: linear-gradient(135deg, #ee5a24 0%, #ff6b6b 100%);            
+            background: linear-gradient(135deg, #ee5a24 0%, #ff6b6b 100%);
         }
 
         .minis-btn {
@@ -151,7 +152,7 @@
 
         .minis-btn:hover {
             background: linear-gradient(135deg, #26d0ce 0%, #4ecdc4 100%);
-            
+
         }
 
         .content-btn {
@@ -160,7 +161,7 @@
 
         .content-btn:hover {
             background: linear-gradient(135deg, #4ecdc4 0%, #a8e6cf 100%);
-            
+
         }
 
         .error {
@@ -170,11 +171,12 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Login Form -->
-        <div id="login-container">           
-            
+        <div id="login-container">
+
             <form id="login-form" class="login-form">
                 <div class="form-group">
                     <label for="login-password">Password:</label>
@@ -187,8 +189,21 @@
 
         <!-- Navigation Buttons (shown after login) -->
         <div id="nav-container" class="nav-buttons">
-            <h1 class="welcome-text">Welcome <span class="name">Pranav</span></h1>            
-            
+            <h1 class="welcome-text">Welcome <span class="name">Pranav</span></h1>
+
+            <button id="logout-btn" class="logout-btn" style="
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+">Logout</button>
+
             <a href="manage.html" class="nav-btn posts-btn">Posts</a>
             <a href="https://minis.beyondmebtw.com/backend/minis.html" class="nav-btn minis-btn">Minis</a>
             <a href="https://content.beyondmebtw.com" class="nav-btn content-btn" target="_blank">Content</a>
@@ -199,4 +214,5 @@
     <script src="index.js"></script>
     <script src="authentication.js"></script>
 </body>
+
 </html>

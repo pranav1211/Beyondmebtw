@@ -1,83 +1,25 @@
-// index.js - Main application logic
+// index.js - Main application logic (manages only manage.html and index.html)
 document.addEventListener("DOMContentLoaded", () => {
-    // Initialize authentication system
+    // Initialize authentication system first
     window.authSystem.init();
 
     // Get current page info
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
     
-    // Handle page access and authentication
-    const isAuthenticated = window.authSystem.handlePageAccess();
-
     // Initialize based on current page
     if (currentPage === 'index.html') {
         initializeIndexPage();
     } else if (currentPage === 'manage.html') {
-        if (isAuthenticated) {
-            initializeManagePage();
-        }
-    } else if (currentPage === 'minis.html') {
-        if (isAuthenticated) {
-            initializeMinisPage();
-        }
+        initializeManagePage();
     }
 
     // INDEX PAGE INITIALIZATION
     function initializeIndexPage() {
-        const loginForm = document.getElementById("login-form");
-        const loginContainer = document.getElementById("login-container");
-        const navContainer = document.getElementById("nav-container");
-        const errorMessage = document.getElementById("error-message");
-
-        // Check if user is already logged in
-        const isLoggedIn = window.authSystem.isAuthenticated();
-        if (isLoggedIn) {
-            showNavigation();
-        }
-
-        if (loginForm) {
-            loginForm.addEventListener("submit", async (event) => {
-                event.preventDefault();
-                
-                const password = document.getElementById("login-password").value;
-                const loginBtn = loginForm.querySelector('.login-btn');
-                const originalText = loginBtn.textContent;
-                
-                loginBtn.textContent = 'Authenticating...';
-                loginBtn.disabled = true;
-
-                try {
-                    await window.authSystem.handleLogin(password);
-                    if (errorMessage) errorMessage.style.display = 'none';
-                    showNavigation();
-                } catch (error) {
-                    if (errorMessage) {
-                        errorMessage.textContent = error.message;
-                        errorMessage.style.display = 'block';
-                    }
-                    console.error(error);
-                } finally {
-                    loginBtn.textContent = originalText;
-                    loginBtn.disabled = false;
-                }
-            });
-        }
-
-        function showNavigation() {
-            if (loginContainer) loginContainer.style.display = "none";
-            if (navContainer) navContainer.style.display = "flex";
-        }
-
-        // Add click handlers for navigation buttons
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                if (!window.authSystem.isAuthenticated()) {
-                    e.preventDefault();
-                    alert("Please log in first.");
-                    location.reload();
-                }
-            });
-        });
+        // Set up authentication for index page
+        window.authSystem.setupIndexPageAuth();
+        
+        // Load data for display (public data, no auth needed)
+        loadLatestData();
     }
 
     // MANAGE PAGE INITIALIZATION
@@ -85,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const contentContainer = document.getElementById("content-container");
         const authLoading = document.getElementById("auth-loading");
 
-        // Hide loading message and show content
+        // Hide loading message and show content (auth is already checked by authSystem.init())
         if (authLoading) authLoading.style.display = "none";
         if (contentContainer) contentContainer.style.display = "block";
 
@@ -95,30 +37,50 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Load and display data
         loadLatestData();
+        
+        // Create logout button
+        createLogoutButton();
     }
 
-    // MINIS PAGE INITIALIZATION
-    function initializeMinisPage() {
-        // Hide auth loading if present
-        const authLoading = document.getElementById("auth-loading");
-        if (authLoading) authLoading.style.display = "none";
+    // CREATE LOGOUT BUTTON FOR MANAGE PAGE
+    function createLogoutButton() {
+        const logoutContainer = document.getElementById("logout-container") || 
+                               document.querySelector("header") || 
+                               document.querySelector(".nav-bar") || 
+                               document.body;
         
-        // Show content if there's a content container
-        const contentContainer = document.getElementById("content-container");
-        if (contentContainer) contentContainer.style.display = "block";
-        
-        console.log('Minis page initialized');
-        // Add minis-specific functionality here
-        setupMinisPage();
-    }
-
-    // MINIS PAGE SPECIFIC SETUP
-    function setupMinisPage() {
-        // Fill any password fields with stored auth key
-        window.authSystem.fillPasswordFields();
-        
-        // Add any minis-specific functionality here
-        console.log('Minis page setup complete');
+        if (!document.getElementById("logout-btn")) {
+            const logoutBtn = document.createElement("button");
+            logoutBtn.id = "logout-btn";
+            logoutBtn.className = "logout-btn";
+            logoutBtn.textContent = "Logout";
+            logoutBtn.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 10px 20px;
+                background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+                z-index: 1000;
+                transition: all 0.3s ease;
+            `;
+            
+            logoutBtn.addEventListener('mouseover', () => {
+                logoutBtn.style.transform = 'translateY(-2px)';
+                logoutBtn.style.boxShadow = '0 4px 12px rgba(255, 107, 107, 0.3)';
+            });
+            
+            logoutBtn.addEventListener('mouseout', () => {
+                logoutBtn.style.transform = 'translateY(0)';
+                logoutBtn.style.boxShadow = 'none';
+            });
+            
+            logoutContainer.appendChild(logoutBtn);
+        }
     }
 
     // CONTENT FORMS SETUP (for manage page)
@@ -456,10 +418,5 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="post-thumbnail">${post.thumbnail || 'No thumbnail'}</div>
             </div>
         `;
-    }
-
-    // Load data initially when the page loads (for index page without auth)
-    if (currentPage === 'index.html') {
-        loadLatestData();
     }
 });
