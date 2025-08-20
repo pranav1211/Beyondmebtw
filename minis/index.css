@@ -416,8 +416,8 @@ body {
 
 .minis-button {
     position: fixed;
-    top: 30px;
-    right: 30px;
+    top: 13px;
+    right: 200px;
     display: flex;
     align-items: center;
     gap: 20px;
@@ -427,12 +427,12 @@ body {
         #F39C12 50%,    /* Yellow */
         #27AE60 75%,    /* Green */
         #4A90E2 100%);  /* Back to Blue */
-    padding: 20px 35px;
+    padding: 18px 30px;
     border: none;
     border-radius: 50px;
     font-family: "Delius", cursive;
     font-weight: 700;
-    font-size: 28px;
+    font-size: 30px;
     color: #ffffff;
     text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
     cursor: pointer;

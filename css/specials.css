@@ -1,0 +1,175 @@
+.minis-button {
+    position: fixed;
+    top: 10px;
+    right: 200px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: linear-gradient(135deg,
+            #4A90E2 0%,
+            /* Blue */
+            #E74C3C 25%,
+            /* Red */
+            #F39C12 50%,
+            /* Yellow */
+            #27AE60 75%,
+            /* Green */
+            #4A90E2 100%);
+    /* Back to Blue */
+    padding: 20px 35px;
+    border: none;
+    border-radius: 50px;
+    font-family: "Delius", cursive;
+    font-weight: 700;
+    font-size: 28px;
+    color: #ffffff;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    z-index: 1000;
+
+    /* Enhanced 3D Effect for CTA */
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.4),
+        0 8px 20px rgba(0, 0, 0, 0.3),
+        inset 0 3px 8px rgba(255, 255, 255, 0.3),
+        inset 0 -3px 8px rgba(0, 0, 0, 0.2);
+    transform: perspective(1200px) rotateX(12deg) rotateY(-8deg);
+    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+    /* Subtle glow effect */
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.minis-button:hover {
+    transform: perspective(1200px) rotateX(5deg) rotateY(-3deg) translateY(-8px) scale(1.05);
+    box-shadow:
+        0 25px 50px rgba(0, 0, 0, 0.5),
+        0 12px 30px rgba(0, 0, 0, 0.4),
+        inset 0 4px 12px rgba(255, 255, 255, 0.4),
+        inset 0 -4px 12px rgba(0, 0, 0, 0.3),
+        0 0 25px rgba(74, 144, 226, 0.6);
+
+    /* Slight color shift on hover */
+    background: linear-gradient(135deg,
+            #5BA0F2 0%,
+            /* Lighter Blue */
+            #F75C4C 25%,
+            /* Lighter Red */
+            #FFAC22 50%,
+            /* Lighter Yellow */
+            #37BE70 75%,
+            /* Lighter Green */
+            #5BA0F2 100%);
+}
+
+.minis-button:active {
+    transform: perspective(1200px) rotateX(18deg) rotateY(-12deg) translateY(2px) scale(0.98);
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.4),
+        0 4px 12px rgba(0, 0, 0, 0.3),
+        inset 0 2px 6px rgba(255, 255, 255, 0.2),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.minis-button-icon {
+    width: 45px;
+    height: 45px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    filter: drop-shadow(3px 3px 8px rgba(0, 0, 0, 0.4));
+    /* Enhance the 3D book colors */
+    filter: drop-shadow(3px 3px 8px rgba(0, 0, 0, 0.4)) saturate(1.2) contrast(1.1);
+}
+
+.minis-button-text {
+    white-space: nowrap;
+    font-weight: 700;
+    letter-spacing: 1px;
+    /* Enhanced text shadow for better visibility */
+    text-shadow:
+        2px 2px 4px rgba(0, 0, 0, 0.6),
+        1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Pulsing attention effect */
+@keyframes subtle-pulse {
+
+    0%,
+    100% {
+        box-shadow:
+            0 15px 35px rgba(0, 0, 0, 0.4),
+            0 8px 20px rgba(0, 0, 0, 0.3),
+            inset 0 3px 8px rgba(255, 255, 255, 0.3),
+            inset 0 -3px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    50% {
+        box-shadow:
+            0 20px 45px rgba(0, 0, 0, 0.5),
+            0 12px 25px rgba(0, 0, 0, 0.4),
+            inset 0 3px 8px rgba(255, 255, 255, 0.4),
+            inset 0 -3px 8px rgba(0, 0, 0, 0.2),
+            0 0 20px rgba(74, 144, 226, 0.4);
+    }
+}
+
+.minis-button {
+    animation: subtle-pulse 3s ease-in-out infinite;
+}
+
+.minis-button:hover {
+    animation: none;
+    /* Stop pulsing on hover */
+}
+
+/* Media Queries for width and position changes */
+@media (max-width: 1440px) {
+    .minis-button {
+        top: 60px;
+        right: 100px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .minis-button {
+        top: 60px;
+        right: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .minis-button {
+        width: 40%;
+        position: relative;
+        justify-content: center;
+        right: -10px;
+        top: -10px;
+        font-size: 24px;
+        margin-bottom: 8px;
+    }
+
+    
+
+    .minis-button-icon {
+        width: 48px;
+        height: 48px;
+    }
+}
+
+@media (max-width: 480px) {
+    .minis-button {
+        width: 60%;
+        position: relative;
+        top: -10px;
+        right: auto;                
+        font-size: 24px;
+        margin-bottom: 8px;                
+        height: 10%;        
+    }    
+
+    .minis-button-icon {
+        width: 42px;
+        height: 42px;
+        
+    }
+}
