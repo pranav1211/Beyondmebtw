@@ -1,152 +1,25 @@
+// index.js - Main application logic
 document.addEventListener("DOMContentLoaded", () => {
-    // Get current page info - improved to handle different domains
-    const currentUrl = window.location.href;
-    const currentPath = window.location.pathname;
-    const currentPage = currentPath.split('/').pop() || 'index.html';
-    const currentDomain = window.location.hostname;
-    
-    // Determine page type based on URL patterns
-    function getPageType() {
-        // Check for index page (main authentication page)
-        if (currentPage === 'index.html' || currentPath === '/' || currentDomain === 'manage.beyondmebtw.com') {
-            return 'index';
-        }
-        
-        // Check for manage page
-        if (currentPage === 'manage.html' || currentPath.includes('/manage.html') || currentDomain.includes('manage.beyondmebtw.com')) {
-            return 'manage';
-        }
-        
-        // Check for minis page - handle both old and new locations
-        if (currentPage === 'minis.html' || 
-            currentPath.includes('/minis.html') || 
-            currentDomain === 'minis.beyondmebtw.com' ||
-            currentUrl.includes('minis.beyondmebtw.com')) {
-            return 'minis';
-        }
-        
-        return 'unknown';
-    }
-    
-    const pageType = getPageType();
-    
-    // Universal authentication check - improved for cross-domain
-    function checkAuthentication() {
-        // Try to get authentication from both sessionStorage and localStorage for cross-domain compatibility
-        let isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
-        
-        // Fallback to localStorage if sessionStorage is empty (for cross-domain scenarios)
-        if (!isLoggedIn) {
-            isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-            // Sync sessionStorage with localStorage if found
-            if (isLoggedIn) {
-                sessionStorage.setItem("isLoggedIn", "true");
-                const authKey = localStorage.getItem("authKey");
-                if (authKey) {
-                    sessionStorage.setItem("authKey", authKey);
-                }
-            }
-        }
-        
-        // If not on index page and not authenticated, redirect to main authentication
-        if (pageType !== 'index' && !isLoggedIn) {
-            // Show loading message briefly before redirect
-            const authLoading = document.getElementById("auth-loading");
-            if (authLoading) {
-                authLoading.style.display = "block";
-                authLoading.innerHTML = "<p>Authentication required. Redirecting to login...</p>";
-            }
-            
-            // Hide content containers while redirecting
-            const contentContainer = document.getElementById("content-container");
-            if (contentContainer) {
-                contentContainer.style.display = "none";
-            }
-            
-            // Redirect to main authentication page
-            setTimeout(() => {
-                window.location.href = 'https://manage.beyondmebtw.com/';
-            }, 1500);
-            return false;
-        }
-        
-        return isLoggedIn;
-    }
+    // Initialize authentication system
+    window.authSystem.init();
 
-    // Universal login function - improved with cross-domain storage
-    function handleLogin(password) {
-        const baseUrl = "https://manage.beyondmebtw.com/loginauth";
-
-        return fetch(baseUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                key: password
-            })
-        })
-        .then((response) => {
-            if (!response.ok) {
-                if (response.status === 403) {
-                    throw new Error("Authentication failed. Incorrect password.");
-                }
-                throw new Error(`Server responded with status: ${response.status}`);
-            }
-            return response.text();
-        })
-        .then(() => {
-            // Store authentication in both sessionStorage and localStorage for cross-domain compatibility
-            sessionStorage.setItem("isLoggedIn", "true");
-            sessionStorage.setItem("authKey", password);
-            localStorage.setItem("isLoggedIn", "true");
-            localStorage.setItem("authKey", password);
-
-            // Set expiration time (5 minutes)
-            const expirationTime = new Date().getTime() + (5 * 60 * 1000);
-            localStorage.setItem("authExpiration", expirationTime.toString());
-            
-            return true;
-        });
-    }
-
-    // Check if authentication has expired
-    function checkAuthenticationExpiration() {
-        const expirationTime = localStorage.getItem("authExpiration");
-        if (expirationTime) {
-            const currentTime = new Date().getTime();
-            if (currentTime > parseInt(expirationTime)) {
-                // Authentication expired, clear all auth data
-                sessionStorage.removeItem("isLoggedIn");
-                sessionStorage.removeItem("authKey");
-                localStorage.removeItem("isLoggedIn");
-                localStorage.removeItem("authKey");
-                localStorage.removeItem("authExpiration");
-                return false;
-            }
-        }
-        return true;
-    }
-
-    // Initialize based on page type
-    console.log(`Page type detected: ${pageType}`);
+    // Get current page info
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
     
-    // Check authentication expiration first
-    checkAuthenticationExpiration();
-    
-    if (pageType === 'index') {
+    // Handle page access and authentication
+    const isAuthenticated = window.authSystem.handlePageAccess();
+
+    // Initialize based on current page
+    if (currentPage === 'index.html') {
         initializeIndexPage();
-    } else if (pageType === 'manage') {
-        if (checkAuthentication()) {
+    } else if (currentPage === 'manage.html') {
+        if (isAuthenticated) {
             initializeManagePage();
         }
-    } else if (pageType === 'minis') {
-        if (checkAuthentication()) {
+    } else if (currentPage === 'minis.html') {
+        if (isAuthenticated) {
             initializeMinisPage();
         }
-    } else {
-        // Unknown page type, check authentication anyway
-        checkAuthentication();
     }
 
     // INDEX PAGE INITIALIZATION
@@ -157,15 +30,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const errorMessage = document.getElementById("error-message");
 
         // Check if user is already logged in
-        const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true" || 
-                          localStorage.getItem("isLoggedIn") === "true";
-        
-        if (isLoggedIn && checkAuthenticationExpiration()) {
+        const isLoggedIn = window.authSystem.isAuthenticated();
+        if (isLoggedIn) {
             showNavigation();
         }
 
         if (loginForm) {
-            loginForm.addEventListener("submit", (event) => {
+            loginForm.addEventListener("submit", async (event) => {
                 event.preventDefault();
                 
                 const password = document.getElementById("login-password").value;
@@ -175,22 +46,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 loginBtn.textContent = 'Authenticating...';
                 loginBtn.disabled = true;
 
-                handleLogin(password)
-                    .then(() => {
-                        if (errorMessage) errorMessage.style.display = 'none';
-                        showNavigation();
-                    })
-                    .catch((error) => {
-                        if (errorMessage) {
-                            errorMessage.textContent = error.message;
-                            errorMessage.style.display = 'block';
-                        }
-                        console.error(error);
-                    })
-                    .finally(() => {
-                        loginBtn.textContent = originalText;
-                        loginBtn.disabled = false;
-                    });
+                try {
+                    await window.authSystem.handleLogin(password);
+                    if (errorMessage) errorMessage.style.display = 'none';
+                    showNavigation();
+                } catch (error) {
+                    if (errorMessage) {
+                        errorMessage.textContent = error.message;
+                        errorMessage.style.display = 'block';
+                    }
+                    console.error(error);
+                } finally {
+                    loginBtn.textContent = originalText;
+                    loginBtn.disabled = false;
+                }
             });
         }
 
@@ -199,25 +68,13 @@ document.addEventListener("DOMContentLoaded", () => {
             if (navContainer) navContainer.style.display = "flex";
         }
 
-        // Add click handlers for navigation buttons with proper URLs
+        // Add click handlers for navigation buttons
         document.querySelectorAll('.nav-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true" || 
-                                 localStorage.getItem("isLoggedIn") === "true";
-                
-                if (!isLoggedIn || !checkAuthenticationExpiration()) {
+                if (!window.authSystem.isAuthenticated()) {
                     e.preventDefault();
                     alert("Please log in first.");
                     location.reload();
-                    return;
-                }
-                
-                // Update navigation URLs to proper domains
-                const href = btn.getAttribute('href');
-                if (href === 'manage.html') {
-                    btn.setAttribute('href', 'https://manage.beyondmebtw.com/manage.html');
-                } else if (href === 'minis.html') {
-                    btn.setAttribute('href', 'https://minis.beyondmebtw.com/backend/minis.html');
                 }
             });
         });
@@ -228,15 +85,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const contentContainer = document.getElementById("content-container");
         const authLoading = document.getElementById("auth-loading");
 
-        console.log("Initializing manage page...");
-
         // Hide loading message and show content
         if (authLoading) authLoading.style.display = "none";
-        if (contentContainer) {
-            contentContainer.style.display = "block";
-        } else {
-            console.error("Content container not found on manage page");
-        }
+        if (contentContainer) contentContainer.style.display = "block";
 
         // Set up forms
         setupContentForms();
@@ -244,77 +95,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Load and display data
         loadLatestData();
-        
-        console.log("Manage page initialization complete");
     }
 
-    // MINIS PAGE INITIALIZATION - Enhanced
+    // MINIS PAGE INITIALIZATION
     function initializeMinisPage() {
-        console.log("Initializing minis page...");
-        
         // Hide auth loading if present
         const authLoading = document.getElementById("auth-loading");
-        if (authLoading) {
-            authLoading.style.display = "none";
-        }
+        if (authLoading) authLoading.style.display = "none";
         
         // Show content if there's a content container
         const contentContainer = document.getElementById("content-container");
-        if (contentContainer) {
-            contentContainer.style.display = "block";
-            console.log("Minis content container displayed");
-        } else {
-            console.log("No content container found on minis page");
-        }
+        if (contentContainer) contentContainer.style.display = "block";
         
-        // Add authentication status indicator
-        const body = document.body;
-        if (body && !document.getElementById('auth-status')) {
-            const authStatus = document.createElement('div');
-            authStatus.id = 'auth-status';
-            authStatus.style.cssText = `
-                position: fixed;
-                top: 10px;
-                right: 10px;
-                background: #4CAF50;
-                color: white;
-                padding: 5px 10px;
-                border-radius: 3px;
-                font-size: 12px;
-                z-index: 1000;
-            `;
-            authStatus.textContent = 'Authenticated ✓';
-            body.appendChild(authStatus);
-            
-            // Remove after 3 seconds
-            setTimeout(() => {
-                if (authStatus && authStatus.parentNode) {
-                    authStatus.parentNode.removeChild(authStatus);
-                }
-            }, 3000);
-        }
-        
-        console.log('Minis page initialized successfully');
-        
-        // You can add minis-specific functionality here
-        initializeMinisSpecificFeatures();
+        console.log('Minis page initialized');
+        // Add minis-specific functionality here
+        setupMinisPage();
     }
 
-    // Minis-specific features
-    function initializeMinisSpecificFeatures() {
-        // Add any minis-specific initialization here
-        console.log("Initializing minis-specific features...");
+    // MINIS PAGE SPECIFIC SETUP
+    function setupMinisPage() {
+        // Fill any password fields with stored auth key
+        window.authSystem.fillPasswordFields();
         
-        // Example: Set up periodic authentication check for minis page
-        setInterval(() => {
-            if (!checkAuthenticationExpiration()) {
-                console.log("Authentication expired, redirecting...");
-                window.location.href = 'https://manage.beyondmebtw.com/';
-            }
-        }, 5 * 60 * 1000); // Check every 5 minutes
+        // Add any minis-specific functionality here
+        console.log('Minis page setup complete');
     }
 
-    // EXISTING MANAGE PAGE FUNCTIONS (keeping your original code)
+    // CONTENT FORMS SETUP (for manage page)
     function setupContentForms() {
         const forms = document.querySelectorAll("#content-container form:not(.blog-form)");
 
@@ -323,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            form.addEventListener("submit", (event) => {
+            form.addEventListener("submit", async (event) => {
                 event.preventDefault();
 
                 const formData = new FormData(form);
@@ -343,26 +150,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const baseUrl = "https://manage.beyondmebtw.com/latestdata";
 
-                fetch(baseUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formDataObject)
-                })
-                .then((response) => {
+                try {
+                    const response = await fetch(baseUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formDataObject)
+                    });
+
                     if (!response.ok) {
                         if (response.status === 403) {
                             throw new Error("Authentication failed. Check your API key.");
                         }
                         throw new Error(`Server responded with status: ${response.status}`);
                     }
-                    return response.text();
-                })
-                .then(() => {
+
+                    await response.text();
                     alert("Data updated successfully!");
 
-                    const authKey = sessionStorage.getItem("authKey") || localStorage.getItem("authKey");
+                    const authKey = window.authSystem.getAuthKey();
                     form.reset();
                     const passwordField = form.querySelector('input[name="key"]');
                     if (passwordField) {
@@ -370,17 +177,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
 
                     loadLatestData();
-                })
-                .catch((error) => {
+                } catch (error) {
                     alert(`Error: ${error.message}`);
                     console.error(error);
-                });
+                }
             });
         });
     }
 
+    // BLOG FORMS SETUP (for manage page)
     function setupBlogForms() {
-        const authKey = sessionStorage.getItem("authKey") || localStorage.getItem("authKey");
+        const authKey = window.authSystem.getAuthKey();
         const blogForm = document.getElementById("blog-form");
         const clearBlogFormBtn = document.getElementById("clear-blog-form");
 
@@ -391,7 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
             blogKeyField.value = authKey;
         }
 
-        blogForm.addEventListener("submit", (event) => {
+        blogForm.addEventListener("submit", async (event) => {
             event.preventDefault();
 
             const category = document.getElementById("blog-category").value.trim();
@@ -425,32 +232,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const baseUrl = "https://manage.beyondmebtw.com/blogdata";
 
-            fetch(baseUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestBody)
-            })
-            .then((response) => {
+            try {
+                const response = await fetch(baseUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
                 if (!response.ok) {
                     if (response.status === 403) {
                         throw new Error("Authentication failed. Check your password.");
                     }
                     throw new Error(`Server responded with status: ${response.status}`);
                 }
-                return response.text();
-            })
-            .then(() => {
+
+                await response.text();
                 const isNewPost = document.getElementById("is-new-post").checked;
                 alert(`Blog post ${isNewPost ? 'added' : 'updated'} successfully!`);
                 clearBlogForm();
                 loadLatestData();
-            })
-            .catch((error) => {
+            } catch (error) {
                 alert(`Error: ${error.message}`);
                 console.error(error);
-            });
+            }
         });
 
         clearBlogFormBtn.addEventListener("click", clearBlogForm);
@@ -471,6 +277,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // LOAD LATEST DATA
     function loadLatestData() {
         fetch('latest.json')
             .then((response) => {
@@ -483,23 +290,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 displayCurrentData(data);
                 createFeaturedPostsForms(data.featured);
                 loadBlogPostsFromData(data);
-                fillPasswordFields();
+                window.authSystem.fillPasswordFields();
             })
             .catch((error) => {
                 console.error('Error loading latest.json:', error);
             });
     }
 
-    function fillPasswordFields() {
-        const authKey = sessionStorage.getItem("authKey") || localStorage.getItem("authKey");
-        if (authKey) {
-            const passwordFields = document.querySelectorAll('input[type="password"][name="key"]');
-            passwordFields.forEach(field => {
-                field.value = authKey;
-            });
-        }
-    }
-
+    // DISPLAY CURRENT DATA
     function displayCurrentData(data) {
         displayLatestPost(data.mainPost);
     }
@@ -525,6 +323,7 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
     }
 
+    // CREATE FEATURED POSTS FORMS
     function createFeaturedPostsForms(featuredPosts = []) {
         const container = document.getElementById('featured-posts-container');
         if (!container) return;
@@ -583,6 +382,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // LOAD BLOG POSTS FROM DATA
     function loadBlogPostsFromData(data) {
         if (!data.categories) {
             console.error('No categories data found in latest.json');
@@ -659,19 +459,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Load data initially when the page loads (for index page without auth)
-    if (pageType === 'index') {
+    if (currentPage === 'index.html') {
         loadLatestData();
     }
-    
-    // Add logout functionality (useful for testing and security)
-    function logout() {
-        sessionStorage.clear();
-        localStorage.removeItem("isLoggedIn");
-        localStorage.removeItem("authKey");
-        localStorage.removeItem("authExpiration");
-        window.location.href = 'https://manage.beyondmebtw.com/';
-    }
-    
-    // Expose logout function globally for potential use
-    window.logout = logout;
 });
