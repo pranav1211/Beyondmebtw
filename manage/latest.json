@@ -1,7 +1,7 @@
 {
   "mainPost": {
     "title": "F1 Haptic Trailer: Doing It on Android",
-    "date": "2025-08-19",
+    "date": "2025-08-20",
     "excerpt": "When the F1 haptic trailer first dropped, it all that came to mind is WOW, If only there was a way to recreate this but…",
     "thumbnail": "https://beyondmebtw.com/assets/images/projects/haptic.webp",
     "link": "https://medium.com/@beyondmebtw/f1-haptic-trailer-doing-it-on-android-e31cbec434a7"
@@ -34,32 +34,6 @@
       "excerpt": "This movie is a love letter, to motorsport, to Formula 1, to the machines that defy limits. A seamless blend of drama and racing…",
       "thumbnail": "https://content.beyondmebtw.com/movietv/movie/mov44.webp",
       "link": "https://medium.com/@beyondmebtw/f1-the-movie-review-fast-fun-and-entertaining-68be7e150f6d"
-    }
-  ],
-  "projects": [
-    {
-      "title": "Gradient Club Website",
-      "excerpt": "The official website of the Gradient student Club at BMSCE",
-      "link": "https://gradientaiml.tech",
-      "emoji": "🌐"
-    },
-    {
-      "title": "My Library",
-      "excerpt": "A personal library organizer where you can scan books and access them anytime",
-      "link": "https://library.beyondmebtw.com",
-      "emoji": "📚"
-    },
-    {
-      "title": "Real Time Driver Monitoring System",
-      "excerpt": "An application that uses AI, ML and Computer vision technology to help enhance road safety.",
-      "link": "https://github.com/pranav1211/RTDMS",
-      "emoji": "🚗"
-    },
-    {
-      "title": "Pair Game",
-      "excerpt": "A fun game inspired by classic memory games created from scratch",
-      "link": "https://beyondmebtw.com/projects/pairgame",
-      "emoji": "🎮"
     }
   ],
   "categories": {
