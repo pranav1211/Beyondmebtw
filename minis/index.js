@@ -63,8 +63,9 @@ class MinisApp {
 
         try {
             const newPosts = await Promise.all(promises);
-            this.posts.push(...newPosts.filter(post => post !== null));
-            this.renderNewPosts(newPosts.filter(post => post !== null));
+            const validPosts = newPosts.filter(post => post !== null);
+            this.posts.push(...validPosts);
+            this.renderNewPosts(validPosts);
             this.currentPage++;
 
             if (endIndex >= this.metadata.length) {
@@ -114,57 +115,90 @@ class MinisApp {
     renderNewPosts(posts) {
         const container = document.getElementById('postsContainer');
         const fragment = document.createDocumentFragment();
-        let lastDate = null;
+        
+        // Get the last rendered date to compare
+        const existingPosts = container.querySelectorAll('.mini-post-container');
+        let lastRenderedDate = null;
+        if (existingPosts.length > 0) {
+            const lastPost = existingPosts[existingPosts.length - 1];
+            const lastDateTab = lastPost.querySelector('.date-tab');
+            if (lastDateTab) {
+                // Extract the date from the formatted date
+                lastRenderedDate = this.getDateFromFormattedDate(lastDateTab.textContent);
+            }
+        }
 
         posts.forEach((post, index) => {
             const currentDate = post.date;
-            const showDate = currentDate !== lastDate;
+            const isFirstPost = index === 0 && existingPosts.length === 0;
+            const isSameDate = currentDate === lastRenderedDate;
             
-            const postElement = this.createPostElement(post, showDate);
+            const postElement = this.createPostElement(post, !isSameDate);
+            if (isSameDate && !isFirstPost) {
+                postElement.classList.add('same-date');
+            }
             fragment.appendChild(postElement);
 
             // Add divider between posts (except after the last post)
-            if (index < posts.length - 1 || this.posts.length > posts.length) {
+            if (index < posts.length - 1 || !this.allLoaded) {
                 const divider = document.createElement('div');
                 divider.className = 'post-divider';
+                
+                // Check if next post has same date for reduced spacing
+                if (index < posts.length - 1) {
+                    const nextPost = posts[index + 1];
+                    if (nextPost.date === currentDate) {
+                        divider.classList.add('reduced');
+                    }
+                }
+                
                 fragment.appendChild(divider);
             }
 
-            lastDate = currentDate;
+            lastRenderedDate = currentDate;
         });
 
         container.appendChild(fragment);
     }
 
     createPostElement(post, showDate = true) {
-        const postDiv = document.createElement('div');
-        postDiv.className = 'mini-post';
-        if (!showDate) {
-            postDiv.classList.add('time-only');
-        }
-        postDiv.setAttribute('data-id', post.id);
+        const postContainer = document.createElement('div');
+        postContainer.className = 'mini-post-container';
+        postContainer.setAttribute('data-id', post.id);
 
         const formattedDate = this.formatDate(post.date);
         const formattedTime = this.formatTime(post.time);
 
-        postDiv.innerHTML = `
-            <div class="mini-post-header">
+        // Create date tab if needed
+        let dateTabHtml = '';
+        if (showDate) {
+            dateTabHtml = `<div class="date-tab">${formattedDate}</div>`;
+        }
+
+        // Create tags with time as first element
+        let tagsHtml = '';
+        if (post.tags && post.tags.length > 0 || formattedTime) {
+            const timeTag = `<span class="time-tag">${formattedTime}</span>`;
+            const regularTags = post.tags.map(tag => `<span class="tag">${this.escapeHtml(tag)}</span>`).join('');
+            tagsHtml = `
+                <div class="mini-post-meta">
+                    ${timeTag}
+                    ${regularTags}
+                </div>
+            `;
+        }
+
+        postContainer.innerHTML = `
+            ${dateTabHtml}
+            <div class="mini-post">
                 <div class="mini-post-content">
                     ${post.content}
                 </div>
-                <div class="mini-post-datetime">
-                    <div class="mini-post-date">${formattedDate}</div>
-                    <div class="mini-post-time">${formattedTime}</div>
-                </div>
+                ${tagsHtml}
             </div>
-            ${post.tags && post.tags.length > 0 ? `
-                <div class="mini-post-tags">
-                    ${post.tags.map(tag => `<span class="tag">${this.escapeHtml(tag)}</span>`).join('')}
-                </div>
-            ` : ''}
         `;
 
-        return postDiv;
+        return postContainer;
     }
 
     formatDate(dateStr) {
@@ -186,6 +220,18 @@ class MinisApp {
             return `${timeStr} IST`;
         } catch (error) {
             return timeStr;
+        }
+    }
+
+    getDateFromFormattedDate(formattedDate) {
+        // This is a helper to extract the original date from formatted date
+        // Since we're comparing with post.date directly, we need to reverse the formatting
+        // This is a simplified approach - in production, you might want to store the original date
+        try {
+            const date = new Date(formattedDate);
+            return date.toISOString().split('T')[0];
+        } catch (error) {
+            return null;
         }
     }
 
