@@ -7,6 +7,14 @@ Check out the site : www.Beyondmebtw.com
 
 ## Changelog:
 
+### 2.9 (21/08/25)
+- minis.beyondmebtw.com is launched, it is a live blog which is a short form version of content delivery
+- backend support for adding new posts was added with features like images,links,italics and bold also added.
+- had to change the way the authentication worked from session storage to cookies to allow for easier aunthenitcation due the fact that the backend for the minis is shifted from manage to its own folder
+- made the minis page more stylized than the rest, might do it for the others or create a new seprate version called BMB in HD3D just for fun to see how much design can be made
+- added a minis cta on home,blog,projects and about page. responsiveness was done for that as well.
+- fixed featured projects on homepage that was removed when manage server functions were removed for updating projects due not being used.
+
 ### 2.8 (19/08/25)
 - added a feature in projects page where it scrolls to the top when view details are clicked on smaller devices
 - new project was added (haptic trailer : android recreation)
