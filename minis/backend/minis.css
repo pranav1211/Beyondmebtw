@@ -19,8 +19,8 @@ body {
 
 header {
     text-align: center;
-    margin-bottom: 40px;
-    padding: 30px 0;
+    margin-bottom: 30px;
+    padding: 20px 0;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border-radius: 12px;
@@ -28,14 +28,9 @@ header {
 }
 
 header h1 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
+    font-size: 1.8rem;
+    margin-bottom: 5px;
     font-weight: 700;
-}
-
-header p {
-    font-size: 1.1rem;
-    opacity: 0.9;
 }
 
 .content-form {
@@ -73,8 +68,9 @@ header p {
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
-.textarea-container {
-    position: relative;
+.form-group input[type="password"] {
+    background-color: #f9fafb;
+    font-family: monospace;
 }
 
 .form-group textarea {
@@ -100,48 +96,6 @@ header p {
 .form-group textarea::placeholder {
     color: #9ca3af;
     line-height: 1.4;
-}
-
-/* Drag and Drop Overlay */
-.drop-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(102, 126, 234, 0.95);
-    border-radius: 8px;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    border: 3px dashed white;
-}
-
-.drop-overlay.active {
-    display: flex;
-}
-
-.drop-message {
-    text-align: center;
-    color: white;
-}
-
-.drop-message svg {
-    margin-bottom: 16px;
-    opacity: 0.9;
-}
-
-.drop-message p {
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
-/* Drag states */
-.textarea-container.drag-over textarea {
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
-    background-color: rgba(102, 126, 234, 0.05);
 }
 
 .form-actions {
@@ -201,7 +155,6 @@ header p {
     }
 }
 
-/* Status Messages */
 .status-message {
     margin-top: 24px;
     padding: 16px 20px;
@@ -228,20 +181,19 @@ header p {
     border: 1px solid #93c5fd;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
     .container {
         padding: 16px;
     }
-    
+
     header h1 {
-        font-size: 2rem;
+        font-size: 1.5rem;
     }
-    
+
     .content-form {
         padding: 24px;
     }
-    
+
     .form-group textarea {
         font-size: 0.95rem;
     }
