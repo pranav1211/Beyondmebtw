@@ -154,15 +154,12 @@ ${content}`;
     }
 
     setupRoutes() {
-        // Serve static files (CSS, JS, images)
         this.app.use(express.static(path.join(__dirname, 'public')));
 
-        // Main page - serve the HTML file
         this.app.get('/', (req, res) => {
             res.sendFile(path.join(__dirname, 'minis.html'));
         });
 
-        // POST /add - Create new mini
         this.app.post('/add', async (req, res) => {
             try {
                 const result = await this.createMini(req.body);
@@ -177,27 +174,6 @@ ${content}`;
                     error: error.message
                 });
             }
-        });
-
-        // Health check endpoint
-        this.app.get('/health', (req, res) => {
-            res.json({
-                status: 'ok',
-                timestamp: new Date().toISOString(),
-                service: 'minis-backend',
-                environment: process.env.NODE_ENV || 'development'
-            });
-        });
-
-        // API status endpoint
-        this.app.get('/status', (req, res) => {
-            res.json({
-                service: 'Minis Backend',
-                version: '1.0.0',
-                status: 'running',
-                timestamp: new Date().toISOString(),
-                uptime: process.uptime()
-            });
         });
 
         // 404 handler for unknown routes
