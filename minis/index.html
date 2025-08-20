@@ -1,5 +1,55 @@
-<html>
-    <body>
-<h1>Test</h1>
-    </body>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Minis by BeyondMeBtw - Short-form writing, quick thoughts, updates, and little ideas that don't need a full blog post.">
+    <title>Minis | BeyondMeBtw</title>
+    <link rel="icon" type="image/x-icon" href="https://beyondmebtw.com/assets/images/favicon.ico">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Delius&family=Kavoon&family=Kreon:wght@300&family=Permanent+Marker&display=swap');
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="header-container">
+        <a href="https://beyondmebtw.com" class="home-button">
+            <i class="fas fa-home"></i> Home
+        </a>
+        <h1 class="page-title">Minis<br>by<br>Beyond Me Btw</h1>
+    </div>
+
+    <div class="main-container">
+        <div class="intro-section">
+            <h2>Minis</h2>
+            <p><strong>Minis</strong> is my space for short-form writing like quick thoughts, updates, and little ideas
+                that don't need a full blog post. Unlike my longer essays, Minis let me share more casually and more
+                often, whether it's a passing thought, something I'm working on, or just something I feel like putting
+                out there.</p>
+        </div>
+
+        <div class="content-section">
+            <div id="postsContainer">
+                <!-- Posts will be loaded here -->
+            </div>
+
+            <div class="loading-container" id="loadingContainer">
+                <div class="loading-spinner" id="loadingSpinner" style="display: none;"></div>
+                <button class="load-more-btn" id="loadMoreBtn" style="display: none;">Load More Posts</button>
+                <div class="no-results" id="noResults" style="display: none;">
+                    <h3>No minis found</h3>
+                    <p>Check back soon for new content!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.2/marked.min.js"></script>
+    <script src="index.js"></script>
+</body>
+
 </html>
