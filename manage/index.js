@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (checkAuthentication()) {
             initializeManagePage();
         }
-    } else if (currentPage === 'https://minis.beyondmebtw.com/backend/minis.html') {
+    } else if (currentPage === 'minis.html') {
         if (checkAuthentication()) {
             initializeMinisPage();
         }
