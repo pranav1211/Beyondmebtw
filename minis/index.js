@@ -1,4 +1,3 @@
-
 class MinisApp {
     constructor() {
         this.metadata = [];
@@ -96,7 +95,6 @@ class MinisApp {
 
         return {
             id: metadata.id || Date.now(),
-            title: metadata.title || 'Untitled',
             datetime: metadata.datetime || new Date().toISOString(),
             tags: metadata.tags || [],
             content: htmlContent,
@@ -128,36 +126,68 @@ class MinisApp {
         postDiv.className = 'mini-post';
         postDiv.setAttribute('data-id', post.id);
 
-        const formattedDate = this.formatDate(post.datetime);
+        const { formattedDate, formattedTime } = this.parseDateTime(post.datetime);
 
         postDiv.innerHTML = `
                     <div class="mini-post-header">
-                        <h3 class="mini-post-title">${this.escapeHtml(post.title)}</h3>
-                        <span class="mini-post-date">${formattedDate}</span>
+                        <div></div>
+                        <div class="mini-post-datetime">
+                            <div class="mini-post-date">${formattedDate}</div>
+                            <div class="mini-post-time">${formattedTime}</div>
+                        </div>
+                    </div>
+                    <div class="mini-post-content">
+                        ${post.content}
                     </div>
                     ${post.tags && post.tags.length > 0 ? `
                         <div class="mini-post-tags">
                             ${post.tags.map(tag => `<span class="tag">${this.escapeHtml(tag)}</span>`).join('')}
                         </div>
                     ` : ''}
-                    <div class="mini-post-content">
-                        ${post.content}
-                    </div>
                 `;
 
         return postDiv;
     }
 
-    formatDate(datetime) {
+    parseDateTime(datetime) {
         try {
-            const date = new Date(datetime);
-            return date.toLocaleDateString('en-US', {
+            // Handle format like: 2025-08-20T13:27GMT+00
+            let dateStr = datetime;
+
+            // Extract timezone offset if present
+            const gmtMatch = dateStr.match(/GMT([+-]\d{2})/);
+            let timezoneOffset = 0;
+
+            if (gmtMatch) {
+                timezoneOffset = parseInt(gmtMatch[1]);
+                dateStr = dateStr.replace(/GMT[+-]\d{2}/, '');
+            }
+
+            // Parse the datetime
+            const date = new Date(dateStr);
+
+            // Adjust for timezone offset
+            date.setHours(date.getHours() - timezoneOffset);
+
+            const formattedDate = date.toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
             });
+
+            const formattedTime = date.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+
+            return { formattedDate, formattedTime };
         } catch (error) {
-            return datetime;
+            console.error('Error parsing datetime:', datetime, error);
+            return {
+                formattedDate: 'Invalid Date',
+                formattedTime: ''
+            };
         }
     }
 
