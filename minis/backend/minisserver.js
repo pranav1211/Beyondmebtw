@@ -6,8 +6,10 @@ class MinisServer {
     constructor() {
         this.app = express();
         this.port = process.env.PORT || 7004;
-        // Point to the domain directory for content storage
-        this.contentDir = path.join('minis.beyondmebtw.com/content');
+        
+        // Use absolute path to ensure consistent directory location
+        // This assumes the script is in the same directory as minis.beyondmebtw.com folder
+        this.contentDir = path.resolve(__dirname, 'minis.beyondmebtw.com', 'content');
         this.metadataFile = path.join(this.contentDir, 'metadata.json');
 
         this.setupMiddleware();
@@ -17,16 +19,21 @@ class MinisServer {
 
     async ensureDirectories() {
         try {
-            await fs.access(this.contentDir);
-        } catch {
+            // Create the full directory path if it doesn't exist
             await fs.mkdir(this.contentDir, { recursive: true });
+            console.log(`Content directory ensured: ${this.contentDir}`);
+        } catch (error) {
+            console.error(`Error creating content directory: ${error.message}`);
+            throw error;
         }
 
         // Ensure metadata.json exists
         try {
             await fs.access(this.metadataFile);
+            console.log(`Metadata file exists: ${this.metadataFile}`);
         } catch {
             await fs.writeFile(this.metadataFile, JSON.stringify([], null, 2), 'utf8');
+            console.log(`Created metadata file: ${this.metadataFile}`);
         }
     }
 
@@ -121,6 +128,9 @@ ${content}`;
         const mdPath = path.join(this.contentDir, filename);
 
         try {
+            // Log where we're trying to write
+            console.log(`Creating mini at: ${mdPath}`);
+            
             // Write markdown file
             await fs.writeFile(mdPath, markdownContent, 'utf8');
 
@@ -129,6 +139,8 @@ ${content}`;
             existingMetadata.push(metadata);
             await this.saveMetadata(existingMetadata);
 
+            console.log(`Successfully created mini: ${filename}`);
+
             return {
                 success: true,
                 id,
@@ -136,6 +148,7 @@ ${content}`;
                 metadata
             };
         } catch (error) {
+            console.error(`Failed to create mini: ${error.message}`);
             throw new Error(`Failed to create mini: ${error.message}`);
         }
     }
@@ -165,8 +178,6 @@ ${content}`;
                 });
             }
         });
-
-
 
         // Health check endpoint
         this.app.get('/health', (req, res) => {
