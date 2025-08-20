@@ -8,8 +8,8 @@ class MinisServer {
         this.port = process.env.PORT || 7004;
         
         // Use absolute path to ensure consistent directory location
-        // This assumes the script is in the same directory as minis.beyondmebtw.com folder
-        this.contentDir = path.resolve(__dirname, 'minis.beyondmebtw.com', 'content');
+        // Go up one level from backend folder, then into content folder
+        this.contentDir = path.resolve(__dirname, '..', 'content');
         this.metadataFile = path.join(this.contentDir, 'metadata.json');
 
         this.setupMiddleware();
