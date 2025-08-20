@@ -21,7 +21,15 @@ class MinisApp {
             const response = await fetch('https://minis.beyondmebtw.com/content/metadata.json');
             if (!response.ok) throw new Error('Failed to load metadata');
             this.metadata = await response.json();
-            console.log('Loaded metadata:', this.metadata);
+            
+            // Sort metadata by date and time (latest first)
+            this.metadata.sort((a, b) => {
+                const dateA = new Date(a.date + 'T' + a.time);
+                const dateB = new Date(b.date + 'T' + b.time);
+                return dateB - dateA;
+            });
+            
+            console.log('Loaded and sorted metadata:', this.metadata);
         } catch (error) {
             console.error('Error loading metadata:', error);
             this.showNoResults();
@@ -95,7 +103,8 @@ class MinisApp {
 
         return {
             id: metadata.id || Date.now(),
-            datetime: metadata.datetime || new Date().toISOString(),
+            date: metadata.date,
+            time: metadata.time,
             tags: metadata.tags || [],
             content: htmlContent,
             filename: metadata.filename
@@ -105,9 +114,13 @@ class MinisApp {
     renderNewPosts(posts) {
         const container = document.getElementById('postsContainer');
         const fragment = document.createDocumentFragment();
+        let lastDate = null;
 
         posts.forEach((post, index) => {
-            const postElement = this.createPostElement(post);
+            const currentDate = post.date;
+            const showDate = currentDate !== lastDate;
+            
+            const postElement = this.createPostElement(post, showDate);
             fragment.appendChild(postElement);
 
             // Add divider between posts (except after the last post)
@@ -116,78 +129,63 @@ class MinisApp {
                 divider.className = 'post-divider';
                 fragment.appendChild(divider);
             }
+
+            lastDate = currentDate;
         });
 
         container.appendChild(fragment);
     }
 
-    createPostElement(post) {
+    createPostElement(post, showDate = true) {
         const postDiv = document.createElement('div');
         postDiv.className = 'mini-post';
+        if (!showDate) {
+            postDiv.classList.add('time-only');
+        }
         postDiv.setAttribute('data-id', post.id);
 
-        const { formattedDate, formattedTime } = this.parseDateTime(post.datetime);
+        const formattedDate = this.formatDate(post.date);
+        const formattedTime = this.formatTime(post.time);
 
         postDiv.innerHTML = `
-                    <div class="mini-post-header">
-                        <div></div>
-                        <div class="mini-post-datetime">
-                            <div class="mini-post-date">${formattedDate}</div>
-                            <div class="mini-post-time">${formattedTime}</div>
-                        </div>
-                    </div>
-                    <div class="mini-post-content">
-                        ${post.content}
-                    </div>
-                    ${post.tags && post.tags.length > 0 ? `
-                        <div class="mini-post-tags">
-                            ${post.tags.map(tag => `<span class="tag">${this.escapeHtml(tag)}</span>`).join('')}
-                        </div>
-                    ` : ''}
-                `;
+            <div class="mini-post-header">
+                <div class="mini-post-content">
+                    ${post.content}
+                </div>
+                <div class="mini-post-datetime">
+                    <div class="mini-post-date">${formattedDate}</div>
+                    <div class="mini-post-time">${formattedTime}</div>
+                </div>
+            </div>
+            ${post.tags && post.tags.length > 0 ? `
+                <div class="mini-post-tags">
+                    ${post.tags.map(tag => `<span class="tag">${this.escapeHtml(tag)}</span>`).join('')}
+                </div>
+            ` : ''}
+        `;
 
         return postDiv;
     }
 
-    parseDateTime(datetime) {
+    formatDate(dateStr) {
         try {
-            // Handle format like: 2025-08-20T13:27GMT+00
-            let dateStr = datetime;
-
-            // Extract timezone offset if present
-            const gmtMatch = dateStr.match(/GMT([+-]\d{2})/);
-            let timezoneOffset = 0;
-
-            if (gmtMatch) {
-                timezoneOffset = parseInt(gmtMatch[1]);
-                dateStr = dateStr.replace(/GMT[+-]\d{2}/, '');
-            }
-
-            // Parse the datetime
             const date = new Date(dateStr);
-
-            // Adjust for timezone offset
-            date.setHours(date.getHours() - timezoneOffset);
-
-            const formattedDate = date.toLocaleDateString('en-US', {
+            return date.toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
             });
-
-            const formattedTime = date.toLocaleTimeString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true
-            });
-
-            return { formattedDate, formattedTime };
         } catch (error) {
-            console.error('Error parsing datetime:', datetime, error);
-            return {
-                formattedDate: 'Invalid Date',
-                formattedTime: ''
-            };
+            return dateStr;
+        }
+    }
+
+    formatTime(timeStr) {
+        try {
+            // Append IST to the time
+            return `${timeStr} IST`;
+        } catch (error) {
+            return timeStr;
         }
     }
 

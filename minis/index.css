@@ -14,8 +14,8 @@ body {
 /* Header */
 .header-container {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    justify-content: center;
+    align-items: center;
     margin-bottom: 40px;
     position: relative;
 }
@@ -33,6 +33,8 @@ body {
     transition: all 0.3s ease;
     text-decoration: none;
     display: inline-block;
+    position: absolute;
+    left: 95px;
 }
 
 .home-button:hover {
@@ -41,9 +43,6 @@ body {
 }
 
 .page-title {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
     font-family: "Permanent Marker", cursive;
     color: #3b342d;
     text-align: center;
@@ -52,17 +51,10 @@ body {
 
 .page-title .minis {
     font-size: 48px;
-    display: block;
-}
-
-.page-title .by-text {
-    font-size: 24px;
-    display: block;
 }
 
 .page-title .brand {
     font-size: 32px;
-    display: block;
 }
 
 /* Main Container */
@@ -70,7 +62,7 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 400px 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 40px;
     align-items: start;
 }
@@ -84,6 +76,7 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     position: sticky;
     top: 20px;
+    margin-left: 95px;
 }
 
 .intro-section h2 {
@@ -126,28 +119,25 @@ body {
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 15px;
-    flex-wrap: wrap;
-    gap: 10px;
+    gap: 20px;
 }
 
 .mini-post-datetime {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    flex-shrink: 0;
     text-align: right;
 }
 
 .mini-post-date {
     color: #3b342d;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
     margin-bottom: 2px;
 }
 
 .mini-post-time {
     color: #8b7355;
-    font-size: 14px;
-    font-style: italic;
+    font-size: 16px;
+    font-weight: 500;
 }
 
 .mini-post-content {
@@ -155,13 +145,14 @@ body {
     font-size: 18px;
     line-height: 1.6;
     margin-bottom: 15px;
+    flex: 1;
 }
 
 .mini-post-content h1,
 .mini-post-content h2,
 .mini-post-content h3 {
     color: #3b342d;
-    margin: 20px 0 10px 0;
+    margin: 10px 0;
     font-size: 24px;
     font-weight: 600;
 }
@@ -218,6 +209,11 @@ body {
     border-radius: 15px;
     font-size: 14px;
     font-weight: 500;
+}
+
+/* Time-only post (same date as previous) */
+.mini-post.time-only .mini-post-date {
+    display: none;
 }
 
 /* Divider between posts */
@@ -313,12 +309,6 @@ body {
         gap: 20px;
     }
 
-    .page-title {
-        position: static;
-        transform: none;
-        margin: 20px 0;
-    }
-
     .page-title .minis {
         font-size: 36px;
     }
@@ -327,18 +317,20 @@ body {
         font-size: 24px;
     }
 
-    .page-title .by-text {
-        font-size: 18px;
-    }
-
     .header-container {
         flex-direction: column;
         align-items: center;
         gap: 20px;
     }
 
+    .home-button {
+        position: static;
+        left: auto;
+    }
+
     .intro-section {
         position: static;
+        margin-left: 0;
     }
 
     .mini-post-header {
@@ -347,7 +339,6 @@ body {
     }
 
     .mini-post-datetime {
-        align-items: flex-start;
         text-align: left;
     }
 }
