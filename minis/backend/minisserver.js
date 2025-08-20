@@ -71,10 +71,19 @@ class MinisServer {
         return Date.now().toString(36) + Math.random().toString(36).substr(2);
     }
 
-    formatDateTime() {
+    formatDate() {
         const now = new Date();
-        // Format as ISO 8601 with timezone offset
-        return now.toISOString().slice(0, 16) + now.toTimeString().slice(9, 15);
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    formatTime() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        return `${hours}:${minutes}`;
     }
 
     async loadMetadata() {
@@ -176,13 +185,15 @@ class MinisServer {
 
         const filename = this.generateFilename();
         const id = this.generateId();
-        const datetime = this.formatDateTime();
+        const date = this.formatDate();
+        const time = this.formatTime();
 
         // Create metadata object (without content)
         const metadata = {
             id,
             title,
-            datetime,
+            date,
+            time,
             tags,
             filename
         };
@@ -191,7 +202,8 @@ class MinisServer {
         const markdownContent = `---
 id: ${id}
 title: ${title}
-datetime: ${datetime}
+date: ${date}
+time: ${time}
 tags: [${tags.map(tag => `"${tag}"`).join(', ')}]
 ---
 
