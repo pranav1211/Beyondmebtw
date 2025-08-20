@@ -1,13 +1,35 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Get current page info
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    // Get current page info - Updated to handle new path structure
+    const currentPath = window.location.pathname;
+    const currentPage = currentPath.split('/').pop() || 'index.html';
+    const currentDomain = window.location.hostname;
+    
+    // Check if we're on a protected path
+    function isProtectedPath() {
+        // Check for manage.html (always protected)
+        if (currentPage === 'manage.html') {
+            return true;
+        }
+        
+        // Check for specific protected minis paths only
+        const protectedPaths = [
+            '/backend/minis.html',            
+        ];       
+        
+        if (currentDomain.includes('minis.beyondmebtw.com') && currentPage === 'minis.html' && currentPath.includes('/backend/')) {
+            return true;
+        }
+        
+        // Check for other protected paths
+        return protectedPaths.some(path => currentPath.includes(path));
+    }
     
     // Universal authentication check
     function checkAuthentication() {
         const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
         
-        // If not on index page and not authenticated, redirect to index
-        if (currentPage !== 'index.html' && !isLoggedIn) {
+        // If on a protected path and not authenticated, redirect to index
+        if (isProtectedPath() && !isLoggedIn) {
             // Show loading message briefly before redirect
             const authLoading = document.getElementById("auth-loading");
             if (authLoading) {
@@ -20,9 +42,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 contentContainer.style.display = "none";
             }
             
+            // Determine redirect URL - only redirect to main site if on protected minis path
+            let redirectUrl = 'index.html';
+            if (currentDomain.includes('minis.beyondmebtw.com') && currentPath.includes('/backend/minis.html')) {
+                redirectUrl = 'https://beyondmebtw.com/index.html';
+            } else if (currentDomain.includes('beyondmebtw.com')) {
+                redirectUrl = '/index.html';
+            }
+            
             // Redirect after a brief delay
             setTimeout(() => {
-                window.location.href = 'index.html';
+                window.location.href = redirectUrl;
             }, 1000);
             return false;
         }
@@ -59,14 +89,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Initialize based on current page
-    if (currentPage === 'index.html') {
+    // Initialize based on current page - Updated logic
+    if (currentPage === 'index.html' && !isProtectedPath()) {
         initializeIndexPage();
-    } else if (currentPage === 'manage.html') {
+    } else if (currentPage === 'manage.html' || currentPath.includes('manage.html')) {
         if (checkAuthentication()) {
             initializeManagePage();
         }
-    } else if (currentPage === 'https://beyondmebtw.com/minis/backend/minis.html') {
+    } else if (currentPage === 'minis.html' || isProtectedPath()) {
         if (checkAuthentication()) {
             initializeMinisPage();
         }
@@ -120,13 +150,20 @@ document.addEventListener("DOMContentLoaded", () => {
             if (navContainer) navContainer.style.display = "flex";
         }
 
-        // Add click handlers for navigation buttons
+        // Add click handlers for navigation buttons - Updated to handle cross-domain navigation
         document.querySelectorAll('.nav-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 if (sessionStorage.getItem("isLoggedIn") !== "true") {
                     e.preventDefault();
                     alert("Please log in first.");
                     location.reload();
+                    return;
+                }
+                
+                // Handle minis button click for cross-domain navigation
+                if (btn.getAttribute('href') && btn.getAttribute('href').includes('minis')) {
+                    // Allow the navigation to proceed since user is authenticated
+                    // The authentication will be checked again on the target page
                 }
             });
         });
@@ -149,8 +186,10 @@ document.addEventListener("DOMContentLoaded", () => {
         loadLatestData();
     }
 
-    // MINIS PAGE INITIALIZATION
+    // MINIS PAGE INITIALIZATION - Enhanced for new path structure
     function initializeMinisPage() {
+        console.log('Initializing minis page at path:', currentPath);
+        
         // Hide auth loading if present
         const authLoading = document.getElementById("auth-loading");
         if (authLoading) authLoading.style.display = "none";
@@ -159,10 +198,31 @@ document.addEventListener("DOMContentLoaded", () => {
         const contentContainer = document.getElementById("content-container");
         if (contentContainer) contentContainer.style.display = "block";
         
-        console.log('Minis page initialized');
+        // Add logout functionality
+        const logoutBtn = document.getElementById("logout-btn");
+        if (logoutBtn) {
+            logoutBtn.addEventListener("click", () => {
+                sessionStorage.removeItem("isLoggedIn");
+                sessionStorage.removeItem("authKey");
+                
+                // Redirect to main site index
+                window.location.href = "https://beyondmebtw.com/index.html";
+            });
+        }
+        
+        console.log('Minis page initialized successfully');
         // You can add minis-specific functionality here
     }
 
+    // Add global function to check authentication status (useful for debugging)
+    window.checkAuthStatus = function() {
+        console.log('Current path:', currentPath);
+        console.log('Current page:', currentPage);
+        console.log('Current domain:', currentDomain);
+        console.log('Is protected path:', isProtectedPath());
+        console.log('Is logged in:', sessionStorage.getItem("isLoggedIn"));
+        console.log('Auth key exists:', !!sessionStorage.getItem("authKey"));
+    };
 
     // EXISTING MANAGE PAGE FUNCTIONS (keeping your original code)
     function setupContentForms() {
@@ -509,7 +569,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Load data initially when the page loads (for index page without auth)
-    if (currentPage === 'index.html') {
+    if (currentPage === 'index.html' && !isProtectedPath()) {
         loadLatestData();
     }
 });
