@@ -7,7 +7,7 @@ class MinisServer {
         this.app = express();
         this.port = process.env.PORT || 7004;
         // Point to the domain directory for content storage
-        this.contentDir = path.join('/path/to/minis.beyondmebtw.com');
+        this.contentDir = path.join('minis.beyondmebtw.com/content');
         this.metadataFile = path.join(this.contentDir, 'metadata.json');
 
         this.setupMiddleware();
