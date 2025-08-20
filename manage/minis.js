@@ -152,7 +152,7 @@ class MinisApp {
         this.showStatus('Creating your mini...', 'loading');
 
         try {
-            const response = await fetch('/add', {
+            const response = await fetch('https://minis.beyondmebtw.com/add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
