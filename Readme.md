@@ -1,12 +1,15 @@
 **Beyond Me Btw** is a personal blog and portfolio platform designed to showcase projects and articles that go beyond the ordinary. This site was designed and coded from scratch by me, hosted on a server that uses Nginx and Ubunutu. With innovation at the core, this site to offer a seamless integration of new features as my knowledge  base expands, making it a endlessly growing repository of creativity and technical insights.
 
-## Also check out other showcases
+Check out the site [BeyondMeBtw.com](https://beyondmebtw.com)
 
-- **Blog:** [blog.beyondmebtw.com](https://blog.beyondmebtw.com)
-- **Minis:** [minis.beyondmebtw.com](https://minis.beyondmebtw.com)
+Also check out other showcases
+
+- **Blog:** [Blog.BeyondMeBtw.com](https://blog.beyondmebtw.com)
+- **Minis:** [Minis.BeyondMeBtw.com](https://minis.beyondmebtw.com)
 
 
-
+<img src="https://beyondmebtw.com/assets/images/homepage.png" alt="Home page">
+The Current Home Page
 
 
 ## Changelog:
@@ -78,4 +81,5 @@ Goal is to be more online and allow for quicker creative output.
 ### V 2.0 (3/3/25)
 - Launched Version 2 of the revamp
 - Old version can be viewed at [Beyond Me Btw V1](https://beyondmebtw.com/projects/V1)
+- Old Changelog can be viewed at [projects/V1/Readme.md]
 - Stopped updating Wix site due to too many bugs, blogs posted only on [Medium](https://blog.beyondmebtw.com)
