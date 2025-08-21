@@ -1,8 +1,13 @@
 **Beyond Me Btw** is a personal blog and portfolio platform designed to showcase projects and articles that go beyond the ordinary. This site was designed and coded from scratch by me, hosted on a server that uses Nginx and Ubunutu. With innovation at the core, this site to offer a seamless integration of new features as my knowledge  base expands, making it a endlessly growing repository of creativity and technical insights.
 
-Check out the site : www.Beyondmebtw.com
+Check out the site : Beyondmebtw.com
 
-<img src="https://beyondmebtw.com/assets/images/homepage.png" alt="Home page">
+Also check out other parts:
+
+Blog site : BLog.beyondmebtw,com
+
+Minis site : minis.beyondmebtw.com
+
 
 
 ## Changelog:
