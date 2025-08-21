@@ -78,34 +78,38 @@ body::before {
     text-align: center;
     text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.15);
     position: relative;
+    padding: 10px 40px;
+    overflow: visible;
+    margin: 0 auto;
+    width: fit-content;
+    max-width: 100%;
 }
 
-.page-title::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 4px;
-    background: linear-gradient(to right, transparent, #E8D9CD, transparent);
-    border-radius: 2px;
+/* Removed ::after pseudo-element and using border-bottom instead */
+.page-title {
+    border-bottom: 4px solid transparent;
+    border-image: linear-gradient(to right, transparent, #E8D9CD, transparent) 1;
+    padding-bottom: 15px;    
 }
 
 .page-title .minis {
-    font-size: 62px;
+    font-size: 68px;
     background: linear-gradient(135deg, #3b342d 0%, #5a4c3e 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    padding: 0 8px;
+    margin: 0 5px;
 }
 
 .page-title .brand {
-    font-size: 32px;
+    font-size: 28px;
     background: linear-gradient(135deg, #6b5d50 0%, #3b342d 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
+    background-clip: text;    
+    padding: 0 8px;
+    margin: 0 5px;
 }
 
 /* Main Container */
@@ -129,9 +133,9 @@ body::before {
     border: 2px solid rgba(255, 255, 255, 0.4);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     position: sticky;
-    width: 90%;
+    width: 100%;
     top: 20px;
-    margin-left: -41%;
+    margin-left: 0;
     transition: all 0.2s ease;
 }
 
@@ -166,8 +170,8 @@ body::before {
 .mini-post-container {
     position: relative;
     margin-bottom: 35px;
-    width: 130%;
-    margin-left: -55%;
+    width: 100%;
+    margin-left: 0;
     animation: fadeIn 0.4s ease-out;
 }
 
@@ -192,7 +196,7 @@ body::before {
     border: 2px solid rgba(255, 255, 255, 0.3);
 }
 
-/* Mini Post Card - Fixed blur and performance issues */
+/* Mini Post Card - Optimized for performance */
 .mini-post {
     background: linear-gradient(135deg, 
         rgba(255, 255, 255, 0.9) 0%, 
@@ -201,13 +205,13 @@ body::before {
     padding: 30px;
     border: 2px solid rgba(232, 217, 205, 0.5);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-    transition: all 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
     position: relative;
     backdrop-filter: blur(5px);
-    /* Ensure crisp text rendering */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    transform: translateZ(0); /* Force hardware acceleration without blur */
+    will-change: transform;
+    transform: translateZ(0);
 }
 
 .mini-post:hover {
@@ -220,10 +224,38 @@ body::before {
     font-size: 18px;
     line-height: 1.7;
     margin-bottom: 20px;
-    /* Ensure text stays crisp */
     transform: translateZ(0);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+/* Loading placeholder for lazy-loaded content */
+.content-loading-placeholder {
+    min-height: 80px;
+}
+
+.placeholder-line {
+    height: 16px;
+    background: linear-gradient(90deg, 
+        rgba(232, 217, 205, 0.3) 0%, 
+        rgba(232, 217, 205, 0.5) 50%, 
+        rgba(232, 217, 205, 0.3) 100%);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    animation: shimmer 1.5s infinite ease-in-out;
+}
+
+.placeholder-line.short {
+    width: 70%;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200px 0;
+    }
+    100% {
+        background-position: calc(200px + 100%) 0;
+    }
 }
 
 .mini-post-content h1,
@@ -282,7 +314,7 @@ body::before {
     box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Image styling within post content */
+/* Image styling within post content - REMOVED HOVER ANIMATION */
 .mini-post-content img {
     max-width: 100%;
     height: auto;
@@ -290,11 +322,6 @@ body::before {
     margin: 20px 0;
     display: block;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease;
-}
-
-.mini-post-content img:hover {
-    transform: scale(1.02);
 }
 
 /* Meta section with tags and time */
@@ -330,10 +357,6 @@ body::before {
     transition: transform 0.2s ease;
 }
 
-.tag:hover {
-    transform: translateY(-1px);    
-}
-
 /* Same date post styling */
 .mini-post-container.same-date {
     margin-top: -10px;
@@ -354,23 +377,11 @@ body::before {
         rgba(232, 217, 205, 0.3) 80%, 
         transparent 100%);
     margin: 40px 0;
-    width: 130%;
-    margin-left: -45%;
+    width: 100%;
+    margin-left: 0;
     border-radius: 1px;
     position: relative;
-}
-
-.post-divider::before {
-    content: '';
-    position: absolute;
-    top: -1px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 8px;
-    height: 8px;
-    background: #E8D9CD;
-    border-radius: 50%;
-    box-shadow: 0 0 8px rgba(232, 217, 205, 0.4);
+    border-top: 1px solid rgba(232, 217, 205, 0.2);
 }
 
 .post-divider.reduced {
@@ -444,7 +455,7 @@ body::before {
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* Simplified, faster animations */
+/* Optimized animations */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -457,25 +468,133 @@ body::before {
 }
 
 /* Responsive Design */
-@media (max-width: 1200px) {
+@media (max-width: 1440px) {
     .main-container {
         max-width: 95%;
-        gap: 40px;
+        gap: 45px;
+        grid-template-columns: 350px 1fr;
     }
     
-    .intro-section {
-        width: 95%;
-        margin-left: -35%;
+    .mini-post-container {
+        width: 110%;
+        margin-left: -8%;
+    }
+    
+    .post-divider {
+        width: 110%;
+        margin-left: -8%;
+    }
+}
+
+@media (max-width: 1200px) {
+    .main-container {
+        max-width: 90%;
+        gap: 40px;
+        grid-template-columns: 320px 1fr;
+    }
+    
+    .mini-post-container {
+        width: 115%;
+        margin-left: -12%;
+    }
+    
+    .post-divider {
+        width: 115%;
+        margin-left: -12%;
+    }
+}
+
+@media (max-width: 1024px) {
+    .main-container {
+        max-width: 85%;
+        gap: 35px;
+        grid-template-columns: 300px 1fr;
     }
     
     .mini-post-container {
         width: 125%;
-        margin-left: -50%;
+        margin-left: -18%;
     }
     
     .post-divider {
         width: 125%;
-        margin-left: -40%;
+        margin-left: -18%;
+    }
+
+    .page-title .minis {
+        font-size: 60px;
+    }
+
+    .page-title .brand {
+        font-size: 26px;
+    }
+
+    .home-button {
+        font-size: 22px;
+        padding: 12px 25px;
+        left: 60px;
+    }
+}
+
+@media (max-width: 900px) {
+    .main-container {
+        max-width: 90%;
+        gap: 30px;
+        grid-template-columns: 280px 1fr;
+    }
+    
+    .mini-post-container {
+        width: 135%;
+        margin-left: -25%;
+    }
+    
+    .post-divider {
+        width: 135%;
+        margin-left: -25%;
+    }
+
+    .page-title .minis {
+        font-size: 55px;
+    }
+
+    .page-title .brand {
+        font-size: 24px;
+    }
+
+    .home-button {
+        font-size: 20px;
+        padding: 10px 22px;
+        left: 50px;
+    }
+}
+
+@media (max-width: 820px) {
+    .main-container {
+        max-width: 95%;
+        gap: 25px;
+        grid-template-columns: 260px 1fr;
+    }
+    
+    .mini-post-container {
+        width: 145%;
+        margin-left: -32%;
+    }
+    
+    .post-divider {
+        width: 145%;
+        margin-left: -32%;
+    }
+
+    .intro-section {
+        padding: 30px;
+    }
+
+    .intro-section h2 {
+        font-size: 26px;
+    }
+
+    .intro-section p {
+        font-size: 20px;
     }
 }
 
@@ -520,14 +639,6 @@ body::before {
         padding: 15px;
     }
 
-    .page-title .minis {
-        font-size: 45px;
-    }
-
-    .page-title .brand {
-        font-size: 28px;
-    }
-
     .header-container {
         flex-direction: column;
         align-items: center;
@@ -540,6 +651,20 @@ body::before {
         left: auto;
         font-size: 22px;
         padding: 12px 25px;
+        order: 2;
+    }
+
+    .page-title {
+        order: 1;
+        margin-top: 0;
+    }
+
+    .page-title .minis {
+        font-size: 50px;
+    }
+
+    .page-title .brand {
+        font-size: 24px;
     }
 
     .intro-section h2 {
@@ -588,12 +713,24 @@ body::before {
         padding: 10px;
     }
 
+    .page-title {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        line-height: 1.2;
+        padding: 15px 50px;
+    }
+
     .page-title .minis {
-        font-size: 35px;
+        font-size: 62px;
+        margin-bottom: 5px;
+        margin-top: -24px;
+        padding: 0 10px;
     }
 
     .page-title .brand {
-        font-size: 22px;
+        font-size: 20px;
+        padding: 0 10px;
     }
 
     .home-button {
@@ -606,9 +743,15 @@ body::before {
         border-radius: 15px;
     }
 
+    .mini-post-container {
+        padding-top: 20px;
+        margin-bottom: 25px;
+    }
+
     .intro-section {
         padding: 25px;
         border-radius: 20px;
+        margin-top: -15px;
     }
 
     .intro-section h2 {
@@ -654,10 +797,6 @@ body::before {
         padding: 40px 15px;
     }
 
-    .mini-post-container {
-        margin-bottom: 25px;
-    }
-
     .post-divider {
         margin: 30px 0;
     }
@@ -668,38 +807,5 @@ body::before {
 
     .post-divider.reduced {
         margin: 20px 0;
-    }
-}
-
-@media (max-width: 320px) {
-    .page-title .minis {
-        font-size: 28px;
-    }
-
-    .page-title .brand {
-        font-size: 18px;
-    }
-
-    .mini-post {
-        padding: 15px;
-    }
-
-    .intro-section {
-        padding: 20px;
-    }
-
-    .date-tab {
-        font-size: 14px;
-        padding: 6px 12px;
-    }
-
-    .mini-post-content p {
-        font-size: 16px;
-    }
-
-    .time-tag,
-    .tag {
-        font-size: 14px;
-        padding: 4px 10px;
     }
 }
