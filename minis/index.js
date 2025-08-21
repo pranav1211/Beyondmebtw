@@ -3,10 +3,10 @@ class MinisApp {
         this.metadata = [];
         this.posts = [];
         this.currentPage = 0;
-        this.postsPerPage = 5; // Reduced for better performance
+        this.postsPerPage = 5;
         this.loading = false;
         this.allLoaded = false;
-        this.intersectionObserver = null;
+        this.lastRenderedDate = null; // Track the last rendered date
 
         this.init();
     }
@@ -57,16 +57,13 @@ class MinisApp {
             return;
         }
 
-        // Load posts sequentially for better performance
-        const newPosts = [];
+        // Load posts sequentially
         for (let i = startIndex; i < endIndex; i++) {
             const item = this.metadata[i];
             try {
                 const post = await this.loadPost(item);
                 if (post !== null) {
-                    newPosts.push(post);
-                    // Render immediately as we get each post
-                    this.renderSinglePost(post, i === startIndex && this.posts.length === 0);
+                    this.renderSinglePost(post);
                     this.posts.push(post);
                 }
             } catch (error) {
@@ -100,7 +97,7 @@ class MinisApp {
     }
 
     parseMarkdownLazy(content, metadata) {
-        // Remove frontmatter (everything between --- and ---)
+        // Remove frontmatter
         const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n/;
         const cleanContent = content.replace(frontmatterRegex, '').trim();
 
@@ -109,14 +106,13 @@ class MinisApp {
             date: metadata.date,
             time: metadata.time,
             tags: metadata.tags || [],
-            rawContent: cleanContent, // Store raw content
-            parsedContent: null, // Parse lazily
+            rawContent: cleanContent,
+            parsedContent: null,
             filename: metadata.filename,
             parsed: false
         };
     }
 
-    // Parse markdown only when needed (lazy loading)
     parseContentWhenNeeded(post) {
         if (!post.parsed) {
             post.parsedContent = marked.parse(post.rawContent);
@@ -125,28 +121,26 @@ class MinisApp {
         return post.parsedContent;
     }
 
-    renderSinglePost(post, isFirst = false) {
+    renderSinglePost(post) {
         const container = document.getElementById('postsContainer');
         const fragment = document.createDocumentFragment();
         
-        // Get the last rendered date to compare
-        const existingPosts = container.querySelectorAll('.mini-post-container');
-        let lastRenderedDate = null;
-        if (existingPosts.length > 0) {
-            const lastPost = existingPosts[existingPosts.length - 1];
-            const lastDateTab = lastPost.querySelector('.date-tab');
-            if (lastDateTab) {
-                lastRenderedDate = this.getDateFromFormattedDate(lastDateTab.textContent);
-            }
-        }
-
         const currentDate = post.date;
-        const isSameDate = currentDate === lastRenderedDate;
+        const isSameDate = currentDate === this.lastRenderedDate;
         
+        // Create post element with proper date tab visibility
         const postElement = this.createPostElement(post, !isSameDate);
-        if (isSameDate && !isFirst) {
+        
+        // Add same-date class if needed
+        if (isSameDate) {
             postElement.classList.add('same-date');
+            console.log(`Post marked as same-date: ${post.filename}, date: ${currentDate}`);
+        } else {
+            // Update the last rendered date only when we show a new date tab
+            this.lastRenderedDate = currentDate;
+            console.log(`New date tab shown: ${currentDate}`);
         }
+        
         fragment.appendChild(postElement);
 
         // Add divider between posts (except after the last post)
@@ -165,18 +159,16 @@ class MinisApp {
     setupLazyContentLoading(postElement, post) {
         const contentElement = postElement.querySelector('.mini-post-content');
         
-        // Create intersection observer for this specific post
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting && !post.parsed) {
-                    // Parse markdown when post comes into view
                     const parsedContent = this.parseContentWhenNeeded(post);
                     contentElement.innerHTML = parsedContent;
                     observer.unobserve(entry.target);
                 }
             });
         }, {
-            rootMargin: '100px' // Start loading 100px before the post is visible
+            rootMargin: '100px'
         });
 
         observer.observe(contentElement);
@@ -190,13 +182,16 @@ class MinisApp {
         const formattedDate = this.formatDate(post.date);
         const formattedTime = this.formatTime(post.time);
 
-        // Create date tab if needed
+        // Create date tab HTML - only if showDate is true
         let dateTabHtml = '';
         if (showDate) {
             dateTabHtml = `<div class="date-tab">${formattedDate}</div>`;
+            console.log(`Creating date tab for: ${formattedDate}`);
+        } else {
+            console.log(`No date tab for: ${formattedDate} (same as previous)`);
         }
 
-        // Create tags with time as first element
+        // Create tags with time
         let tagsHtml = '';
         if (post.tags && post.tags.length > 0 || formattedTime) {
             const timeTag = `<span class="time-tag">${formattedTime}</span>`;
@@ -209,7 +204,7 @@ class MinisApp {
             `;
         }
 
-        // Show loading placeholder initially
+        // Loading placeholder
         const loadingPlaceholder = `
             <div class="content-loading-placeholder">
                 <div class="placeholder-line"></div>
@@ -229,13 +224,6 @@ class MinisApp {
         `;
 
         return postContainer;
-    }
-
-    // Keep the old method for compatibility but optimize it
-    renderNewPosts(posts) {
-        posts.forEach((post, index) => {
-            this.renderSinglePost(post, index === 0 && this.posts.length === 1);
-        });
     }
 
     formatDate(dateStr) {
@@ -259,15 +247,6 @@ class MinisApp {
         }
     }
 
-    getDateFromFormattedDate(formattedDate) {
-        try {
-            const date = new Date(formattedDate);
-            return date.toISOString().split('T')[0];
-        } catch (error) {
-            return null;
-        }
-    }
-
     escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
@@ -275,7 +254,6 @@ class MinisApp {
     }
 
     setupIntersectionObserver() {
-        // Observer for automatic loading when user scrolls near bottom
         const loadMoreObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting && !this.loading && !this.allLoaded) {
@@ -283,10 +261,9 @@ class MinisApp {
                 }
             });
         }, {
-            rootMargin: '200px' // Trigger 200px before the bottom
+            rootMargin: '200px'
         });
 
-        // Observe the load more button
         const loadMoreBtn = document.getElementById('loadMoreBtn');
         if (loadMoreBtn) {
             loadMoreObserver.observe(loadMoreBtn);
@@ -297,14 +274,13 @@ class MinisApp {
         const loadMoreBtn = document.getElementById('loadMoreBtn');
         loadMoreBtn.addEventListener('click', () => this.loadMorePosts());
 
-        // Add scroll-based loading
         let scrollTimeout;
         window.addEventListener('scroll', () => {
             clearTimeout(scrollTimeout);
             scrollTimeout = setTimeout(() => {
                 if (!this.loading && !this.allLoaded) {
                     const scrollPosition = window.innerHeight + window.scrollY;
-                    const threshold = document.body.offsetHeight - 1000; // 1000px from bottom
+                    const threshold = document.body.offsetHeight - 1000;
                     
                     if (scrollPosition >= threshold) {
                         this.loadMorePosts();
