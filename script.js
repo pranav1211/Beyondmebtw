@@ -33,22 +33,6 @@ if (profilePic) {
     });
 }
 
-// Dynamic hover effects for project cards (applied after creation)
-function addProjectCardHoverEffects() {
-    const projectCards = document.querySelectorAll('.project-card');
-    projectCards.forEach(card => {
-        card.addEventListener('mouseover', () => {
-            card.style.transform = 'translateY(-3px)';
-            card.style.boxShadow = '0 5px 10px rgba(0, 0, 0, 0.1)';
-        });
-
-        card.addEventListener('mouseout', () => {
-            card.style.transform = 'translateY(0)';
-            card.style.boxShadow = 'none';
-        });
-    });
-}
-
 document.getElementById('copy-email').addEventListener('click', function (event) {
     event.preventDefault();
     const email = document.getElementById('email-address').innerText;
@@ -98,27 +82,6 @@ function createFeaturedPost(post, index) {
     return postElement;
 }
 
-function createProjectCard(project, index) {
-    const projectElement = document.createElement('div');
-    projectElement.className = 'project-card';
-    projectElement.innerHTML = `
-        <div class="project-details">
-            <div class="project-icon">${project.emoji}</div>
-            <div>
-                <h3 class="project-title">${project.title}</h3>
-                <p class="project-desc">${project.excerpt}</p>
-            </div>
-        </div>
-        <button class="project-explore">Explore</button>
-    `;
-
-    projectElement.addEventListener('click', () => {
-        window.open(project.link, '_blank');
-    });
-
-    return projectElement;
-}
-
 function renderFeaturedPosts(posts) {
     const container = document.getElementById('featured-posts-container');
     container.innerHTML = ''; // Clear existing content
@@ -127,19 +90,6 @@ function renderFeaturedPosts(posts) {
         const postElement = createFeaturedPost(post, index);
         container.appendChild(postElement);
     });
-}
-
-function renderProjects(projects) {
-    const container = document.getElementById('projects-grid');
-    container.innerHTML = ''; // Clear existing content
-
-    projects.forEach((project, index) => {
-        const projectElement = createProjectCard(project, index);
-        container.appendChild(projectElement);
-    });
-
-    // Add hover effects to newly created project cards
-    addProjectCardHoverEffects();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -169,10 +119,8 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelector('.read-more').onclick = () => window.open(mainPost.link, '_blank');
 
             // Render featured posts using component approach
-            renderFeaturedPosts(data.featured);
-
-            // Render projects using component approach
-            renderProjects(data.projects);
+            renderFeaturedPosts(data.featured);           
+            
         })
         .catch((error) => {
             console.error("Error fetching JSON data:", error);
