@@ -7,6 +7,11 @@ Check out the site : www.Beyondmebtw.com
 
 ## Changelog:
 
+### 3.0 (22/08/2025)
+- fixed lag and responsiveness of the minis page for mobile and pretty much all types of devices.
+- fixed an issue in the generation of the filename and date, it was meant to capture the user time but language settings were a barrier, switched to clear function of IST timezone.
+- removed some useless hover features as a part of reducing lag on minis site.
+
 ### 2.9 (21/08/25)
 - minis.beyondmebtw.com is launched, it is a live blog which is a short form version of content delivery
 - backend support for adding new posts was added with features like images,links,italics and bold also added.
