@@ -8,7 +8,7 @@ Also check out other showcases
 - **Minis:** [Minis.BeyondMeBtw.com](https://minis.beyondmebtw.com)
 
 
-<img src="https://beyondmebtw.com/assets/images/homepage.png" alt="Home page">
+<img src="https://beyondmebtw.com/assets/images/homer.png" alt="Home page">
 The Current Home Page
 
 
