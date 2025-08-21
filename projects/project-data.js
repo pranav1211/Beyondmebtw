@@ -5,7 +5,7 @@ const projectsData = [
     shortDescription: "A personal Blog site",
     fullDescription: "• Beyond Me Btw is a personal blog site where I share my thoughts, experiences, and insights on various topics.\n• Features a clean design, easy navigation, and responsive layout for an optimal reading experience.\n• Entirely coded from scratch and hosted on a self-configured nginx-ubuntu server.\n• Serves as both a portfolio of my work and a platform for creating blog posts on various topics.",
     logo: "https://beyondmebtw.com/assets/images/favicon.ico",
-    images: ["/assets/images/projects/bmb/a.webp", "/assets/images/projects/bmb/1.webp", "/assets/images/projects/bmb/2.webp", "/assets/images/projects/bmb/3.webp"],
+    images: ["/assets/images/projects/bmb/a.webp", "https://beyondmebtw.com/assets/images/homer.png", "/assets/images/projects/bmb/2.webp", "/assets/images/projects/bmb/3.webp", "/assets/images/projects/bmb/4.webp", "/assets/images/projects/bmb/5.webp"],
     link: "https://beyondmebtw.com",
     githubLink: "https://github.com/pranav1211/beyondmebtw",
     category: "Web Development",
