@@ -15,9 +15,13 @@ body {
     line-height: 1.6;
     min-height: 100vh;
     position: relative;
+    /* GPU acceleration for smoother scrolling */
+    transform: translateZ(0);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-/* Simplified animated background elements */
+/* Simplified animated background elements - GPU optimized */
 body::before {
     content: '';
     position: fixed;
@@ -30,6 +34,9 @@ body::before {
         radial-gradient(circle at 80% 20%, rgba(59, 52, 45, 0.04) 0%, transparent 50%);
     pointer-events: none;
     z-index: -1;
+    /* Force GPU layer */
+    transform: translateZ(0);
+    will-change: auto;
 }
 
 /* Header */
@@ -39,6 +46,8 @@ body::before {
     align-items: center;
     margin-bottom: 50px;
     position: relative;
+    /* Contain layout shifts */
+    contain: layout style;
 }
 
 .home-button {
@@ -54,13 +63,18 @@ body::before {
     font-weight: 600;
     font-size: 24px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), 
+                box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none;
     display: inline-block;
     position: absolute;
     left: 95px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
     border: 2px solid rgba(255, 255, 255, 0.4);
+    /* GPU optimization */
+    transform: translateZ(0);
+    will-change: transform;
+    contain: layout style paint;
 }
 
 .home-button:hover {
@@ -68,7 +82,7 @@ body::before {
         #F2E6DA 0%, 
         #FFFFFF 50%, 
         #F2E6DA 100%);
-    transform: translateY(-2px);
+    transform: translateY(-2px) translateZ(0);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
@@ -83,9 +97,10 @@ body::before {
     margin: 0 auto;
     width: fit-content;
     max-width: 100%;
+    /* Performance optimization */
+    contain: layout style;
 }
 
-/* Removed ::after pseudo-element and using border-bottom instead */
 .page-title {
     border-bottom: 4px solid transparent;
     border-image: linear-gradient(to right, transparent, #E8D9CD, transparent) 1;
@@ -112,7 +127,7 @@ body::before {
     margin: 0 5px;
 }
 
-/* Main Container */
+/* Main Container - Performance optimized */
 .main-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -120,9 +135,11 @@ body::before {
     grid-template-columns: 1fr 1fr;
     gap: 50px;
     align-items: start;
+    /* Prevent layout shifts */
+    contain: layout style;
 }
 
-/* Introduction Section */
+/* Introduction Section - Optimized for GPU */
 .intro-section {
     background: linear-gradient(135deg, 
         #E8D9CD 0%, 
@@ -136,11 +153,16 @@ body::before {
     width: 100%;
     top: 20px;
     margin-left: 0;
-    transition: all 0.2s ease;
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    /* GPU optimization */
+    transform: translateZ(0);
+    will-change: transform;
+    contain: layout style paint;
 }
 
 .intro-section:hover {
-    transform: translateY(-2px);
+    transform: translateY(-2px) translateZ(0);
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
 }
 
@@ -164,18 +186,26 @@ body::before {
 /* Content Section */
 .content-section {
     min-height: 100vh;
+    /* Prevent layout shifts during loading */
+    contain: layout;
 }
 
-/* Mini Post Container */
+/* Mini Post Container - Heavily optimized */
 .mini-post-container {
     position: relative;
     margin-bottom: 35px;
     width: 100%;
     margin-left: 0;
-    animation: fadeIn 0.4s ease-out;
+    /* Smooth appear animation with GPU acceleration */
+    opacity: 0;
+    transform: translateY(20px) translateZ(0);
+    animation: smoothFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    /* Performance optimizations */
+    contain: layout style paint;
+    will-change: auto;
 }
 
-/* Date Tab */
+/* Date Tab - GPU optimized */
 .date-tab {
     background: linear-gradient(135deg, 
         #E8D9CD 0%, 
@@ -194,9 +224,12 @@ body::before {
     box-shadow: 0 -6px 15px rgba(0, 0, 0, 0.1);
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
     border: 2px solid rgba(255, 255, 255, 0.3);
+    /* GPU optimization */
+    transform: translateZ(0);
+    contain: layout style paint;
 }
 
-/* Mini Post Card - Optimized for performance */
+/* Mini Post Card - Maximum performance optimization */
 .mini-post {
     background: linear-gradient(135deg, 
         rgba(255, 255, 255, 0.9) 0%, 
@@ -205,13 +238,19 @@ body::before {
     padding: 30px;
     border: 2px solid rgba(232, 217, 205, 0.5);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     backdrop-filter: blur(5px);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    will-change: transform;
+    /* Critical GPU optimizations */
     transform: translateZ(0);
+    will-change: transform;
+    contain: layout style paint;
+    /* Force hardware acceleration */
+    backface-visibility: hidden;
+    perspective: 1000px;
 }
 
 .mini-post:hover {
@@ -224,37 +263,55 @@ body::before {
     font-size: 18px;
     line-height: 1.7;
     margin-bottom: 20px;
+    /* Performance optimizations */
     transform: translateZ(0);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    contain: layout style;
+    /* Prevent content shifts during loading */
+    min-height: 60px;
 }
 
-/* Loading placeholder for lazy-loaded content */
+/* Optimized loading placeholder with smooth animation */
 .content-loading-placeholder {
     min-height: 80px;
+    contain: layout style paint;
 }
 
 .placeholder-line {
     height: 16px;
     background: linear-gradient(90deg, 
-        rgba(232, 217, 205, 0.3) 0%, 
-        rgba(232, 217, 205, 0.5) 50%, 
-        rgba(232, 217, 205, 0.3) 100%);
+        rgba(232, 217, 205, 0.2) 0%, 
+        rgba(232, 217, 205, 0.4) 50%, 
+        rgba(232, 217, 205, 0.2) 100%);
+    background-size: 200px 100%;
     border-radius: 8px;
     margin-bottom: 12px;
-    animation: shimmer 1.5s infinite ease-in-out;
+    /* Smooth shimmer animation */
+    animation: optimizedShimmer 1.8s ease-in-out infinite;
+    /* GPU optimization */
+    transform: translateZ(0);
+    will-change: background-position;
+    contain: layout style paint;
 }
 
 .placeholder-line.short {
     width: 70%;
 }
 
-@keyframes shimmer {
+/* Optimized shimmer animation using transform instead of background-position */
+@keyframes optimizedShimmer {
     0% {
-        background-position: -200px 0;
+        opacity: 0.6;
+        transform: translateX(-100px) translateZ(0);
+    }
+    50% {
+        opacity: 1;
+        transform: translateX(0px) translateZ(0);
     }
     100% {
-        background-position: calc(200px + 100%) 0;
+        opacity: 0.6;
+        transform: translateX(100px) translateZ(0);
     }
 }
 
@@ -314,7 +371,7 @@ body::before {
     box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Image styling within post content - REMOVED HOVER ANIMATION */
+/* Image styling - GPU optimized */
 .mini-post-content img {
     max-width: 100%;
     height: auto;
@@ -322,14 +379,18 @@ body::before {
     margin: 20px 0;
     display: block;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    /* Performance optimization */
+    transform: translateZ(0);
+    contain: layout style paint;
 }
 
-/* Meta section with tags and time */
+/* Meta section - GPU optimized */
 .mini-post-meta {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 12px;
+    contain: layout style;
 }
 
 .time-tag {
@@ -343,6 +404,9 @@ body::before {
     order: -1;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    /* GPU optimization */
+    transform: translateZ(0);
+    contain: layout style paint;
 }
 
 .tag {
@@ -354,7 +418,10 @@ body::before {
     font-weight: 500;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    transition: transform 0.2s ease;
+    transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    /* GPU optimization */
+    transform: translateZ(0);
+    contain: layout style paint;
 }
 
 /* Same date post styling */
@@ -367,7 +434,7 @@ body::before {
     display: none;
 }
 
-/* Divider between posts */
+/* Divider - GPU optimized */
 .post-divider {
     height: 2px;
     background: linear-gradient(90deg, 
@@ -382,17 +449,21 @@ body::before {
     border-radius: 1px;
     position: relative;
     border-top: 1px solid rgba(232, 217, 205, 0.2);
+    /* Performance optimization */
+    transform: translateZ(0);
+    contain: layout style paint;
 }
 
 .post-divider.reduced {
     margin: 25px 0;
 }
 
-/* Loading and Load More */
+/* Loading and Load More - Optimized */
 .loading-container {
     text-align: center;
     padding: 50px;
     margin: 30px 0;
+    contain: layout style;
 }
 
 .loading-spinner {
@@ -401,13 +472,18 @@ body::before {
     border-radius: 50%;
     width: 40px;
     height: 40px;
-    animation: spin 1s linear infinite;
+    animation: optimizedSpin 1s linear infinite;
     margin: 0 auto 25px;
+    /* GPU optimization */
+    transform: translateZ(0);
+    will-change: transform;
+    contain: layout style paint;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+/* Optimized spin animation */
+@keyframes optimizedSpin {
+    0% { transform: rotate(0deg) translateZ(0); }
+    100% { transform: rotate(360deg) translateZ(0); }
 }
 
 .load-more-btn {
@@ -420,24 +496,29 @@ body::before {
     font-family: "Kreon", serif;
     font-weight: 700;
     font-size: 20px;
-    transition: all 0.2s ease;
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     display: block;
     margin: 0 auto;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
     border: 2px solid rgba(255, 255, 255, 0.1);
+    /* GPU optimization */
+    transform: translateZ(0);
+    will-change: transform;
+    contain: layout style paint;
 }
 
 .load-more-btn:hover {
     background: linear-gradient(135deg, #5a4c3e 0%, #6b5d50 100%);
-    transform: translateY(-2px);
+    transform: translateY(-2px) translateZ(0);
     box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
 }
 
 .load-more-btn:disabled {
     background: linear-gradient(135deg, #8b7355 0%, #9d8469 100%);
     cursor: not-allowed;
-    transform: none;
+    transform: translateZ(0);
     opacity: 0.7;
 }
 
@@ -446,6 +527,7 @@ body::before {
     text-align: center;
     padding: 80px 20px;
     color: #8b7355;
+    contain: layout style;
 }
 
 .no-results h3 {
@@ -455,19 +537,31 @@ body::before {
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* Optimized animations */
-@keyframes fadeIn {
-    from {
+/* Highly optimized smooth appear animation */
+@keyframes smoothFadeIn {
+    0% {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(15px) translateZ(0);
     }
-    to {
+    100% {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) translateZ(0);
     }
 }
 
-/* Responsive Design */
+/* Performance hints for the browser */
+.mini-post-container,
+.mini-post,
+.home-button,
+.intro-section,
+.load-more-btn {
+    /* Enable hardware acceleration */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+/* Responsive Design - Same as before but with performance optimizations */
 @media (max-width: 1440px) {
     .main-container {
         max-width: 95%;
@@ -609,12 +703,12 @@ body::before {
         position: static;
         margin-left: 0;
         width: 100%;
-        transform: none;
+        transform: translateZ(0);
         padding: 30px;
     }
 
     .intro-section:hover {
-        transform: translateY(-2px);
+        transform: translateY(-2px) translateZ(0);
     }
 
     .mini-post-container {
