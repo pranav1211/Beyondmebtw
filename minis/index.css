@@ -20,7 +20,7 @@ body::before {
     left: 0;
     right: 0;
     bottom: 0;
-    background: 
+    background:
         radial-gradient(circle at 20% 80%, rgba(232, 217, 205, 0.08) 0%, transparent 50%),
         radial-gradient(circle at 80% 20%, rgba(59, 52, 45, 0.04) 0%, transparent 50%);
     pointer-events: none;
@@ -77,6 +77,8 @@ body::before {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    padding: 0 8px;
+    margin: 0 5px;
 }
 
 .page-title .brand {
@@ -85,6 +87,8 @@ body::before {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    padding: 0 8px;
+    margin: 0 5px;
 }
 
 /* Main Container */
@@ -157,11 +161,13 @@ body::before {
     position: absolute;
     top: -45px;
     right: 25px;
-    z-index: 10; /* Increased z-index */
+    z-index: 10;
+    /* Increased z-index */
     box-shadow: 0 -6px 15px rgba(0, 0, 0, 0.1);
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
     border: 2px solid rgba(255, 255, 255, 0.3);
-    display: block; /* Ensure it's visible by default */
+    display: block;
+    /* Ensure it's visible by default */
 }
 
 /* Mini Post Card */
@@ -174,7 +180,8 @@ body::before {
     transition: transform 0.15s ease, box-shadow 0.15s ease;
     position: relative;
     backdrop-filter: blur(5px);
-    z-index: 1; /* Lower than date tab */
+    z-index: 1;
+    /* Lower than date tab */
 }
 
 .mini-post:hover {
@@ -209,9 +216,17 @@ body::before {
 }
 
 @keyframes shimmer {
-    0% { opacity: 0.6; }
-    50% { opacity: 1; }
-    100% { opacity: 0.6; }
+    0% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.6;
+    }
 }
 
 .mini-post-content h1,
@@ -319,7 +334,8 @@ body::before {
 }
 
 .mini-post-container.same-date .date-tab {
-    display: none !important; /* Force hide with !important */
+    display: none !important;
+    /* Force hide with !important */
 }
 
 /* Divider */
@@ -353,8 +369,13 @@ body::before {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .load-more-btn {
@@ -406,6 +427,7 @@ body::before {
         opacity: 0;
         transform: translateY(15px);
     }
+
     100% {
         opacity: 1;
         transform: translateY(0);
@@ -419,12 +441,12 @@ body::before {
         gap: 45px;
         grid-template-columns: 350px 1fr;
     }
-    
+
     .mini-post-container {
         width: 110%;
         margin-left: -8%;
     }
-    
+
     .post-divider {
         width: 110%;
         margin-left: -8%;
@@ -437,12 +459,12 @@ body::before {
         gap: 40px;
         grid-template-columns: 320px 1fr;
     }
-    
+
     .mini-post-container {
         width: 115%;
         margin-left: -12%;
     }
-    
+
     .post-divider {
         width: 115%;
         margin-left: -12%;
@@ -455,12 +477,12 @@ body::before {
         gap: 35px;
         grid-template-columns: 300px 1fr;
     }
-    
+
     .mini-post-container {
         width: 125%;
         margin-left: -18%;
     }
-    
+
     .post-divider {
         width: 125%;
         margin-left: -18%;
@@ -691,4 +713,4 @@ body::before {
     .post-divider.reduced {
         margin: 20px 0;
     }
-} 
+}
