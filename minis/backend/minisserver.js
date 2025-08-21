@@ -8,7 +8,7 @@ class MinisServer {
     constructor() {
         this.app = express();
         this.port = process.env.PORT || 7004;
-        
+
         // Use absolute path to ensure consistent directory location
         // Go up one level from backend folder, then into content folder
         this.contentDir = path.resolve(__dirname, '..', 'content');
@@ -57,7 +57,7 @@ class MinisServer {
     }
 
     generateFilename() {
-        const now = new Date();
+        const now = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
         const year = now.getFullYear();
         const month = String(now.getMonth() + 1).padStart(2, '0');
         const date = String(now.getDate()).padStart(2, '0');
@@ -72,7 +72,7 @@ class MinisServer {
     }
 
     formatDate() {
-        const now = new Date();
+        const now = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
         const year = now.getFullYear();
         const month = String(now.getMonth() + 1).padStart(2, '0');
         const day = String(now.getDate()).padStart(2, '0');
@@ -80,7 +80,7 @@ class MinisServer {
     }
 
     formatTime() {
-        const now = new Date();
+        const now = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
         return `${hours}:${minutes}`;
@@ -108,7 +108,7 @@ class MinisServer {
         try {
             // First try environment variable
             let thepasskey = process.env.managekey;
-            
+
             // If not found in environment, try reading from /etc/environment
             if (!thepasskey) {
                 try {
@@ -116,7 +116,7 @@ class MinisServer {
                     const managekeyLine = envContent
                         .split("\n")
                         .find((line) => line.startsWith("managekey="));
-                    
+
                     if (managekeyLine) {
                         thepasskey = managekeyLine.split("=")[1]?.trim();
                     }
@@ -134,7 +134,7 @@ class MinisServer {
 
     verifyPassword(providedPassword) {
         const manageKey = this.getManageKey();
-        
+
         if (!manageKey) {
             console.error('Management key not found in environment or /etc/environment');
             return false;
@@ -216,7 +216,7 @@ ${content}`;
         try {
             // Log where we're trying to write
             console.log(`Creating mini at: ${mdPath}`);
-            
+
             // Write markdown file
             await fs.writeFile(mdPath, markdownContent, 'utf8');
 
@@ -324,7 +324,7 @@ ${content}`;
             // Log environment info
             console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
             console.log(`Node version: ${process.version}`);
-            
+
             // Check if management key is available
             const manageKey = this.getManageKey();
             if (manageKey) {
