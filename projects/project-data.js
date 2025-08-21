@@ -9,7 +9,7 @@ const projectsData = [
     link: "https://beyondmebtw.com",
     githubLink: "https://github.com/pranav1211/beyondmebtw",
     category: "Web Development",
-    tags: ["HTML", "CSS", "JavaScript", "Node.js", "Backend", "Nginx", "Ubuntu","Vue.js"]
+    tags: ["HTML", "CSS", "JavaScript", "Node.js", "Backend", "Nginx", "Ubuntu", "Vue.js"]
   },
   {
     id: 2,
@@ -22,17 +22,17 @@ const projectsData = [
     githubLink: "https://github.com/pranav1211/Gradient-website",
     category: "Web Development",
     tags: ["React", "JavaScript", "UI/UX", "Next.js", "Tailwind CSS", "Vercel"]
-  },  {
+  }, {
     id: 3,
     title: "Mini's",
     shortDescription: "A live blogging platform",
-    fullDescription: "",
+    fullDescription: "Minis is a live blogging platform created for me to share quick thoughts, updates, and ideas that don’t require a full-length blog post.\n• Conceived, designed, and developed as a way to publish more frequent, short-form content alongside long-form blogs.\n• Built a custom backend with authentication and post management, separated from the main blog system for cleaner architecture.\n• Designed a lightweight yet engaging frontend with an emphasis on readability and performance.\n• Implemented posting functionality as the first feature, with plans for more interactive tools and integrations.\n• Added prominent CTA buttons across Home, Blog, Projects, and About pages to increase visibility and engagement.",
     logo: "https://beyondmebtw.com/assets/images/minis.png",
     images: ["https://content.beyondmebtw.com/experience/exp30.webp"],
     link: "https://minis.beyondmebtw.com",
     githubLink: "https://github.com/pranav1211/beyondmebtw",
     category: "Web Development",
-    tags: ["HTML", "CSS", "JavaScript", "Node.js", "Backend", "Nginx", "Ubuntu","Markdown/JSON"]
+    tags: ["HTML", "CSS", "JavaScript", "Node.js", "Backend", "Nginx", "Ubuntu", "Markdown/JSON"]
   },
 
   {
@@ -82,13 +82,13 @@ const projectsData = [
     githubLink: "https://github.com/pranav1211/Pair-Game",
     category: "Game Development",
     tags: ["Python", "HTML", "CSS"]
-  },  {
+  }, {
     id: 8,
     title: "Uncharted Lost Voyage",
     shortDescription: "An online treasure hunting game",
     fullDescription: "• A digital treasure hunt hosted during Utsav Ananta 2025, where participants raced against time to solve puzzles and outwit competitors. \n • Co-developed with event volunteers; I led puzzle design, system integration, deployment, marketing, and designed the event's visual artwork. \n • Successfully launched as a playable online game post-event under a dedicated subdomain of the GradientAIML.tech website.",
     logo: "https://gradient-content-server.vercel.app/content/Logo.png",
-    images: ["https://gradient-content-server.vercel.app/content/utsav25/gallery/unc/ulvfs.png","https://gradient-content-server.vercel.app/content/utsav25/gallery/unc/2.jpeg", "https://gradient-content-server.vercel.app/content/utsav25/gallery/unc/4.jpg"],
+    images: ["https://gradient-content-server.vercel.app/content/utsav25/gallery/unc/ulvfs.png", "https://gradient-content-server.vercel.app/content/utsav25/gallery/unc/2.jpeg", "https://gradient-content-server.vercel.app/content/utsav25/gallery/unc/4.jpg"],
     link: "https://uncharted3.gradientaiml.tech",
     githubLink: "https://github.com/pranav1211/Uncharted-3",
     category: "Game Development",
@@ -104,7 +104,7 @@ const projectsData = [
     link: "https://beyondmebtw.com/projects/f1hapticandroid",
     githubLink: "https://github.com/pranav1211/F1-Haptic-Trailer",
     category: "Web Development",
-    tags: ["HTML", "CSS/JS", "Vercel","Haptic Feedback"]
+    tags: ["HTML", "CSS/JS", "Vercel", "Haptic Feedback"]
   }
 
 ];
