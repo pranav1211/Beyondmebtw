@@ -1,14 +1,23 @@
 {
-    "subcategories": [],
-    "posts": [
-        {
-            "uid": "tech_001",
-            "title": "Automating Git Calls with Webhooks",
-            "date": "Sep 12, 2024",
-            "excerpt": "A comprehensive guide to using Github Webhooks for automating Git operations on an Nginx server.",
-            "thumbnail": "https://content.beyondmebtw.com/tech/tech1.png",
-            "link": "https://medium.com/@beyondmebtw/Automating-Git-Calls-with-Webhooks-dad20d19ca44",
-            "subcategory": ""
-        }
-    ]
+  "subcategories": [],
+  "posts": [
+    {
+      "uid": "tech_001",
+      "title": "Automating Git Calls with Webhooks",
+      "date": "Sep 12, 2024",
+      "excerpt": "A comprehensive guide to using Github Webhooks for automating Git operations on an Nginx server.",
+      "thumbnail": "https://content.beyondmebtw.com/tech/tech1.png",
+      "link": "https://medium.com/@beyondmebtw/Automating-Git-Calls-with-Webhooks-dad20d19ca44",
+      "subcategory": ""
+    },
+    {
+      "uid": "tech_002",
+      "title": "How to Block an App from Accessing the Internet in Windows 10",
+      "date": "2025-08-29",
+      "excerpt": "Blocking an application's internet access can be useful when you want to. Here is a quick guide on how to do so on Windows 10.",
+      "thumbnail": "https://content.beyondmebtw.com/tech/tech2.png",
+      "link": "https://medium.com/@beyondmebtw/how-to-block-an-app-from-accessing-the-internet-in-windows-10-cfe404e3f556",
+      "subcategory": ""
+    }
+  ]
 }
