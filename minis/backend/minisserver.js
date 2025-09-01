@@ -293,6 +293,9 @@ class MinisServer {
         const rawHtml = MarkdownParser.parse(content);
         const styledHtml = MarkdownParser.addDefaultStyling(rawHtml);
 
+        // Create folder structure and HTML file
+        await this.createHtmlFile(date, title, styledHtml, { id, title, date, time, tags });
+
         // Create metadata object (now with HTML content included)
         const metadata = {
             id,
@@ -345,6 +348,74 @@ class MinisServer {
             throw new Error(`Failed to create mini: ${error.message}`);
         }
     }
+
+    async createHtmlFile(date, title, htmlContent, postData) {
+        // Create date folder name in format like "jan-01-2025"
+        const dateObj = new Date(date);
+        const monthNames = ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
+            'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+        const month = monthNames[dateObj.getMonth()];
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        const year = dateObj.getFullYear();
+        const dateFolderName = `${month}-${day}-${year}`;
+
+        // Sanitize title for folder name
+        const sanitizedTitle = title
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+            .replace(/\s+/g, '-') // Replace spaces with hyphens
+            .replace(/-+/g, '-') // Replace multiple hyphens with single
+            .trim();
+
+        // Create folder structure
+        const dateFolderPath = path.join(this.contentDir, dateFolderName);
+        const titleFolderPath = path.join(dateFolderPath, sanitizedTitle);
+        const htmlFilePath = path.join(titleFolderPath, 'index.html');
+
+        try {
+            // Create directories
+            await fs.mkdir(titleFolderPath, { recursive: true });
+
+            // Create HTML file content
+            const htmlFileContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${this.escapeHtml(postData.title)} | Minis</title>
+    <meta name="description" content="Mini post: ${this.escapeHtml(postData.title)}">
+    <meta name="author" content="Beyond Me Btw">
+    <meta property="og:title" content="${this.escapeHtml(postData.title)}">
+    <meta property="og:type" content="article">
+    <meta name="article:published_time" content="${postData.date}T${postData.time}:00+05:30">
+</head>
+<body>
+    ${htmlContent}
+</body>
+</html>`;
+
+            // Write HTML file
+            await fs.writeFile(htmlFilePath, htmlFileContent, 'utf8');
+
+            console.log(`HTML file created: ${htmlFilePath}`);
+
+        } catch (error) {
+            console.error(`Error creating HTML file: ${error.message}`);
+            throw new Error(`Failed to create HTML file: ${error.message}`);
+        }
+    }
+
+    escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, m => map[m]);
+    }
+
 
     setupRoutes() {
         this.app.use(express.static(path.join(__dirname, 'public')));
