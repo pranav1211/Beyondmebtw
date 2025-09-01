@@ -14,20 +14,31 @@ class MarkdownParser {
         html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
         html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
 
-        // Bold and italic
+        // Bold and italic - UPDATED ORDER AND LOGIC
+        // Handle triple asterisks first (bold + italic)
         html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
+
+        // Handle nested bold with italic inside: **text *italic* text**
+        html = html.replace(/\*\*([^*]*?)\*([^*]+?)\*([^*]*?)\*\*/g, '<strong>$1<em>$2</em>$3</strong>');
+
+        // Handle nested italic with bold inside: *text **bold** text*
+        html = html.replace(/\*([^*]*?)\*\*([^*]+?)\*\*([^*]*?)\*/g, '<em>$1<strong>$2</strong>$3</em>');
+
+        // Handle regular bold
         html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+        // Handle regular italic
         html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
 
         // Code blocks and inline code
         html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
         html = html.replace(/`(.*?)`/g, '<code>$1</code>');
 
-        // Images
+        // Images BEFORE links
         html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" style="max-width: 100%; height: auto;">');
 
-        // Links
-        html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');        
+        // Links AFTER images
+        html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
 
         // Line breaks and paragraphs
         html = html.replace(/\n\n/g, '</p><p>');
