@@ -3,31 +3,44 @@ const fs = require('fs').promises;
 const fss = require('fs'); // For synchronous operations
 const path = require('path');
 const { exec } = require('child_process');
+const { marked } = require('marked');
 
-// Simple markdown to HTML parser
+
 class MarkdownParser {
     static parse(markdown) {
-        // Use marked.js for proper markdown parsing (same as your working version)
         // Remove any frontmatter first
         const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n/;
         const cleanContent = markdown.replace(frontmatterRegex, '').trim();
 
         // Configure marked options for better parsing
-        if (typeof marked !== 'undefined') {
-            marked.setOptions({
-                breaks: true,
-                gfm: true
-            });
+        marked.setOptions({
+            breaks: true,
+            gfm: true,
+            headerIds: false,
+            mangle: false
+        });
 
+        try {
             return marked.parse(cleanContent);
+        } catch (error) {
+            console.error('Error parsing markdown:', error);
+            // Fallback to escaped plain text
+            return `<p>${this.escapeHtml(cleanContent)}</p>`;
         }
+    }
 
-        // Fallback if marked is not available (shouldn't happen)
-        return cleanContent;
+    static escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, m => map[m]);
     }
 
     static addDefaultStyling(html) {
-        // Just wrap with basic styling - marked.js already handles the conversion properly
         const styledHtml = `
     <div class="markdown-content">
         <style>
@@ -36,35 +49,71 @@ class MarkdownParser {
                 line-height: 1.6;
                 color: #333;
                 max-width: none;
+                padding: 20px;
             }
-            .markdown-content h1 { font-size: 2em; margin: 0.67em 0; font-weight: bold; }
-            .markdown-content h2 { font-size: 1.5em; margin: 0.75em 0; font-weight: bold; }
-            .markdown-content h3 { font-size: 1.17em; margin: 0.83em 0; font-weight: bold; }
-            .markdown-content p { margin: 1em 0; }
-            .markdown-content ul, .markdown-content ol { margin: 1em 0; padding-left: 2em; }
-            .markdown-content li { margin: 0.5em 0; }
+            .markdown-content h1 { 
+                font-size: 2em; 
+                margin: 0.67em 0; 
+                font-weight: bold; 
+                border-bottom: 2px solid #eee;
+                padding-bottom: 10px;
+            }
+            .markdown-content h2 { 
+                font-size: 1.5em; 
+                margin: 0.75em 0; 
+                font-weight: bold; 
+                border-bottom: 1px solid #eee;
+                padding-bottom: 8px;
+            }
+            .markdown-content h3 { 
+                font-size: 1.17em; 
+                margin: 0.83em 0; 
+                font-weight: bold; 
+            }
+            .markdown-content h4, .markdown-content h5, .markdown-content h6 { 
+                margin: 0.83em 0; 
+                font-weight: bold; 
+            }
+            .markdown-content p { 
+                margin: 1em 0; 
+                text-align: justify;
+            }
+            .markdown-content ul, .markdown-content ol { 
+                margin: 1em 0; 
+                padding-left: 2em; 
+            }
+            .markdown-content li { 
+                margin: 0.5em 0; 
+            }
             .markdown-content blockquote { 
                 margin: 1em 0; 
                 padding: 0.5em 1em; 
-                border-left: 4px solid #ddd; 
-                background: #f9f9f9; 
+                border-left: 4px solid #0066cc; 
+                background: #f8f9fa; 
                 font-style: italic; 
+                border-radius: 4px;
             }
             .markdown-content code { 
-                background: #f4f4f4; 
+                background: #f1f3f4; 
                 padding: 0.2em 0.4em; 
                 border-radius: 3px; 
-                font-family: 'SF Mono', Monaco, monospace; 
+                font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace; 
+                font-size: 0.9em;
+                color: #d63384;
             }
             .markdown-content pre { 
-                background: #f4f4f4; 
+                background: #f8f9fa; 
                 padding: 1em; 
                 border-radius: 6px; 
                 overflow-x: auto; 
+                border: 1px solid #e9ecef;
+                margin: 1.5em 0;
             }
             .markdown-content pre code { 
                 background: none; 
                 padding: 0; 
+                color: #333;
+                font-size: 0.9em;
             }
             .markdown-content a { 
                 color: #0066cc; 
@@ -72,6 +121,7 @@ class MarkdownParser {
             }
             .markdown-content a:hover { 
                 text-decoration: underline; 
+                color: #0052a3;
             }
             .markdown-content img { 
                 max-width: 100%; 
@@ -80,6 +130,35 @@ class MarkdownParser {
                 margin: 1.5em 0;
                 display: block;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+            .markdown-content table {
+                border-collapse: collapse;
+                width: 100%;
+                margin: 1.5em 0;
+                border: 1px solid #dee2e6;
+            }
+            .markdown-content th, .markdown-content td {
+                border: 1px solid #dee2e6;
+                padding: 8px 12px;
+                text-align: left;
+            }
+            .markdown-content th {
+                background-color: #f8f9fa;
+                font-weight: bold;
+            }
+            .markdown-content hr {
+                border: none;
+                border-top: 2px solid #eee;
+                margin: 2em 0;
+            }
+            .markdown-content strong, .markdown-content b {
+                font-weight: bold;
+            }
+            .markdown-content em, .markdown-content i {
+                font-style: italic;
+            }
+            .markdown-content del {
+                text-decoration: line-through;
             }
         </style>
         ${html}
@@ -269,7 +348,7 @@ class MinisServer {
         const date = this.formatDate();
         const time = this.formatTime();
 
-        // Convert markdown content to HTML
+        // Convert markdown content to HTML using proper server-side parsing
         const rawHtml = MarkdownParser.parse(content);
         const styledHtml = MarkdownParser.addDefaultStyling(rawHtml);
 
@@ -302,8 +381,6 @@ class MinisServer {
                 this.executeScript((scriptError) => {
                     if (scriptError) {
                         console.error('Script execution failed, but mini was created:', scriptError);
-                        // Don't reject here - the mini was created successfully
-                        // Just log the error and continue
                         resolve({
                             success: true,
                             id,
