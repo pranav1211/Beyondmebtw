@@ -7,114 +7,83 @@ const { exec } = require('child_process');
 // Simple markdown to HTML parser
 class MarkdownParser {
     static parse(markdown) {
-        let html = markdown;
+        // Use marked.js for proper markdown parsing (same as your working version)
+        // Remove any frontmatter first
+        const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n/;
+        const cleanContent = markdown.replace(frontmatterRegex, '').trim();
 
-        // Headers
-        html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
-        html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
-        html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+        // Configure marked options for better parsing
+        if (typeof marked !== 'undefined') {
+            marked.setOptions({
+                breaks: true,
+                gfm: true
+            });
 
-        // Bold and italic - UPDATED ORDER AND LOGIC
-        // Handle triple asterisks first (bold + italic)
-        html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
+            return marked.parse(cleanContent);
+        }
 
-        // Handle nested bold with italic inside: **text *italic* text**
-        html = html.replace(/\*\*([^*]*?)\*([^*]+?)\*([^*]*?)\*\*/g, '<strong>$1<em>$2</em>$3</strong>');
-
-        // Handle nested italic with bold inside: *text **bold** text*
-        html = html.replace(/\*([^*]*?)\*\*([^*]+?)\*\*([^*]*?)\*/g, '<em>$1<strong>$2</strong>$3</em>');
-
-        // Handle regular bold
-        html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-        // Handle regular italic
-        html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-
-        // Code blocks and inline code
-        html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
-        html = html.replace(/`(.*?)`/g, '<code>$1</code>');
-
-        // Images BEFORE links
-        html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" style="max-width: 100%; height: auto;">');
-
-        // Links AFTER images
-        html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
-
-        // Line breaks and paragraphs
-        html = html.replace(/\n\n/g, '</p><p>');
-        html = html.replace(/\n/g, '<br>');
-        html = '<p>' + html + '</p>';
-
-        // Clean up empty paragraphs
-        html = html.replace(/<p><\/p>/g, '');
-        html = html.replace(/<p><br>/g, '<p>');
-        html = html.replace(/<br><\/p>/g, '</p>');
-
-        // Lists
-        html = html.replace(/^\* (.+)/gm, '<li>$1</li>');
-        html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
-        html = html.replace(/^\d+\. (.+)/gm, '<li>$1</li>');
-        html = html.replace(/(<li>.*<\/li>)/s, '<ol>$1</ol>');
-
-        // Blockquotes
-        html = html.replace(/^> (.+)/gm, '<blockquote>$1</blockquote>');
-
-        return html;
+        // Fallback if marked is not available (shouldn't happen)
+        return cleanContent;
     }
 
     static addDefaultStyling(html) {
+        // Just wrap with basic styling - marked.js already handles the conversion properly
         const styledHtml = `
-        <div class="markdown-content" style="
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: none;
-        ">
-            <style>
-                .markdown-content h1 { font-size: 2em; margin: 0.67em 0; font-weight: bold; }
-                .markdown-content h2 { font-size: 1.5em; margin: 0.75em 0; font-weight: bold; }
-                .markdown-content h3 { font-size: 1.17em; margin: 0.83em 0; font-weight: bold; }
-                .markdown-content p { margin: 1em 0; }
-                .markdown-content ul, .markdown-content ol { margin: 1em 0; padding-left: 2em; }
-                .markdown-content li { margin: 0.5em 0; }
-                .markdown-content blockquote { 
-                    margin: 1em 0; 
-                    padding: 0.5em 1em; 
-                    border-left: 4px solid #ddd; 
-                    background: #f9f9f9; 
-                    font-style: italic; 
-                }
-                .markdown-content code { 
-                    background: #f4f4f4; 
-                    padding: 0.2em 0.4em; 
-                    border-radius: 3px; 
-                    font-family: 'SF Mono', Monaco, monospace; 
-                }
-                .markdown-content pre { 
-                    background: #f4f4f4; 
-                    padding: 1em; 
-                    border-radius: 6px; 
-                    overflow-x: auto; 
-                }
-                .markdown-content pre code { 
-                    background: none; 
-                    padding: 0; 
-                }
-                .markdown-content a { 
-                    color: #0066cc; 
-                    text-decoration: none; 
-                }
-                .markdown-content a:hover { 
-                    text-decoration: underline; 
-                }
-                .markdown-content img { 
-                    max-width: 100%; 
-                    height: auto; 
-                    border-radius: 6px; 
-                }
-            </style>
-            ${html}
-        </div>`;
+    <div class="markdown-content">
+        <style>
+            .markdown-content {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                max-width: none;
+            }
+            .markdown-content h1 { font-size: 2em; margin: 0.67em 0; font-weight: bold; }
+            .markdown-content h2 { font-size: 1.5em; margin: 0.75em 0; font-weight: bold; }
+            .markdown-content h3 { font-size: 1.17em; margin: 0.83em 0; font-weight: bold; }
+            .markdown-content p { margin: 1em 0; }
+            .markdown-content ul, .markdown-content ol { margin: 1em 0; padding-left: 2em; }
+            .markdown-content li { margin: 0.5em 0; }
+            .markdown-content blockquote { 
+                margin: 1em 0; 
+                padding: 0.5em 1em; 
+                border-left: 4px solid #ddd; 
+                background: #f9f9f9; 
+                font-style: italic; 
+            }
+            .markdown-content code { 
+                background: #f4f4f4; 
+                padding: 0.2em 0.4em; 
+                border-radius: 3px; 
+                font-family: 'SF Mono', Monaco, monospace; 
+            }
+            .markdown-content pre { 
+                background: #f4f4f4; 
+                padding: 1em; 
+                border-radius: 6px; 
+                overflow-x: auto; 
+            }
+            .markdown-content pre code { 
+                background: none; 
+                padding: 0; 
+            }
+            .markdown-content a { 
+                color: #0066cc; 
+                text-decoration: none; 
+            }
+            .markdown-content a:hover { 
+                text-decoration: underline; 
+            }
+            .markdown-content img { 
+                max-width: 100%; 
+                height: auto; 
+                border-radius: 8px;
+                margin: 1.5em 0;
+                display: block;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+        </style>
+        ${html}
+    </div>`;
 
         return styledHtml;
     }
