@@ -168,6 +168,34 @@ class MarkdownParser {
     }
 }
 
+// Add this debug route to test markdown parsing
+this.app.post('/test-markdown', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+
+    try {
+        const { content } = req.body;
+        if (!content) {
+            return res.status(400).json({ error: 'Content is required' });
+        }
+
+        console.log('Testing markdown parsing...');
+        const rawHtml = MarkdownParser.parse(content);
+        const styledHtml = MarkdownParser.addDefaultStyling(rawHtml);
+
+        res.json({
+            success: true,
+            rawHtml,
+            styledHtml: styledHtml.substring(0, 200) + '...' // Truncated for debugging
+        });
+    } catch (error) {
+        console.error('Markdown parsing error:', error);
+        res.status(500).json({
+            error: 'Markdown parsing failed',
+            details: error.message
+        });
+    }
+});
+
 class MinisServer {
     constructor() {
         this.app = express();
@@ -405,7 +433,6 @@ class MinisServer {
             throw new Error(`Failed to create mini: ${error.message}`);
         }
     }
-
     async createHtmlFile(date, title, htmlContent, postData) {
         // Create date folder name in format like "jan-01-2025"
         const dateObj = new Date(date);
@@ -482,7 +509,12 @@ class MinisServer {
         });
 
         this.app.post('/add', async (req, res) => {
+            // Ensure we always return JSON
+            res.setHeader('Content-Type', 'application/json');
+
             try {
+                console.log('Received POST /add request:', req.body);
+
                 const result = await this.createMini(req.body);
 
                 res.status(201).json({
@@ -491,11 +523,15 @@ class MinisServer {
                 });
             } catch (error) {
                 console.error('Error creating mini:', error);
+
+                // Always return JSON error response
                 res.status(400).json({
-                    error: error.message
+                    error: error.message || 'Failed to create mini',
+                    success: false
                 });
             }
         });
+
 
         // 404 handler for unknown routes
         this.app.use('*', (req, res) => {

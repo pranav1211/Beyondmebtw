@@ -23,14 +23,14 @@ class MinisApp {
             const response = await fetch('https://minis.beyondmebtw.com/content/metadata.json');
             if (!response.ok) throw new Error('Failed to load metadata');
             this.metadata = await response.json();
-            
+
             // Sort metadata by date and time (latest first)
             this.metadata.sort((a, b) => {
                 const dateA = new Date(a.date + 'T' + a.time);
                 const dateB = new Date(b.date + 'T' + b.time);
                 return dateB - dateA;
             });
-            
+
             console.log('Loaded and sorted metadata:', this.metadata);
         } catch (error) {
             console.error('Error loading metadata:', error);
@@ -100,13 +100,13 @@ class MinisApp {
     renderSinglePost(post) {
         const container = document.getElementById('postsContainer');
         const fragment = document.createDocumentFragment();
-        
+
         const currentDate = post.date;
         const isSameDate = currentDate === this.lastRenderedDate;
-        
+
         // Create post element with proper date tab visibility
         const postElement = this.createPostElement(post, !isSameDate);
-        
+
         // Add same-date class if needed
         if (isSameDate) {
             postElement.classList.add('same-date');
@@ -116,7 +116,7 @@ class MinisApp {
             this.lastRenderedDate = currentDate;
             console.log(`New date tab shown: ${currentDate}`);
         }
-        
+
         fragment.appendChild(postElement);
 
         // Add divider between posts (except after the last post)
@@ -134,7 +134,7 @@ class MinisApp {
 
     setupLazyContentLoading(postElement, post) {
         const contentElement = postElement.querySelector('.mini-post-content');
-        
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting && contentElement.innerHTML.includes('placeholder-line')) {
@@ -167,6 +167,12 @@ class MinisApp {
             console.log(`No date tab for: ${formattedDate} (same as previous)`);
         }
 
+        // Create title HTML - only if title exists and is not empty
+        let titleHtml = '';
+        if (post.title && post.title.trim()) {
+            titleHtml = `<h3 class="mini-post-title">${this.escapeHtml(post.title)}</h3>`;
+        }
+
         // Create tags with time
         let tagsHtml = '';
         if (post.tags && post.tags.length > 0 || formattedTime) {
@@ -192,6 +198,7 @@ class MinisApp {
         postContainer.innerHTML = `
             ${dateTabHtml}
             <div class="mini-post">
+                ${titleHtml}
                 <div class="mini-post-content">
                     ${loadingPlaceholder}
                 </div>
@@ -257,7 +264,7 @@ class MinisApp {
                 if (!this.loading && !this.allLoaded) {
                     const scrollPosition = window.innerHeight + window.scrollY;
                     const threshold = document.body.offsetHeight - 1000;
-                    
+
                     if (scrollPosition >= threshold) {
                         this.loadMorePosts();
                     }
