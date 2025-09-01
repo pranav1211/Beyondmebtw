@@ -461,26 +461,28 @@ class MinisServer {
 
             console.log(`Generated ID: ${id}, Date: ${date}, Time: ${time}`);
 
-            // Convert markdown content to HTML
-            const rawHtml = MarkdownParser.parse(content);
-            const styledHtml = MarkdownParser.addDefaultStyling(rawHtml);
+            // Convert markdown content to HTML (just the core content, no styling wrapper)
+            const coreHtml = MarkdownParser.parse(content);
+
+            // For the HTML file, we still want the full styled version
+            const styledHtml = MarkdownParser.addDefaultStyling(coreHtml);
 
             console.log('Markdown parsed successfully');
 
-            // Create folder structure and HTML file
+            // Create folder structure and HTML file (with styled version)
             await this.createHtmlFile(date, title, styledHtml, { id, title, date, time, tags });
 
             console.log('HTML file created successfully');
 
-            // Create metadata object (now with HTML content included)
+            // Create metadata object (now with just core HTML content, no wrapper/styling)
             const metadata = {
                 id,
                 title,
                 date,
                 time,
                 tags,
-                content: styledHtml,  // Store the processed HTML
-                rawMarkdown: content  // Keep original markdown for editing if needed
+                content: coreHtml,        // Store only the core HTML without wrapper div and styling
+                rawMarkdown: content      // Keep original markdown for editing if needed
             };
 
             // Load existing metadata, add new entry, and save
