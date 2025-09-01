@@ -8,49 +8,49 @@ const { exec } = require('child_process');
 class MarkdownParser {
     static parse(markdown) {
         let html = markdown;
-        
+
         // Headers
         html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
         html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
         html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
-        
+
         // Bold and italic
         html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
         html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-        
+
         // Code blocks and inline code
         html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
         html = html.replace(/`(.*?)`/g, '<code>$1</code>');
-        
+
         // Links
         html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
-        
+
         // Images
         html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" style="max-width: 100%; height: auto;">');
-        
+
         // Line breaks and paragraphs
         html = html.replace(/\n\n/g, '</p><p>');
         html = html.replace(/\n/g, '<br>');
         html = '<p>' + html + '</p>';
-        
+
         // Clean up empty paragraphs
         html = html.replace(/<p><\/p>/g, '');
         html = html.replace(/<p><br>/g, '<p>');
         html = html.replace(/<br><\/p>/g, '</p>');
-        
+
         // Lists
         html = html.replace(/^\* (.+)/gm, '<li>$1</li>');
         html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
         html = html.replace(/^\d+\. (.+)/gm, '<li>$1</li>');
         html = html.replace(/(<li>.*<\/li>)/s, '<ol>$1</ol>');
-        
+
         // Blockquotes
         html = html.replace(/^> (.+)/gm, '<blockquote>$1</blockquote>');
-        
+
         return html;
     }
-    
+
     static addDefaultStyling(html) {
         const styledHtml = `
         <div class="markdown-content" style="
@@ -104,7 +104,7 @@ class MarkdownParser {
             </style>
             ${html}
         </div>`;
-        
+
         return styledHtml;
     }
 }
@@ -162,7 +162,15 @@ class MinisServer {
     }
 
     generateId() {
-        return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        const now = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year = now.getFullYear();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+
+        return `mini${day}${month}${year}${hours}${minutes}`;
     }
 
     formatDate() {
@@ -174,7 +182,7 @@ class MinisServer {
     }
 
     formatTime() {
-        const now = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+        const now = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
         return `${hours}:${minutes}`;

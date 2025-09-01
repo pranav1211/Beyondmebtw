@@ -57,17 +57,17 @@ class MinisApp {
             return;
         }
 
-        // Load posts sequentially
+        // Process posts directly from metadata (no file loading needed)
         for (let i = startIndex; i < endIndex; i++) {
             const item = this.metadata[i];
             try {
-                const post = await this.loadPost(item);
+                const post = this.createPostFromMetadata(item);
                 if (post !== null) {
                     this.renderSinglePost(post);
                     this.posts.push(post);
                 }
             } catch (error) {
-                console.error(`Error loading post ${item.filename}:`, error);
+                console.error(`Error processing post ${item.id}:`, error);
             }
         }
 
@@ -83,42 +83,18 @@ class MinisApp {
         this.loading = false;
     }
 
-    async loadPost(metadata) {
-        try {
-            const response = await fetch(`https://minis.beyondmebtw.com/content/${metadata.filename}`);
-            if (!response.ok) throw new Error(`Failed to load ${metadata.filename}`);
-
-            const content = await response.text();
-            return this.parseMarkdownLazy(content, metadata);
-        } catch (error) {
-            console.error(`Error loading post ${metadata.filename}:`, error);
-            return null;
-        }
-    }
-
-    parseMarkdownLazy(content, metadata) {
-        // Remove frontmatter
-        const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n/;
-        const cleanContent = content.replace(frontmatterRegex, '').trim();
-
+    createPostFromMetadata(metadata) {
+        // Create post object directly from metadata since HTML content is already stored
         return {
-            id: metadata.id || Date.now(),
+            id: metadata.id,
+            title: metadata.title,
             date: metadata.date,
             time: metadata.time,
             tags: metadata.tags || [],
-            rawContent: cleanContent,
-            parsedContent: null,
-            filename: metadata.filename,
-            parsed: false
+            htmlContent: metadata.content, // Use the pre-processed HTML content
+            rawMarkdown: metadata.rawMarkdown || '', // Keep raw markdown if available
+            parsed: true // Already processed
         };
-    }
-
-    parseContentWhenNeeded(post) {
-        if (!post.parsed) {
-            post.parsedContent = marked.parse(post.rawContent);
-            post.parsed = true;
-        }
-        return post.parsedContent;
     }
 
     renderSinglePost(post) {
@@ -134,7 +110,7 @@ class MinisApp {
         // Add same-date class if needed
         if (isSameDate) {
             postElement.classList.add('same-date');
-            console.log(`Post marked as same-date: ${post.filename}, date: ${currentDate}`);
+            console.log(`Post marked as same-date: ${post.id}, date: ${currentDate}`);
         } else {
             // Update the last rendered date only when we show a new date tab
             this.lastRenderedDate = currentDate;
@@ -161,9 +137,9 @@ class MinisApp {
         
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting && !post.parsed) {
-                    const parsedContent = this.parseContentWhenNeeded(post);
-                    contentElement.innerHTML = parsedContent;
+                if (entry.isIntersecting && contentElement.innerHTML.includes('placeholder-line')) {
+                    // Load the HTML content directly (no markdown parsing needed)
+                    contentElement.innerHTML = post.htmlContent;
                     observer.unobserve(entry.target);
                 }
             });
