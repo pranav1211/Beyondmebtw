@@ -27,6 +27,28 @@ function checkAuthentication() {
     return true;
 }
 
+// Load Marked.js from CDN
+function loadMarked() {
+    return new Promise((resolve, reject) => {
+        if (window.marked) {
+            resolve(window.marked);
+            return;
+        }
+
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js';
+        script.onload = () => {
+            if (window.marked) {
+                resolve(window.marked);
+            } else {
+                reject(new Error('Failed to load marked.js'));
+            }
+        };
+        script.onerror = () => reject(new Error('Failed to load marked.js'));
+        document.head.appendChild(script);
+    });
+}
+
 // Markdown parser for live preview (fallback if marked.js not loaded)
 class MarkdownPreview {
     static parse(markdown) {
