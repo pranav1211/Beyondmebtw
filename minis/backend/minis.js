@@ -1,14 +1,3 @@
-// minis.js with built-in authentication
-document.addEventListener("DOMContentLoaded", () => {
-    // Authentication check first
-    if (!checkAuthentication()) {
-        return; // Don't initialize the app if not authenticated
-    }
-
-    // Initialize the minis app
-    new MinisApp();
-});
-
 // Authentication functions
 function getCookie(name) {
     const nameEQ = name + "=";
@@ -29,19 +18,6 @@ function checkAuthentication() {
     const isLoggedIn = isAuthenticated();
 
     if (!isLoggedIn) {
-        // Show loading message briefly before redirect
-        const authLoading = document.getElementById("auth-loading");
-        if (authLoading) {
-            authLoading.style.display = "block";
-        }
-
-        // Hide content containers while redirecting
-        const contentContainer = document.getElementById("content-container");
-        if (contentContainer) {
-            contentContainer.style.display = "none";
-        }
-
-        // Redirect after a brief delay
         setTimeout(() => {
             window.location.href = 'https://manage.beyondmebtw.com/index.html';
         }, 1000);
@@ -51,12 +27,61 @@ function checkAuthentication() {
     return true;
 }
 
+// Markdown parser for live preview
+class MarkdownPreview {
+    static parse(markdown) {
+        let html = markdown;
+
+        // Headers
+        html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+        html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+        html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+
+        // Bold and italic
+        html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
+        html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+        // Code blocks and inline code
+        html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+        html = html.replace(/`(.*?)`/g, '<code>$1</code>');
+
+        // Links
+        html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+
+        // Images
+        html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+
+        // Line breaks and paragraphs
+        html = html.replace(/\n\n/g, '</p><p>');
+        html = html.replace(/\n/g, '<br>');
+        html = '<p>' + html + '</p>';
+
+        // Clean up empty paragraphs
+        html = html.replace(/<p><\/p>/g, '');
+        html = html.replace(/<p><br>/g, '<p>');
+        html = html.replace(/<br><\/p>/g, '</p>');
+
+        // Lists
+        html = html.replace(/^\* (.+)/gm, '<li>$1</li>');
+        html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+        html = html.replace(/^\d+\. (.+)/gm, '<li>$1</li>');
+        html = html.replace(/(<li>.*<\/li>)/s, '<ol>$1</ol>');
+
+        // Blockquotes
+        html = html.replace(/^> (.+)/gm, '<blockquote>$1</blockquote>');
+
+        return html;
+    }
+}
+
 class MinisApp {
     constructor() {
         this.form = document.getElementById('contentForm');
         this.textarea = document.getElementById('content');
+        this.titleInput = document.getElementById('title');
         this.passwordInput = document.getElementById('password');
-        this.dropOverlay = document.getElementById('dropOverlay');
+        this.previewContent = document.getElementById('previewContent');
         this.submitBtn = document.getElementById('submitBtn');
         this.statusMessage = document.getElementById('statusMessage');
 
@@ -66,7 +91,6 @@ class MinisApp {
     }
 
     fillPasswordFromCookie() {
-        // Auto-fill password from cookie
         const authKey = getCookie('beyondme_auth_key');
         if (authKey) {
             this.passwordInput.value = authKey;
@@ -82,19 +106,19 @@ class MinisApp {
             logoutBtn.className = "logout-btn";
             logoutBtn.textContent = "Logout";
             logoutBtn.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 10px 20px;
-                background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
-                color: white;
-                border: none;
-                border-radius: 8px;
-                font-weight: 600;
-                cursor: pointer;
-                z-index: 1000;
-                transition: all 0.3s ease;
-            `;
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        padding: 10px 20px;
+                        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+                        color: white;
+                        border: none;
+                        border-radius: 8px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        z-index: 1000;
+                        transition: all 0.3s ease;
+                    `;
 
             logoutBtn.addEventListener('mouseover', () => {
                 logoutBtn.style.transform = 'translateY(-2px)';
@@ -116,31 +140,62 @@ class MinisApp {
     }
 
     logout() {
-        // Clear cookies
         document.cookie = 'beyondme_auth=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=.beyondmebtw.com';
         document.cookie = 'beyondme_auth_key=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=.beyondmebtw.com';
-
-        // Redirect to login page
         window.location.href = 'https://manage.beyondmebtw.com/index.html';
     }
 
     initializeEventListeners() {
-        // Form submission
         this.form.addEventListener('submit', this.handleSubmit.bind(this));
 
-        // Drag and drop functionality
+        // Live preview updates
+        this.textarea.addEventListener('input', this.updatePreview.bind(this));
+        this.titleInput.addEventListener('input', this.updatePreview.bind(this));
+
+        // Initial preview update
+        this.updatePreview();
+
         this.setupDragAndDrop();
     }
 
-    setupDragAndDrop() {
-        const textareaContainer = this.textarea.parentElement;
+    updatePreview() {
+        const title = this.titleInput.value.trim();
+        const content = this.textarea.value.trim();
 
-        // Prevent default drag behaviors on the page
+        if (!title && !content) {
+            this.previewContent.innerHTML = `
+                        <div class="preview-placeholder">
+                            Type in the content area to see a live preview here...
+                        </div>
+                    `;
+            return;
+        }
+
+        let previewHtml = '';
+
+        if (title) {
+            previewHtml += `<h1 style="color: #1f2937; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5em; margin-bottom: 1em;">${this.escapeHtml(title)}</h1>`;
+        }
+
+        if (content) {
+            const markdownHtml = MarkdownPreview.parse(content);
+            previewHtml += `<div class="markdown-preview">${markdownHtml}</div>`;
+        }
+
+        this.previewContent.innerHTML = previewHtml || `<div class="preview-placeholder">Start typing to see preview...</div>`;
+    }
+
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    setupDragAndDrop() {
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             document.addEventListener(eventName, this.preventDefaults, false);
         });
 
-        // Textarea drag events
         ['dragenter', 'dragover'].forEach(eventName => {
             this.textarea.addEventListener(eventName, this.handleDragEnter.bind(this), false);
         });
@@ -159,36 +214,21 @@ class MinisApp {
 
     handleDragEnter(e) {
         this.preventDefaults(e);
-
-        // Check if the dragged items contain files
         if (e.dataTransfer.types && e.dataTransfer.types.includes('Files')) {
             this.textarea.parentElement.classList.add('drag-over');
-            if (this.dropOverlay) {
-                this.dropOverlay.classList.add('active');
-            }
         }
     }
 
     handleDragLeave(e) {
         this.preventDefaults(e);
-
-        // Only hide overlay if we're leaving the textarea area completely
-        if (!this.textarea.contains(e.relatedTarget) &&
-            (!this.dropOverlay || !this.dropOverlay.contains(e.relatedTarget))) {
+        if (!this.textarea.contains(e.relatedTarget)) {
             this.textarea.parentElement.classList.remove('drag-over');
-            if (this.dropOverlay) {
-                this.dropOverlay.classList.remove('active');
-            }
         }
     }
 
     async handleDrop(e) {
         this.preventDefaults(e);
-
         this.textarea.parentElement.classList.remove('drag-over');
-        if (this.dropOverlay) {
-            this.dropOverlay.classList.remove('active');
-        }
 
         const files = Array.from(e.dataTransfer.files);
         const imageFiles = files.filter(file => file.type.startsWith('image/'));
@@ -205,6 +245,7 @@ class MinisApp {
                 await this.processImageFile(file);
             }
             this.hideStatus();
+            this.updatePreview(); // Update preview after adding images
         } catch (error) {
             console.error('Error processing images:', error);
             this.showStatus('Error processing images. Please try again.', 'error');
@@ -216,15 +257,11 @@ class MinisApp {
             const reader = new FileReader();
 
             reader.onload = (e) => {
-                const dataUrl = e.target.result;
                 const fileName = file.name;
-                const altText = fileName.split('.')[0]; // Use filename without extension as alt text
-
-                // Create a placeholder URL - in a real implementation, you'd upload this to your server
+                const altText = fileName.split('.')[0];
                 const imageUrl = `uploads/${Date.now()}_${fileName}`;
                 const markdownImage = `![${altText}](${imageUrl})`;
 
-                // Insert the markdown image at cursor position or end of text
                 const currentContent = this.textarea.value;
                 const cursorPosition = this.textarea.selectionStart;
 
@@ -235,7 +272,6 @@ class MinisApp {
 
                 this.textarea.value = newContent;
 
-                // Move cursor after the inserted image
                 const newCursorPosition = cursorPosition + markdownImage.length + 2;
                 this.textarea.setSelectionRange(newCursorPosition, newCursorPosition);
                 this.textarea.focus();
@@ -259,7 +295,6 @@ class MinisApp {
             password: formData.get('password').trim()
         };
 
-        // Validate required fields
         if (!data.title || !data.content) {
             this.showStatus('Title and content are required.', 'error');
             return;
@@ -270,7 +305,6 @@ class MinisApp {
             return;
         }
 
-        // Process tags
         data.tags = data.tags
             ? data.tags.split(',').map(tag => tag.trim()).filter(tag => tag)
             : [];
@@ -279,7 +313,7 @@ class MinisApp {
         this.showStatus('Creating your mini...', 'loading');
 
         try {
-            const response = await fetch('https://minis.beyondmebtw.com/add', {
+            const response = await fetch('/add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -293,15 +327,13 @@ class MinisApp {
                 throw new Error(result.error || 'Failed to create mini');
             }
 
-            // Show success alert and status message
             alert('New mini added successfully!');
-            this.showStatus(`Mini created successfully! Filename: ${result.filename}`, 'success');
+            this.showStatus(`Mini created successfully! ID: ${result.id}`, 'success');
             this.form.reset();
-            
-            // Refill the password field after form reset
-            this.fillPasswordFromCookie();
 
-            // Optionally redirect or do something else
+            this.fillPasswordFromCookie();
+            this.updatePreview(); // Reset preview
+
             console.log('Created mini:', result);
 
         } catch (error) {
@@ -332,7 +364,6 @@ class MinisApp {
         this.statusMessage.className = `status-message ${type}`;
         this.statusMessage.style.display = 'block';
 
-        // Auto-hide success messages after 5 seconds
         if (type === 'success') {
             setTimeout(() => this.hideStatus(), 5000);
         }
@@ -342,3 +373,11 @@ class MinisApp {
         this.statusMessage.style.display = 'none';
     }
 }
+
+// Initialize app when DOM is ready
+document.addEventListener("DOMContentLoaded", () => {
+    if (!checkAuthentication()) {
+        return;
+    }
+    new MinisApp();
+});

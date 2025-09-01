@@ -4,6 +4,111 @@ const fss = require('fs'); // For synchronous operations
 const path = require('path');
 const { exec } = require('child_process');
 
+// Simple markdown to HTML parser
+class MarkdownParser {
+    static parse(markdown) {
+        let html = markdown;
+        
+        // Headers
+        html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+        html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+        html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+        
+        // Bold and italic
+        html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
+        html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        
+        // Code blocks and inline code
+        html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+        html = html.replace(/`(.*?)`/g, '<code>$1</code>');
+        
+        // Links
+        html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+        
+        // Images
+        html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" style="max-width: 100%; height: auto;">');
+        
+        // Line breaks and paragraphs
+        html = html.replace(/\n\n/g, '</p><p>');
+        html = html.replace(/\n/g, '<br>');
+        html = '<p>' + html + '</p>';
+        
+        // Clean up empty paragraphs
+        html = html.replace(/<p><\/p>/g, '');
+        html = html.replace(/<p><br>/g, '<p>');
+        html = html.replace(/<br><\/p>/g, '</p>');
+        
+        // Lists
+        html = html.replace(/^\* (.+)/gm, '<li>$1</li>');
+        html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+        html = html.replace(/^\d+\. (.+)/gm, '<li>$1</li>');
+        html = html.replace(/(<li>.*<\/li>)/s, '<ol>$1</ol>');
+        
+        // Blockquotes
+        html = html.replace(/^> (.+)/gm, '<blockquote>$1</blockquote>');
+        
+        return html;
+    }
+    
+    static addDefaultStyling(html) {
+        const styledHtml = `
+        <div class="markdown-content" style="
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: none;
+        ">
+            <style>
+                .markdown-content h1 { font-size: 2em; margin: 0.67em 0; font-weight: bold; }
+                .markdown-content h2 { font-size: 1.5em; margin: 0.75em 0; font-weight: bold; }
+                .markdown-content h3 { font-size: 1.17em; margin: 0.83em 0; font-weight: bold; }
+                .markdown-content p { margin: 1em 0; }
+                .markdown-content ul, .markdown-content ol { margin: 1em 0; padding-left: 2em; }
+                .markdown-content li { margin: 0.5em 0; }
+                .markdown-content blockquote { 
+                    margin: 1em 0; 
+                    padding: 0.5em 1em; 
+                    border-left: 4px solid #ddd; 
+                    background: #f9f9f9; 
+                    font-style: italic; 
+                }
+                .markdown-content code { 
+                    background: #f4f4f4; 
+                    padding: 0.2em 0.4em; 
+                    border-radius: 3px; 
+                    font-family: 'SF Mono', Monaco, monospace; 
+                }
+                .markdown-content pre { 
+                    background: #f4f4f4; 
+                    padding: 1em; 
+                    border-radius: 6px; 
+                    overflow-x: auto; 
+                }
+                .markdown-content pre code { 
+                    background: none; 
+                    padding: 0; 
+                }
+                .markdown-content a { 
+                    color: #0066cc; 
+                    text-decoration: none; 
+                }
+                .markdown-content a:hover { 
+                    text-decoration: underline; 
+                }
+                .markdown-content img { 
+                    max-width: 100%; 
+                    height: auto; 
+                    border-radius: 6px; 
+                }
+            </style>
+            ${html}
+        </div>`;
+        
+        return styledHtml;
+    }
+}
+
 class MinisServer {
     constructor() {
         this.app = express();
@@ -54,17 +159,6 @@ class MinisServer {
 
         // Trust proxy (important for nginx)
         this.app.set('trust proxy', 1);
-    }
-
-    generateFilename() {
-        const now = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const date = String(now.getDate()).padStart(2, '0');
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-
-        return `mini${year}${month}${date}${hours}${minutes}.md`;
     }
 
     generateId() {
@@ -183,49 +277,34 @@ class MinisServer {
             throw new Error('Invalid authentication key');
         }
 
-        const filename = this.generateFilename();
         const id = this.generateId();
         const date = this.formatDate();
         const time = this.formatTime();
 
-        // Create metadata object (without content)
+        // Convert markdown content to HTML
+        const rawHtml = MarkdownParser.parse(content);
+        const styledHtml = MarkdownParser.addDefaultStyling(rawHtml);
+
+        // Create metadata object (now with HTML content included)
         const metadata = {
             id,
             title,
             date,
             time,
             tags,
-            filename
+            content: styledHtml,  // Store the processed HTML
+            rawMarkdown: content  // Keep original markdown for editing if needed
         };
 
-        // Create markdown content with metadata header
-        const markdownContent = `---
-id: ${id}
-title: ${title}
-date: ${date}
-time: ${time}
-tags: [${tags.map(tag => `"${tag}"`).join(', ')}]
----
-
-# ${title}
-
-${content}`;
-
-        const mdPath = path.join(this.contentDir, filename);
-
         try {
-            // Log where we're trying to write
-            console.log(`Creating mini at: ${mdPath}`);
-
-            // Write markdown file
-            await fs.writeFile(mdPath, markdownContent, 'utf8');
+            console.log(`Creating mini with ID: ${id}`);
 
             // Load existing metadata, add new entry, and save
             const existingMetadata = await this.loadMetadata();
             existingMetadata.push(metadata);
             await this.saveMetadata(existingMetadata);
 
-            console.log(`Successfully created mini: ${filename}`);
+            console.log(`Successfully created mini: ${id}`);
 
             // Execute the script after successful creation
             return new Promise((resolve, reject) => {
@@ -237,7 +316,6 @@ ${content}`;
                         resolve({
                             success: true,
                             id,
-                            filename,
                             metadata,
                             scriptExecuted: false,
                             scriptError: scriptError.message
@@ -247,7 +325,6 @@ ${content}`;
                         resolve({
                             success: true,
                             id,
-                            filename,
                             metadata,
                             scriptExecuted: true
                         });
