@@ -62,11 +62,58 @@ class MarkdownPreview {
         html = html.replace(/<p><br>/g, '<p>');
         html = html.replace(/<br><\/p>/g, '</p>');
 
-        // Lists
-        html = html.replace(/^\* (.+)/gm, '<li>$1</li>');
-        html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
-        html = html.replace(/^\d+\. (.+)/gm, '<li>$1</li>');
-        html = html.replace(/(<li>.*<\/li>)/s, '<ol>$1</ol>');
+        // Lists - Fixed to match server implementation
+        const lines = html.split('<br>');
+        let inUl = false;
+        let inOl = false;
+        const processedLines = [];
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
+
+            // Check for unordered list item
+            if (line.match(/^\* (.+)/)) {
+                if (!inUl) {
+                    if (inOl) {
+                        processedLines.push('</ol>');
+                        inOl = false;
+                    }
+                    processedLines.push('<ul>');
+                    inUl = true;
+                }
+                processedLines.push(line.replace(/^\* (.+)/, '<li>$1</li>'));
+            }
+            // Check for ordered list item
+            else if (line.match(/^\d+\. (.+)/)) {
+                if (!inOl) {
+                    if (inUl) {
+                        processedLines.push('</ul>');
+                        inUl = false;
+                    }
+                    processedLines.push('<ol>');
+                    inOl = true;
+                }
+                processedLines.push(line.replace(/^\d+\. (.+)/, '<li>$1</li>'));
+            }
+            // Regular line
+            else {
+                if (inUl) {
+                    processedLines.push('</ul>');
+                    inUl = false;
+                }
+                if (inOl) {
+                    processedLines.push('</ol>');
+                    inOl = false;
+                }
+                processedLines.push(line);
+            }
+        }
+
+        // Close any remaining lists
+        if (inUl) processedLines.push('</ul>');
+        if (inOl) processedLines.push('</ol>');
+
+        html = processedLines.join('<br>');
 
         // Blockquotes
         html = html.replace(/^> (.+)/gm, '<blockquote>$1</blockquote>');
@@ -137,6 +184,12 @@ class MinisApp {
 
             document.body.appendChild(logoutBtn);
         }
+    }
+
+    logout() {
+        document.cookie = 'beyondme_auth=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=.beyondmebtw.com';
+        document.cookie = 'beyondme_auth_key=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=.beyondmebtw.com';
+        window.location.href = 'https://manage.beyondmebtw.com/index.html';
     }
 
     logout() {
