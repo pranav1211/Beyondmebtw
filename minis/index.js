@@ -166,41 +166,62 @@ class MinisApp {
         } else {
             console.log(`No date tab for: ${formattedDate} (same as previous)`);
         }
-        
+
+        // Create title HTML
+        const titleHtml = `<h2 class="mini-post-title">${this.escapeHtml(post.title)}</h2>`;
+
         // Create tags with time
         let tagsHtml = '';
         if (post.tags && post.tags.length > 0 || formattedTime) {
             const timeTag = `<span class="time-tag">${formattedTime}</span>`;
             const regularTags = post.tags.map(tag => `<span class="tag">${this.escapeHtml(tag)}</span>`).join('');
             tagsHtml = `
-                <div class="mini-post-meta">
-                    ${timeTag}
-                    ${regularTags}
-                </div>
-            `;
+            <div class="mini-post-meta">
+                ${timeTag}
+                ${regularTags}
+            </div>
+        `;
         }
 
         // Loading placeholder
         const loadingPlaceholder = `
-            <div class="content-loading-placeholder">
-                <div class="placeholder-line"></div>
-                <div class="placeholder-line short"></div>
-                <div class="placeholder-line"></div>
-            </div>
-        `;
+        <div class="content-loading-placeholder">
+            <div class="placeholder-line"></div>
+            <div class="placeholder-line short"></div>
+            <div class="placeholder-line"></div>
+        </div>
+    `;
 
         postContainer.innerHTML = `
-            ${dateTabHtml}
-            <div class="mini-post">
-                ${titleHtml}
-                <div class="mini-post-content">
-                    ${loadingPlaceholder}
-                </div>
-                ${tagsHtml}
+        ${dateTabHtml}
+        <div class="mini-post">
+            ${titleHtml}
+            <div class="mini-post-content">
+                ${loadingPlaceholder}
             </div>
-        `;
+            ${tagsHtml}
+        </div>
+    `;
 
         return postContainer;
+    }
+
+    setupLazyContentLoading(postElement, post) {
+        const contentElement = postElement.querySelector('.mini-post-content');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && contentElement.innerHTML.includes('placeholder-line')) {
+                    // Load the HTML content directly (already processed, no wrapper div/styling)
+                    contentElement.innerHTML = post.htmlContent;
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            rootMargin: '100px'
+        });
+
+        observer.observe(contentElement);
     }
 
     formatDate(dateStr) {
