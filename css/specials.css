@@ -1,5 +1,5 @@
 .minis-button {
-    position: sticky;
+    position: absolute;
     top: 10px;
     right: 200px;
     display: flex;
