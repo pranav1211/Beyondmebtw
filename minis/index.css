@@ -43,31 +43,6 @@ body::before {
     position: relative;
 }
 
-.home-button {
-    background: linear-gradient(135deg, #E8D9CD 0%, #F2E6DA 50%, #E8D9CD 100%);
-    color: #3b342d;
-    padding: 15px 30px;
-    border: none;
-    border-radius: 35px;
-    font-family: "Delius", cursive;
-    font-weight: 600;
-    font-size: 24px;
-    cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-    text-decoration: none;
-    display: inline-block;
-    position: absolute;
-    left: 95px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
-    border: 2px solid rgba(255, 255, 255, 0.4);
-}
-
-.home-button:hover {
-    background: linear-gradient(135deg, #F2E6DA 0%, #FFFFFF 50%, #F2E6DA 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-}
-
 .page-title {
     font-family: "Permanent Marker", cursive;
     color: #3b342d;
@@ -191,14 +166,17 @@ body::before {
     /* Lower than date tab */
 }
 
-.mini-post:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
-}
-
 .mini-post-content {
     color: #3b342d;
     font-size: 18px;
+    line-height: 1.7;
+    margin-bottom: 20px;
+    min-height: 60px;
+}
+
+.mini-post-title {
+    color: #3b342d;
+    font-size: 24px;
     line-height: 1.7;
     margin-bottom: 20px;
     min-height: 60px;
@@ -502,12 +480,6 @@ body::before {
     .page-title .brand {
         font-size: 26px;
     }
-
-    .home-button {
-        font-size: 22px;
-        padding: 12px 25px;
-        left: 60px;
-    }
 }
 
 @media (max-width: 968px) {
@@ -518,7 +490,7 @@ body::before {
     }
 
     .intro-section {
-        position: static;
+        position: relative;
         margin-left: 0;
         width: 100%;
         transform: translateZ(0);
@@ -556,14 +528,6 @@ body::before {
         align-items: center;
         gap: 25px;
         margin-bottom: 40px;
-    }
-
-    .home-button {
-        position: static;
-        left: auto;
-        font-size: 22px;
-        padding: 12px 25px;
-        order: 2;
     }
 
     .page-title {
@@ -643,11 +607,6 @@ body::before {
     .page-title .brand {
         font-size: 20px;
         padding: 0 10px;
-    }
-
-    .home-button {
-        font-size: 20px;
-        padding: 10px 20px;
     }
 
     .mini-post {
