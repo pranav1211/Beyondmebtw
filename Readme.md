@@ -14,6 +14,14 @@ The Current Home Page
 
 ## Changelog:
 
+### 3.1 (01/09/2025)
+- reduced lag on the minis page by reworking how content is loaded, removed the marked down parsing which is heavy to just a json data entry, the text is converted into html and stored into json
+- along with that a method to create a html file with that content is also created and added according to folder and title for future storage
+- removed home button from minis as not needed
+- reduced animations and changed some text styling for the minis container
+- fixed an issue with the cta minis button on other pages where position was fixed causing to go everywhere
+- reworked the adding minis part to show a live preview
+
 ### 3.0 (22/08/2025)
 - fixed lag and responsiveness of the minis page for mobile and pretty much all types of devices.
 - fixed an issue in the generation of the filename and date, it was meant to capture the user time but language settings were a barrier, switched to clear function of IST timezone.
