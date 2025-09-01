@@ -3,198 +3,6 @@ const fs = require('fs').promises;
 const fss = require('fs'); // For synchronous operations
 const path = require('path');
 const { exec } = require('child_process');
-const { marked } = require('marked');
-
-
-class MarkdownParser {
-    static parse(markdown) {
-        // Remove any frontmatter first
-        const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n/;
-        const cleanContent = markdown.replace(frontmatterRegex, '').trim();
-
-        // Configure marked options for better parsing
-        marked.setOptions({
-            breaks: true,
-            gfm: true,
-            headerIds: false,
-            mangle: false
-        });
-
-        try {
-            return marked.parse(cleanContent);
-        } catch (error) {
-            console.error('Error parsing markdown:', error);
-            // Fallback to escaped plain text
-            return `<p>${this.escapeHtml(cleanContent)}</p>`;
-        }
-    }
-
-    static escapeHtml(text) {
-        const map = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#039;'
-        };
-        return text.replace(/[&<>"']/g, m => map[m]);
-    }
-
-    static addDefaultStyling(html) {
-        const styledHtml = `
-    <div class="markdown-content">
-        <style>
-            .markdown-content {
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                line-height: 1.6;
-                color: #333;
-                max-width: none;
-                padding: 20px;
-            }
-            .markdown-content h1 { 
-                font-size: 2em; 
-                margin: 0.67em 0; 
-                font-weight: bold; 
-                border-bottom: 2px solid #eee;
-                padding-bottom: 10px;
-            }
-            .markdown-content h2 { 
-                font-size: 1.5em; 
-                margin: 0.75em 0; 
-                font-weight: bold; 
-                border-bottom: 1px solid #eee;
-                padding-bottom: 8px;
-            }
-            .markdown-content h3 { 
-                font-size: 1.17em; 
-                margin: 0.83em 0; 
-                font-weight: bold; 
-            }
-            .markdown-content h4, .markdown-content h5, .markdown-content h6 { 
-                margin: 0.83em 0; 
-                font-weight: bold; 
-            }
-            .markdown-content p { 
-                margin: 1em 0; 
-                text-align: justify;
-            }
-            .markdown-content ul, .markdown-content ol { 
-                margin: 1em 0; 
-                padding-left: 2em; 
-            }
-            .markdown-content li { 
-                margin: 0.5em 0; 
-            }
-            .markdown-content blockquote { 
-                margin: 1em 0; 
-                padding: 0.5em 1em; 
-                border-left: 4px solid #0066cc; 
-                background: #f8f9fa; 
-                font-style: italic; 
-                border-radius: 4px;
-            }
-            .markdown-content code { 
-                background: #f1f3f4; 
-                padding: 0.2em 0.4em; 
-                border-radius: 3px; 
-                font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace; 
-                font-size: 0.9em;
-                color: #d63384;
-            }
-            .markdown-content pre { 
-                background: #f8f9fa; 
-                padding: 1em; 
-                border-radius: 6px; 
-                overflow-x: auto; 
-                border: 1px solid #e9ecef;
-                margin: 1.5em 0;
-            }
-            .markdown-content pre code { 
-                background: none; 
-                padding: 0; 
-                color: #333;
-                font-size: 0.9em;
-            }
-            .markdown-content a { 
-                color: #0066cc; 
-                text-decoration: none; 
-            }
-            .markdown-content a:hover { 
-                text-decoration: underline; 
-                color: #0052a3;
-            }
-            .markdown-content img { 
-                max-width: 100%; 
-                height: auto; 
-                border-radius: 8px;
-                margin: 1.5em 0;
-                display: block;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            }
-            .markdown-content table {
-                border-collapse: collapse;
-                width: 100%;
-                margin: 1.5em 0;
-                border: 1px solid #dee2e6;
-            }
-            .markdown-content th, .markdown-content td {
-                border: 1px solid #dee2e6;
-                padding: 8px 12px;
-                text-align: left;
-            }
-            .markdown-content th {
-                background-color: #f8f9fa;
-                font-weight: bold;
-            }
-            .markdown-content hr {
-                border: none;
-                border-top: 2px solid #eee;
-                margin: 2em 0;
-            }
-            .markdown-content strong, .markdown-content b {
-                font-weight: bold;
-            }
-            .markdown-content em, .markdown-content i {
-                font-style: italic;
-            }
-            .markdown-content del {
-                text-decoration: line-through;
-            }
-        </style>
-        ${html}
-    </div>`;
-
-        return styledHtml;
-    }
-}
-
-// Add this debug route to test markdown parsing
-this.app.post('/test-markdown', (req, res) => {
-    res.setHeader('Content-Type', 'application/json');
-
-    try {
-        const { content } = req.body;
-        if (!content) {
-            return res.status(400).json({ error: 'Content is required' });
-        }
-
-        console.log('Testing markdown parsing...');
-        const rawHtml = MarkdownParser.parse(content);
-        const styledHtml = MarkdownParser.addDefaultStyling(rawHtml);
-
-        res.json({
-            success: true,
-            rawHtml,
-            styledHtml: styledHtml.substring(0, 200) + '...' // Truncated for debugging
-        });
-    } catch (error) {
-        console.error('Markdown parsing error:', error);
-        res.status(500).json({
-            error: 'Markdown parsing failed',
-            details: error.message
-        });
-    }
-});
 
 class MinisServer {
     constructor() {
@@ -357,10 +165,10 @@ class MinisServer {
     }
 
     async createMini(data) {
-        const { title, content, tags = [], password } = data;
+        const { title, content, styledHtml, rawMarkdown, tags = [], password } = data;
 
-        if (!title || !content) {
-            throw new Error('Title and content are required');
+        if (!title || !content || !styledHtml) {
+            throw new Error('Title, content, and styledHtml are required');
         }
 
         if (!password) {
@@ -376,22 +184,18 @@ class MinisServer {
         const date = this.formatDate();
         const time = this.formatTime();
 
-        // Convert markdown content to HTML using proper server-side parsing
-        const rawHtml = MarkdownParser.parse(content);
-        const styledHtml = MarkdownParser.addDefaultStyling(rawHtml);
-
-        // Create folder structure and HTML file
+        // Create folder structure and HTML file using the processed HTML from client
         await this.createHtmlFile(date, title, styledHtml, { id, title, date, time, tags });
 
-        // Create metadata object (now with HTML content included)
+        // Create metadata object
         const metadata = {
             id,
             title,
             date,
             time,
             tags,
-            content: styledHtml,  // Store the processed HTML
-            rawMarkdown: content  // Keep original markdown for editing if needed
+            content: styledHtml,  // Store the processed HTML from client
+            rawMarkdown: rawMarkdown || content  // Keep original markdown for editing if needed
         };
 
         try {
@@ -433,6 +237,7 @@ class MinisServer {
             throw new Error(`Failed to create mini: ${error.message}`);
         }
     }
+
     async createHtmlFile(date, title, htmlContent, postData) {
         // Create date folder name in format like "jan-01-2025"
         const dateObj = new Date(date);
@@ -500,7 +305,6 @@ class MinisServer {
         return text.replace(/[&<>"']/g, m => map[m]);
     }
 
-
     setupRoutes() {
         this.app.use(express.static(path.join(__dirname, 'public')));
 
@@ -531,7 +335,6 @@ class MinisServer {
                 });
             }
         });
-
 
         // 404 handler for unknown routes
         this.app.use('*', (req, res) => {
