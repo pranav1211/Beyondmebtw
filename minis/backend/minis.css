@@ -84,6 +84,7 @@ header h1 {
     resize: vertical;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
     background-color: #fafbfc;
+    height: 150%;
 }
 
 .form-group textarea:focus {
