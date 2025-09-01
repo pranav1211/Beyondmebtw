@@ -14,10 +14,11 @@ class MarkdownParser {
         html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
         html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
 
-        // Bold and italic
-        html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
-        html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        // Horizontal rules - add this before other formatting
+        html = html.replace(/^---+$/gm, '<hr>');
+
+        // Bold and italic with nesting support
+        html = this.parseNestedFormatting(html);
 
         // Code blocks and inline code
         html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
@@ -97,6 +98,124 @@ class MarkdownParser {
         html = html.replace(/^> (.+)/gm, '<blockquote>$1</blockquote>');
 
         return html;
+    }
+
+    // Add this new method to handle nested formatting
+    static parseNestedFormatting(text) {
+        // Split text into segments, preserving code blocks and inline code
+        const segments = [];
+        let current = '';
+        let inCodeBlock = false;
+        let inInlineCode = false;
+
+        for (let i = 0; i < text.length; i++) {
+            const char = text[i];
+            const next3 = text.slice(i, i + 3);
+
+            if (next3 === '```' && !inInlineCode) {
+                if (current) segments.push({ text: current, isCode: inCodeBlock });
+                current = '';
+                inCodeBlock = !inCodeBlock;
+                segments.push({ text: next3, isCode: true });
+                i += 2; // Skip next 2 characters
+            } else if (char === '`' && !inCodeBlock) {
+                if (current) segments.push({ text: current, isCode: inInlineCode });
+                current = '';
+                inInlineCode = !inInlineCode;
+                segments.push({ text: char, isCode: true });
+            } else {
+                current += char;
+            }
+        }
+
+        if (current) segments.push({ text: current, isCode: inCodeBlock || inInlineCode });
+
+        // Process non-code segments for formatting
+        return segments.map(segment => {
+            if (segment.isCode) {
+                return segment.text;
+            }
+            return this.processFormattingInSegment(segment.text);
+        }).join('');
+    }
+
+    // Process bold/italic formatting in a text segment
+    static processFormattingInSegment(text) {
+        // Use a stack-based approach to handle nesting
+        let result = '';
+        let i = 0;
+
+        while (i < text.length) {
+            if (text[i] === '*') {
+                // Count consecutive asterisks
+                let asteriskCount = 0;
+                let j = i;
+                while (j < text.length && text[j] === '*') {
+                    asteriskCount++;
+                    j++;
+                }
+
+                // Find the matching closing asterisks
+                const matchResult = this.findMatchingAsterisks(text, i, asteriskCount);
+
+                if (matchResult) {
+                    const { endIndex, matchingCount } = matchResult;
+                    const content = text.slice(i + asteriskCount, endIndex);
+
+                    if (matchingCount === 3) {
+                        // Bold + Italic
+                        result += `<strong><em>${this.processFormattingInSegment(content)}</em></strong>`;
+                    } else if (matchingCount === 2) {
+                        // Bold
+                        result += `<strong>${this.processFormattingInSegment(content)}</strong>`;
+                    } else if (matchingCount === 1) {
+                        // Italic
+                        result += `<em>${this.processFormattingInSegment(content)}</em>`;
+                    }
+
+                    i = endIndex + matchingCount;
+                } else {
+                    // No matching asterisks found, treat as literal
+                    result += text[i];
+                    i++;
+                }
+            } else {
+                result += text[i];
+                i++;
+            }
+        }
+
+        return result;
+    }
+
+    // Helper method to find matching asterisks
+    static findMatchingAsterisks(text, startIndex, count) {
+        let i = startIndex + count;
+
+        while (i < text.length) {
+            if (text[i] === '*') {
+                let asteriskCount = 0;
+                let j = i;
+                while (j < text.length && text[j] === '*') {
+                    asteriskCount++;
+                    j++;
+                }
+
+                // Check if this matches our opening count
+                if (asteriskCount >= count) {
+                    return {
+                        endIndex: i,
+                        matchingCount: count
+                    };
+                }
+
+                i = j;
+            } else {
+                i++;
+            }
+        }
+
+        return null;
     }
 
     static addDefaultStyling(html) {
