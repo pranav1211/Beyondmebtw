@@ -27,29 +27,7 @@ function checkAuthentication() {
     return true;
 }
 
-// Load Marked.js from CDN
-function loadMarked() {
-    return new Promise((resolve, reject) => {
-        if (window.marked) {
-            resolve(window.marked);
-            return;
-        }
-
-        const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js';
-        script.onload = () => {
-            if (window.marked) {
-                resolve(window.marked);
-            } else {
-                reject(new Error('Failed to load marked.js'));
-            }
-        };
-        script.onerror = () => reject(new Error('Failed to load marked.js'));
-        document.head.appendChild(script);
-    });
-}
-
-// Markdown parser for live preview (fallback if marked.js not loaded)
+// Markdown parser for live preview
 class MarkdownPreview {
     static parse(markdown) {
         let html = markdown;
@@ -106,25 +84,10 @@ class MinisApp {
         this.previewContent = document.getElementById('previewContent');
         this.submitBtn = document.getElementById('submitBtn');
         this.statusMessage = document.getElementById('statusMessage');
-        this.markedLoaded = false;
 
-        this.initializeMarkdown();
         this.initializeEventListeners();
         this.createLogoutButton();
         this.fillPasswordFromCookie();
-    }
-
-    async initializeMarkdown() {
-        try {
-            await loadMarked();
-            this.markedLoaded = true;
-            console.log('Marked.js loaded successfully');
-            // Update preview with proper markdown parsing
-            this.updatePreview();
-        } catch (error) {
-            console.warn('Failed to load marked.js, using fallback parser:', error);
-            this.markedLoaded = false;
-        }
     }
 
     fillPasswordFromCookie() {
@@ -215,14 +178,7 @@ class MinisApp {
         }
 
         if (content) {
-            let markdownHtml;
-            if (this.markedLoaded && window.marked) {
-                // Use marked.js for better markdown parsing
-                markdownHtml = window.marked.parse(content);
-            } else {
-                // Fallback to simple parser
-                markdownHtml = MarkdownPreview.parse(content);
-            }
+            const markdownHtml = MarkdownPreview.parse(content);
             previewHtml += `<div class="markdown-preview">${markdownHtml}</div>`;
         }
 
@@ -328,66 +284,35 @@ class MinisApp {
         });
     }
 
-    async processMarkdownToHtml(markdown) {
-        if (this.markedLoaded && window.marked) {
-            // Use marked.js for better markdown parsing
-            return window.marked.parse(markdown);
-        } else {
-            // Fallback to simple parser
-            return MarkdownPreview.parse(markdown);
-        }
-    }
-
     async handleSubmit(e) {
         e.preventDefault();
 
         const formData = new FormData(this.form);
-        const rawData = {
+        const data = {
             title: formData.get('title').trim(),
             tags: formData.get('tags').trim(),
             content: formData.get('content').trim(),
             password: formData.get('password').trim()
         };
 
-        if (!rawData.title || !rawData.content) {
+        if (!data.title || !data.content) {
             this.showStatus('Title and content are required.', 'error');
             return;
         }
 
-        if (!rawData.password) {
+        if (!data.password) {
             this.showStatus('Authentication key is required.', 'error');
             return;
         }
 
-        // Process tags
-        const tags = rawData.tags
-            ? rawData.tags.split(',').map(tag => tag.trim()).filter(tag => tag)
+        data.tags = data.tags
+            ? data.tags.split(',').map(tag => tag.trim()).filter(tag => tag)
             : [];
 
         this.setLoading(true);
-        this.showStatus('Processing markdown and creating your mini...', 'loading');
+        this.showStatus('Creating your mini...', 'loading');
 
         try {
-            // Convert markdown to HTML on the client side
-            const styledHtml = await this.processMarkdownToHtml(rawData.content);
-
-            // Prepare data to send to server
-            const data = {
-                title: rawData.title,
-                content: rawData.content, // Original markdown
-                styledHtml: styledHtml,   // Processed HTML
-                rawMarkdown: rawData.content, // Keep original markdown
-                tags: tags,
-                password: rawData.password
-            };
-
-            console.log('Sending data to server:', {
-                title: data.title,
-                contentLength: data.content.length,
-                styledHtmlLength: data.styledHtml.length,
-                tags: data.tags
-            });
-
             const response = await fetch('/add', {
                 method: 'POST',
                 headers: {
@@ -450,18 +375,9 @@ class MinisApp {
 }
 
 // Initialize app when DOM is ready
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
     if (!checkAuthentication()) {
         return;
     }
-
-    // Load marked.js before initializing the app
-    try {
-        await loadMarked();
-        console.log('Marked.js loaded successfully');
-    } catch (error) {
-        console.warn('Failed to load marked.js, will use fallback parser:', error);
-    }
-
     new MinisApp();
 });

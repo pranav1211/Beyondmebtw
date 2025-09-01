@@ -4,6 +4,180 @@ const fss = require('fs'); // For synchronous operations
 const path = require('path');
 const { exec } = require('child_process');
 
+class MarkdownProcessor {
+    static parse(markdown) {
+        let html = markdown;
+
+        // Code blocks first (to avoid interference with other patterns)
+        html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+        
+        // Inline code
+        html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+        // Horizontal rules
+        html = html.replace(/^---$/gm, '<hr>');
+        html = html.replace(/^\*\*\*$/gm, '<hr>');
+
+        // Headers (process from most specific to least specific)
+        html = html.replace(/^#### (.*$)/gim, '<h4>$1</h4>');
+        html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+        html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+        html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+
+        // Bold and italic (process in specific order to avoid conflicts)
+        html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
+        html = html.replace(/\_\_\_(.*?)\_\_\_/g, '<strong><em>$1</em></strong>');
+        html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        html = html.replace(/\_\_(.*?)\_\_/g, '<strong>$1</strong>');
+        html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        html = html.replace(/\_(.*?)\_/g, '<em>$1</em>');
+
+        // Links
+        html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+
+        // Images
+        html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" style="max-width: 100%; height: auto;">');
+
+        // Strikethrough
+        html = html.replace(/~~(.*?)~~/g, '<del>$1</del>');
+
+        // Process lists (unordered first, then ordered)
+        html = this.processUnorderedLists(html);
+        html = this.processOrderedLists(html);
+
+        // Blockquotes
+        html = this.processBlockquotes(html);
+
+        // Line breaks and paragraphs
+        html = this.processParagraphs(html);
+
+        return html;
+    }
+
+    static processUnorderedLists(html) {
+        // Split by lines and process
+        const lines = html.split('\n');
+        const result = [];
+        let inList = false;
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            const isListItem = /^[\s]*[\*\-\+] (.+)/.test(line);
+
+            if (isListItem) {
+                if (!inList) {
+                    result.push('<ul>');
+                    inList = true;
+                }
+                const content = line.replace(/^[\s]*[\*\-\+] (.+)/, '$1');
+                result.push(`<li>${content}</li>`);
+            } else {
+                if (inList) {
+                    result.push('</ul>');
+                    inList = false;
+                }
+                result.push(line);
+            }
+        }
+
+        if (inList) {
+            result.push('</ul>');
+        }
+
+        return result.join('\n');
+    }
+
+    static processOrderedLists(html) {
+        const lines = html.split('\n');
+        const result = [];
+        let inList = false;
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            const isListItem = /^[\s]*\d+\. (.+)/.test(line);
+
+            if (isListItem) {
+                if (!inList) {
+                    result.push('<ol>');
+                    inList = true;
+                }
+                const content = line.replace(/^[\s]*\d+\. (.+)/, '$1');
+                result.push(`<li>${content}</li>`);
+            } else {
+                if (inList) {
+                    result.push('</ol>');
+                    inList = false;
+                }
+                result.push(line);
+            }
+        }
+
+        if (inList) {
+            result.push('</ol>');
+        }
+
+        return result.join('\n');
+    }
+
+    static processBlockquotes(html) {
+        const lines = html.split('\n');
+        const result = [];
+        let inBlockquote = false;
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            const isBlockquote = /^> (.+)/.test(line);
+
+            if (isBlockquote) {
+                if (!inBlockquote) {
+                    result.push('<blockquote>');
+                    inBlockquote = true;
+                }
+                const content = line.replace(/^> (.+)/, '$1');
+                result.push(content);
+            } else {
+                if (inBlockquote) {
+                    result.push('</blockquote>');
+                    inBlockquote = false;
+                }
+                result.push(line);
+            }
+        }
+
+        if (inBlockquote) {
+            result.push('</blockquote>');
+        }
+
+        return result.join('\n');
+    }
+
+    static processParagraphs(html) {
+        // Split by double line breaks to identify paragraphs
+        const sections = html.split('\n\n');
+        const processedSections = [];
+
+        for (let section of sections) {
+            section = section.trim();
+            if (!section) continue;
+
+            // Check if this section is already wrapped in HTML tags
+            const isAlreadyWrapped = /^<(h[1-6]|ul|ol|blockquote|pre|hr|div)[\s>]/.test(section) || 
+                                   /^<\/(h[1-6]|ul|ol|blockquote|pre|hr|div)>$/.test(section) ||
+                                   section === '<hr>';
+
+            if (isAlreadyWrapped) {
+                processedSections.push(section);
+            } else {
+                // Convert single line breaks to <br> within paragraphs
+                const withBreaks = section.replace(/\n/g, '<br>');
+                processedSections.push(`<p>${withBreaks}</p>`);
+            }
+        }
+
+        return processedSections.join('\n\n');
+    }
+}
+
 class MinisServer {
     constructor() {
         this.app = express();
@@ -165,10 +339,10 @@ class MinisServer {
     }
 
     async createMini(data) {
-        const { title, content, styledHtml, rawMarkdown, tags = [], password } = data;
+        const { title, content, tags = [], password } = data;
 
-        if (!title || !content || !styledHtml) {
-            throw new Error('Title, content, and styledHtml are required');
+        if (!title || !content) {
+            throw new Error('Title and content are required');
         }
 
         if (!password) {
@@ -184,7 +358,10 @@ class MinisServer {
         const date = this.formatDate();
         const time = this.formatTime();
 
-        // Create folder structure and HTML file using the processed HTML from client
+        // Process markdown to HTML on the server
+        const styledHtml = MarkdownProcessor.parse(content);
+
+        // Create folder structure and HTML file
         await this.createHtmlFile(date, title, styledHtml, { id, title, date, time, tags });
 
         // Create metadata object
@@ -194,8 +371,8 @@ class MinisServer {
             date,
             time,
             tags,
-            content: styledHtml,  // Store the processed HTML from client
-            rawMarkdown: rawMarkdown || content  // Keep original markdown for editing if needed
+            content: styledHtml,
+            rawMarkdown: content
         };
 
         try {
@@ -265,6 +442,79 @@ class MinisServer {
             // Create directories
             await fs.mkdir(titleFolderPath, { recursive: true });
 
+            // Add some basic styling to the HTML content
+            const styledContent = `
+                <div style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333;">
+                    <style>
+                        h1, h2, h3, h4, h5, h6 {
+                            color: #1f2937;
+                            margin-top: 1.5em;
+                            margin-bottom: 0.5em;
+                        }
+                        h1 { border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5em; }
+                        h2 { border-bottom: 1px solid #e5e7eb; padding-bottom: 0.3em; }
+                        code {
+                            background-color: #f3f4f6;
+                            padding: 2px 6px;
+                            border-radius: 4px;
+                            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+                            font-size: 0.9em;
+                        }
+                        pre {
+                            background-color: #1f2937;
+                            color: #f9fafb;
+                            padding: 16px;
+                            border-radius: 8px;
+                            overflow-x: auto;
+                            margin: 1em 0;
+                        }
+                        pre code {
+                            background: none;
+                            padding: 0;
+                            color: inherit;
+                        }
+                        blockquote {
+                            border-left: 4px solid #e5e7eb;
+                            padding-left: 16px;
+                            margin: 1em 0;
+                            color: #6b7280;
+                            font-style: italic;
+                        }
+                        ul, ol {
+                            padding-left: 20px;
+                            margin: 1em 0;
+                        }
+                        li {
+                            margin: 0.5em 0;
+                        }
+                        hr {
+                            border: none;
+                            border-top: 2px solid #e5e7eb;
+                            margin: 2em 0;
+                        }
+                        img {
+                            max-width: 100%;
+                            height: auto;
+                            border-radius: 8px;
+                            margin: 1em 0;
+                        }
+                        a {
+                            color: #3b82f6;
+                            text-decoration: none;
+                        }
+                        a:hover {
+                            text-decoration: underline;
+                        }
+                        del {
+                            color: #6b7280;
+                        }
+                        p {
+                            margin: 1em 0;
+                        }
+                    </style>
+                    ${htmlContent}
+                </div>`;
+
             // Create HTML file content
             const htmlFileContent = `<!DOCTYPE html>
 <html lang="en">
@@ -279,7 +529,7 @@ class MinisServer {
     <meta name="article:published_time" content="${postData.date}T${postData.time}:00+05:30">
 </head>
 <body>
-    ${htmlContent}
+    ${styledContent}
 </body>
 </html>`;
 
@@ -317,7 +567,9 @@ class MinisServer {
             res.setHeader('Content-Type', 'application/json');
 
             try {
-                console.log('Received POST /add request:', req.body);
+                console.log('Received POST /add request');
+                console.log('Request body keys:', Object.keys(req.body));
+                console.log('Content length:', req.body.content ? req.body.content.length : 'N/A');
 
                 const result = await this.createMini(req.body);
 
