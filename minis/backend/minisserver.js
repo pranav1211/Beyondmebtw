@@ -48,7 +48,7 @@ class MarkdownParser {
 
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i].trim();
-            
+
             // Check for unordered list item
             if (line.match(/^\* (.+)/)) {
                 if (!inUl) {
@@ -483,13 +483,13 @@ class MinisServer {
             try {
                 console.log('Received POST /add request');
                 console.log('Request body keys:', Object.keys(req.body));
-                
+
                 const result = await this.createMini(req.body);
 
-                console.log('Mini creation result:', { 
-                    success: result.success, 
-                    id: result.id, 
-                    scriptExecuted: result.scriptExecuted 
+                console.log('Mini creation result:', {
+                    success: result.success,
+                    id: result.id,
+                    scriptExecuted: result.scriptExecuted
                 });
 
                 res.status(201).json({
@@ -507,8 +507,8 @@ class MinisServer {
 
         // Health check route
         this.app.get('/health', (req, res) => {
-            res.json({ 
-                status: 'ok', 
+            res.json({
+                status: 'ok',
                 timestamp: new Date().toISOString(),
                 contentDir: this.contentDir,
                 metadataExists: fss.existsSync(this.metadataFile)
@@ -516,7 +516,7 @@ class MinisServer {
         });
 
         // 404 handler for unknown routes
-        this.app.use('*', (req, res) => {
+        this.app.use((req, res) => {
             if (req.path.startsWith('/api') || req.accepts('json')) {
                 res.status(404).json({
                     error: 'Endpoint not found',
