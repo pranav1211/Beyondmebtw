@@ -166,13 +166,7 @@ class MinisApp {
         } else {
             console.log(`No date tab for: ${formattedDate} (same as previous)`);
         }
-
-        // Create title HTML - only if title exists and is not empty
-        let titleHtml = '';
-        if (post.title && post.title.trim()) {
-            titleHtml = `<h3 class="mini-post-title">${this.escapeHtml(post.title)}</h3>`;
-        }
-
+        
         // Create tags with time
         let tagsHtml = '';
         if (post.tags && post.tags.length > 0 || formattedTime) {
