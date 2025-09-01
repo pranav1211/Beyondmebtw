@@ -39,11 +39,59 @@ class MarkdownParser {
         html = html.replace(/<p><br>/g, '<p>');
         html = html.replace(/<br><\/p>/g, '</p>');
 
-        // Lists
-        html = html.replace(/^\* (.+)/gm, '<li>$1</li>');
-        html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
-        html = html.replace(/^\d+\. (.+)/gm, '<li>$1</li>');
-        html = html.replace(/(<li>.*<\/li>)/s, '<ol>$1</ol>');
+        // Lists - Fixed regex patterns
+        // Process unordered lists
+        const lines = html.split('<br>');
+        let inUl = false;
+        let inOl = false;
+        const processedLines = [];
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
+            
+            // Check for unordered list item
+            if (line.match(/^\* (.+)/)) {
+                if (!inUl) {
+                    if (inOl) {
+                        processedLines.push('</ol>');
+                        inOl = false;
+                    }
+                    processedLines.push('<ul>');
+                    inUl = true;
+                }
+                processedLines.push(line.replace(/^\* (.+)/, '<li>$1</li>'));
+            }
+            // Check for ordered list item
+            else if (line.match(/^\d+\. (.+)/)) {
+                if (!inOl) {
+                    if (inUl) {
+                        processedLines.push('</ul>');
+                        inUl = false;
+                    }
+                    processedLines.push('<ol>');
+                    inOl = true;
+                }
+                processedLines.push(line.replace(/^\d+\. (.+)/, '<li>$1</li>'));
+            }
+            // Regular line
+            else {
+                if (inUl) {
+                    processedLines.push('</ul>');
+                    inUl = false;
+                }
+                if (inOl) {
+                    processedLines.push('</ol>');
+                    inOl = false;
+                }
+                processedLines.push(line);
+            }
+        }
+
+        // Close any remaining lists
+        if (inUl) processedLines.push('</ul>');
+        if (inOl) processedLines.push('</ol>');
+
+        html = processedLines.join('<br>');
 
         // Blockquotes
         html = html.replace(/^> (.+)/gm, '<blockquote>$1</blockquote>');
@@ -270,109 +318,117 @@ class MinisServer {
     }
 
     async createMini(data) {
-        const { title, content, tags = [], password } = data;
-
-        if (!title || !content) {
-            throw new Error('Title and content are required');
-        }
-
-        if (!password) {
-            throw new Error('Password is required');
-        }
-
-        // Verify password
-        if (!this.verifyPassword(password)) {
-            throw new Error('Invalid authentication key');
-        }
-
-        const id = this.generateId();
-        const date = this.formatDate();
-        const time = this.formatTime();
-
-        // Convert markdown content to HTML
-        const rawHtml = MarkdownParser.parse(content);
-        const styledHtml = MarkdownParser.addDefaultStyling(rawHtml);
-
-        // Create folder structure and HTML file
-        await this.createHtmlFile(date, title, styledHtml, { id, title, date, time, tags });
-
-        // Create metadata object (now with HTML content included)
-        const metadata = {
-            id,
-            title,
-            date,
-            time,
-            tags,
-            content: styledHtml,  // Store the processed HTML
-            rawMarkdown: content  // Keep original markdown for editing if needed
-        };
-
         try {
-            console.log(`Creating mini with ID: ${id}`);
+            console.log('Creating mini with data:', { title: data.title, hasContent: !!data.content, hasTags: !!data.tags });
+
+            const { title, content, tags = [], password } = data;
+
+            if (!title || !content) {
+                throw new Error('Title and content are required');
+            }
+
+            if (!password) {
+                throw new Error('Password is required');
+            }
+
+            // Verify password
+            if (!this.verifyPassword(password)) {
+                throw new Error('Invalid authentication key');
+            }
+
+            const id = this.generateId();
+            const date = this.formatDate();
+            const time = this.formatTime();
+
+            console.log(`Generated ID: ${id}, Date: ${date}, Time: ${time}`);
+
+            // Convert markdown content to HTML
+            const rawHtml = MarkdownParser.parse(content);
+            const styledHtml = MarkdownParser.addDefaultStyling(rawHtml);
+
+            console.log('Markdown parsed successfully');
+
+            // Create folder structure and HTML file
+            await this.createHtmlFile(date, title, styledHtml, { id, title, date, time, tags });
+
+            console.log('HTML file created successfully');
+
+            // Create metadata object (now with HTML content included)
+            const metadata = {
+                id,
+                title,
+                date,
+                time,
+                tags,
+                content: styledHtml,  // Store the processed HTML
+                rawMarkdown: content  // Keep original markdown for editing if needed
+            };
 
             // Load existing metadata, add new entry, and save
             const existingMetadata = await this.loadMetadata();
             existingMetadata.push(metadata);
             await this.saveMetadata(existingMetadata);
 
-            console.log(`Successfully created mini: ${id}`);
+            console.log(`Successfully saved metadata for mini: ${id}`);
 
             // Execute the script after successful creation
-            return new Promise((resolve, reject) => {
+            const scriptResult = await new Promise((resolve) => {
                 this.executeScript((scriptError) => {
                     if (scriptError) {
                         console.error('Script execution failed, but mini was created:', scriptError);
-                        // Don't reject here - the mini was created successfully
-                        // Just log the error and continue
                         resolve({
-                            success: true,
-                            id,
-                            metadata,
                             scriptExecuted: false,
                             scriptError: scriptError.message
                         });
                     } else {
                         console.log('Script executed successfully');
                         resolve({
-                            success: true,
-                            id,
-                            metadata,
                             scriptExecuted: true
                         });
                     }
                 });
             });
 
+            return {
+                success: true,
+                id,
+                metadata,
+                ...scriptResult
+            };
+
         } catch (error) {
             console.error(`Failed to create mini: ${error.message}`);
-            throw new Error(`Failed to create mini: ${error.message}`);
+            console.error('Full error:', error);
+            throw error; // Re-throw to be caught by route handler
         }
     }
 
     async createHtmlFile(date, title, htmlContent, postData) {
-        // Create date folder name in format like "jan-01-2025"
-        const dateObj = new Date(date);
-        const monthNames = ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
-            'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
-        const month = monthNames[dateObj.getMonth()];
-        const day = String(dateObj.getDate()).padStart(2, '0');
-        const year = dateObj.getFullYear();
-        const dateFolderName = `${month}-${day}-${year}`;
-
-        // Sanitize title for folder name
-        const sanitizedTitle = title
-            .toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
-            .replace(/\s+/g, '-') // Replace spaces with hyphens
-            .replace(/-+/g, '-') // Replace multiple hyphens with single
-            .trim();
-
-        // Create folder structure
-        const dateFolderPath = path.join(this.contentDir, dateFolderName);
-        const titleFolderPath = path.join(dateFolderPath, sanitizedTitle);
-        const htmlFilePath = path.join(titleFolderPath, 'index.html');
-
         try {
+            // Create date folder name in format like "jan-01-2025"
+            const dateObj = new Date(date);
+            const monthNames = ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
+                'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+            const month = monthNames[dateObj.getMonth()];
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            const year = dateObj.getFullYear();
+            const dateFolderName = `${month}-${day}-${year}`;
+
+            // Sanitize title for folder name
+            const sanitizedTitle = title
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+                .replace(/\s+/g, '-') // Replace spaces with hyphens
+                .replace(/-+/g, '-') // Replace multiple hyphens with single
+                .trim();
+
+            // Create folder structure
+            const dateFolderPath = path.join(this.contentDir, dateFolderName);
+            const titleFolderPath = path.join(dateFolderPath, sanitizedTitle);
+            const htmlFilePath = path.join(titleFolderPath, 'index.html');
+
+            console.log(`Creating HTML file at: ${htmlFilePath}`);
+
             // Create directories
             await fs.mkdir(titleFolderPath, { recursive: true });
 
@@ -397,7 +453,7 @@ class MinisServer {
             // Write HTML file
             await fs.writeFile(htmlFilePath, htmlFileContent, 'utf8');
 
-            console.log(`HTML file created: ${htmlFilePath}`);
+            console.log(`HTML file created successfully: ${htmlFilePath}`);
 
         } catch (error) {
             console.error(`Error creating HTML file: ${error.message}`);
@@ -416,7 +472,6 @@ class MinisServer {
         return text.replace(/[&<>"']/g, m => map[m]);
     }
 
-
     setupRoutes() {
         this.app.use(express.static(path.join(__dirname, 'public')));
 
@@ -426,18 +481,38 @@ class MinisServer {
 
         this.app.post('/add', async (req, res) => {
             try {
+                console.log('Received POST /add request');
+                console.log('Request body keys:', Object.keys(req.body));
+                
                 const result = await this.createMini(req.body);
+
+                console.log('Mini creation result:', { 
+                    success: result.success, 
+                    id: result.id, 
+                    scriptExecuted: result.scriptExecuted 
+                });
 
                 res.status(201).json({
                     message: 'Mini created successfully',
                     ...result
                 });
             } catch (error) {
-                console.error('Error creating mini:', error);
+                console.error('Error in POST /add route:', error);
                 res.status(400).json({
-                    error: error.message
+                    error: error.message,
+                    details: process.env.NODE_ENV === 'development' ? error.stack : undefined
                 });
             }
+        });
+
+        // Health check route
+        this.app.get('/health', (req, res) => {
+            res.json({ 
+                status: 'ok', 
+                timestamp: new Date().toISOString(),
+                contentDir: this.contentDir,
+                metadataExists: fss.existsSync(this.metadataFile)
+            });
         });
 
         // 404 handler for unknown routes
