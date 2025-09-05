@@ -14,6 +14,12 @@ The Current Home Page
 
 ## Changelog:
 
+### 3.2 (05/09/2025)
+- Made the title BEYOND ME BTW in the pages a clickable thing
+- removed useless animations from the minis part
+- changed the minis id generation to only do dates and not time as updation was messy
+- removed home button from minis because it served no purpose
+
 ### 3.1 (01/09/2025)
 - reduced lag on the minis page by reworking how content is loaded, removed the marked down parsing which is heavy to just a json data entry, the text is converted into html and stored into json
 - along with that a method to create a html file with that content is also created and added according to folder and title for future storage
