@@ -601,20 +601,20 @@ body {
     }
 
     .page-title .minis {
-        font-size: 45px;
+        font-size: 52px;
         margin-bottom: 2px;
     }
 
     .page-title .by {
-        font-size: 12px;
+        font-size: 16px;
         transform: rotate(0deg);
         top: 0;
         order: 2;
     }
 
     .page-title .brand {
-        font-size: 14px;
-        padding: 4px 8px;
+        font-size: 20px;
+        padding: 6px 10px;
         transform: rotate(0deg);
         margin: 0;
         order: 3;
