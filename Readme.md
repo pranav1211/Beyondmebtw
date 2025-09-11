@@ -14,6 +14,11 @@ The Current Home Page
 
 ## Changelog:
 
+### 3.3  (12/09/2025)
+- Made some styling changes to MINIS page
+- expanded the post part and adjusted fonts
+- made the title at the top more attractive by changing the font and color of certain parts
+
 ### 3.2 (05/09/2025)
 - Made the title BEYOND ME BTW in the pages a clickable thing
 - removed useless animations from the minis part
