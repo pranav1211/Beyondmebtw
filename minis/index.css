@@ -37,6 +37,9 @@ body {
     border-bottom: 4px solid transparent;
     border-image: linear-gradient(to right, transparent, #E8D9CD, transparent) 1;
     padding-bottom: 15px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
 }
 
 .page-title .minis {
@@ -49,19 +52,65 @@ body {
     margin: 0 5px;
 }
 
+.page-title .by {
+    font-size: 16px;
+    color: #8b7355;
+    font-weight: 400;
+    font-style: italic;
+    transform: rotate(-2deg);
+    opacity: 0.8;
+    margin: 0 3px;
+    position: relative;
+    top: -10px;
+}
+
 .page-title .brand {
-    font-size: 28px;
-    background: linear-gradient(135deg, #6b5d50 0%, #3b342d 100%);
+    font-size: 22px;
+    background: linear-gradient(135deg, #E8D9CD 0%, #3b342d 50%, #5a4c3e 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    padding: 0 8px;
+    padding: 8px 12px;
     margin: 0 5px;
+    border: 2px dashed rgba(232, 217, 205, 0.6);
+    border-radius: 8px;
+    position: relative;
+    transform: rotate(1deg);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    background-color: rgba(248, 246, 243, 0.3);
+}
+
+.page-title .brand:hover {
+    transform: rotate(0deg) scale(1.05);
+    border-color: rgba(232, 217, 205, 0.9);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: rgba(248, 246, 243, 0.5);
+}
+
+.page-title .brand::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #E8D9CD, #F2E6DA, #E8D9CD);
+    border-radius: 8px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.page-title .brand:hover::before {
+    opacity: 0.3;
 }
 
 .page-title .brand a {
     text-decoration: none;
     color: inherit;
+    position: relative;
+    z-index: 1;
 }
 
 /* Main Container - Updated Layout */
@@ -83,12 +132,14 @@ body {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
     position: sticky;
     top: 20px;
+    width: 140%;
+    margin-left: -80px;
     backdrop-filter: blur(10px);
 }
 
 .intro-section h2 {
     color: #3b342d;
-    font-size: 22px;
+    font-size: 28px;
     margin-bottom: 15px;
     font-weight: 600;
     text-align: center;
@@ -97,7 +148,7 @@ body {
 
 .intro-section p {
     color: #3b342d;
-    font-size: 16px;
+    font-size: 23px;
     font-weight: 500;
     line-height: 1.6;
     text-shadow: 0.5px 0.5px 2px rgba(0, 0, 0, 0.05);
@@ -117,6 +168,7 @@ body {
     opacity: 0;
     transform: translateY(20px);
     animation: smoothFadeIn 0.4s ease-out forwards;
+    width: 110%;
 }
 
 /* Date Tab - Simplified */
@@ -176,7 +228,7 @@ body {
 
 .mini-post-content p {
     margin-bottom: 15px;
-    font-size: 17px;
+    font-size: 21px;
     line-height: 1.7;
 }
 
@@ -415,10 +467,16 @@ body {
         gap: 40px;
         grid-template-columns: 250px 1fr;
     }
+
+    .intro-section {
+        width: 130%;
+        margin-left: -60px;
+    }
 }
 
 @media (max-width: 968px) {
     .main-container {
+        margin-top: -20px;
         grid-template-columns: 1fr;
         gap: 30px;
         max-width: 90%;
@@ -427,16 +485,38 @@ body {
     .intro-section {
         position: relative;
         margin-bottom: 30px;
+        width: 100%;
+        margin-left: 0;
     }
 
     .content-section {
         max-width: 100%;
     }
 
+    .mini-post-container {
+        width: 100%;
+    }
+
     .date-tab {
         left: 20px;
         right: auto;
         top: -30px;
+    }
+
+    .page-title {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .page-title .by {
+        transform: rotate(0deg);
+        top: 0;
+    }
+
+    .page-title .brand {
+        transform: rotate(0deg);
+        margin-top: 5px;
     }
 }
 
@@ -453,8 +533,13 @@ body {
         font-size: 50px;
     }
 
+    .page-title .by {
+        font-size: 14px;
+    }
+
     .page-title .brand {
-        font-size: 24px;
+        font-size: 18px;
+        padding: 6px 10px;
     }
 
     .intro-section {
@@ -512,6 +597,7 @@ body {
         align-items: center;
         line-height: 1.1;
         padding: 10px 15px 5px;
+        gap: 4px;
     }
 
     .page-title .minis {
@@ -519,8 +605,19 @@ body {
         margin-bottom: 2px;
     }
 
+    .page-title .by {
+        font-size: 12px;
+        transform: rotate(0deg);
+        top: 0;
+        order: 2;
+    }
+
     .page-title .brand {
-        font-size: 16px;
+        font-size: 14px;
+        padding: 4px 8px;
+        transform: rotate(0deg);
+        margin: 0;
+        order: 3;
     }
 
     .mini-post {
@@ -601,68 +698,5 @@ body {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
-    }
-}
-
-/* Large screens font adjustments */
-@media (min-width: 1440px) {
-    .intro-section h2 {
-        font-size: 28px;
-    }
-
-    .intro-section p {
-        font-size: 20px;
-    }
-
-    .mini-post-content,
-    .mini-post-content p {
-        font-size: 20px;
-    }
-
-    .mini-post-content h1,
-    .mini-post-content h2,
-    .mini-post-content h3 {
-        font-size: 24px;
-    }
-
-    .mini-post-title {
-        font-size: 26px;
-    }
-}
-
-@media (min-width: 1920px) {
-    .page-title .minis {
-        font-size: 78px;
-    }
-
-    .page-title .by {
-        font-size: 26px;
-    }
-
-    .page-title .brand {
-        font-size: 38px;
-    }
-
-    .intro-section h2 {
-        font-size: 32px;
-    }
-
-    .intro-section p {
-        font-size: 22px;
-    }
-
-    .mini-post-content,
-    .mini-post-content p {
-        font-size: 22px;
-    }
-
-    .mini-post-content h1,
-    .mini-post-content h2,
-    .mini-post-content h3 {
-        font-size: 26px;
-    }
-
-    .mini-post-title {
-        font-size: 28px;
     }
 }
