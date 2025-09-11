@@ -492,21 +492,25 @@ body {
         padding: 10px;
     }
 
+    .header-container {
+        margin-bottom: 20px;
+    }
+
     .page-title {
         display: flex;
         flex-direction: column;
         align-items: center;
-        line-height: 1.2;
-        padding: 15px 20px;
+        line-height: 1.1;
+        padding: 10px 15px 5px;
     }
 
     .page-title .minis {
         font-size: 45px;
-        margin-bottom: 5px;
+        margin-bottom: 2px;
     }
 
     .page-title .brand {
-        font-size: 18px;
+        font-size: 16px;
     }
 
     .mini-post {
@@ -515,18 +519,18 @@ body {
     }
 
     .intro-section {
-        padding: 18px;
+        padding: 22px;
         border-radius: 15px;
         margin-bottom: 25px;
     }
 
     .intro-section h2 {
-        font-size: 18px;
-        margin-bottom: 12px;
+        font-size: 22px;
+        margin-bottom: 15px;
     }
 
     .intro-section p {
-        font-size: 14px;
+        font-size: 16px;
     }
 
     .date-tab {
@@ -543,7 +547,7 @@ body {
 
     .mini-post-content,
     .mini-post-content p {
-        font-size: 15px;
+        font-size: 17px;
         margin-bottom: 12px;
     }
 
