@@ -106,7 +106,8 @@ body {
 /* Content Section - Now Takes Full Width */
 .content-section {
     width: 100%;
-    max-width: 800px; /* Limit max width for readability */
+    max-width: 800px;
+    /* Limit max width for readability */
 }
 
 /* Mini Post Container - Simplified */
@@ -239,9 +240,12 @@ body {
 }
 
 @keyframes shimmer {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 0.4;
     }
+
     50% {
         opacity: 0.8;
     }
@@ -313,8 +317,13 @@ body {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .load-more-btn {
@@ -365,6 +374,7 @@ body {
         opacity: 0;
         transform: translateY(20px);
     }
+
     100% {
         opacity: 1;
         transform: translateY(0);
@@ -591,5 +601,68 @@ body {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
+    }
+}
+
+/* Large screens font adjustments */
+@media (min-width: 1440px) {
+    .intro-section h2 {
+        font-size: 28px;
+    }
+
+    .intro-section p {
+        font-size: 20px;
+    }
+
+    .mini-post-content,
+    .mini-post-content p {
+        font-size: 20px;
+    }
+
+    .mini-post-content h1,
+    .mini-post-content h2,
+    .mini-post-content h3 {
+        font-size: 24px;
+    }
+
+    .mini-post-title {
+        font-size: 26px;
+    }
+}
+
+@media (min-width: 1920px) {
+    .page-title .minis {
+        font-size: 78px;
+    }
+
+    .page-title .by {
+        font-size: 26px;
+    }
+
+    .page-title .brand {
+        font-size: 38px;
+    }
+
+    .intro-section h2 {
+        font-size: 32px;
+    }
+
+    .intro-section p {
+        font-size: 22px;
+    }
+
+    .mini-post-content,
+    .mini-post-content p {
+        font-size: 22px;
+    }
+
+    .mini-post-content h1,
+    .mini-post-content h2,
+    .mini-post-content h3 {
+        font-size: 26px;
+    }
+
+    .mini-post-title {
+        font-size: 28px;
     }
 }
