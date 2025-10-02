@@ -14,6 +14,11 @@ The Current Home Page
 
 ## Changelog:
 
+### 3.4 (2/10/25)
+- Made some styling change to the haptic trailer project
+- removed the storage method for the video being used in the haptic trailer project
+- replaced the video for the haptic trailer project with a youtube video as the older video was being pinged too much causing too much data usage
+
 ### 3.3  (12/09/2025)
 - Made some styling changes to MINIS page
 - expanded the post part and adjusted fonts
