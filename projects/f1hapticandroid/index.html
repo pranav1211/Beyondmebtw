@@ -324,6 +324,21 @@
         max-width: 1400px;
       }
     }
+
+    #video {
+      width: 100%;
+      aspect-ratio: 16/9;
+      max-height: 70vh;
+      background: #000;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(255, 60, 60, 0.2);
+    }
+
+    @media (min-width: 1024px) {
+      #video {
+        max-height: 60vh;
+      }
+    }
   </style>
 </head>
 
@@ -361,10 +376,7 @@
 
   <main>
     <div class="video-container">
-      <video id="video" controls playsinline>
-        <source src="https://darxksggvdigcwu2.public.blob.vercel-storage.com/haptic.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
+      <div id="video"></div>
       <button id="fullscreenBtn" class="fullscreen-btn">🎬 Play & Go Fullscreen</button>
     </div>
 
@@ -386,10 +398,18 @@
   </footer>
 
   <script>
-    const video = document.getElementById("video");
+    // Load YouTube IFrame API
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
     const testBtn = document.getElementById("testVibration");
     const vibeStatus = document.getElementById("vibeStatus");
     const fullscreenBtn = document.getElementById("fullscreenBtn");
+
+    let player;
+    let isPlaying = false;
 
     // Vibration capability check
     if (!("vibrate" in navigator)) {
@@ -402,28 +422,40 @@
       }
     });
 
+    // YouTube API callback
+    window.onYouTubeIframeAPIReady = function () {
+      player = new YT.Player('video', {
+        videoId: 'v5x-3tQcSrY',
+        playerVars: {
+          'playsinline': 1,
+          'controls': 1,
+          'rel': 0,
+          'modestbranding': 1
+        },
+        events: {
+          'onStateChange': onPlayerStateChange
+        }
+      });
+    };
+
     // Fullscreen functionality with play
     fullscreenBtn.addEventListener("click", async () => {
+      if (!player) return;
+
       try {
-        await video.play();
+        player.playVideo();
         setTimeout(() => {
-          if (video.requestFullscreen) {
-            video.requestFullscreen();
-          } else if (video.webkitRequestFullscreen) {
-            video.webkitRequestFullscreen();
-          } else if (video.msRequestFullscreen) {
-            video.msRequestFullscreen();
+          const iframe = document.getElementById('video');
+          if (iframe.requestFullscreen) {
+            iframe.requestFullscreen();
+          } else if (iframe.webkitRequestFullscreen) {
+            iframe.webkitRequestFullscreen();
+          } else if (iframe.msRequestFullscreen) {
+            iframe.msRequestFullscreen();
           }
         }, 200);
       } catch (error) {
         console.log("Play failed:", error);
-        if (video.requestFullscreen) {
-          video.requestFullscreen();
-        } else if (video.webkitRequestFullscreen) {
-          video.webkitRequestFullscreen();
-        } else if (video.msRequestFullscreen) {
-          video.msRequestFullscreen();
-        }
       }
     });
 
@@ -467,7 +499,11 @@
     }
 
     function checkVibrations() {
-      const t = video.currentTime;
+      if (!player || !isPlaying) {
+        return;
+      }
+
+      const t = player.getCurrentTime();
 
       // Cancel if video passed current event
       if (currentVibe && t > currentVibe.end) {
@@ -511,21 +547,23 @@
 
     function startChecking() {
       cancelAnimationFrame(rafId);
+      isPlaying = true;
       rafId = requestAnimationFrame(checkVibrations);
     }
 
-    video.addEventListener("play", () => {
-      startChecking();
-    });
-
-    video.addEventListener("pause", () => {
+    function stopChecking() {
+      isPlaying = false;
       stopVibration();
       cancelAnimationFrame(rafId);
-    });
+    }
 
-    video.addEventListener("seeked", () => {
-      stopVibration();
-    });
+    function onPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.PLAYING) {
+        startChecking();
+      } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
+        stopChecking();
+      }
+    }
   </script>
 
 
