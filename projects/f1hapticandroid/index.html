@@ -315,7 +315,7 @@
     /* Ultra-wide screens */
     @media (min-width: 1800px) {
       body {
-        background: radial-gradient(ellipse at center, #111 0%, #000 70%);
+        background: radial-gradient(ellipse at center, #7c2e2e 0%, #000 70%);
       }
 
       header,
@@ -339,6 +339,136 @@
         max-height: 60vh;
       }
     }
+
+    .blog-cta-container {
+      margin: 25px auto 0;
+      padding: 25px 20px;
+      max-width: 500px;
+      background: linear-gradient(135deg, rgba(255, 60, 60, 0.05), rgba(255, 107, 107, 0.08));
+      border-radius: 12px;
+      border: 1px solid rgba(255, 60, 60, 0.2);
+      text-align: center;
+    }
+
+    .cta-text {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #fff;
+      margin: 0 0 15px 0;
+      letter-spacing: 0.3px;
+    }
+
+    .blog-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      background: linear-gradient(135deg, #ff3c3c, #ff6b6b);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 60, 60, 0.3);
+      letter-spacing: 0.5px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .blog-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .blog-link:hover::before {
+      left: 100%;
+    }
+
+    .blog-link:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 25px rgba(255, 60, 60, 0.5);
+      background: linear-gradient(135deg, #ff4d4d, #ff7a7a);
+    }
+
+    .blog-link:active {
+      transform: translateY(-1px);
+    }
+
+    .blog-link .icon {
+      font-size: 1.2rem;
+    }
+
+    .blog-link .arrow {
+      font-size: 1.2rem;
+      transition: transform 0.3s ease;
+    }
+
+    .blog-link:hover .arrow {
+      transform: translateX(4px);
+    }
+
+    .cta-subtext {
+      font-size: 0.85rem;
+      color: #aaa;
+      margin: 12px 0 0 0;
+      line-height: 1.4;
+    }
+
+    @media (min-width: 1024px) {
+      .blog-cta-container {
+        padding: 30px 25px;
+        max-width: 550px;
+      }
+
+      .cta-text {
+        font-size: 1.2rem;
+        margin-bottom: 18px;
+      }
+
+      .blog-link {
+        padding: 16px 32px;
+        font-size: 1.05rem;
+      }
+
+      .cta-subtext {
+        font-size: 0.9rem;
+        margin-top: 15px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        background: radial-gradient(ellipse at center, #7c2e2e 0%, #000 70%);
+      }
+
+      .blog-cta-container {
+        margin: 20px 15px 0;
+        padding: 20px 15px;
+        max-width: calc(100% - 30px);
+      }
+
+      .cta-text {
+        font-size: 1rem;
+      }
+
+      .blog-link {
+        padding: 12px 24px;
+        font-size: 0.9rem;
+        gap: 8px;
+      }
+
+      .cta-subtext {
+        font-size: 0.8rem;
+      }
+    }
   </style>
 </head>
 
@@ -360,7 +490,9 @@
 
     <div class="combined-info">
       <p class="info-text">
-        <strong>Setup:</strong> Turn off Silent/Do Not Disturb mode and increase volume for the best experience.
+        <strong>Setup:</strong> Turn off Silent/Do Not Disturb mode and increase volume for the best experience. If
+        vibration is still not working, ensure vibrations are enabled in your device settings. Along with that ensure
+        your device is not in power saving mode.
       </p>
       <div class="vibration-test">
         <span>Test vibration by clicking the button. If your device vibrates, then you can experience the haptic
@@ -378,6 +510,17 @@
     <div class="video-container">
       <div id="video"></div>
       <button id="fullscreenBtn" class="fullscreen-btn">🎬 Play & Go Fullscreen</button>
+    </div>
+
+    <div class="blog-cta-container">
+      <p class="cta-text">Want to know how I built this?</p>
+      <a href="https://medium.com/@beyondmebtw/f1-haptic-trailer-doing-it-on-android-e31cbec434a7" target="_blank"
+        rel="noopener noreferrer" class="blog-link">
+        <span class="icon">📖</span>
+        <span class="text">Read My Story on Medium</span>
+        <span class="arrow">→</span>
+      </a>
+      <p class="cta-subtext">Learn about the challenges, solutions, and technical details behind this project</p>
     </div>
 
     <div class="thank-you">
@@ -430,20 +573,50 @@
           'playsinline': 1,
           'controls': 1,
           'rel': 0,
-          'modestbranding': 1
+          'modestbranding': 1,
+          'vq': 'hd720' // Set minimum quality to 720p
         },
         events: {
-          'onStateChange': onPlayerStateChange
+          'onStateChange': onPlayerStateChange,
+          'onReady': onPlayerReady
         }
       });
     };
 
-    // Fullscreen functionality with play
+    // Player ready callback - attempt to set quality and enable rotation
+    function onPlayerReady(event) {
+      // Try to set quality to 720p or higher
+      const availableQualities = player.getAvailableQualityLevels();
+      if (availableQualities.includes('hd720')) {
+        player.setPlaybackQuality('hd720');
+      } else if (availableQualities.includes('hd1080')) {
+        player.setPlaybackQuality('hd1080');
+      }
+
+      // Request screen orientation to landscape when available
+      if (screen.orientation && screen.orientation.lock) {
+        screen.orientation.lock('landscape').catch(err => {
+          console.log('Orientation lock not supported or failed:', err);
+        });
+      }
+    }
+
+    // Fullscreen functionality with play and landscape orientation
     fullscreenBtn.addEventListener("click", async () => {
       if (!player) return;
 
       try {
         player.playVideo();
+
+        // Request landscape orientation for mobile
+        if (screen.orientation && screen.orientation.lock) {
+          try {
+            await screen.orientation.lock('landscape');
+          } catch (err) {
+            console.log('Orientation lock failed:', err);
+          }
+        }
+
         setTimeout(() => {
           const iframe = document.getElementById('video');
           if (iframe.requestFullscreen) {
