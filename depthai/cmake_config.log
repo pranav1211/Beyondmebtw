@@ -1,0 +1,791 @@
+CMake Warning:
+  Ignoring extra path from command line:
+
+   "..."
+
+Running with debug output on.
+
+-- Events Manager disabled because Protobuf & curl support is disabled.
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/depthaiOptions.cmake
+-- Using ccache: /usr/bin/ccache
+   Called from: [1]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+-- Including vcpkg.cmake
+   Called from: [1]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+-- Using existing generated toolchain
+   Called from: [1]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+-- Using specified toolchain file: /pvv/build-android-arm64/vcpkg/scripts/buildsystems/vcpkg.cmake combined into: /pvv/build-android-arm64/generated/toolchain.cmake
+   Called from: [1]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+-- Running vcpkg install
+   Called from: [4]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [3]	/pvv/build-android-arm64/CMakeFiles/3.31.0/CMakeSystem.cmake
+                [2]	/pvv/build-android-arm64/generated/toolchain.cmake
+                [1]	/pvv/build-android-arm64/vcpkg/scripts/buildsystems/vcpkg.cmake
+warning: attempting to set builtin-baseline in vcpkg.json while overriding the default-registry in vcpkg-configuration.json.
+the default-registry from vcpkg-configuration.json will be used.
+warning: feature -backward was passed, but that is not a feature supported by depthai supports.
+Detecting compiler hash for triplet x64-linux...
+Compiler found: /usr/bin/c++
+Detecting compiler hash for triplet arm64-android...
+Compiler found: /pvv/android-ndk/r29/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++
+The following packages are already installed:
+  * abseil:x64-linux@20250127.1#1 -- git+https://github.com/microsoft/vcpkg@6bb28e97cced88426e3126a47e247ed65608cc86
+  * abseil:arm64-android@20250127.1#1 -- git+https://github.com/microsoft/vcpkg@6bb28e97cced88426e3126a47e247ed65608cc86
+    apriltag:arm64-android@3.4.3 -- git+https://github.com/microsoft/vcpkg@26d8a1ec2c86d1c448765293461fe5e5249cfecb
+  * boost-algorithm:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@ad439228ad08c78b1db8a59d33f36a53cb2da963
+  * boost-align:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@4924c1722bfca24f9700837388bd5d9481695e2b
+  * boost-array:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@ac9d6b735393768df04f6dafaf12d503cb133e6d
+  * boost-asio:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@923e111ca4b1138efb1b58499edf5f04797de72f
+  * boost-assert:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@d6e23ac8a35da1fa74839bde3a863d279a6059a3
+  * boost-bind:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@a15c751451e95db5247d6cfb51087fdc9d4c358d
+  * boost-cmake:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@1a36be4443ec1c0be66984a1e82914a5181b37b1
+  * boost-concept-check:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@c0ca6d1964dab6ed90d303669d4b7f793984c51f
+  * boost-config:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@08220601e68293ce84acafc748856e45db90b6e0
+  * boost-container:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@718d272c732f63acb5fd80814fc85563f171c735
+  * boost-container-hash:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@ea1718341f6ab05a1e8de70803f2217501121b22
+  * boost-context:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@8d20de9b1b6f8a9a913d4b6356fd23fec0c906d6
+  * boost-conversion:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@c42652f6df8bd8617a314dfe5fe4c2faf1a7dedd
+  * boost-core:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@4c65d7305461035adb983409910487493fbc3c17
+  * boost-date-time:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@27fa7c8f51d9c33b0764250d263bd62e22204ce1
+  * boost-describe:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@c8f7e17ade0012c59a0f0a4fd2eed310e46a62a2
+  * boost-detail:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@98a332b03b6cea4761f88e91583365d6541a363a
+  * boost-exception:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@a9ea525002cadc70c3ea9bdf08c12d09772b8856
+  * boost-function:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@dd9ac4db4f4b66a229827fe980cf6383a5e7d3a6
+  * boost-function-types:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@89350648b176e8b7fa29c581eacb759399beb1a4
+  * boost-functional:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@2ff2af6a3352bb8fbf08b0c8d0ee09be73db31d4
+  * boost-fusion:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@bd409c100d97251c34028434e9229dbdc2a9b6ab
+  * boost-headers:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@89fca00b9db236eb0cb0ea97b9db246c2db7b3e1
+  * boost-integer:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@74fcf2f7483b0b82c14d59e9feaa006a75403e3d
+  * boost-intrusive:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@0e559d87a538a62ab92d14b3a1bf20f4b15e9801
+  * boost-io:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@bf0040fba4e0e01974090341efb3a14e69226ff4
+  * boost-iterator:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@8c9d7242f99b48a2179719640bc47c4a8a2f8f70
+  * boost-lexical-cast:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@c3631cacb2113b407eaa8be643a96dae14464f79
+  * boost-move:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@36644849a94e71b5527a68a3896b12ee41da8197
+  * boost-mp11:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@2f04ead9077fd5a1906dde8aaedbbae09c5cab8c
+  * boost-mpl:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@6cdd95078ed4dc9bd700884cfc132dca24a99013
+  * boost-numeric-conversion:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@79af9270e64b3948e4fe3c0c911614c090450bae
+  * boost-optional:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@1c8c7aa2e1a750a5faf818b3bc8e0491f415b489
+  * boost-pool:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@f60821c1894371525636f260d1759ed9d3c0bf1e
+  * boost-predef:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@9800c52c1d92d169572ff2f2ed5fb936eb818c68
+  * boost-preprocessor:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@499a4341d1d58ed648cc36f9634e6eed3972bf9d
+  * boost-range:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@81d6d0d0180e3c891f8b9de796b017ab7c0f5659
+  * boost-regex:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@dd6a6b9acf08471a6fae62bf01f6d31d813674ec
+  * boost-smart-ptr:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@e65d7713ee5deba4953e849c2d8a370d65ae964e
+  * boost-static-assert:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@2cb92121f4df9c9b122c4837cb8e41ac1f4800b6
+  * boost-system:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@737c0b0cf6378ebcf004985963d7d5503b4a0cce
+  * boost-throw-exception:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@cce052773fa40ae37c9497cf38739945720cf104
+  * boost-tokenizer:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@221203f5ced5b51f2908b045dcacc1e9b5140b33
+  * boost-tuple:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@55ab535f246ac9b26b4a76d5182fc593914bd691
+  * boost-type-traits:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@5c25a4ff2c1fd4d4eb993dfed7cba2b32fd020a6
+  * boost-typeof:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@75c8940f03c4002bb502d869a77288d59081d026
+  * boost-uninstall:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@3b2f9f82076f2d15124a4e449700848c25bcadcc
+  * boost-unordered:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@0c41c1a7f1cbf9fa1c6f2c88050fc5a4100fc0de
+  * boost-utility:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@9600bd33e0b671744e96c3d032170cf4ee1d1be5
+  * boost-variant2:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@caf09c0bd44b9d3a5d2c3b17762675acaf0baac0
+  * boost-winapi:arm64-android@1.88.0 -- git+https://github.com/microsoft/vcpkg@8b3ab1e64c2ac905bd598e30fba1101c5b8a2e72
+    bzip2[core,tool]:arm64-android@1.0.8#6 -- git+https://github.com/microsoft/vcpkg@2d029da682847c5ebdc54e4dbea001331a02207e
+    cpp-httplib:arm64-android@0.20.1 -- git+https://github.com/microsoft/vcpkg@9537ce6671697e8042f75767b38210d91434d575
+    cpr[core,ssl]:arm64-android@1.11.0 -- /pvv/sources/depthai-core-3.0.0/./cmake/ports/cpr
+  * curl[core,non-http,openssl,ssl]:arm64-android@8.14.0 -- git+https://github.com/microsoft/vcpkg@a6dd0b68e9a05ab5fb22973d7458aca29add3111
+    eigen3:arm64-android@3.4.0#5 -- git+https://github.com/microsoft/vcpkg@d9b547a9e3dc5b847f5ecab763fdea9728107a16
+    fmt:arm64-android@11.0.2#1 -- git+https://github.com/microsoft/vcpkg@07a73a7565e5de9eb42e90c16c133bdfdfebbcda
+    fp16:arm64-android@2021-02-21#2 -- git+https://github.com/microsoft/vcpkg@387e9258cbd17b68a16e44b7fcd6bf20662aa7b1
+    libarchive:arm64-android@3.7.7#1 -- /pvv/sources/depthai-core-3.0.0/./cmake/ports/libarchive
+    liblzma:arm64-android@5.8.1 -- git+https://github.com/microsoft/vcpkg@55eb3803f1d0388aebca8fd293963721bbf0092c
+    libusb:arm64-android@1.0.27#2 -- /pvv/sources/depthai-core-3.0.0/./cmake/ports/libusb
+    lz4:arm64-android@1.10.0 -- git+https://github.com/microsoft/vcpkg@4f01eec10f515a428e914107c5188366380f8dd9
+    magic-enum:arm64-android@0.9.7#1 -- git+https://github.com/microsoft/vcpkg@9ab95f56c0327e8b6c0190fae3d975439161ffaa
+    mp4v2:arm64-android@2.1.3 -- /pvv/sources/depthai-core-3.0.0/./cmake/ports/mp4v2
+    neargye-semver:arm64-android@0.3.1 -- git+https://github.com/microsoft/vcpkg@428a2c943e4edc7e3689d1975a9bf80689ceb0dc
+    nlohmann-json:arm64-android@3.12.0 -- git+https://github.com/microsoft/vcpkg@060c829772d52e920fee94cf84755031c61e3b67
+  * openssl:arm64-android@3.5.0#1 -- git+https://github.com/microsoft/vcpkg@6819498ce6c5c3e379b3ffbd2b5d93e3fc271933
+    protobuf:arm64-android@5.29.3 -- git+https://github.com/microsoft/vcpkg@53c97b927087d1919f2a7ef6c34e4caf1a00cdf9
+  * protobuf:x64-linux@5.29.3 -- git+https://github.com/microsoft/vcpkg@53c97b927087d1919f2a7ef6c34e4caf1a00cdf9
+  * psimd:arm64-android@2021-02-21#2 -- git+https://github.com/microsoft/vcpkg@c2958518cdbe3f8902fe0b056cf37bf1eec26137
+  * pthreads:arm64-android@3.0.0#14 -- git+https://github.com/microsoft/vcpkg@2e0a6df2800d3677b941dc6504f083965b7886d9
+    spdlog:arm64-android@1.15.3 -- git+https://github.com/microsoft/vcpkg@c2b47286b0759373acecdfaa3be4219711f6d059
+  * utf8-range:arm64-android@5.29.3 -- git+https://github.com/microsoft/vcpkg@67a0b0ded179b27dc30195bab68549fab519e1e2
+  * utf8-range:x64-linux@5.29.3 -- git+https://github.com/microsoft/vcpkg@67a0b0ded179b27dc30195bab68549fab519e1e2
+  * vcpkg-boost:x64-linux@2025-03-29 -- git+https://github.com/microsoft/vcpkg@858b0333b773b5650c3f19ef271e3205542d7ceb
+    vcpkg-cmake:x64-linux@2024-04-23 -- git+https://github.com/microsoft/vcpkg@e74aa1e8f93278a8e71372f1fa08c3df420eb840
+    vcpkg-cmake-config:x64-linux@2024-05-23 -- git+https://github.com/microsoft/vcpkg@97a63e4bc1a17422ffe4eff71da53b4b561a7841
+  * vcpkg-cmake-get-vars:x64-linux@2024-09-22 -- git+https://github.com/microsoft/vcpkg@f23148add155147f3d95ae622d3b0031beb25acf
+    websocketpp[core,recommended]:arm64-android@0.8.2#3 -- /pvv/sources/depthai-core-3.0.0/./cmake/ports/websocketpp
+    yaml-cpp:arm64-android@0.8.0#3 -- git+https://github.com/microsoft/vcpkg@30bb4f655d874206182c1db07bb6cd4f1f9f1c79
+    zlib:arm64-android@1.3.1 -- git+https://github.com/microsoft/vcpkg@3f05e04b9aededb96786a911a16193cdb711f0c9
+The package bzip2 is compatible with built-in CMake targets:
+
+    find_package(BZip2 REQUIRED)
+    target_link_libraries(main PRIVATE BZip2::BZip2)
+
+cpp-httplib provides CMake targets:
+
+    find_package(httplib CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE httplib::httplib)
+
+eigen3 provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(Eigen3 CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Eigen3::Eigen)
+
+eigen3 provides pkg-config modules:
+
+  # A C++ template library for linear algebra: vectors, matrices, and related algorithms
+  eigen3
+
+The package fmt provides CMake targets:
+
+    find_package(fmt CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE fmt::fmt)
+
+    # Or use the header-only version
+    find_package(fmt CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE fmt::fmt-header-only)
+
+fp16 is header-only and can be used from CMake via:
+
+  find_path(FP16_INCLUDE_DIRS "fp16.h")
+  target_include_directories(main PRIVATE ${FP16_INCLUDE_DIRS})
+
+The package zlib is compatible with built-in CMake targets:
+
+    find_package(ZLIB REQUIRED)
+    target_link_libraries(main PRIVATE ZLIB::ZLIB)
+
+liblzma is compatible with built-in CMake targets:
+
+    find_package(LibLZMA REQUIRED)
+    target_link_libraries(main PRIVATE LibLZMA::LibLZMA)
+
+liblzma provides CMake targets:
+
+    find_package(liblzma CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE liblzma::liblzma)
+
+libarchive is compatible with the CMake Find Module:
+
+  find_package(LibArchive REQUIRED)
+  target_link_libraries(main PRIVATE LibArchive::LibArchive) # since CMake 3.17
+
+libarchive provides pkg-config modules:
+
+  # library that can create and read several streaming archive formats
+  libarchive
+
+lz4 provides CMake targets:
+
+  find_package(lz4 CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE lz4::lz4)
+
+lz4 provides pkg-config modules:
+
+  liblz4
+
+magic-enum provides CMake targets:
+
+    find_package(magic_enum CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE magic_enum::magic_enum)
+
+neargye-semver provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(semver CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE semver::semver)
+
+The package nlohmann-json provides CMake targets:
+
+    find_package(nlohmann_json CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE nlohmann_json::nlohmann_json)
+
+The package nlohmann-json can be configured to not provide implicit conversions via a custom triplet file:
+
+    set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
+
+For more information, see the docs here:
+    
+    https://json.nlohmann.me/api/macros/json_use_implicit_conversions/
+
+The package spdlog provides CMake targets:
+
+    find_package(spdlog CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE spdlog::spdlog)
+
+    # Or use the header-only version
+    find_package(spdlog CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE spdlog::spdlog_header_only)
+
+yaml-cpp provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(yaml-cpp CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE yaml-cpp::yaml-cpp)
+
+yaml-cpp provides pkg-config modules:
+
+  # A YAML parser and emitter for C++
+  yaml-cpp
+
+apriltag provides CMake targets: 
+
+    find_package(apriltag REQUIRED)
+    target_link_libraries(main PRIVATE apriltag::apriltag)
+
+cpr provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(cpr CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE cpr::cpr)
+
+protobuf provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(protobuf CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE protobuf::libprotoc protobuf::libprotobuf protobuf::libprotobuf-lite)
+
+protobuf provides pkg-config modules:
+
+  # Google's Data Interchange Format
+  protobuf-lite
+
+  # Google's Data Interchange Format
+  protobuf
+
+mp4v2 provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(mp4v2 CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE mp4v2::mp4v2)
+
+mp4v2 provides pkg-config modules:
+
+  # A library for manipulating MP4 container files
+  mp4v2
+
+websocketpp provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(websocketpp CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE websocketpp::websocketpp)
+
+libusb provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(usb-1.0 CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE usb-1.0)
+
+All requested installations completed successfully in: 1.26 ms
+-- Running vcpkg install - done
+   Called from: [4]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [3]	/pvv/build-android-arm64/CMakeFiles/3.31.0/CMakeSystem.cmake
+                [2]	/pvv/build-android-arm64/generated/toolchain.cmake
+                [1]	/pvv/build-android-arm64/vcpkg/scripts/buildsystems/vcpkg.cmake
+-- Found ZLIB: optimized;/pvv/build-android-arm64/vcpkg_installed/arm64-android/lib/libz.a;debug;/pvv/build-android-arm64/vcpkg_installed/arm64-android/debug/lib/libz.a (found version "1.3.1")
+   Called from: [9]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [8]	/pvv/sources/depthai-core-3.0.0/cmake/depthaiDependencies.cmake
+                [7]	/pvv/build-android-arm64/vcpkg/scripts/buildsystems/vcpkg.cmake
+                [6]	/pvv/build-android-arm64/vcpkg_installed/arm64-android/share/libarchive/vcpkg-cmake-wrapper.cmake
+                [5]	/pvv/build-android-arm64/vcpkg/scripts/buildsystems/vcpkg.cmake
+                [4]	/pvv/build-android-arm64/vcpkg_installed/arm64-android/share/zlib/vcpkg-cmake-wrapper.cmake
+                [3]	/pvv/cmake-latest/share/cmake-3.31/Modules/FindZLIB.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/FindPackageHandleStandardArgs.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/FindPackageMessage.cmake
+-- Found OpenSSL: /pvv/build-android-arm64/vcpkg_installed/arm64-android/lib/libcrypto.a (found suitable version "3.5.0", minimum required is "3")
+   Called from: [11]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [10]	/pvv/sources/depthai-core-3.0.0/cmake/depthaiDependencies.cmake
+                [9]	/pvv/build-android-arm64/vcpkg/scripts/buildsystems/vcpkg.cmake
+                [8]	/pvv/build-android-arm64/vcpkg_installed/arm64-android/share/curl/vcpkg-cmake-wrapper.cmake
+                [7]	/pvv/build-android-arm64/vcpkg_installed/arm64-android/share/curl/CURLConfig.cmake
+                [6]	/pvv/cmake-latest/share/cmake-3.31/Modules/CMakeFindDependencyMacro.cmake
+                [5]	/pvv/build-android-arm64/vcpkg/scripts/buildsystems/vcpkg.cmake
+                [4]	/pvv/build-android-arm64/vcpkg_installed/arm64-android/share/openssl/vcpkg-cmake-wrapper.cmake
+                [3]	/pvv/cmake-latest/share/cmake-3.31/Modules/FindOpenSSL.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/FindPackageHandleStandardArgs.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/FindPackageMessage.cmake
+-- Found ZLIB: optimized;/pvv/build-android-arm64/vcpkg_installed/arm64-android/lib/libz.a;debug;/pvv/build-android-arm64/vcpkg_installed/arm64-android/debug/lib/libz.a (found suitable version "1.3.1", minimum required is "1")
+   Called from: [11]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [10]	/pvv/sources/depthai-core-3.0.0/cmake/depthaiDependencies.cmake
+                [9]	/pvv/build-android-arm64/vcpkg/scripts/buildsystems/vcpkg.cmake
+                [8]	/pvv/build-android-arm64/vcpkg_installed/arm64-android/share/curl/vcpkg-cmake-wrapper.cmake
+                [7]	/pvv/build-android-arm64/vcpkg_installed/arm64-android/share/curl/CURLConfig.cmake
+                [6]	/pvv/cmake-latest/share/cmake-3.31/Modules/CMakeFindDependencyMacro.cmake
+                [5]	/pvv/build-android-arm64/vcpkg/scripts/buildsystems/vcpkg.cmake
+                [4]	/pvv/build-android-arm64/vcpkg_installed/arm64-android/share/zlib/vcpkg-cmake-wrapper.cmake
+                [3]	/pvv/cmake-latest/share/cmake-3.31/Modules/FindZLIB.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/FindPackageHandleStandardArgs.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/FindPackageMessage.cmake
+   Entering             /pvv/build-android-arm64/_deps/xtl-src
+   Called from: [4]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [3]	/pvv/sources/depthai-core-3.0.0/cmake/depthaiDependencies.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/FetchContent.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/FetchContent.cmake
+CMake Warning (dev) at /pvv/build-android-arm64/_deps/xtl-src/CMakeLists.txt:11 (project):
+  Policy CMP0126 is not set: set(CACHE) does not remove a normal variable of
+  the same name.  Run "cmake --help-policy CMP0126" for policy details.  Use
+  the cmake_policy command to set the policy and suppress this warning.
+
+  For compatibility with older versions of CMake, normal variable
+  "xtl_BINARY_DIR" will be removed from the current scope.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+   Called from: [1]	/pvv/build-android-arm64/_deps/xtl-src/CMakeLists.txt
+CMake Warning (dev) at /pvv/build-android-arm64/_deps/xtl-src/CMakeLists.txt:11 (project):
+  Policy CMP0126 is not set: set(CACHE) does not remove a normal variable of
+  the same name.  Run "cmake --help-policy CMP0126" for policy details.  Use
+  the cmake_policy command to set the policy and suppress this warning.
+
+  For compatibility with older versions of CMake, normal variable
+  "xtl_SOURCE_DIR" will be removed from the current scope.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+   Called from: [1]	/pvv/build-android-arm64/_deps/xtl-src/CMakeLists.txt
+CMake Warning (dev) at /pvv/build-android-arm64/_deps/xtl-src/CMakeLists.txt:18 (file):
+  Policy CMP0159 is not set: file(STRINGS) with REGEX updates
+  CMAKE_MATCH_<n>.  Run "cmake --help-policy CMP0159" for policy details.
+  Use the cmake_policy command to set the policy and suppress this warning.
+
+  For compatibility, CMake is leaving CMAKE_MATCH_<n> unchanged.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+   Called from: [1]	/pvv/build-android-arm64/_deps/xtl-src/CMakeLists.txt
+-- xtl v0.8.0
+   Called from: [1]	/pvv/build-android-arm64/_deps/xtl-src/CMakeLists.txt
+   Returning to         /pvv/sources/depthai-core-3.0.0
+   Called from: [4]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [3]	/pvv/sources/depthai-core-3.0.0/cmake/depthaiDependencies.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/FetchContent.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/FetchContent.cmake
+   Entering             /pvv/build-android-arm64/_deps/xtensor-src
+   Called from: [4]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [3]	/pvv/sources/depthai-core-3.0.0/cmake/depthaiDependencies.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/FetchContent.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/FetchContent.cmake
+CMake Warning (dev) at /pvv/build-android-arm64/_deps/xtensor-src/CMakeLists.txt:11 (project):
+  Policy CMP0126 is not set: set(CACHE) does not remove a normal variable of
+  the same name.  Run "cmake --help-policy CMP0126" for policy details.  Use
+  the cmake_policy command to set the policy and suppress this warning.
+
+  For compatibility with older versions of CMake, normal variable
+  "xtensor_BINARY_DIR" will be removed from the current scope.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+   Called from: [1]	/pvv/build-android-arm64/_deps/xtensor-src/CMakeLists.txt
+CMake Warning (dev) at /pvv/build-android-arm64/_deps/xtensor-src/CMakeLists.txt:11 (project):
+  Policy CMP0126 is not set: set(CACHE) does not remove a normal variable of
+  the same name.  Run "cmake --help-policy CMP0126" for policy details.  Use
+  the cmake_policy command to set the policy and suppress this warning.
+
+  For compatibility with older versions of CMake, normal variable
+  "xtensor_SOURCE_DIR" will be removed from the current scope.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+   Called from: [1]	/pvv/build-android-arm64/_deps/xtensor-src/CMakeLists.txt
+CMake Warning (dev) at /pvv/build-android-arm64/_deps/xtensor-src/CMakeLists.txt:18 (file):
+  Policy CMP0159 is not set: file(STRINGS) with REGEX updates
+  CMAKE_MATCH_<n>.  Run "cmake --help-policy CMP0159" for policy details.
+  Use the cmake_policy command to set the policy and suppress this warning.
+
+  For compatibility, CMake is leaving CMAKE_MATCH_<n> unchanged.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+   Called from: [1]	/pvv/build-android-arm64/_deps/xtensor-src/CMakeLists.txt
+-- Building xtensor v0.26.0
+   Called from: [1]	/pvv/build-android-arm64/_deps/xtensor-src/CMakeLists.txt
+-- Found xtl v0.8.0
+   Called from: [1]	/pvv/build-android-arm64/_deps/xtensor-src/CMakeLists.txt
+   Returning to         /pvv/sources/depthai-core-3.0.0
+   Called from: [4]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [3]	/pvv/sources/depthai-core-3.0.0/cmake/depthaiDependencies.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/FetchContent.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/FetchContent.cmake
+   Entering             /pvv/sources/depthai-core-3.0.0/3rdparty/foxglove/ws-protocol/cpp/foxglove-websocket
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/depthaiDependencies.cmake
+-- Found OpenSSL: /pvv/build-android-arm64/vcpkg_installed/arm64-android/lib/libcrypto.a (found version "3.5.0")
+   Called from: [6]	/pvv/sources/depthai-core-3.0.0/3rdparty/foxglove/ws-protocol/cpp/foxglove-websocket/CMakeLists.txt
+                [5]	/pvv/build-android-arm64/vcpkg/scripts/buildsystems/vcpkg.cmake
+                [4]	/pvv/build-android-arm64/vcpkg_installed/arm64-android/share/openssl/vcpkg-cmake-wrapper.cmake
+                [3]	/pvv/cmake-latest/share/cmake-3.31/Modules/FindOpenSSL.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/FindPackageHandleStandardArgs.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/FindPackageMessage.cmake
+   Returning to         /pvv/sources/depthai-core-3.0.0
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/depthaiDependencies.cmake
+   Entering             /pvv/build-android-arm64/_deps/nlohmann_json-src
+   Called from: [4]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [3]	/pvv/sources/depthai-core-3.0.0/cmake/depthaiDependencies.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/FetchContent.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/FetchContent.cmake
+-- Using the multi-header code from /pvv/build-android-arm64/_deps/nlohmann_json-src/include/
+   Called from: [1]	/pvv/build-android-arm64/_deps/nlohmann_json-src/CMakeLists.txt
+   Returning to         /pvv/sources/depthai-core-3.0.0
+   Called from: [4]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [3]	/pvv/sources/depthai-core-3.0.0/cmake/depthaiDependencies.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/FetchContent.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/FetchContent.cmake
+   Entering             /pvv/build-android-arm64/_deps/libnop-src
+   Called from: [4]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [3]	/pvv/sources/depthai-core-3.0.0/cmake/depthaiDependencies.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/FetchContent.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/FetchContent.cmake
+CMake Deprecation Warning at /pvv/build-android-arm64/_deps/libnop-src/CMakeLists.txt:1 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value or use a ...<max> suffix to tell
+  CMake that the project does not need compatibility with older versions.
+
+
+   Called from: [1]	/pvv/build-android-arm64/_deps/libnop-src/CMakeLists.txt
+CMake Warning (dev) at /pvv/build-android-arm64/_deps/libnop-src/CMakeLists.txt:3 (project):
+  Policy CMP0126 is not set: set(CACHE) does not remove a normal variable of
+  the same name.  Run "cmake --help-policy CMP0126" for policy details.  Use
+  the cmake_policy command to set the policy and suppress this warning.
+
+  For compatibility with older versions of CMake, normal variable
+  "libnop_BINARY_DIR" will be removed from the current scope.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+   Called from: [1]	/pvv/build-android-arm64/_deps/libnop-src/CMakeLists.txt
+CMake Warning (dev) at /pvv/build-android-arm64/_deps/libnop-src/CMakeLists.txt:3 (project):
+  Policy CMP0126 is not set: set(CACHE) does not remove a normal variable of
+  the same name.  Run "cmake --help-policy CMP0126" for policy details.  Use
+  the cmake_policy command to set the policy and suppress this warning.
+
+  For compatibility with older versions of CMake, normal variable
+  "libnop_SOURCE_DIR" will be removed from the current scope.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+   Called from: [1]	/pvv/build-android-arm64/_deps/libnop-src/CMakeLists.txt
+   Returning to         /pvv/sources/depthai-core-3.0.0
+   Called from: [4]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [3]	/pvv/sources/depthai-core-3.0.0/cmake/depthaiDependencies.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/FetchContent.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/FetchContent.cmake
+   Entering             /pvv/build-android-arm64/_deps/xlink-src
+   Called from: [4]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [3]	/pvv/sources/depthai-core-3.0.0/cmake/depthaiDependencies.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/FetchContent.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/FetchContent.cmake
+-- Configuring XLink with the following options: /pvv/build-android-arm64/_deps/xlink-src
+   Called from: [1]	/pvv/build-android-arm64/_deps/xlink-src/CMakeLists.txt
+--   XLINK_BUILD_EXAMPLES: OFF
+   Called from: [1]	/pvv/build-android-arm64/_deps/xlink-src/CMakeLists.txt
+--   XLINK_BUILD_TESTS: OFF
+   Called from: [1]	/pvv/build-android-arm64/_deps/xlink-src/CMakeLists.txt
+--   XLINK_ENABLE_LIBUSB: ON
+   Called from: [1]	/pvv/build-android-arm64/_deps/xlink-src/CMakeLists.txt
+--     XLINK_LIBUSB_LOCAL: 
+   Called from: [1]	/pvv/build-android-arm64/_deps/xlink-src/CMakeLists.txt
+--     XLINK_LIBUSB_SYSTEM: 
+   Called from: [1]	/pvv/build-android-arm64/_deps/xlink-src/CMakeLists.txt
+-- Performing Test FLAG_-Werror=switch-enum
+   Called from: [5]	/pvv/build-android-arm64/_deps/xlink-src/CMakeLists.txt
+                [4]	/pvv/build-android-arm64/_deps/xlink-src/cmake/Flags.cmake
+                [3]	/pvv/cmake-latest/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake
+-- Performing Test FLAG_-Werror=switch-enum - Success
+   Called from: [5]	/pvv/build-android-arm64/_deps/xlink-src/CMakeLists.txt
+                [4]	/pvv/build-android-arm64/_deps/xlink-src/cmake/Flags.cmake
+                [3]	/pvv/cmake-latest/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake
+-- Performing Test FLAG_-Wformat=2
+   Called from: [6]	/pvv/build-android-arm64/_deps/xlink-src/CMakeLists.txt
+                [5]	/pvv/build-android-arm64/_deps/xlink-src/cmake/Flags.cmake
+                [4]	/pvv/build-android-arm64/_deps/xlink-src/cmake/Flags.cmake
+                [3]	/pvv/cmake-latest/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake
+-- Performing Test FLAG_-Wformat=2 - Success
+   Called from: [6]	/pvv/build-android-arm64/_deps/xlink-src/CMakeLists.txt
+                [5]	/pvv/build-android-arm64/_deps/xlink-src/cmake/Flags.cmake
+                [4]	/pvv/build-android-arm64/_deps/xlink-src/cmake/Flags.cmake
+                [3]	/pvv/cmake-latest/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake
+-- Performing Test FLAG_-Werror=self-assign-field
+   Called from: [6]	/pvv/build-android-arm64/_deps/xlink-src/CMakeLists.txt
+                [5]	/pvv/build-android-arm64/_deps/xlink-src/cmake/Flags.cmake
+                [4]	/pvv/build-android-arm64/_deps/xlink-src/cmake/Flags.cmake
+                [3]	/pvv/cmake-latest/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake
+-- Performing Test FLAG_-Werror=self-assign-field - Success
+   Called from: [6]	/pvv/build-android-arm64/_deps/xlink-src/CMakeLists.txt
+                [5]	/pvv/build-android-arm64/_deps/xlink-src/cmake/Flags.cmake
+                [4]	/pvv/build-android-arm64/_deps/xlink-src/cmake/Flags.cmake
+                [3]	/pvv/cmake-latest/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake
+-- Performing Test FLAG_-Werror=unused-lambda-capture
+   Called from: [6]	/pvv/build-android-arm64/_deps/xlink-src/CMakeLists.txt
+                [5]	/pvv/build-android-arm64/_deps/xlink-src/cmake/Flags.cmake
+                [4]	/pvv/build-android-arm64/_deps/xlink-src/cmake/Flags.cmake
+                [3]	/pvv/cmake-latest/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake
+-- Performing Test FLAG_-Werror=unused-lambda-capture - Success
+   Called from: [6]	/pvv/build-android-arm64/_deps/xlink-src/CMakeLists.txt
+                [5]	/pvv/build-android-arm64/_deps/xlink-src/cmake/Flags.cmake
+                [4]	/pvv/build-android-arm64/_deps/xlink-src/cmake/Flags.cmake
+                [3]	/pvv/cmake-latest/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake
+-- Performing Test FLAG_-Werror=return-type
+   Called from: [6]	/pvv/build-android-arm64/_deps/xlink-src/CMakeLists.txt
+                [5]	/pvv/build-android-arm64/_deps/xlink-src/cmake/Flags.cmake
+                [4]	/pvv/build-android-arm64/_deps/xlink-src/cmake/Flags.cmake
+                [3]	/pvv/cmake-latest/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake
+-- Performing Test FLAG_-Werror=return-type - Success
+   Called from: [6]	/pvv/build-android-arm64/_deps/xlink-src/CMakeLists.txt
+                [5]	/pvv/build-android-arm64/_deps/xlink-src/cmake/Flags.cmake
+                [4]	/pvv/build-android-arm64/_deps/xlink-src/cmake/Flags.cmake
+                [3]	/pvv/cmake-latest/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake
+-- Performing Test FLAG_-Werror=sign-compare
+   Called from: [6]	/pvv/build-android-arm64/_deps/xlink-src/CMakeLists.txt
+                [5]	/pvv/build-android-arm64/_deps/xlink-src/cmake/Flags.cmake
+                [4]	/pvv/build-android-arm64/_deps/xlink-src/cmake/Flags.cmake
+                [3]	/pvv/cmake-latest/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake
+-- Performing Test FLAG_-Werror=sign-compare - Success
+   Called from: [6]	/pvv/build-android-arm64/_deps/xlink-src/CMakeLists.txt
+                [5]	/pvv/build-android-arm64/_deps/xlink-src/cmake/Flags.cmake
+                [4]	/pvv/build-android-arm64/_deps/xlink-src/cmake/Flags.cmake
+                [3]	/pvv/cmake-latest/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake
+   Returning to         /pvv/sources/depthai-core-3.0.0
+   Called from: [4]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [3]	/pvv/sources/depthai-core-3.0.0/cmake/depthaiDependencies.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/FetchContent.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/FetchContent.cmake
+DEPTHAI_OPENCV_SUPPORT: OFF
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/depthaiDependencies.cmake
+-- Performing Test FLAG_-Werror=non-virtual-dtor
+   Called from: [6]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [5]	/pvv/sources/depthai-core-3.0.0/cmake/Flags.cmake
+                [4]	/pvv/sources/depthai-core-3.0.0/cmake/Flags.cmake
+                [3]	/pvv/cmake-latest/share/cmake-3.31/Modules/CheckCXXCompilerFlag.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake
+-- Performing Test FLAG_-Werror=non-virtual-dtor - Success
+   Called from: [6]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [5]	/pvv/sources/depthai-core-3.0.0/cmake/Flags.cmake
+                [4]	/pvv/sources/depthai-core-3.0.0/cmake/Flags.cmake
+                [3]	/pvv/cmake-latest/share/cmake-3.31/Modules/CheckCXXCompilerFlag.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake
+-- Performing Test FLAG_-Werror=reorder
+   Called from: [6]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [5]	/pvv/sources/depthai-core-3.0.0/cmake/Flags.cmake
+                [4]	/pvv/sources/depthai-core-3.0.0/cmake/Flags.cmake
+                [3]	/pvv/cmake-latest/share/cmake-3.31/Modules/CheckCXXCompilerFlag.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake
+-- Performing Test FLAG_-Werror=reorder - Success
+   Called from: [6]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [5]	/pvv/sources/depthai-core-3.0.0/cmake/Flags.cmake
+                [4]	/pvv/sources/depthai-core-3.0.0/cmake/Flags.cmake
+                [3]	/pvv/cmake-latest/share/cmake-3.31/Modules/CheckCXXCompilerFlag.cmake
+                [2]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake
+                [1]	/pvv/cmake-latest/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake
+-- Downloading Depthai device side binaries from server...
+   Called from: [1]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+-- Downloading Depthai device side binaries from server...
+   Called from: [1]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+-- Downloading depthai and patch
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiDownloader.cmake
+-- commit: 
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiDownloader.cmake
+-- Downloading and checking depthai-device-fwp.tar.xz
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiDownloader.cmake
+-- File already downloaded (resources): depthai-device-fwp-03a9cc7382bd8755768dc858cb62398643029e6e.tar.xz
+   Called from: [3]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [2]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiDownloader.cmake
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/DownloadAndChecksum.cmake
+-- Downloading depthai bootloader
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiBootloaderDownloader.cmake
+-- folder: /pvv/build-android-arm64/resources
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiBootloaderDownloader.cmake
+-- maturity: release
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiBootloaderDownloader.cmake
+-- commit_version_arg: 0.0.28
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiBootloaderDownloader.cmake
+-- bootloader shared commit: b287ecbacd3b0c963b5dfcf95767123b0c143b57
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiBootloaderDownloader.cmake
+-- File already downloaded (resources): depthai-bootloader-shared-commit-hash-0.0.28.txt
+   Called from: [3]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [2]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiBootloaderDownloader.cmake
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiBootloaderDownloader.cmake
+-- depthai-bootloader-shared between device and host MATCH!. (device: b287ecbacd3b0c963b5dfcf95767123b0c143b57, host: b287ecbacd3b0c963b5dfcf95767123b0c143b57
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiBootloaderDownloader.cmake
+-- Downloading and checking depthai-bootloader-fwp.tar.xz
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiBootloaderDownloader.cmake
+-- File already downloaded (resources): depthai-bootloader-fwp-0.0.28.tar.xz
+   Called from: [3]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [2]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiBootloaderDownloader.cmake
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiBootloaderDownloader.cmake
+-- Downloading depthai-device-rvc4
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiDeviceKbDownloader.cmake
+-- folder: /pvv/build-android-arm64/resources
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiDeviceKbDownloader.cmake
+-- maturity: snapshot
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiDeviceKbDownloader.cmake
+-- commit_version_arg: 0.0.1+f76251a3e31c957cd21183d6170da4f53aac475b
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiDeviceKbDownloader.cmake
+-- Downloading and checking depthai-device-rvc4-fwp.tar.xz
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiDeviceKbDownloader.cmake
+-- Download URL: https://artifacts.luxonis.com/artifactory/luxonis-rvc4-snapshot-local/depthai-device-rvc4/0.0.1+f76251a3e31c957cd21183d6170da4f53aac475b/depthai-device-rvc4-fwp-0.0.1+f76251a3e31c957cd21183d6170da4f53aac475b.tar.xz
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiDeviceKbDownloader.cmake
+-- File already downloaded (resources): depthai-device-rvc4-fwp-0.0.1+f76251a3e31c957cd21183d6170da4f53aac475b.tar.xz
+   Called from: [3]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [2]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiDeviceKbDownloader.cmake
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiBootloaderDownloader.cmake
+-- Downloading luxonis-depthai-visualizer-local-0.12.33
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiVisualizerDownloader.cmake
+-- Downloading and checking -fwp.tar.xz
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiVisualizerDownloader.cmake
+-- File already downloaded (resources): depthai-visualizer-0.12.33.tar.xz
+   Called from: [3]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [2]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiVisualizerDownloader.cmake
+                [1]	/pvv/sources/depthai-core-3.0.0/cmake/DepthaiBootloaderDownloader.cmake
+-- LIST OF RESOURCE COMPILED FILES: /pvv/build-android-arm64/resources/depthai-device-fwp-03a9cc7382bd8755768dc858cb62398643029e6e.tar.xz;/pvv/build-android-arm64/resources/depthai-bootloader-fwp-0.0.28.tar.xz;/pvv/build-android-arm64/resources/depthai-device-rvc4-fwp-0.0.1+f76251a3e31c957cd21183d6170da4f53aac475b.tar.xz;/pvv/build-android-arm64/resources/depthai-visualizer-0.12.33.tar.xz
+   Called from: [1]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+-- DepthAI recording enabled, finding the mp4v2 library!
+   Called from: [1]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+-- Protobuf support enabled
+   Called from: [1]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+   Entering             /pvv/sources/depthai-core-3.0.0/protos
+   Called from: [1]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+-- Found Protobuf: /pvv/build-android-arm64/vcpkg_installed/arm64-android/share/protobuf
+   Called from: [1]	/pvv/sources/depthai-core-3.0.0/protos/CMakeLists.txt
+   Returning to         /pvv/sources/depthai-core-3.0.0
+   Called from: [1]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+-- Adding runtime dependencies for depthai-core on usb-1.0. Imported configurations: DEBUG;RELEASE
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+-- Adding runtime dependencies for depthai-core on usb-1.0 (DEBUG)
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+-- Retrieved dll for DEBUG: '/pvv/build-android-arm64/vcpkg_installed/arm64-android/debug/lib/libusb-1.0.a'
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+-- Adding runtime dependencies for depthai-core on usb-1.0 (RELEASE)
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+-- Retrieved dll for RELEASE: '/pvv/build-android-arm64/vcpkg_installed/arm64-android/lib/libusb-1.0.a'
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+-- Required dlls for depthai-core on usb-1.0 are: $<$<CONFIG:DEBUG>:/pvv/build-android-arm64/vcpkg_installed/arm64-android/debug/lib/libusb-1.0.a>;$<$<CONFIG:RELEASE>:/pvv/build-android-arm64/vcpkg_installed/arm64-android/lib/libusb-1.0.a>
+   Called from: [2]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+                [1]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+-- BUILD_DATETIME: 2025-10-13 18:45:53 +0000, BUILD_COMMIT: a281eebbe933590c90edcf6c2b89e3188a72d9e4, BUILD_COMMIT_DATETIME: 2025-09-07 23:59:01 +0200
+   Called from: [1]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+-- Required dlls for core are: $<$<CONFIG:DEBUG>:/pvv/build-android-arm64/vcpkg_installed/arm64-android/debug/lib/libusb-1.0.a>;$<$<CONFIG:RELEASE>:/pvv/build-android-arm64/vcpkg_installed/arm64-android/lib/libusb-1.0.a> and they will be installed to lib
+   Called from: [1]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+-- Configuring done (4.9s)
+CMake Warning (dev) at /pvv/build-android-arm64/vcpkg/scripts/buildsystems/vcpkg.cmake:645 (_add_library):
+  Policy CMP0156 is not set: De-duplicate libraries on link lines based on
+  linker capabilities.  Run "cmake --help-policy CMP0156" for policy details.
+  Use the cmake_policy command to set the policy and suppress this warning.
+
+  Since the policy is not set, legacy libraries de-duplication strategy will
+  be applied.
+Call Stack (most recent call first):
+  cmake/CMakeRC.cmake:948 (add_library)
+  CMakeLists.txt:718 (cmrc_add_resource_library)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+   Called from: [1]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+CMake Warning (dev) at /pvv/build-android-arm64/vcpkg/scripts/buildsystems/vcpkg.cmake:645 (_add_library):
+  Policy CMP0156 is not set: De-duplicate libraries on link lines based on
+  linker capabilities.  Run "cmake --help-policy CMP0156" for policy details.
+  Use the cmake_policy command to set the policy and suppress this warning.
+
+  Since the policy is not set, legacy libraries de-duplication strategy will
+  be applied.
+Call Stack (most recent call first):
+  CMakeLists.txt:452 (add_library)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+   Called from: [1]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+-- Generating /pvv/build-android-arm64
+   Called from: [1]	/pvv/sources/depthai-core-3.0.0/CMakeLists.txt
+-- Generating /pvv/build-android-arm64/_deps/xtl-build
+   Called from: [1]	/pvv/build-android-arm64/_deps/xtl-src/CMakeLists.txt
+-- Generating /pvv/build-android-arm64/_deps/xtensor-build
+   Called from: [1]	/pvv/build-android-arm64/_deps/xtensor-src/CMakeLists.txt
+CMake Warning (dev) at /pvv/build-android-arm64/vcpkg/scripts/buildsystems/vcpkg.cmake:645 (_add_library):
+  Policy CMP0156 is not set: De-duplicate libraries on link lines based on
+  linker capabilities.  Run "cmake --help-policy CMP0156" for policy details.
+  Use the cmake_policy command to set the policy and suppress this warning.
+
+  Since the policy is not set, legacy libraries de-duplication strategy will
+  be applied.
+Call Stack (most recent call first):
+  3rdparty/foxglove/ws-protocol/cpp/foxglove-websocket/CMakeLists.txt:10 (add_library)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+   Called from: [1]	/pvv/sources/depthai-core-3.0.0/3rdparty/foxglove/ws-protocol/cpp/foxglove-websocket/CMakeLists.txt
+-- Generating /pvv/build-android-arm64/foxglove-websocket
+   Called from: [1]	/pvv/sources/depthai-core-3.0.0/3rdparty/foxglove/ws-protocol/cpp/foxglove-websocket/CMakeLists.txt
+-- Generating /pvv/build-android-arm64/_deps/nlohmann_json-build
+   Called from: [1]	/pvv/build-android-arm64/_deps/nlohmann_json-src/CMakeLists.txt
+-- Generating /pvv/build-android-arm64/_deps/libnop-build
+   Called from: [1]	/pvv/build-android-arm64/_deps/libnop-src/CMakeLists.txt
+CMake Warning (dev) at /pvv/build-android-arm64/vcpkg/scripts/buildsystems/vcpkg.cmake:645 (_add_library):
+  Policy CMP0156 is not set: De-duplicate libraries on link lines based on
+  linker capabilities.  Run "cmake --help-policy CMP0156" for policy details.
+  Use the cmake_policy command to set the policy and suppress this warning.
+
+  Since the policy is not set, legacy libraries de-duplication strategy will
+  be applied.
+Call Stack (most recent call first):
+  /pvv/build-android-arm64/_deps/xlink-src/CMakeLists.txt:49 (add_library)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+   Called from: [1]	/pvv/build-android-arm64/_deps/xlink-src/CMakeLists.txt
+-- Generating /pvv/build-android-arm64/_deps/xlink-build
+   Called from: [1]	/pvv/build-android-arm64/_deps/xlink-src/CMakeLists.txt
+CMake Warning (dev) at /pvv/build-android-arm64/vcpkg/scripts/buildsystems/vcpkg.cmake:645 (_add_library):
+  Policy CMP0156 is not set: De-duplicate libraries on link lines based on
+  linker capabilities.  Run "cmake --help-policy CMP0156" for policy details.
+  Use the cmake_policy command to set the policy and suppress this warning.
+
+  Since the policy is not set, legacy libraries de-duplication strategy will
+  be applied.
+Call Stack (most recent call first):
+  protos/CMakeLists.txt:44 (add_library)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+   Called from: [1]	/pvv/sources/depthai-core-3.0.0/protos/CMakeLists.txt
+-- Generating /pvv/build-android-arm64/protos
+   Called from: [1]	/pvv/sources/depthai-core-3.0.0/protos/CMakeLists.txt
+-- Generating done (0.1s)
+-- Build files have been written to: /pvv/build-android-arm64
