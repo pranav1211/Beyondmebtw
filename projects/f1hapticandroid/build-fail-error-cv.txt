@@ -1,0 +1,27 @@
+/pvv/sources/depthai-core-3.0.0/src/utility/EventsManager.cpp:47:5: error: use of undeclared identifier 'cv'
+   47 |     cv::Mat cvFrame = imgFrame->getCvFrame();
+      |     ^
+/pvv/sources/depthai-core-3.0.0/src/utility/EventsManager.cpp:48:17: error: use of undeclared identifier 'uchar'; did you mean 'char'?
+   48 |     std::vector<uchar> buf;
+      |                 ^~~~~
+      |                 char
+/pvv/sources/depthai-core-3.0.0/src/utility/EventsManager.cpp:48:22: error: expected '(' for function-style cast or type construction
+   48 |     std::vector<uchar> buf;
+      |                 ~~~~~^
+/pvv/sources/depthai-core-3.0.0/src/utility/EventsManager.cpp:49:5: error: use of undeclared identifier 'cv'
+   49 |     cv::imencode(".jpg", cvFrame, buf);
+      |     ^
+In file included from /pvv/sources/depthai-core-3.0.0/src/utility/EventsManager.cpp:1:
+In file included from /pvv/sources/depthai-core-3.0.0/include/depthai/utility/EventsManager.hpp:13:
+In file included from /pvv/sources/depthai-core-3.0.0/include/depthai/pipeline/datatype/EncodedFrame.hpp:7:
+/pvv/sources/depthai-core-3.0.0/include/depthai/pipeline/datatype/ImgFrame.hpp:437:23: error: static assertion failed due to requirement 'dependent_false<>::value': Library not configured with OpenCV support
+  437 |         static_assert(dependent_false<T...>::value, "Library not configured with OpenCV support");
+      |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/pvv/sources/depthai-core-3.0.0/src/utility/EventsManager.cpp:47:33: note: in instantiation of function template specialization 'dai::ImgFrame::getCvFrame<>' requested here
+   47 |     cv::Mat cvFrame = imgFrame->getCvFrame();
+      |                                 ^
+5 errors generated.
+make[2]: *** [CMakeFiles/depthai-core.dir/build.make:1675: CMakeFiles/depthai-core.dir/src/utility/EventsManager.cpp.o] Error 1
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [CMakeFiles/Makefile2:283: CMakeFiles/depthai-core.dir/all] Error 2
+make: *** [Makefile:166: all] Error 2
