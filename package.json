@@ -9,6 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "marked": "^16.2.1"
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "googleapis": "^164.0.0",
+    "marked": "^16.2.1",
+    "node-fetch": "^3.3.2"
   }
 }
