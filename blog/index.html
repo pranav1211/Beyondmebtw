@@ -21,7 +21,8 @@
 
 <body>
     <header>
-        <div id="name"><a href="https://beyondmebtw.com" style="color: rgb(59, 52, 45); text-decoration: none;">Beyond Me Btw</a></div>
+        <div id="name"><a href="https://beyondmebtw.com" style="color: rgb(59, 52, 45); text-decoration: none;">Beyond
+                Me Btw</a></div>
         <div id="links">
             <div id="home" class="link">Home</div>
             <div id="blog" class="link">Blog</div>
@@ -101,6 +102,31 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
+    <div class="newsletter-section">
+        <div class="newsletter-text">
+            <deiv class="ha">Stay Updated</deiv>
+            <div class="pa">Get notified when I publish new posts</div>
+        </div>
+
+        <form id="newsletterForm" class="newsletter-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="text" id="fullName" placeholder="Your Name" required class="form-input">
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" placeholder="Your Email" required class="form-input">
+                </div>
+            </div>
+
+            <div class="form-group captcha-group">
+                <div class="g-recaptcha" data-sitekey="YOUR_RECAPTCHA_SITE_KEY"></div>
+            </div>
+
+            <button type="submit" class="form-submit">Subscribe</button>
+            <div id="formMessage" class="form-message"></div>
+        </form>
+    </div>
+
     <div id="footer">
         <div>
             © 2022-Present. Beyond Me Btw created by <a href="https://beyondmebtw.com/about"
@@ -109,6 +135,7 @@
     </div>
 
     <script src="blog.js"></script>
+    <script src="newsletter.js"></script>
 </body>
 
 </html>
