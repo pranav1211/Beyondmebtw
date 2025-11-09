@@ -20,6 +20,35 @@ try {
   thepasskey = "default-secure-key";
 }
 
+// CATEGORY CONFIGURATION - Central place to manage all categories and subcategories
+const CATEGORY_CONFIG = {
+  f1arti: {
+    name: 'F1 Articles',
+    subcategories: ['2025 Season', 'General']
+  },
+  movietv: {
+    name: 'Movie/TV',
+    subcategories: ['Movies', 'TV Shows']
+  },
+  experience: {
+    name: 'Experience',
+    subcategories: []
+  },
+  techart: {
+    name: 'Tech Articles',
+    subcategories: []
+  }
+};
+
+// Secondary categories configuration (for cross-category tagging)
+const SECONDARY_CATEGORY_CONFIG = {
+  f1: {
+    name: 'F1',
+    subcategories: ['General', 'Race Analysis', 'News']
+  }
+  // Add more secondary categories here as needed
+};
+
 // Main section data structure (removed projects)
 let jsdata = {
   mainPost: {},
@@ -612,48 +641,23 @@ const server = http.createServer((request, response) => {
     else if (path === "/categories") {
       if (request.method === "GET") {
         try {
-          // Collect all unique subcategories from each blog category
-          const categoriesData = {
-            f1arti: {
-              subcategories: blogData.f1arti.subcategories || []
-            },
-            movietv: {
-              subcategories: blogData.movietv.subcategories || []
-            },
-            experience: {
-              subcategories: blogData.experience.subcategories || []
-            },
-            techart: {
-              subcategories: blogData.techart.subcategories || []
-            }
-          };
+          // Build categories data from static configuration
+          const categoriesData = {};
 
-          // Also collect secondary categories from all posts
-          const secondaryCategoriesSet = new Set();
-          const secondarySubcategoriesMap = new Map(); // Map of category to subcategories
-
-          Object.values(blogData).forEach(categoryData => {
-            if (categoryData.posts) {
-              categoryData.posts.forEach(post => {
-                if (post.secondaryCategory) {
-                  secondaryCategoriesSet.add(post.secondaryCategory);
-
-                  if (post.secondarySubcategory) {
-                    if (!secondarySubcategoriesMap.has(post.secondaryCategory)) {
-                      secondarySubcategoriesMap.set(post.secondaryCategory, new Set());
-                    }
-                    secondarySubcategoriesMap.get(post.secondaryCategory).add(post.secondarySubcategory);
-                  }
-                }
-              });
-            }
+          // Add primary categories from CATEGORY_CONFIG
+          Object.keys(CATEGORY_CONFIG).forEach(categoryKey => {
+            categoriesData[categoryKey] = {
+              name: CATEGORY_CONFIG[categoryKey].name,
+              subcategories: CATEGORY_CONFIG[categoryKey].subcategories
+            };
           });
 
-          // Convert sets to arrays for JSON response
-          categoriesData.secondaryCategories = Array.from(secondaryCategoriesSet);
+          // Add secondary categories from SECONDARY_CATEGORY_CONFIG
+          categoriesData.secondaryCategories = Object.keys(SECONDARY_CATEGORY_CONFIG);
           categoriesData.secondarySubcategories = {};
-          secondarySubcategoriesMap.forEach((subcats, category) => {
-            categoriesData.secondarySubcategories[category] = Array.from(subcats);
+
+          Object.keys(SECONDARY_CATEGORY_CONFIG).forEach(categoryKey => {
+            categoriesData.secondarySubcategories[categoryKey] = SECONDARY_CATEGORY_CONFIG[categoryKey].subcategories;
           });
 
           response.writeHead(200, { "Content-Type": "application/json" });
