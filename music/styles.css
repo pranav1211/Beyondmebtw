@@ -43,6 +43,7 @@ h1 {
     display: flex;
     gap: 15px;
     margin-bottom: 30px;
+    flex-wrap: wrap;
 }
 
 .btn {
@@ -54,6 +55,18 @@ h1 {
     cursor: pointer;
     font-weight: 600;
     transition: all 0.3s ease;
+    min-width: 150px;
+}
+
+.btn-install {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+    flex: 0 1 auto;
+}
+
+.btn-install:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(17, 153, 142, 0.4);
 }
 
 .btn-primary {
