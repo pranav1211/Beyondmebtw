@@ -5,15 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Voice Monitor</title>
     <link rel="stylesheet" href="styles.css">
-    
-    <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#667eea">
-    <meta name="description" content="Zero-latency audio monitoring system for real-time voice feedback">
-    <link rel="manifest" href="manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Voice Monitor">
-    <link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
     <div class="container">
@@ -23,9 +14,6 @@
         </header>
 
         <div class="control-panel">
-            <button id="installBtn" class="btn btn-install" style="display: none;">
-                📱 Install App
-            </button>
             <button id="startBtn" class="btn btn-primary">Start Monitoring</button>
             <button id="stopBtn" class="btn btn-secondary" disabled>Stop Monitoring</button>
         </div>
@@ -74,56 +62,5 @@
     </div>
 
     <script src="audio-monitor.js"></script>
-    
-    <!-- PWA Installation Script -->
-    <script>
-        // Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js')
-                    .then((registration) => {
-                        console.log('ServiceWorker registration successful:', registration.scope);
-                    })
-                    .catch((err) => {
-                        console.log('ServiceWorker registration failed:', err);
-                    });
-            });
-        }
-
-        // PWA Install Prompt
-        let deferredPrompt;
-        const installBtn = document.getElementById('installBtn');
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            // Prevent the mini-infobar from appearing on mobile
-            e.preventDefault();
-            // Stash the event so it can be triggered later
-            deferredPrompt = e;
-            // Show the install button
-            installBtn.style.display = 'block';
-        });
-
-        installBtn.addEventListener('click', async () => {
-            if (!deferredPrompt) {
-                return;
-            }
-            // Show the install prompt
-            deferredPrompt.prompt();
-            // Wait for the user to respond to the prompt
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log(`User response to the install prompt: ${outcome}`);
-            // Clear the deferredPrompt for next time
-            deferredPrompt = null;
-            // Hide the install button
-            installBtn.style.display = 'none';
-        });
-
-        // Hide install button after successful installation
-        window.addEventListener('appinstalled', () => {
-            console.log('PWA was installed');
-            installBtn.style.display = 'none';
-            deferredPrompt = null;
-        });
-    </script>
 </body>
 </html>
