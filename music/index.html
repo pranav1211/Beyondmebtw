@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Voice Monitor</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎤 Live Voice Monitor</h1>
+            <p class="subtitle">Zero-latency audio feedback system</p>
+        </header>
+
+        <div class="control-panel">
+            <button id="startBtn" class="btn btn-primary">Start Monitoring</button>
+            <button id="stopBtn" class="btn btn-secondary" disabled>Stop Monitoring</button>
+        </div>
+
+        <div class="status-panel">
+            <div class="status-item">
+                <span class="label">Status:</span>
+                <span id="status" class="value">Not Started</span>
+            </div>
+            <div class="status-item">
+                <span class="label">Latency:</span>
+                <span id="latency" class="value">-- ms</span>
+            </div>
+            <div class="status-item">
+                <span class="label">Sample Rate:</span>
+                <span id="sampleRate" class="value">-- Hz</span>
+            </div>
+        </div>
+
+        <div class="volume-control">
+            <label for="volumeSlider">
+                <span>Monitor Volume</span>
+                <span id="volumeValue">100%</span>
+            </label>
+            <input type="range" id="volumeSlider" min="0" max="100" value="100" disabled>
+        </div>
+
+        <div class="visualizer-container">
+            <canvas id="visualizer"></canvas>
+        </div>
+
+        <div class="warning-panel">
+            <strong>⚠️ Important:</strong> Use headphones to prevent feedback loops!
+        </div>
+
+        <div class="info-panel">
+            <h3>How to use:</h3>
+            <ol>
+                <li>Connect your headphones</li>
+                <li>Click "Start Monitoring"</li>
+                <li>Allow microphone access when prompted</li>
+                <li>Speak into your microphone - you'll hear yourself instantly!</li>
+                <li>Adjust volume if needed</li>
+            </ol>
+        </div>
+    </div>
+
+    <script src="audio-monitor.js"></script>
+</body>
+</html>
