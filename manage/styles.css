@@ -418,8 +418,6 @@ button[type="button"]:hover {
     min-width: 600px !important;
     max-width: 600px;
     height: auto;
-    max-height: 600px;
-    overflow-y: auto;
     box-sizing: border-box;
     flex-shrink: 0;
 }
@@ -638,10 +636,6 @@ button[type="button"]:hover {
     }
 
     .blog-form {
-        max-height: 500px;
-    }
-
-    .blog-display {
         max-height: 500px;
     }
 }
