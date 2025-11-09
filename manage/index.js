@@ -160,6 +160,9 @@ document.addEventListener("DOMContentLoaded", () => {
             blogKeyField.value = authKey;
         }
 
+        // Load categories data and populate button groups
+        loadCategoriesData();
+
         blogForm.addEventListener("submit", async (event) => {
             event.preventDefault();
 
@@ -236,6 +239,20 @@ document.addEventListener("DOMContentLoaded", () => {
             if (newPostCheckbox) {
                 newPostCheckbox.checked = true;
             }
+
+            // Clear hidden fields for button groups
+            const subcategoryHidden = document.getElementById('blog-subcategory');
+            const secondaryCategoryHidden = document.getElementById('blog-secondary-category');
+            const secondarySubcategoryHidden = document.getElementById('blog-secondary-subcategory');
+
+            if (subcategoryHidden) subcategoryHidden.value = '';
+            if (secondaryCategoryHidden) secondaryCategoryHidden.value = '';
+            if (secondarySubcategoryHidden) secondarySubcategoryHidden.value = '';
+
+            // Update button states
+            updateSubcategoryButtonStates();
+            updateSecondaryCategoryButtonStates();
+            updateSecondarySubcategoryButtonStates();
         }
     }
 
@@ -418,5 +435,250 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="post-thumbnail">${post.thumbnail || 'No thumbnail'}</div>
             </div>
         `;
+    }
+
+    // LOAD CATEGORIES DATA AND POPULATE BUTTON GROUPS
+    let categoriesCache = null;
+
+    async function loadCategoriesData() {
+        try {
+            const response = await fetch('https://manage.beyondmebtw.com/categories');
+            if (!response.ok) {
+                throw new Error('Failed to load categories data');
+            }
+            categoriesCache = await response.json();
+
+            // Populate button groups
+            setupCategoryButtons();
+        } catch (error) {
+            console.error('Error loading categories:', error);
+            // Fallback to showing text inputs or error message
+            showCategoriesError();
+        }
+    }
+
+    function setupCategoryButtons() {
+        // Set up category change listener to update subcategory buttons
+        const categorySelect = document.getElementById('blog-category');
+        if (categorySelect) {
+            categorySelect.addEventListener('change', updateSubcategoryButtons);
+            // Initial load
+            updateSubcategoryButtons();
+        }
+
+        // Set up secondary category buttons
+        updateSecondaryCategoryButtons();
+    }
+
+    function updateSubcategoryButtons() {
+        const categorySelect = document.getElementById('blog-category');
+        const subcategoryContainer = document.getElementById('subcategory-buttons');
+        const subcategoryHidden = document.getElementById('blog-subcategory');
+
+        if (!categorySelect || !subcategoryContainer) return;
+
+        const selectedCategory = categorySelect.value;
+        subcategoryContainer.innerHTML = '';
+
+        if (!selectedCategory || !categoriesCache) {
+            subcategoryContainer.innerHTML = '<p class="loading-text">Select a category first</p>';
+            return;
+        }
+
+        const categoryData = categoriesCache[selectedCategory];
+        if (!categoryData || !categoryData.subcategories || categoryData.subcategories.length === 0) {
+            subcategoryContainer.innerHTML = '<p class="loading-text">No subcategories available</p>';
+            return;
+        }
+
+        // Add clear button
+        const clearBtn = document.createElement('button');
+        clearBtn.type = 'button';
+        clearBtn.className = 'clear-btn';
+        clearBtn.textContent = 'Clear';
+        clearBtn.addEventListener('click', () => {
+            subcategoryHidden.value = '';
+            updateSubcategoryButtonStates();
+        });
+
+        // Add category buttons
+        categoryData.subcategories.forEach(subcat => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'category-btn';
+            btn.textContent = subcat;
+            btn.dataset.value = subcat;
+
+            btn.addEventListener('click', () => {
+                subcategoryHidden.value = subcat;
+                updateSubcategoryButtonStates();
+            });
+
+            subcategoryContainer.appendChild(btn);
+        });
+
+        subcategoryContainer.appendChild(clearBtn);
+        updateSubcategoryButtonStates();
+    }
+
+    function updateSubcategoryButtonStates() {
+        const subcategoryContainer = document.getElementById('subcategory-buttons');
+        const subcategoryHidden = document.getElementById('blog-subcategory');
+
+        if (!subcategoryContainer) return;
+
+        const buttons = subcategoryContainer.querySelectorAll('.category-btn');
+        buttons.forEach(btn => {
+            if (btn.dataset.value === subcategoryHidden.value) {
+                btn.classList.add('selected');
+            } else {
+                btn.classList.remove('selected');
+            }
+        });
+    }
+
+    function updateSecondaryCategoryButtons() {
+        const secondaryCategoryContainer = document.getElementById('secondary-category-buttons');
+        const secondaryCategoryHidden = document.getElementById('blog-secondary-category');
+
+        if (!secondaryCategoryContainer || !categoriesCache) return;
+
+        secondaryCategoryContainer.innerHTML = '';
+
+        if (!categoriesCache.secondaryCategories || categoriesCache.secondaryCategories.length === 0) {
+            secondaryCategoryContainer.innerHTML = '<p class="loading-text">No secondary categories available</p>';
+            return;
+        }
+
+        // Add clear button
+        const clearBtn = document.createElement('button');
+        clearBtn.type = 'button';
+        clearBtn.className = 'clear-btn';
+        clearBtn.textContent = 'Clear';
+        clearBtn.addEventListener('click', () => {
+            secondaryCategoryHidden.value = '';
+            updateSecondaryCategoryButtonStates();
+            updateSecondarySubcategoryButtons();
+        });
+
+        // Add category buttons
+        categoriesCache.secondaryCategories.forEach(category => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'category-btn';
+            btn.textContent = category;
+            btn.dataset.value = category;
+
+            btn.addEventListener('click', () => {
+                secondaryCategoryHidden.value = category;
+                updateSecondaryCategoryButtonStates();
+                updateSecondarySubcategoryButtons();
+            });
+
+            secondaryCategoryContainer.appendChild(btn);
+        });
+
+        secondaryCategoryContainer.appendChild(clearBtn);
+        updateSecondaryCategoryButtonStates();
+    }
+
+    function updateSecondaryCategoryButtonStates() {
+        const secondaryCategoryContainer = document.getElementById('secondary-category-buttons');
+        const secondaryCategoryHidden = document.getElementById('blog-secondary-category');
+
+        if (!secondaryCategoryContainer) return;
+
+        const buttons = secondaryCategoryContainer.querySelectorAll('.category-btn');
+        buttons.forEach(btn => {
+            if (btn.dataset.value === secondaryCategoryHidden.value) {
+                btn.classList.add('selected');
+            } else {
+                btn.classList.remove('selected');
+            }
+        });
+    }
+
+    function updateSecondarySubcategoryButtons() {
+        const secondarySubcategoryContainer = document.getElementById('secondary-subcategory-buttons');
+        const secondarySubcategoryHidden = document.getElementById('blog-secondary-subcategory');
+        const secondaryCategoryHidden = document.getElementById('blog-secondary-category');
+
+        if (!secondarySubcategoryContainer || !categoriesCache) return;
+
+        secondarySubcategoryContainer.innerHTML = '';
+
+        const selectedSecondaryCategory = secondaryCategoryHidden.value;
+
+        if (!selectedSecondaryCategory) {
+            secondarySubcategoryContainer.innerHTML = '<p class="loading-text">Select secondary category first</p>';
+            return;
+        }
+
+        const subcategories = categoriesCache.secondarySubcategories?.[selectedSecondaryCategory];
+
+        if (!subcategories || subcategories.length === 0) {
+            secondarySubcategoryContainer.innerHTML = '<p class="loading-text">No subcategories available</p>';
+            return;
+        }
+
+        // Add clear button
+        const clearBtn = document.createElement('button');
+        clearBtn.type = 'button';
+        clearBtn.className = 'clear-btn';
+        clearBtn.textContent = 'Clear';
+        clearBtn.addEventListener('click', () => {
+            secondarySubcategoryHidden.value = '';
+            updateSecondarySubcategoryButtonStates();
+        });
+
+        // Add subcategory buttons
+        subcategories.forEach(subcat => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'category-btn';
+            btn.textContent = subcat;
+            btn.dataset.value = subcat;
+
+            btn.addEventListener('click', () => {
+                secondarySubcategoryHidden.value = subcat;
+                updateSecondarySubcategoryButtonStates();
+            });
+
+            secondarySubcategoryContainer.appendChild(btn);
+        });
+
+        secondarySubcategoryContainer.appendChild(clearBtn);
+        updateSecondarySubcategoryButtonStates();
+    }
+
+    function updateSecondarySubcategoryButtonStates() {
+        const secondarySubcategoryContainer = document.getElementById('secondary-subcategory-buttons');
+        const secondarySubcategoryHidden = document.getElementById('blog-secondary-subcategory');
+
+        if (!secondarySubcategoryContainer) return;
+
+        const buttons = secondarySubcategoryContainer.querySelectorAll('.category-btn');
+        buttons.forEach(btn => {
+            if (btn.dataset.value === secondarySubcategoryHidden.value) {
+                btn.classList.add('selected');
+            } else {
+                btn.classList.remove('selected');
+            }
+        });
+    }
+
+    function showCategoriesError() {
+        const containers = [
+            'subcategory-buttons',
+            'secondary-category-buttons',
+            'secondary-subcategory-buttons'
+        ];
+
+        containers.forEach(id => {
+            const container = document.getElementById(id);
+            if (container) {
+                container.innerHTML = '<p class="loading-text">Error loading categories</p>';
+            }
+        });
     }
 });

@@ -228,14 +228,15 @@ button[type="button"]:hover {
     background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     color: white;
     border: 2px solid #e91e63;
-    width: 400px !important;
-    min-width: 400px !important;
-    max-width: 400px;
+    width: 550px !important;
+    min-width: 550px !important;
+    max-width: 550px;
     height: auto;
-    max-height: 600px;
-    overflow-y: auto;
+    max-height: none;
+    overflow-y: visible;
     box-sizing: border-box;
     flex-shrink: 0;
+    padding: 25px;
 }
 
 .blog-form h2 {
@@ -336,6 +337,75 @@ button[type="button"]:hover {
     padding: 12px;
     font-size: 15px;
     margin-bottom: 10px;
+}
+
+/* Button group styling */
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    min-height: 45px;
+    align-items: center;
+}
+
+.button-group .loading-text {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+    font-style: italic;
+    margin: 0;
+}
+
+.button-group .category-btn {
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.button-group .category-btn:hover {
+    background: white;
+    border-color: #e91e63;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.button-group .category-btn.selected {
+    background: #e91e63;
+    color: white;
+    border-color: white;
+    box-shadow: 0 4px 8px rgba(233, 30, 99, 0.4);
+}
+
+.button-group .category-btn.selected:hover {
+    background: #d81b60;
+}
+
+.button-group .clear-btn {
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    margin-left: auto;
+}
+
+.button-group .clear-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.6);
 }
 
 /* Blog display section - updated for horizontal layout */

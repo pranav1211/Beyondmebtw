@@ -609,6 +609,66 @@ const server = http.createServer((request, response) => {
         response.end("Method Not Allowed - Use POST");
       }
     }
+    // Handle categories data endpoint
+    else if (path === "/categories") {
+      if (request.method === "GET") {
+        try {
+          // Collect all unique subcategories from each blog category
+          const categoriesData = {
+            f1arti: {
+              subcategories: blogData.f1arti.subcategories || []
+            },
+            movietv: {
+              subcategories: blogData.movietv.subcategories || []
+            },
+            experience: {
+              subcategories: blogData.experience.subcategories || []
+            },
+            techart: {
+              subcategories: blogData.techart.subcategories || []
+            }
+          };
+
+          // Also collect secondary categories from all posts
+          const secondaryCategoriesSet = new Set();
+          const secondarySubcategoriesMap = new Map(); // Map of category to subcategories
+
+          Object.values(blogData).forEach(categoryData => {
+            if (categoryData.posts) {
+              categoryData.posts.forEach(post => {
+                if (post.secondaryCategory) {
+                  secondaryCategoriesSet.add(post.secondaryCategory);
+
+                  if (post.secondarySubcategory) {
+                    if (!secondarySubcategoriesMap.has(post.secondaryCategory)) {
+                      secondarySubcategoriesMap.set(post.secondaryCategory, new Set());
+                    }
+                    secondarySubcategoriesMap.get(post.secondaryCategory).add(post.secondarySubcategory);
+                  }
+                }
+              });
+            }
+          });
+
+          // Convert sets to arrays for JSON response
+          categoriesData.secondaryCategories = Array.from(secondaryCategoriesSet);
+          categoriesData.secondarySubcategories = {};
+          secondarySubcategoriesMap.forEach((subcats, category) => {
+            categoriesData.secondarySubcategories[category] = Array.from(subcats);
+          });
+
+          response.writeHead(200, { "Content-Type": "application/json" });
+          response.end(JSON.stringify(categoriesData));
+        } catch (error) {
+          console.error("Error fetching categories:", error);
+          response.statusCode = 500;
+          response.end("Error fetching categories");
+        }
+      } else {
+        response.statusCode = 405;
+        response.end("Method Not Allowed - Use GET");
+      }
+    }
     else {
       response.statusCode = 404;
       response.end("Not Found");
@@ -643,6 +703,26 @@ process.on('SIGINT', () => {
 });
 
 const PORT = process.env.PORT || 7000;
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+
+// Load blog data on server start
+function loadAllBlogData(callback) {
+  const categories = ['f1arti', 'movietv', 'experience', 'techart'];
+  let completed = 0;
+
+  categories.forEach(category => {
+    loadBlogJSON(category, () => {
+      completed++;
+      if (completed === categories.length) {
+        console.log('All blog data loaded successfully');
+        if (callback) callback();
+      }
+    });
+  });
+}
+
+// Start server after loading blog data
+loadAllBlogData(() => {
+  server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
 });
