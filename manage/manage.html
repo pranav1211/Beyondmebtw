@@ -87,14 +87,23 @@
                 <label for="blog-link">Link:</label>
                 <input type="text" id="blog-link" name="link" required>
 
-                <label for="blog-subcategory">Subcategory (Optional):</label>
-                <input type="text" id="blog-subcategory" name="subcategory">
+                <label>Subcategory (Optional):</label>
+                <div id="subcategory-buttons" class="button-group">
+                    <p class="loading-text">Loading subcategories...</p>
+                </div>
+                <input type="hidden" id="blog-subcategory" name="subcategory">
 
-                <label for="blog-secondary-category">Secondary Category (Optional):</label>
-                <input type="text" id="blog-secondary-category" name="secondaryCategory">
+                <label>Secondary Category (Optional):</label>
+                <div id="secondary-category-buttons" class="button-group">
+                    <p class="loading-text">Loading categories...</p>
+                </div>
+                <input type="hidden" id="blog-secondary-category" name="secondaryCategory">
 
-                <label for="blog-secondary-subcategory">Secondary Subcategory (Optional):</label>
-                <input type="text" id="blog-secondary-subcategory" name="secondarySubcategory">
+                <label>Secondary Subcategory (Optional):</label>
+                <div id="secondary-subcategory-buttons" class="button-group">
+                    <p class="loading-text">Select secondary category first</p>
+                </div>
+                <input type="hidden" id="blog-secondary-subcategory" name="secondarySubcategory">
 
                 <div class="form-actions">
                     <label>
