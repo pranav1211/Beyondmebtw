@@ -486,7 +486,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const categoryData = categoriesCache[selectedCategory];
-        if (!categoryData || !categoryData.subcategories || categoryData.subcategories.length === 0) {
+        if (!categoryData || !Array.isArray(categoryData.subcategories) || categoryData.subcategories.length === 0) {
             subcategoryContainer.innerHTML = '<p class="loading-text">No subcategories available</p>';
             return;
         }
@@ -497,7 +497,7 @@ document.addEventListener("DOMContentLoaded", () => {
         clearBtn.className = 'clear-btn';
         clearBtn.textContent = 'Clear';
         clearBtn.addEventListener('click', () => {
-            subcategoryHidden.value = '';
+            if (subcategoryHidden) subcategoryHidden.value = '';
             updateSubcategoryButtonStates();
         });
 
@@ -510,7 +510,7 @@ document.addEventListener("DOMContentLoaded", () => {
             btn.dataset.value = subcat;
 
             btn.addEventListener('click', () => {
-                subcategoryHidden.value = subcat;
+                if (subcategoryHidden) subcategoryHidden.value = subcat;
                 updateSubcategoryButtonStates();
             });
 
@@ -545,7 +545,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         secondaryCategoryContainer.innerHTML = '';
 
-        if (!categoriesCache.secondaryCategories || categoriesCache.secondaryCategories.length === 0) {
+        if (!Array.isArray(categoriesCache.secondaryCategories) || categoriesCache.secondaryCategories.length === 0) {
             secondaryCategoryContainer.innerHTML = '<p class="loading-text">No secondary categories available</p>';
             return;
         }
@@ -556,7 +556,7 @@ document.addEventListener("DOMContentLoaded", () => {
         clearBtn.className = 'clear-btn';
         clearBtn.textContent = 'Clear';
         clearBtn.addEventListener('click', () => {
-            secondaryCategoryHidden.value = '';
+            if (secondaryCategoryHidden) secondaryCategoryHidden.value = '';
             updateSecondaryCategoryButtonStates();
             updateSecondarySubcategoryButtons();
         });
@@ -570,7 +570,7 @@ document.addEventListener("DOMContentLoaded", () => {
             btn.dataset.value = category;
 
             btn.addEventListener('click', () => {
-                secondaryCategoryHidden.value = category;
+                if (secondaryCategoryHidden) secondaryCategoryHidden.value = category;
                 updateSecondaryCategoryButtonStates();
                 updateSecondarySubcategoryButtons();
             });
@@ -607,7 +607,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         secondarySubcategoryContainer.innerHTML = '';
 
-        const selectedSecondaryCategory = secondaryCategoryHidden.value;
+        const selectedSecondaryCategory = secondaryCategoryHidden ? secondaryCategoryHidden.value : '';
 
         if (!selectedSecondaryCategory) {
             secondarySubcategoryContainer.innerHTML = '<p class="loading-text">Select secondary category first</p>';
@@ -616,7 +616,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const subcategories = categoriesCache.secondarySubcategories?.[selectedSecondaryCategory];
 
-        if (!subcategories || subcategories.length === 0) {
+        if (!Array.isArray(subcategories) || subcategories.length === 0) {
             secondarySubcategoryContainer.innerHTML = '<p class="loading-text">No subcategories available</p>';
             return;
         }
@@ -627,7 +627,7 @@ document.addEventListener("DOMContentLoaded", () => {
         clearBtn.className = 'clear-btn';
         clearBtn.textContent = 'Clear';
         clearBtn.addEventListener('click', () => {
-            secondarySubcategoryHidden.value = '';
+            if (secondarySubcategoryHidden) secondarySubcategoryHidden.value = '';
             updateSecondarySubcategoryButtonStates();
         });
 
@@ -640,7 +640,7 @@ document.addEventListener("DOMContentLoaded", () => {
             btn.dataset.value = subcat;
 
             btn.addEventListener('click', () => {
-                secondarySubcategoryHidden.value = subcat;
+                if (secondarySubcategoryHidden) secondarySubcategoryHidden.value = subcat;
                 updateSecondarySubcategoryButtonStates();
             });
 
