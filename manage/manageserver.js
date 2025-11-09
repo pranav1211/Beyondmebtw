@@ -319,25 +319,24 @@ function updateLatestJSONCategories(category, uid, title, thumbnail, subcategory
   // Keep category names exactly as they are sent from the form (lowercase)
   const categoryKey = category.toLowerCase();
 
-  // Normalize subcategory to match existing JSON structure
+  // Normalize subcategory to match frontend expectations
   const normalizeSubcategory = (subcat) => {
     if (!subcat) return null;
     const lower = subcat.toLowerCase();
 
-    // Special handling for known subcategories to match existing structure
-    switch (lower) {
-      case '2025 season':
-        return '2025 season'; // Keep exactly as is in existing JSON
-      case 'general':
-        return 'general'; // Keep as lowercase
-      case 'movies':
-        return 'movies';
-      case 'tv':
-        return 'tv';
-      // Add other known subcategories here as needed
-      default:
-        return lower; // Keep as lowercase for consistency
-    }
+    // Map subcategories from JSON format to frontend keys
+    const subcategoryMap = {
+      // F1 Articles subcategories
+      '2025 season': '2025 season',
+      'general': 'general',
+
+      // Movie/TV subcategories
+      'movies': 'movies',
+      'tv shows': 'tv',  // Map "TV Shows" to "tv" for frontend
+      'tv': 'tv'
+    };
+
+    return subcategoryMap[lower] || lower;
   };
 
   const normalizedSubcategory = normalizeSubcategory(subcategory);
