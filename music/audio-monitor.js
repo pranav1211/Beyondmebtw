@@ -40,21 +40,44 @@ class AudioMonitor {
             this.updateStatus('Requesting microphone access...', '#ffc107');
             
             // Request microphone with optimal settings for low latency
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            
+            const audioConstraints = {
+                echoCancellation: false,
+                noiseSuppression: false,
+                autoGainControl: false,
+                latency: 0
+            };
+            
+            // Mobile optimization: try lower sample rate first for better latency
+            if (isMobile) {
+                audioConstraints.sampleRate = { ideal: 44100, min: 8000 };
+            } else {
+                audioConstraints.sampleRate = 48000;
+            }
+            
             this.mediaStream = await navigator.mediaDevices.getUserMedia({
-                audio: {
-                    echoCancellation: false,
-                    noiseSuppression: false,
-                    autoGainControl: false,
-                    latency: 0,
-                    sampleRate: 48000
-                }
+                audio: audioConstraints
             });
             
             // Create AudioContext with lowest possible latency
-            this.audioContext = new (window.AudioContext || window.webkitAudioContext)({
+            // Mobile-optimized settings
+            const contextOptions = {
                 latencyHint: 'interactive',
                 sampleRate: 48000
-            });
+            };
+            
+            // Try to force smaller buffer size on mobile (Safari/iOS specific)
+            if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                contextOptions.latencyHint = 0.001; // Request 1ms latency (will use minimum possible)
+            }
+            
+            this.audioContext = new (window.AudioContext || window.webkitAudioContext)(contextOptions);
+            
+            // Mobile browsers (especially iOS) require user interaction to resume context
+            if (this.audioContext.state === 'suspended') {
+                await this.audioContext.resume();
+            }
             
             // Create audio nodes
             this.sourceNode = this.audioContext.createMediaStreamSource(this.mediaStream);
@@ -86,6 +109,21 @@ class AudioMonitor {
             const totalLatency = ((baseLatency + outputLatency) * 1000).toFixed(1);
             this.latencyEl.textContent = `${totalLatency} ms`;
             this.sampleRateEl.textContent = `${this.audioContext.sampleRate} Hz`;
+            
+            // Warn about high latency (likely Bluetooth)
+            if (totalLatency > 30) {
+                console.warn('High latency detected:', totalLatency, 'ms');
+                console.warn('This is often caused by Bluetooth headphones. Use wired headphones for <15ms latency.');
+                
+                // Show warning in UI if on mobile
+                if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                    setTimeout(() => {
+                        if (confirm(`⚠️ High latency detected (${totalLatency}ms).\n\nAre you using Bluetooth headphones?\n\nSwitch to WIRED headphones for 100ms+ lower latency!\n\nClick OK to continue anyway.`)) {
+                            console.log('User acknowledged latency warning');
+                        }
+                    }, 500);
+                }
+            }
             
             // Start visualization
             this.visualize();
