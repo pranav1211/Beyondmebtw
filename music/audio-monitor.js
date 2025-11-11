@@ -51,7 +51,7 @@ class AudioMonitor {
             
             // Mobile optimization: try lower sample rate first for better latency
             if (isMobile) {
-                audioConstraints.sampleRate = { ideal: 44100, min: 8000 };
+                audioConstraints.sampleRate = { ideal: 16000, min: 8000 };
             } else {
                 audioConstraints.sampleRate = 16000;
             }
