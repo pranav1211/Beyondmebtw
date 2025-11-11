@@ -53,7 +53,7 @@ class AudioMonitor {
             if (isMobile) {
                 audioConstraints.sampleRate = { ideal: 44100, min: 8000 };
             } else {
-                audioConstraints.sampleRate = 48000;
+                audioConstraints.sampleRate = 16000;
             }
             
             this.mediaStream = await navigator.mediaDevices.getUserMedia({
@@ -64,7 +64,7 @@ class AudioMonitor {
             // Mobile-optimized settings
             const contextOptions = {
                 latencyHint: 'interactive',
-                sampleRate: 48000
+                sampleRate: 16000
             };
             
             // Try to force smaller buffer size on mobile (Safari/iOS specific)
