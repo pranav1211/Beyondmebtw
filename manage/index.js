@@ -44,41 +44,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // CREATE LOGOUT BUTTON FOR MANAGE PAGE
     function createLogoutButton() {
-        const logoutContainer = document.getElementById("logout-container") || 
-                               document.querySelector("header") || 
-                               document.querySelector(".nav-bar") || 
+        const logoutContainer = document.getElementById("logout-container") ||
+                               document.querySelector("header") ||
+                               document.querySelector(".nav-bar") ||
                                document.body;
-        
+
         if (!document.getElementById("logout-btn")) {
             const logoutBtn = document.createElement("button");
             logoutBtn.id = "logout-btn";
             logoutBtn.className = "logout-btn";
             logoutBtn.textContent = "Logout";
-            logoutBtn.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 10px 20px;
-                background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
-                color: white;
-                border: none;
-                border-radius: 8px;
-                font-weight: 600;
-                cursor: pointer;
-                z-index: 1000;
-                transition: all 0.3s ease;
-            `;
-            
-            logoutBtn.addEventListener('mouseover', () => {
-                logoutBtn.style.transform = 'translateY(-2px)';
-                logoutBtn.style.boxShadow = '0 4px 12px rgba(255, 107, 107, 0.3)';
-            });
-            
-            logoutBtn.addEventListener('mouseout', () => {
-                logoutBtn.style.transform = 'translateY(0)';
-                logoutBtn.style.boxShadow = 'none';
-            });
-            
+
             logoutContainer.appendChild(logoutBtn);
         }
     }
@@ -465,29 +441,31 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    let categoriesCache = null;
+    // Initialize categoriesCache immediately with the configuration
+    const categoriesCache = (() => {
+        const cache = {};
+
+        // Add primary categories from CATEGORY_CONFIG
+        Object.keys(CATEGORY_CONFIG).forEach(categoryKey => {
+            cache[categoryKey] = {
+                name: CATEGORY_CONFIG[categoryKey].name,
+                subcategories: CATEGORY_CONFIG[categoryKey].subcategories
+            };
+        });
+
+        // Add secondary categories from SECONDARY_CATEGORY_CONFIG
+        cache.secondaryCategories = Object.keys(SECONDARY_CATEGORY_CONFIG);
+        cache.secondarySubcategories = {};
+
+        Object.keys(SECONDARY_CATEGORY_CONFIG).forEach(categoryKey => {
+            cache.secondarySubcategories[categoryKey] = SECONDARY_CATEGORY_CONFIG[categoryKey].subcategories;
+        });
+
+        return cache;
+    })();
 
     async function loadCategoriesData() {
         try {
-            // Build categories data from hardcoded configuration
-            categoriesCache = {};
-
-            // Add primary categories from CATEGORY_CONFIG
-            Object.keys(CATEGORY_CONFIG).forEach(categoryKey => {
-                categoriesCache[categoryKey] = {
-                    name: CATEGORY_CONFIG[categoryKey].name,
-                    subcategories: CATEGORY_CONFIG[categoryKey].subcategories
-                };
-            });
-
-            // Add secondary categories from SECONDARY_CATEGORY_CONFIG
-            categoriesCache.secondaryCategories = Object.keys(SECONDARY_CATEGORY_CONFIG);
-            categoriesCache.secondarySubcategories = {};
-
-            Object.keys(SECONDARY_CATEGORY_CONFIG).forEach(categoryKey => {
-                categoriesCache.secondarySubcategories[categoryKey] = SECONDARY_CATEGORY_CONFIG[categoryKey].subcategories;
-            });
-
             console.log('Categories loaded from hardcoded config:', categoriesCache);
 
             // Populate button groups
@@ -500,35 +478,44 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function setupCategoryButtons() {
-        // Set up category change listener to update subcategory buttons
-        const categorySelect = document.getElementById('blog-category');
-        if (categorySelect) {
-            categorySelect.addEventListener('change', updateSubcategoryButtons);
-            // Initial load
-            updateSubcategoryButtons();
-        }
+        // Show all subcategories from all categories
+        updateSubcategoryButtons();
 
         // Set up secondary category buttons
         updateSecondaryCategoryButtons();
+
+        // Set up secondary subcategory buttons (show all)
+        updateSecondarySubcategoryButtons();
     }
 
     function updateSubcategoryButtons() {
-        const categorySelect = document.getElementById('blog-category');
         const subcategoryContainer = document.getElementById('subcategory-buttons');
         const subcategoryHidden = document.getElementById('blog-subcategory');
 
-        if (!categorySelect || !subcategoryContainer) return;
+        if (!subcategoryContainer) return;
 
-        const selectedCategory = categorySelect.value;
         subcategoryContainer.innerHTML = '';
 
-        if (!selectedCategory || !categoriesCache) {
-            subcategoryContainer.innerHTML = '<p class="loading-text">Select a category first</p>';
+        if (!categoriesCache) {
+            subcategoryContainer.innerHTML = '<p class="loading-text">Loading subcategories...</p>';
             return;
         }
 
-        const categoryData = categoriesCache[selectedCategory];
-        if (!categoryData || !Array.isArray(categoryData.subcategories) || categoryData.subcategories.length === 0) {
+        // Collect all subcategories from all categories
+        const allSubcategories = [];
+        Object.keys(CATEGORY_CONFIG).forEach(categoryKey => {
+            const categoryData = CATEGORY_CONFIG[categoryKey];
+            if (Array.isArray(categoryData.subcategories) && categoryData.subcategories.length > 0) {
+                categoryData.subcategories.forEach(subcat => {
+                    // Only add unique subcategories
+                    if (!allSubcategories.includes(subcat)) {
+                        allSubcategories.push(subcat);
+                    }
+                });
+            }
+        });
+
+        if (allSubcategories.length === 0) {
             subcategoryContainer.innerHTML = '<p class="loading-text">No subcategories available</p>';
             return;
         }
@@ -543,8 +530,8 @@ document.addEventListener("DOMContentLoaded", () => {
             updateSubcategoryButtonStates();
         });
 
-        // Add category buttons
-        categoryData.subcategories.forEach(subcat => {
+        // Add subcategory buttons
+        allSubcategories.forEach(subcat => {
             const btn = document.createElement('button');
             btn.type = 'button';
             btn.className = 'category-btn';
@@ -600,7 +587,6 @@ document.addEventListener("DOMContentLoaded", () => {
         clearBtn.addEventListener('click', () => {
             if (secondaryCategoryHidden) secondaryCategoryHidden.value = '';
             updateSecondaryCategoryButtonStates();
-            updateSecondarySubcategoryButtons();
         });
 
         // Add category buttons
@@ -614,7 +600,6 @@ document.addEventListener("DOMContentLoaded", () => {
             btn.addEventListener('click', () => {
                 if (secondaryCategoryHidden) secondaryCategoryHidden.value = category;
                 updateSecondaryCategoryButtonStates();
-                updateSecondarySubcategoryButtons();
             });
 
             secondaryCategoryContainer.appendChild(btn);
@@ -640,25 +625,34 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // Call updateSecondarySubcategoryButtons when setup happens
+    function setupSecondarySubcategoryButtons() {
+        updateSecondarySubcategoryButtons();
+    }
+
     function updateSecondarySubcategoryButtons() {
         const secondarySubcategoryContainer = document.getElementById('secondary-subcategory-buttons');
         const secondarySubcategoryHidden = document.getElementById('blog-secondary-subcategory');
-        const secondaryCategoryHidden = document.getElementById('blog-secondary-category');
 
         if (!secondarySubcategoryContainer || !categoriesCache) return;
 
         secondarySubcategoryContainer.innerHTML = '';
 
-        const selectedSecondaryCategory = secondaryCategoryHidden ? secondaryCategoryHidden.value : '';
+        // Collect all secondary subcategories from all secondary categories
+        const allSecondarySubcategories = [];
+        Object.keys(SECONDARY_CATEGORY_CONFIG).forEach(categoryKey => {
+            const categoryData = SECONDARY_CATEGORY_CONFIG[categoryKey];
+            if (Array.isArray(categoryData.subcategories) && categoryData.subcategories.length > 0) {
+                categoryData.subcategories.forEach(subcat => {
+                    // Only add unique subcategories
+                    if (!allSecondarySubcategories.includes(subcat)) {
+                        allSecondarySubcategories.push(subcat);
+                    }
+                });
+            }
+        });
 
-        if (!selectedSecondaryCategory) {
-            secondarySubcategoryContainer.innerHTML = '<p class="loading-text">Select secondary category first</p>';
-            return;
-        }
-
-        const subcategories = categoriesCache.secondarySubcategories?.[selectedSecondaryCategory];
-
-        if (!Array.isArray(subcategories) || subcategories.length === 0) {
+        if (allSecondarySubcategories.length === 0) {
             secondarySubcategoryContainer.innerHTML = '<p class="loading-text">No subcategories available</p>';
             return;
         }
@@ -674,7 +668,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         // Add subcategory buttons
-        subcategories.forEach(subcat => {
+        allSecondarySubcategories.forEach(subcat => {
             const btn = document.createElement('button');
             btn.type = 'button';
             btn.className = 'category-btn';
