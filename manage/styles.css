@@ -156,16 +156,24 @@ button[type="button"]:hover {
 }
 
 .logout-btn {
-    padding: 0.8rem 1.5rem;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
     background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
     color: white;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
+    z-index: 1000;
     transition: all 0.3s ease;
-    margin-top: 1rem;
+}
+
+.logout-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
 }
 
 /* Current data display styling */
