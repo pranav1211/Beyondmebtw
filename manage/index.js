@@ -1,4 +1,32 @@
 // index.js - Main application logic (manages only manage.html and index.html)
+// CATEGORY CONFIGURATION - Available immediately
+const CATEGORY_CONFIG = {
+    f1arti: {
+        name: 'F1 Articles',
+        subcategories: ['2025 Season', 'General']
+    },
+    movietv: {
+        name: 'Movie/TV',
+        subcategories: ['Movies', 'TV Shows']
+    },
+    experience: {
+        name: 'Experience',
+        subcategories: []
+    },
+    techart: {
+        name: 'Tech Articles',
+        subcategories: []
+    }
+};
+
+const SECONDARY_CATEGORY_CONFIG = {
+    f1: {
+        name: 'F1',
+        subcategories: ['General', 'Race Analysis', 'News']
+    }
+};
+
+
 document.addEventListener("DOMContentLoaded", () => {
     // Initialize authentication system first
     window.authSystem.init();
@@ -413,42 +441,13 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
     }
 
-    // LOAD CATEGORIES DATA AND POPULATE BUTTON GROUPS
-    // Hardcoded category configuration - matching manageserver.js
-    const CATEGORY_CONFIG = {
-        f1arti: {
-            name: 'F1 Articles',
-            subcategories: ['2025 Season', 'General']
-        },
-        movietv: {
-            name: 'Movie/TV',
-            subcategories: ['Movies', 'TV Shows']
-        },
-        experience: {
-            name: 'Experience',
-            subcategories: []
-        },
-        techart: {
-            name: 'Tech Articles',
-            subcategories: []
-        }
-    };
-
-    const SECONDARY_CATEGORY_CONFIG = {
-        f1: {
-            name: 'F1',
-            subcategories: ['General', 'Race Analysis', 'News']
-        }
-    };
-
-
-    async function loadCategoriesData() {
-        console.log('Setting up category buttons from hardcoded config');
+    function loadCategoriesData() {
+        // Setup buttons immediately - no async needed
         setupCategoryButtons();
     }
 
     function setupCategoryButtons() {
-        // Set up all button groups
+        // Initialize all button groups immediately
         updateSubcategoryButtons();
         updateSecondaryCategoryButtons();
         updateSecondarySubcategoryButtons();
@@ -655,21 +654,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 btn.classList.add('selected');
             } else {
                 btn.classList.remove('selected');
-            }
-        });
-    }
-
-    function showCategoriesError() {
-        const containers = [
-            'subcategory-buttons',
-            'secondary-category-buttons',
-            'secondary-subcategory-buttons'
-        ];
-
-        containers.forEach(id => {
-            const container = document.getElementById(id);
-            if (container) {
-                container.innerHTML = '<p class="loading-text">Error loading categories</p>';
             }
         });
     }
