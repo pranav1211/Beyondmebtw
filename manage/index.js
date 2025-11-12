@@ -438,15 +438,57 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // LOAD CATEGORIES DATA AND POPULATE BUTTON GROUPS
+    // Hardcoded category configuration - matching manageserver.js
+    const CATEGORY_CONFIG = {
+        f1arti: {
+            name: 'F1 Articles',
+            subcategories: ['2025 Season', 'General']
+        },
+        movietv: {
+            name: 'Movie/TV',
+            subcategories: ['Movies', 'TV Shows']
+        },
+        experience: {
+            name: 'Experience',
+            subcategories: []
+        },
+        techart: {
+            name: 'Tech Articles',
+            subcategories: []
+        }
+    };
+
+    const SECONDARY_CATEGORY_CONFIG = {
+        f1: {
+            name: 'F1',
+            subcategories: ['General', 'Race Analysis', 'News']
+        }
+    };
+
     let categoriesCache = null;
 
     async function loadCategoriesData() {
         try {
-            const response = await fetch('https://manage.beyondmebtw.com/categories');
-            if (!response.ok) {
-                throw new Error('Failed to load categories data');
-            }
-            categoriesCache = await response.json();
+            // Build categories data from hardcoded configuration
+            categoriesCache = {};
+
+            // Add primary categories from CATEGORY_CONFIG
+            Object.keys(CATEGORY_CONFIG).forEach(categoryKey => {
+                categoriesCache[categoryKey] = {
+                    name: CATEGORY_CONFIG[categoryKey].name,
+                    subcategories: CATEGORY_CONFIG[categoryKey].subcategories
+                };
+            });
+
+            // Add secondary categories from SECONDARY_CATEGORY_CONFIG
+            categoriesCache.secondaryCategories = Object.keys(SECONDARY_CATEGORY_CONFIG);
+            categoriesCache.secondarySubcategories = {};
+
+            Object.keys(SECONDARY_CATEGORY_CONFIG).forEach(categoryKey => {
+                categoriesCache.secondarySubcategories[categoryKey] = SECONDARY_CATEGORY_CONFIG[categoryKey].subcategories;
+            });
+
+            console.log('Categories loaded from hardcoded config:', categoriesCache);
 
             // Populate button groups
             setupCategoryButtons();
