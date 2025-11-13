@@ -452,7 +452,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
         `;
     }
-
+// categories
     function loadCategoriesData() {
         // Setup buttons immediately - no async needed
         setupCategoryButtons();
