@@ -20,9 +20,21 @@ const CATEGORY_CONFIG = {
 };
 
 const SECONDARY_CATEGORY_CONFIG = {
-    f1: {
-        name: 'F1',
-        subcategories: ['General', 'Race Analysis', 'News']
+    f1arti: {
+        name: 'F1 Articles',
+        subcategories: ['2025 Season', 'General']
+    },
+    movietv: {
+        name: 'Movie/TV',
+        subcategories: ['Movies', 'TV Shows']
+    },
+    experience: {
+        name: 'Experience',
+        subcategories: []
+    },
+    techart: {
+        name: 'Tech Articles',
+        subcategories: []
     }
 };
 
