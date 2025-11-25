@@ -1,5 +1,49 @@
 /* Responsive Design */
 
+/* @media (max-width: 1385px) {
+    header {
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    #name {
+        font-size: 46px;
+        margin: 20px 0 15px 0;
+        text-align: center;
+        width: 100%;
+        display: block;
+    }
+
+    #links {
+        position: relative;
+        left: auto;
+        transform: none;
+        width: auto;
+        margin: 0 auto 15px auto;
+        font-size: 18px;
+    }
+
+    .link {
+        padding: 8px 30px;
+    }
+}
+
+@media (max-width: 1440px) and (min-width: 1386px) {
+    .main-container {
+        max-width: 1350px;
+        padding: 0 30px;
+    }
+
+    .posts-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 25px;
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+}
+
 @media (max-width: 1200px) {
     .posts-grid {
         grid-template-columns: repeat(3, 1fr);
@@ -8,7 +52,7 @@
         max-width: 1000px;
         margin: 0 auto;
     }
-}
+} */
 
 @media (max-width: 1024px) {
     #name {
