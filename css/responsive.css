@@ -15,37 +15,6 @@
     margin-bottom: 15px;
 }
 
-/* Responsive Styles */
-
-/* Desktop to Tablet Transition (max-width: 1385px) */
-@media (max-width: 1440px) {
-    header {
-        flex-direction: column;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-    
-    #name {
-        font-size: 52px;
-        margin: 20px 0 15px 0; /* Center it and add space below */
-        text-align: center;
-        width: 100%;
-        display: block;
-    }
-    
-    #links {
-        position: relative; /* Change from absolute positioning */
-        left: auto;
-        transform: none;
-        width: auto; /* Let it size naturally */
-        margin: 0 auto 15px auto;
-        font-size: 25px;
-    }
-    
-    .link {
-        padding: 8px 30px;
-    }
-}
 
 /* Medium Screens (max-width: 1200px) */
 @media (max-width: 1200px) {
