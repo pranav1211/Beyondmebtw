@@ -27,17 +27,17 @@
     
     #name {
         font-size: 52px;
-        margin: 20px 0 15px 0; /* Center it and add space below */
+        margin: 20px 0 15px 0;
         text-align: center;
         width: 100%;
         display: block;
     }
     
     #links {
-        position: relative; /* Change from absolute positioning */
+        position: relative;
         left: auto;
         transform: none;
-        width: auto; /* Let it size naturally */
+        width: auto;
         margin: 0 auto 15px auto;
         font-size: 25px;
     }
@@ -45,24 +45,24 @@
     .link {
         padding: 8px 30px;
     }
-}
+} */
 
 /* Medium Screens (max-width: 1200px) */
-@media (max-width: 1200px) {
+/* @media (max-width: 1200px) {
     .bento-grid {
         grid-template-columns: 1fr 1fr 1fr 1fr;
         padding: 0 20px;
     }
 
     .featured-posts-container {
-        grid-template-columns: repeat(2, 1fr); /* Reduce from 4 to 2 columns */
+        grid-template-columns: repeat(2, 1fr); 
     }
 
     .projects-grid {
-        grid-template-columns: repeat(2, 1fr); /* Reduce from 4 to 2 columns */
-    }
+        grid-template-columns: repeat(2, 1fr); 
+    } */
 
-    .latest-post-header{
+    /* .latest-post-header{
         font-size: 28px;        
     }
     .latest-post-header{
@@ -84,10 +84,10 @@
         display: flex;
         justify-content: center;
         text-align: center;
-    }
+    } */
     
     /* Latest post responsiveness improvements */
-    .latest-post-content {
+    /* .latest-post-content {
         flex-direction: column;
     }
     
@@ -99,8 +99,8 @@
     
     .latest-post-details {
         width: 100%;
-    }
-} */
+    } */
+/* } */
 
 /* Medium-Small Screens (max-width: 1024px) */
 @media (max-width: 1024px) {
