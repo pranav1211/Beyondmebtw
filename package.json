@@ -1,0 +1,24 @@
+{
+  "name": "beyondmebtw",
+  "version": "1.0.0",
+  "description": "**Beyond Me Btw** is a personal blog and portfolio platform designed to showcase projects and articles that go beyond the ordinary. This site was designed and coded from scratch by me, hosted on a server that uses Nginx and Ubunutu. With innovation at the core, this site to offer a seamless integration of new features as my knowledge  base expands, making it a endlessly growing repository of creativity and technical insights.",
+  "main": "beyondgitman.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pranav1211/Beyondmebtw.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/pranav1211/Beyondmebtw/issues"
+  },
+  "homepage": "https://github.com/pranav1211/Beyondmebtw#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
