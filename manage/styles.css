@@ -155,7 +155,9 @@ button[type="button"]:hover {
     transition: opacity 0.5s ease;
 }
 
+/* Logout Button */
 .logout-btn {
+    width:100px;    
     position: fixed;
     top: 20px;
     right: 20px;
@@ -168,7 +170,7 @@ button[type="button"]:hover {
     font-weight: 600;
     cursor: pointer;
     z-index: 1000;
-    transition: all 0.3s ease;
+    transition: all 0.3s ease;    
 }
 
 .logout-btn:hover {
