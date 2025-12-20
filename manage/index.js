@@ -81,26 +81,13 @@ document.addEventListener("DOMContentLoaded", () => {
         createLogoutButton();
     }
 
-    // CREATE LOGOUT BUTTON FOR MANAGE PAGE
-    function createLogoutButton() {
-        const logoutContainer = document.getElementById("logout-container") ||
-            document.querySelector("header") ||
-            document.querySelector(".nav-bar") ||
-            document.body;
-
-        if (!document.getElementById("logout-btn")) {
-            const logoutBtn = document.createElement("button");
-            logoutBtn.id = "logout-btn";
-            logoutBtn.className = "logout-btn";
-            logoutBtn.textContent = "Logout";
-
-            // Add click event listener for logout functionality
+    function setupLogoutButton() {
+        const logoutBtn = document.getElementById("logout-btn");
+        if (logoutBtn) {
             logoutBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 window.authSystem.logout();
             });
-
-            logoutContainer.appendChild(logoutBtn);
         }
     }
 

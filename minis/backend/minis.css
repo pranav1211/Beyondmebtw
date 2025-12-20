@@ -25,7 +25,7 @@ body {
     font-weight: 600;
     cursor: pointer;
     z-index: 1000;
-    transition: all 0.3s ease;
+    transition: all 0.3s ease;    
 }
 
 .logout-btn:hover {
@@ -60,7 +60,7 @@ header h1 {
     padding: 40px;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    width: 100%;    
+    width: 100%;
 }
 
 .form-group {
