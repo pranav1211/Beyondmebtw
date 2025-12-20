@@ -14,6 +14,10 @@ The Current Home Page
 
 ## Changelog:
 
+### 3.5 (20/12/25)
+- made some backend changes to the manage site, featured posts was still using the old authentication format, updated that.
+- logout button was not working and not styled properly, that has been fixed
+
 ### 3.4 (2/10/25)
 - Made some styling change to the haptic trailer project
 - removed the storage method for the video being used in the haptic trailer project
