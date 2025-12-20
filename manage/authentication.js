@@ -231,9 +231,11 @@ class AuthenticationSystem {
     showNavigation() {
         const loginContainer = document.getElementById("login-container");
         const navContainer = document.getElementById("nav-container");
-        
+        const logoutBtn = document.getElementById("logout-btn");
+
         if (loginContainer) loginContainer.style.display = "none";
         if (navContainer) navContainer.style.display = "flex";
+        if (logoutBtn) logoutBtn.style.display = "block";
     }
 }
 

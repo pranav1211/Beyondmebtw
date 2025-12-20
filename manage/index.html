@@ -169,10 +169,36 @@
             margin-top: 1rem;
             font-weight: 500;
         }
+
+        /* Logout Button */
+        .logout-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+        }
     </style>
 </head>
 
 <body>
+    <!-- Logout Button (shown when logged in) -->
+    <button id="logout-btn" class="logout-btn">Logout</button>
+
     <div class="container">
         <!-- Login Form -->
         <div id="login-container">
