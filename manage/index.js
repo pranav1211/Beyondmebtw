@@ -71,11 +71,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (authLoading) authLoading.style.display = "none";
         if (contentContainer) contentContainer.style.display = "block";
 
-        // Set up forms
-        setupContentForms();
+        // Set up blog forms first (they exist in the HTML)
         setupBlogForms();
 
-        // Load and display data
+        // Load and display data (this creates the featured forms dynamically)
         loadLatestData();
 
         // Create logout button
@@ -94,6 +93,12 @@ document.addEventListener("DOMContentLoaded", () => {
             logoutBtn.id = "logout-btn";
             logoutBtn.className = "logout-btn";
             logoutBtn.textContent = "Logout";
+
+            // Add click event listener for logout functionality
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.authSystem.logout();
+            });
 
             logoutContainer.appendChild(logoutBtn);
         }
@@ -285,6 +290,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 displayCurrentData(data);
                 createFeaturedPostsForms(data.featured);
                 loadBlogPostsFromData(data);
+
+                // Setup content forms after featured forms are created
+                setupContentForms();
+
                 window.authSystem.fillPasswordFields();
             })
             .catch((error) => {

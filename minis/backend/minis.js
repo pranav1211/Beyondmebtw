@@ -1,31 +1,5 @@
-// Authentication functions
-function getCookie(name) {
-    const nameEQ = name + "=";
-    const ca = document.cookie.split(';');
-    for (let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
-}
-
-function isAuthenticated() {
-    return getCookie('beyondme_auth') === "true";
-}
-
-function checkAuthentication() {
-    const isLoggedIn = isAuthenticated();
-
-    if (!isLoggedIn) {
-        setTimeout(() => {
-            window.location.href = 'https://manage.beyondmebtw.com/index.html';
-        }, 1000);
-        return false;
-    }
-
-    return true;
-}
+// Use the global authentication system loaded from authentication.js
+// No need to redefine authentication functions here
 
 // Markdown parser for live preview
 class MarkdownPreview {
@@ -133,12 +107,12 @@ class MinisApp {
         this.statusMessage = document.getElementById('statusMessage');
 
         this.initializeEventListeners();
-        this.createLogoutButton();
         this.fillPasswordFromCookie();
+        this.setupLogoutButton();
     }
 
     fillPasswordFromCookie() {
-        const authKey = getCookie('beyondme_auth_key');
+        const authKey = window.authSystem.getAuthKey();
         if (authKey) {
             this.passwordInput.value = authKey;
         } else {
@@ -146,56 +120,14 @@ class MinisApp {
         }
     }
 
-    createLogoutButton() {
-        if (!document.getElementById("logout-btn")) {
-            const logoutBtn = document.createElement("button");
-            logoutBtn.id = "logout-btn";
-            logoutBtn.className = "logout-btn";
-            logoutBtn.textContent = "Logout";
-            logoutBtn.style.cssText = `
-                        position: fixed;
-                        top: 20px;
-                        right: 20px;
-                        padding: 10px 20px;
-                        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
-                        color: white;
-                        border: none;
-                        border-radius: 8px;
-                        font-weight: 600;
-                        cursor: pointer;
-                        z-index: 1000;
-                        transition: all 0.3s ease;
-                    `;
-
-            logoutBtn.addEventListener('mouseover', () => {
-                logoutBtn.style.transform = 'translateY(-2px)';
-                logoutBtn.style.boxShadow = '0 4px 12px rgba(255, 107, 107, 0.3)';
-            });
-
-            logoutBtn.addEventListener('mouseout', () => {
-                logoutBtn.style.transform = 'translateY(0)';
-                logoutBtn.style.boxShadow = 'none';
-            });
-
+    setupLogoutButton() {
+        const logoutBtn = document.getElementById("logout-btn");
+        if (logoutBtn) {
             logoutBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                this.logout();
+                window.authSystem.logout();
             });
-
-            document.body.appendChild(logoutBtn);
         }
-    }
-
-    logout() {
-        document.cookie = 'beyondme_auth=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=.beyondmebtw.com';
-        document.cookie = 'beyondme_auth_key=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=.beyondmebtw.com';
-        window.location.href = 'https://manage.beyondmebtw.com/index.html';
-    }
-
-    logout() {
-        document.cookie = 'beyondme_auth=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=.beyondmebtw.com';
-        document.cookie = 'beyondme_auth_key=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=.beyondmebtw.com';
-        window.location.href = 'https://manage.beyondmebtw.com/index.html';
     }
 
     initializeEventListeners() {
@@ -429,8 +361,13 @@ class MinisApp {
 
 // Initialize app when DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
-    if (!checkAuthentication()) {
+    // Initialize authentication system
+    window.authSystem.init();
+
+    // Check if authenticated
+    if (!window.authSystem.checkAuthentication()) {
         return;
     }
+
     new MinisApp();
 });
