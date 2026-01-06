@@ -86,9 +86,20 @@ class BBASApp {
             // Get dimensions from camera
             const dimensions = this.camera.getDimensions();
 
-            // Resize canvas to match video
-            this.canvas.width = dimensions.width;
-            this.canvas.height = dimensions.height;
+            // Extend canvas beyond video area (120% size to allow boundary points outside video)
+            const canvasWidth = Math.round(dimensions.width * 1.2);
+            const canvasHeight = Math.round(dimensions.height * 1.2);
+
+            this.canvas.width = canvasWidth;
+            this.canvas.height = canvasHeight;
+
+            // Center the canvas over the video
+            const offsetX = (canvasWidth - dimensions.width) / 2;
+            const offsetY = (canvasHeight - dimensions.height) / 2;
+            this.canvas.style.left = `-${offsetX}px`;
+            this.canvas.style.top = `-${offsetY}px`;
+
+            console.log(`[BBAS] Canvas: ${canvasWidth}x${canvasHeight}, Video: ${dimensions.width}x${dimensions.height}`);
 
             stopBtn.disabled = false;
 

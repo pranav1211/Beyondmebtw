@@ -70,6 +70,7 @@ body {
     gap: 1.5rem;
     padding: 1.5rem;
     flex: 1;
+    align-items: start;
 }
 
 @media (max-width: 1200px) {
@@ -83,16 +84,18 @@ body {
     border-radius: 8px;
     padding: 1rem;
     border: 2px solid var(--border-color);
+    min-height: 600px;
 }
 
 .video-container {
     position: relative;
     width: 100%;
     max-width: 100%;
-    aspect-ratio: 16 / 9;
+    min-height: 600px;
+    height: auto;
     background: #000;
     border-radius: 4px;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .control-panel {
@@ -149,6 +152,11 @@ body {
 
 .btn-success {
     background: var(--success);
+    color: white;
+}
+
+.btn-warning {
+    background: var(--warning);
     color: white;
 }
 
