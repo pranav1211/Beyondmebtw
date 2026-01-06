@@ -5,44 +5,101 @@ class Logger {
         this.element = element;
         this.maxEntries = 50;
     }
-    
-    log(message, type = 'info') {
+
+    log(componentOrMessage, messageOrType, type = 'info') {
+        // Support both signatures:
+        // log(message, type) - old signature
+        // log(component, message, type/data) - new signature for components
+        let component = '';
+        let message = '';
+        let logType = type;
+        let data = null;
+
+        if (typeof messageOrType === 'string') {
+            // New signature: log('Component', 'message', dataOrType)
+            component = componentOrMessage;
+            message = messageOrType;
+            if (typeof type === 'string') {
+                logType = type;
+            } else {
+                data = type;
+                logType = 'info';
+            }
+        } else {
+            // Old signature: log('message', type)
+            message = componentOrMessage;
+            logType = messageOrType || 'info';
+        }
+
         const timestamp = new Date().toLocaleTimeString();
+        const fullMessage = component ? `[${component}] ${message}` : message;
         const entry = document.createElement('div');
-        entry.className = `log-entry log-${type}`;
-        entry.textContent = `[${timestamp}] ${message}`;
-        
+        entry.className = `log-entry log-${logType}`;
+        entry.textContent = `[${timestamp}] ${fullMessage}`;
+
         if (this.element) {
             this.element.appendChild(entry);
             this.element.scrollTop = this.element.scrollHeight;
-            
+
             // Keep only last N entries
             const entries = this.element.querySelectorAll('.log-entry');
             if (entries.length > this.maxEntries) {
                 entries[0].remove();
             }
         }
-        
+
         // Also log to console
-        console.log(`[BBAS ${type.toUpperCase()}]`, message);
+        if (data) {
+            console.log(`[BBAS ${logType.toUpperCase()}]`, fullMessage, data);
+        } else {
+            console.log(`[BBAS ${logType.toUpperCase()}]`, fullMessage);
+        }
     }
-    
-    info(message) {
-        this.log(message, 'info');
+
+    info(componentOrMessage, messageOrData, data) {
+        if (typeof messageOrData === 'string') {
+            this.log(componentOrMessage, messageOrData, data || 'info');
+        } else {
+            this.log(componentOrMessage, 'info');
+        }
     }
-    
-    success(message) {
-        this.log(message, 'success');
+
+    success(componentOrMessage, messageOrData, data) {
+        if (typeof messageOrData === 'string') {
+            this.log(componentOrMessage, messageOrData, data || 'success');
+        } else {
+            this.log(componentOrMessage, 'success');
+        }
     }
-    
-    warning(message) {
-        this.log(message, 'warning');
+
+    warning(componentOrMessage, messageOrData, data) {
+        if (typeof messageOrData === 'string') {
+            this.log(componentOrMessage, messageOrData, data || 'warning');
+        } else {
+            this.log(componentOrMessage, 'warning');
+        }
     }
-    
-    error(message) {
-        this.log(message, 'error');
+
+    error(componentOrMessage, messageOrData, data) {
+        if (typeof messageOrData === 'string') {
+            this.log(componentOrMessage, messageOrData, data || 'error');
+        } else {
+            this.log(componentOrMessage, 'error');
+        }
     }
-    
+
+    debug(componentOrMessage, messageOrData, data) {
+        if (typeof messageOrData === 'string') {
+            this.log(componentOrMessage, messageOrData, data || 'info');
+        } else {
+            this.log(componentOrMessage, 'info');
+        }
+    }
+
+    warn(componentOrMessage, messageOrData, data) {
+        this.warning(componentOrMessage, messageOrData, data);
+    }
+
     clear() {
         if (this.element) {
             this.element.innerHTML = '';
@@ -50,4 +107,8 @@ class Logger {
     }
 }
 
-export default Logger;
+// Create a default console-only logger for use in components
+const defaultLogger = new Logger(null);
+
+export default defaultLogger;
+export { Logger };

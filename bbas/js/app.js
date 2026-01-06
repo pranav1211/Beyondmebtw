@@ -1,7 +1,7 @@
 // Main Application Orchestrator
 
 import Camera from './components/Camera.js';
-import Logger from './utils/logger.js';
+import { Logger } from './utils/logger.js';
 import { CONFIG } from './config/constants.js';
 
 class BBASApp {
