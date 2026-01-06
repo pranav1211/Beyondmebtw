@@ -23,6 +23,8 @@ class BoundaryEditor {
     // Event listeners
     this.boundHandleClick = this.handleClick.bind(this);
     this.boundHandleMouseMove = this.handleMouseMove.bind(this);
+    this.boundHandleTouchStart = this.handleClick.bind(this);
+    this.boundHandleTouchMove = this.handleMouseMove.bind(this);
 
     console.log('[BoundaryEditor] Boundary editor initialized');
   }
@@ -40,12 +42,16 @@ class BoundaryEditor {
     this.currentPoints = [];
     this.hoveredPointIndex = -1;
 
-    // Add event listeners
+    // Enable canvas interaction
+    this.canvas.style.pointerEvents = 'auto';
+    this.canvas.style.cursor = 'crosshair';
+    this.canvas.classList.add('drawing');
+
+    // Add event listeners for both mouse and touch
     this.canvas.addEventListener('click', this.boundHandleClick);
     this.canvas.addEventListener('mousemove', this.boundHandleMouseMove);
-
-    // Change cursor
-    this.canvas.style.cursor = 'crosshair';
+    this.canvas.addEventListener('touchstart', this.boundHandleTouchStart);
+    this.canvas.addEventListener('touchmove', this.boundHandleTouchMove);
 
     console.log('[BoundaryEditor] Drawing mode started');
   }
@@ -61,12 +67,16 @@ class BoundaryEditor {
     this.isDrawing = false;
     this.hoveredPointIndex = -1;
 
-    // Remove event listeners
+    // Remove event listeners for both mouse and touch
     this.canvas.removeEventListener('click', this.boundHandleClick);
     this.canvas.removeEventListener('mousemove', this.boundHandleMouseMove);
+    this.canvas.removeEventListener('touchstart', this.boundHandleTouchStart);
+    this.canvas.removeEventListener('touchmove', this.boundHandleTouchMove);
 
-    // Reset cursor
+    // Disable canvas interaction and reset cursor
+    this.canvas.style.pointerEvents = 'none';
     this.canvas.style.cursor = 'default';
+    this.canvas.classList.remove('drawing');
 
     // Clear current points if not enough to form a polygon
     if (this.currentPoints.length < CONFIG.BOUNDARY.MIN_POINTS) {
@@ -77,14 +87,28 @@ class BoundaryEditor {
   }
 
   /**
+   * Get accurate coordinates from event (handles both mouse and touch)
+   */
+  getCoordinates(event) {
+    const rect = this.canvas.getBoundingClientRect();
+    const scaleX = this.canvas.width / rect.width;
+    const scaleY = this.canvas.height / rect.height;
+
+    // Handle touch events
+    const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+    const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+
+    return {
+      x: (clientX - rect.left) * scaleX,
+      y: (clientY - rect.top) * scaleY
+    };
+  }
+
+  /**
    * Handle mouse move event
    */
   handleMouseMove(event) {
-    const rect = this.canvas.getBoundingClientRect();
-    this.mousePos = {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top
-    };
+    this.mousePos = this.getCoordinates(event);
 
     // Check if hovering over any existing point
     this.hoveredPointIndex = -1;
@@ -105,11 +129,9 @@ class BoundaryEditor {
    * Handle canvas click event
    */
   handleClick(event) {
-    const rect = this.canvas.getBoundingClientRect();
-    const point = {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top
-    };
+    event.preventDefault(); // Prevent default behavior on touch devices
+
+    const point = this.getCoordinates(event);
 
     // Check if clicking near any existing point
     for (let i = 0; i < this.currentPoints.length; i++) {

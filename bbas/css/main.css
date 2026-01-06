@@ -95,7 +95,27 @@ body {
     height: auto;
     background: #000;
     border-radius: 4px;
-    overflow: visible;
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .video-section {
+        min-height: auto;
+    }
+
+    .video-container {
+        min-height: 400px;
+    }
+
+    .control-panel {
+        max-height: none;
+        position: relative;
+    }
+
+    .btn {
+        font-size: 1rem;
+        padding: 0.9rem 1.4rem;
+    }
 }
 
 .control-panel {
