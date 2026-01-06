@@ -4,8 +4,8 @@ export const CONFIG = {
     // Camera settings
     CAMERA: {
         IDEAL_RESOLUTION: {
-            width: 640,
-            height: 480
+            width: 1280,
+            height: 720
         },
         FRAME_RATE: 30,
         FACING_MODE: 'environment' // 'user' for front camera

@@ -86,13 +86,14 @@ class BoundaryEditor {
       y: event.clientY - rect.top
     };
 
-    // Check if hovering over first point
-    if (this.currentPoints.length >= CONFIG.BOUNDARY.MIN_POINTS) {
-      const firstPoint = this.currentPoints[0];
-      if (isNearPoint(this.mousePos, firstPoint, CONFIG.BOUNDARY.POINT_RADIUS * 2)) {
-        this.hoveredPointIndex = 0;
-      } else {
-        this.hoveredPointIndex = -1;
+    // Check if hovering over any existing point
+    this.hoveredPointIndex = -1;
+    if (this.currentPoints.length > 0) {
+      for (let i = 0; i < this.currentPoints.length; i++) {
+        if (isNearPoint(this.mousePos, this.currentPoints[i], CONFIG.BOUNDARY.POINT_RADIUS * 2)) {
+          this.hoveredPointIndex = i;
+          break;
+        }
       }
     }
 
@@ -110,13 +111,16 @@ class BoundaryEditor {
       y: event.clientY - rect.top
     };
 
-    // Check if clicking near first point to close polygon
-    if (this.currentPoints.length >= CONFIG.BOUNDARY.MIN_POINTS) {
-      const firstPoint = this.currentPoints[0];
-
-      if (isNearPoint(point, firstPoint, CONFIG.BOUNDARY.POINT_RADIUS * 2)) {
-        // Close the polygon
-        this.closePolygon();
+    // Check if clicking near any existing point
+    for (let i = 0; i < this.currentPoints.length; i++) {
+      if (isNearPoint(point, this.currentPoints[i], CONFIG.BOUNDARY.POINT_RADIUS * 2)) {
+        // Clicking near first point and have enough points - close polygon
+        if (i === 0 && this.currentPoints.length >= CONFIG.BOUNDARY.MIN_POINTS) {
+          this.closePolygon();
+          return;
+        }
+        // Clicking near an existing point - don't add duplicate
+        console.log(`[BoundaryEditor] Near existing point ${i}, not adding duplicate`);
         return;
       }
     }
@@ -210,12 +214,16 @@ class BoundaryEditor {
         this.ctx.setLineDash([]);
       }
 
-      // Highlight first point if hovering near it
-      if (this.hoveredPointIndex === 0 && this.currentPoints.length >= CONFIG.BOUNDARY.MIN_POINTS) {
-        const firstPoint = this.currentPoints[0];
+      // Highlight hovered point
+      if (this.hoveredPointIndex >= 0) {
+        const hoveredPoint = this.currentPoints[this.hoveredPointIndex];
+        const isFirstPoint = this.hoveredPointIndex === 0;
+        const canClose = isFirstPoint && this.currentPoints.length >= CONFIG.BOUNDARY.MIN_POINTS;
+
         this.ctx.beginPath();
-        this.ctx.arc(firstPoint.x, firstPoint.y, CONFIG.BOUNDARY.POINT_RADIUS * 1.5, 0, 2 * Math.PI);
-        this.ctx.fillStyle = '#00ff00';
+        this.ctx.arc(hoveredPoint.x, hoveredPoint.y, CONFIG.BOUNDARY.POINT_RADIUS * 1.5, 0, 2 * Math.PI);
+        // Green for first point if can close, yellow for other points
+        this.ctx.fillStyle = canClose ? '#00ff00' : '#ffff00';
         this.ctx.fill();
         this.ctx.strokeStyle = '#ffffff';
         this.ctx.lineWidth = 2;
