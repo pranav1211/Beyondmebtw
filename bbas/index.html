@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Boundary-Based Alert System - Offline person detection and zone monitoring">
+    <meta name="theme-color" content="#1a1a2e">
+    
+    <!-- PWA Configuration -->
+    <link rel="manifest" href="/bbas/manifest.json">
+    <link rel="icon" type="image/png" href="/bbas/assets/icons/icon-192.png">
+    <link rel="apple-touch-icon" href="/bbas/assets/icons/icon-192.png">
+    
+    <title>BBAS - Boundary Alert System</title>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="/bbas/css/main.css">
+    <link rel="stylesheet" href="/bbas/css/camera.css">
+    <link rel="stylesheet" href="/bbas/css/boundary-editor.css">
+    <link rel="stylesheet" href="/bbas/css/alerts.css">
+</head>
+<body>
+    <!-- Main Container -->
+    <div id="app" class="app-container">
+        
+        <!-- Header -->
+        <header class="app-header">
+            <h1>🚧 Boundary Alert System</h1>
+            <div class="status-indicators">
+                <span id="camera-status" class="status-badge">📷 Camera: Off</span>
+                <span id="model-status" class="status-badge">🧠 Model: Not Loaded</span>
+                <span id="detection-status" class="status-badge">👁️ Detection: Idle</span>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Camera & Canvas Section -->
+            <section class="video-section">
+                <div class="video-container">
+                    <!-- Video Feed -->
+                    <video id="video" autoplay playsinline muted></video>
+                    
+                    <!-- Canvas Overlay for Boundary Drawing & Detection Visualization -->
+                    <canvas id="overlay-canvas"></canvas>
+                    
+                    <!-- Loading Indicator -->
+                    <div id="loading-indicator" class="loading-indicator hidden">
+                        <div class="spinner"></div>
+                        <p>Initializing camera...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Control Panel -->
+            <aside class="control-panel">
+                
+                <!-- Camera Controls -->
+                <div class="control-section">
+                    <h3>📷 Camera</h3>
+                    <button id="start-camera-btn" class="btn btn-primary">Start Camera</button>
+                    <button id="stop-camera-btn" class="btn btn-secondary" disabled>Stop Camera</button>
+                </div>
+
+                <!-- Boundary Editor Controls -->
+                <div class="control-section">
+                    <h3>✏️ Boundary Editor</h3>
+                    <button id="draw-boundary-btn" class="btn btn-primary" disabled>Draw Boundary</button>
+                    <button id="clear-boundary-btn" class="btn btn-secondary" disabled>Clear Boundary</button>
+                    <button id="save-boundary-btn" class="btn btn-success" disabled>Save Boundary</button>
+                    <button id="load-boundary-btn" class="btn btn-secondary" disabled>Load Saved</button>
+                    
+                    <div class="boundary-info">
+                        <p id="boundary-count">Boundaries: 0</p>
+                    </div>
+                </div>
+
+                <!-- Detection Controls -->
+                <div class="control-section">
+                    <h3>🎯 Detection</h3>
+                    <button id="load-model-btn" class="btn btn-primary" disabled>Load Model</button>
+                    <button id="start-detection-btn" class="btn btn-success" disabled>Start Detection</button>
+                    <button id="stop-detection-btn" class="btn btn-secondary" disabled>Stop Detection</button>
+                    
+                    <div class="detection-settings">
+                        <label for="confidence-threshold">
+                            Confidence: <span id="confidence-value">0.5</span>
+                        </label>
+                        <input type="range" id="confidence-threshold" min="0.3" max="0.9" step="0.05" value="0.5">
+                        
+                        <label for="model-select">Model:</label>
+                        <select id="model-select">
+                            <option value="yolov8n" selected>YOLOv8n (Fast - 6MB)</option>
+                            <option value="yolov8s">YOLOv8s (Accurate - 22MB)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Alert Settings -->
+                <div class="control-section">
+                    <h3>🔔 Alerts</h3>
+                    <label>
+                        <input type="checkbox" id="voice-alerts" checked>
+                        Voice Alerts
+                    </label>
+                    <label>
+                        <input type="checkbox" id="visual-alerts" checked>
+                        Visual Alerts
+                    </label>
+                    <label for="alert-message">Alert Message:</label>
+                    <input type="text" id="alert-message" value="Restricted area breach detected" maxlength="100">
+                    
+                    <label for="alert-cooldown">
+                        Cooldown: <span id="cooldown-value">3</span>s
+                    </label>
+                    <input type="range" id="alert-cooldown" min="1" max="10" step="1" value="3">
+                </div>
+
+                <!-- Debug Log -->
+                <div class="control-section">
+                    <h3>🐛 Debug Log</h3>
+                    <div id="debug-log" class="debug-log"></div>
+                    <button id="clear-log-btn" class="btn btn-small">Clear Log</button>
+                </div>
+
+            </aside>
+
+        </main>
+
+        <!-- Alert Overlay -->
+        <div id="alert-overlay" class="alert-overlay hidden">
+            <div class="alert-content">
+                <span class="alert-icon">⚠️</span>
+                <p id="alert-text">Boundary Violation!</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JavaScript Modules -->
+    <script type="module" src="/bbas/js/app.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        // Register service worker for PWA functionality
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/bbas/sw.js', { scope: '/bbas/' })
+                    .then(reg => console.log('✅ Service Worker registered:', reg.scope))
+                    .catch(err => console.error('❌ Service Worker registration failed:', err));
+            });
+        }
+    </script>
+</body>
+</html>

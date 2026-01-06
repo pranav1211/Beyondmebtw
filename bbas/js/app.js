@@ -1,0 +1,130 @@
+// Main Application Orchestrator
+
+import Camera from './components/Camera.js';
+import Logger from './utils/logger.js';
+import { CONFIG } from './config/constants.js';
+
+class BBASApp {
+    constructor() {
+        this.camera = null;
+        this.logger = null;
+        this.canvas = null;
+        this.ctx = null;
+        
+        this.init();
+    }
+    
+    init() {
+        // Initialize logger
+        const logElement = document.getElementById('debug-log');
+        this.logger = new Logger(logElement);
+        this.logger.info('BBAS Application initializing...');
+        
+        // Get DOM elements
+        const videoElement = document.getElementById('video');
+        this.canvas = document.getElementById('overlay-canvas');
+        this.ctx = this.canvas.getContext('2d');
+        
+        // Initialize camera component
+        this.camera = new Camera(videoElement, this.logger);
+        
+        // Setup event listeners
+        this.setupEventListeners();
+        
+        // Update status
+        this.updateStatus('camera', 'Off', false);
+        this.updateStatus('model', 'Not Loaded', false);
+        this.updateStatus('detection', 'Idle', false);
+        
+        this.logger.success('Application ready');
+    }
+    
+    setupEventListeners() {
+        // Camera controls
+        document.getElementById('start-camera-btn').addEventListener('click', () => this.startCamera());
+        document.getElementById('stop-camera-btn').addEventListener('click', () => this.stopCamera());
+        
+        // Clear log
+        document.getElementById('clear-log-btn').addEventListener('click', () => this.logger.clear());
+        
+        // Confidence slider
+        document.getElementById('confidence-threshold').addEventListener('input', (e) => {
+            document.getElementById('confidence-value').textContent = e.target.value;
+        });
+        
+        // Alert cooldown slider
+        document.getElementById('alert-cooldown').addEventListener('input', (e) => {
+            document.getElementById('cooldown-value').textContent = e.target.value;
+        });
+    }
+    
+    async startCamera() {
+        try {
+            const startBtn = document.getElementById('start-camera-btn');
+            const stopBtn = document.getElementById('stop-camera-btn');
+            const loadingIndicator = document.getElementById('loading-indicator');
+            
+            startBtn.disabled = true;
+            loadingIndicator.classList.remove('hidden');
+            
+            const dimensions = await this.camera.start();
+            
+            // Resize canvas to match video
+            this.canvas.width = dimensions.width;
+            this.canvas.height = dimensions.height;
+            
+            loadingIndicator.classList.add('hidden');
+            stopBtn.disabled = false;
+            
+            // Enable boundary editor
+            document.getElementById('draw-boundary-btn').disabled = false;
+            document.getElementById('load-boundary-btn').disabled = false;
+            
+            // Enable model loading
+            document.getElementById('load-model-btn').disabled = false;
+            
+            this.updateStatus('camera', 'Active', true);
+            
+        } catch (error) {
+            const loadingIndicator = document.getElementById('loading-indicator');
+            loadingIndicator.classList.add('hidden');
+            document.getElementById('start-camera-btn').disabled = false;
+            
+            this.logger.error('Failed to start camera');
+            alert('Camera access denied or unavailable. Please check permissions.');
+        }
+    }
+    
+    stopCamera() {
+        this.camera.stop();
+        
+        document.getElementById('start-camera-btn').disabled = false;
+        document.getElementById('stop-camera-btn').disabled = true;
+        document.getElementById('draw-boundary-btn').disabled = true;
+        document.getElementById('clear-boundary-btn').disabled = true;
+        document.getElementById('save-boundary-btn').disabled = true;
+        document.getElementById('load-boundary-btn').disabled = true;
+        document.getElementById('load-model-btn').disabled = true;
+        
+        this.updateStatus('camera', 'Off', false);
+    }
+    
+    updateStatus(type, text, isActive) {
+        const statusMap = {
+            camera: '📷 Camera',
+            model: '🧠 Model',
+            detection: '👁️ Detection'
+        };
+        
+        const element = document.getElementById(`${type}-status`);
+        element.textContent = `${statusMap[type]}: ${text}`;
+        element.style.borderColor = isActive ? CONFIG.BOUNDARY.COLORS.POINT : '';
+    }
+}
+
+// Initialize app when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => new BBASApp());
+} else {
+    new BBASApp();
+}
