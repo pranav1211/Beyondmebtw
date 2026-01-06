@@ -5,7 +5,6 @@
    ======================================== */
 
 import { CONFIG, ERROR_MESSAGES, SUCCESS_MESSAGES, EVENTS } from '../config/constants.js';
-import logger from '../utils/logger.js';
 
 class Camera {
   constructor(videoElement, loadingOverlay) {
@@ -27,30 +26,30 @@ class Camera {
     
     // Event listeners storage
     this.eventListeners = new Map();
-    
-    logger.info('Camera', 'Camera component initialized');
+
+    console.log('[Camera] Camera component initialized');
   }
   
   /**
    * Initialize camera and enumerate devices
    */
   async initialize() {
-    logger.info('Camera', 'Initializing camera...');
-    
+    console.log('[Camera] Initializing camera...');
+
     try {
       // Check if getUserMedia is supported
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         throw new Error('Camera API not supported in this browser');
       }
-      
+
       // Enumerate available devices
       await this.enumerateDevices();
-      
-      logger.info('Camera', `Found ${this.devices.length} camera device(s)`);
+
+      console.log(`[Camera] Found ${this.devices.length} camera device(s)`);
       return true;
-      
+
     } catch (error) {
-      logger.error('Camera', 'Failed to initialize camera', error);
+      console.error('[Camera] Failed to initialize camera', error);
       this.emit(EVENTS.CAMERA_ERROR, { error });
       throw error;
     }
@@ -63,17 +62,17 @@ class Camera {
     try {
       const devices = await navigator.mediaDevices.enumerateDevices();
       this.devices = devices.filter(device => device.kind === 'videoinput');
-      
-      logger.debug('Camera', 'Available devices:', this.devices);
-      
+
+      console.log('[Camera] Available devices:', this.devices);
+
       if (this.devices.length === 0) {
         throw new Error(ERROR_MESSAGES.CAMERA_NOT_FOUND);
       }
-      
+
       return this.devices;
-      
+
     } catch (error) {
-      logger.error('Camera', 'Failed to enumerate devices', error);
+      console.error('[Camera] Failed to enumerate devices', error);
       throw error;
     }
   }
@@ -82,72 +81,70 @@ class Camera {
    * Start camera stream
    */
   async start(deviceId = null) {
-    logger.info('Camera', 'Starting camera stream...', { deviceId });
-    
+    console.log('[Camera] Starting camera stream...', { deviceId });
+
     // Show loading overlay
     if (this.loadingOverlay) {
       this.loadingOverlay.classList.remove('hidden');
     }
-    
+
     try {
       // Stop existing stream if any
       if (this.stream) {
         await this.stop();
       }
-      
+
       // Build constraints
       const constraints = this.buildConstraints(deviceId);
-      logger.debug('Camera', 'Using constraints:', constraints);
-      
+      console.log('[Camera] Using constraints:', constraints);
+
       // Request camera access
       this.stream = await navigator.mediaDevices.getUserMedia(constraints);
-      
+
       // Set video source
       this.videoElement.srcObject = this.stream;
-      
+
       // Wait for video to be ready
       await this.waitForVideoReady();
-      
+
       // Update state
       this.isActive = true;
       this.currentDeviceId = deviceId;
-      
+
       // Setup frame canvas
       this.setupFrameCanvas();
-      
+
       // Start FPS counter
       this.startFPSCounter();
-      
+
       // Hide loading overlay
       if (this.loadingOverlay) {
         this.loadingOverlay.classList.add('hidden');
       }
-      
+
       // Emit ready event
       this.emit(EVENTS.CAMERA_READY, {
         width: this.videoElement.videoWidth,
         height: this.videoElement.videoHeight,
         deviceId: this.currentDeviceId
       });
-      
-      logger.info('Camera', SUCCESS_MESSAGES.CAMERA_STARTED, {
-        resolution: `${this.videoElement.videoWidth}x${this.videoElement.videoHeight}`
-      });
-      
+
+      console.log(`[Camera] ${SUCCESS_MESSAGES.CAMERA_STARTED} - ${this.videoElement.videoWidth}x${this.videoElement.videoHeight}`);
+
       return true;
-      
+
     } catch (error) {
-      logger.error('Camera', 'Failed to start camera', error);
-      
+      console.error('[Camera] Failed to start camera', error);
+
       // Hide loading overlay
       if (this.loadingOverlay) {
         this.loadingOverlay.classList.add('hidden');
       }
-      
+
       // Emit error event with user-friendly message
       const errorMessage = this.getErrorMessage(error);
       this.emit(EVENTS.CAMERA_ERROR, { error, message: errorMessage });
-      
+
       throw new Error(errorMessage);
     }
   }
@@ -202,38 +199,35 @@ class Camera {
   setupFrameCanvas() {
     this.frameCanvas.width = this.videoElement.videoWidth;
     this.frameCanvas.height = this.videoElement.videoHeight;
-    
-    logger.debug('Camera', 'Frame canvas setup', {
-      width: this.frameCanvas.width,
-      height: this.frameCanvas.height
-    });
+
+    console.log(`[Camera] Frame canvas setup - ${this.frameCanvas.width}x${this.frameCanvas.height}`);
   }
   
   /**
    * Stop camera stream
    */
   async stop() {
-    logger.info('Camera', 'Stopping camera stream...');
-    
+    console.log('[Camera] Stopping camera stream...');
+
     if (this.stream) {
       this.stream.getTracks().forEach(track => {
         track.stop();
-        logger.debug('Camera', 'Track stopped', { label: track.label });
+        console.log(`[Camera] Track stopped - ${track.label}`);
       });
-      
+
       this.stream = null;
     }
-    
+
     if (this.videoElement) {
       this.videoElement.srcObject = null;
     }
-    
+
     this.isActive = false;
     this.stopFPSCounter();
-    
+
     this.emit(EVENTS.CAMERA_STOPPED);
-    
-    logger.info('Camera', 'Camera stream stopped');
+
+    console.log('[Camera] Camera stream stopped');
   }
   
   /**
@@ -263,9 +257,9 @@ class Camera {
       this.frameCount++;
       
       return imageData;
-      
+
     } catch (error) {
-      logger.error('Camera', 'Failed to get frame', error);
+      console.error('[Camera] Failed to get frame', error);
       return null;
     }
   }
@@ -289,9 +283,9 @@ class Camera {
       this.frameCount++;
       
       return this.frameCanvas;
-      
+
     } catch (error) {
-      logger.error('Camera', 'Failed to get frame canvas', error);
+      console.error('[Camera] Failed to get frame canvas', error);
       return null;
     }
   }
@@ -322,9 +316,9 @@ class Camera {
       
       this.lastFrameTime = now;
       this.frameCount = 0;
-      
-      logger.debug('Camera', `FPS: ${this.fps}`);
-      
+
+      console.log(`[Camera] FPS: ${this.fps}`);
+
     }, CONFIG.PERFORMANCE.FPS_UPDATE_INTERVAL);
   }
   
@@ -375,13 +369,13 @@ class Camera {
    * Switch to different camera
    */
   async switchCamera(deviceId) {
-    logger.info('Camera', 'Switching camera', { deviceId });
-    
+    console.log('[Camera] Switching camera', { deviceId });
+
     if (this.currentDeviceId === deviceId) {
-      logger.warn('Camera', 'Already using this camera');
+      console.warn('[Camera] Already using this camera');
       return;
     }
-    
+
     await this.start(deviceId);
   }
   
@@ -422,12 +416,12 @@ class Camera {
   
   emit(event, data) {
     if (!this.eventListeners.has(event)) return;
-    
+
     this.eventListeners.get(event).forEach(callback => {
       try {
         callback(data);
       } catch (error) {
-        logger.error('Camera', 'Error in event listener', { event, error });
+        console.error('[Camera] Error in event listener', { event, error });
       }
     });
   }
@@ -436,12 +430,12 @@ class Camera {
    * Cleanup
    */
   destroy() {
-    logger.info('Camera', 'Destroying camera component');
-    
+    console.log('[Camera] Destroying camera component');
+
     this.stop();
     this.stopFPSCounter();
     this.eventListeners.clear();
-    
+
     if (this.frameCanvas) {
       this.frameCanvas.width = 0;
       this.frameCanvas.height = 0;

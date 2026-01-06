@@ -1,24 +1,19 @@
 // Main Application Orchestrator
 
 import Camera from './components/Camera.js';
-import { Logger } from './utils/logger.js';
 import { CONFIG } from './config/constants.js';
 
 class BBASApp {
     constructor() {
         this.camera = null;
-        this.logger = null;
         this.canvas = null;
         this.ctx = null;
-        
+
         this.init();
     }
-    
+
     init() {
-        // Initialize logger
-        const logElement = document.getElementById('debug-log');
-        this.logger = new Logger(logElement);
-        this.logger.info('BBAS Application initializing...');
+        console.log('[BBAS] Application initializing...');
 
         // Get DOM elements
         const videoElement = document.getElementById('video');
@@ -37,22 +32,19 @@ class BBASApp {
         this.updateStatus('model', 'Not Loaded', false);
         this.updateStatus('detection', 'Idle', false);
 
-        this.logger.success('Application ready');
+        console.log('[BBAS] Application ready');
     }
     
     setupEventListeners() {
         // Camera controls
         document.getElementById('start-camera-btn').addEventListener('click', () => this.startCamera());
         document.getElementById('stop-camera-btn').addEventListener('click', () => this.stopCamera());
-        
-        // Clear log
-        document.getElementById('clear-log-btn').addEventListener('click', () => this.logger.clear());
-        
+
         // Confidence slider
         document.getElementById('confidence-threshold').addEventListener('input', (e) => {
             document.getElementById('confidence-value').textContent = e.target.value;
         });
-        
+
         // Alert cooldown slider
         document.getElementById('alert-cooldown').addEventListener('input', (e) => {
             document.getElementById('cooldown-value').textContent = e.target.value;
@@ -85,12 +77,12 @@ class BBASApp {
             document.getElementById('load-model-btn').disabled = false;
 
             this.updateStatus('camera', 'Active', true);
-            this.logger.success('Camera started successfully');
+            console.log('[BBAS] Camera started successfully');
 
         } catch (error) {
             document.getElementById('start-camera-btn').disabled = false;
 
-            this.logger.error(`Failed to start camera: ${error.message}`);
+            console.error('[BBAS] Failed to start camera:', error.message);
             alert(`Camera error: ${error.message}`);
         }
     }
