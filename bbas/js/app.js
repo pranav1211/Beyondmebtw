@@ -19,23 +19,24 @@ class BBASApp {
         const logElement = document.getElementById('debug-log');
         this.logger = new Logger(logElement);
         this.logger.info('BBAS Application initializing...');
-        
+
         // Get DOM elements
         const videoElement = document.getElementById('video');
+        const loadingIndicator = document.getElementById('loading-indicator');
         this.canvas = document.getElementById('overlay-canvas');
         this.ctx = this.canvas.getContext('2d');
-        
+
         // Initialize camera component
-        this.camera = new Camera(videoElement, this.logger);
-        
+        this.camera = new Camera(videoElement, loadingIndicator);
+
         // Setup event listeners
         this.setupEventListeners();
-        
+
         // Update status
         this.updateStatus('camera', 'Off', false);
         this.updateStatus('model', 'Not Loaded', false);
         this.updateStatus('detection', 'Idle', false);
-        
+
         this.logger.success('Application ready');
     }
     
@@ -62,36 +63,35 @@ class BBASApp {
         try {
             const startBtn = document.getElementById('start-camera-btn');
             const stopBtn = document.getElementById('stop-camera-btn');
-            const loadingIndicator = document.getElementById('loading-indicator');
-            
+
             startBtn.disabled = true;
-            loadingIndicator.classList.remove('hidden');
-            
-            const dimensions = await this.camera.start();
-            
+
+            await this.camera.start();
+
+            // Get dimensions from camera
+            const dimensions = this.camera.getDimensions();
+
             // Resize canvas to match video
             this.canvas.width = dimensions.width;
             this.canvas.height = dimensions.height;
-            
-            loadingIndicator.classList.add('hidden');
+
             stopBtn.disabled = false;
-            
+
             // Enable boundary editor
             document.getElementById('draw-boundary-btn').disabled = false;
             document.getElementById('load-boundary-btn').disabled = false;
-            
+
             // Enable model loading
             document.getElementById('load-model-btn').disabled = false;
-            
+
             this.updateStatus('camera', 'Active', true);
-            
+            this.logger.success('Camera started successfully');
+
         } catch (error) {
-            const loadingIndicator = document.getElementById('loading-indicator');
-            loadingIndicator.classList.add('hidden');
             document.getElementById('start-camera-btn').disabled = false;
-            
-            this.logger.error('Failed to start camera');
-            alert('Camera access denied or unavailable. Please check permissions.');
+
+            this.logger.error(`Failed to start camera: ${error.message}`);
+            alert(`Camera error: ${error.message}`);
         }
     }
     
