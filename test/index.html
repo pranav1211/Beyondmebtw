@@ -278,7 +278,7 @@
                 currentModelIndex = modelIndex;
                 currentModelConfig = MODEL_CONFIGS[modelIndex];
 
-                const modelPath = `https://beyondmebtw.com/test/models/${currentModelConfig.name}`;
+                const modelPath = `models/${currentModelConfig.name}`;
                 currentModelEl.textContent = `${currentModelConfig.name} (${currentModelConfig.resolution.join('x')})`;
 
                 session = await ort.InferenceSession.create(modelPath, {
