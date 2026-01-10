@@ -162,10 +162,6 @@
             <select id="model-select">
                 <option value="0">YOLOv12n - 256x256</option>
                 <option value="1">YOLOv11n - 256x256</option>
-                <option value="2">YOLOv10n - 256x256</option>
-                <option value="3">YOLOv7-tiny - 256x256</option>
-                <option value="4">YOLOv7-tiny - 320x320</option>
-                <option value="5">YOLOv7-tiny - 640x640</option>
             </select>
             <button id="capture-btn">Capture Photo</button>
             <button id="live-btn">Live Detection</button>
@@ -216,11 +212,7 @@
         // Model configurations
         const MODEL_CONFIGS = [
             { resolution: [256, 256], name: 'yolo12n.onnx' },
-            { resolution: [256, 256], name: 'yolo11n.onnx' },
-            { resolution: [256, 256], name: 'yolov10n.onnx' },
-            { resolution: [256, 256], name: 'yolov7-tiny_256x256.onnx' },
-            { resolution: [320, 320], name: 'yolov7-tiny_320x320.onnx' },
-            { resolution: [640, 640], name: 'yolov7-tiny_640x640.onnx' }
+            { resolution: [256, 256], name: 'yolo11n.onnx' }
         ];
 
         // App state
