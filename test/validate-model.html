@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ONNX Model Validation Test</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1a1a1a;
+            color: #00ff88;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 { color: #00ff88; }
+        .test-result {
+            background: #2a2a2a;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #00ff88;
+        }
+        .error {
+            border-left-color: #ff4444;
+            color: #ff4444;
+        }
+        .success {
+            border-left-color: #00ff88;
+            color: #00ff88;
+        }
+        .info {
+            border-left-color: #ffaa00;
+            color: #ffaa00;
+        }
+        pre {
+            background: #000;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        button {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #00dd77;
+        }
+    </style>
+</head>
+<body>
+    <h1>ONNX Model Validation Test</h1>
+    <p>This script performs comprehensive validation of the YOLOv12n ONNX model.</p>
+
+    <button onclick="runFullValidation()">Run Full Validation</button>
+    <button onclick="clearResults()">Clear Results</button>
+
+    <div id="results"></div>
+
+    <!-- Load ONNX Runtime Web -->
+    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/ort.min.js"></script>
+
+    <script>
+        const resultsDiv = document.getElementById('results');
+
+        function log(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = message;
+            resultsDiv.appendChild(div);
+            console.log(message);
+        }
+
+        function clearResults() {
+            resultsDiv.innerHTML = '';
+        }
+
+        async function checkFileExists() {
+            log('🔍 <b>Step 1:</b> Checking if yolov12n.onnx exists...', 'info');
+
+            try {
+                const response = await fetch('yolov12n.onnx', { method: 'HEAD' });
+                if (response.ok) {
+                    const size = response.headers.get('content-length');
+                    log(`✅ File found! Size: ${(size / 1024 / 1024).toFixed(2)} MB`, 'success');
+                    return true;
+                } else {
+                    log(`❌ File not found! HTTP Status: ${response.status}`, 'error');
+                    return false;
+                }
+            } catch (error) {
+                log(`❌ Error checking file: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        async function checkFileHeader() {
+            log('🔍 <b>Step 2:</b> Validating ONNX file header...', 'info');
+
+            try {
+                const response = await fetch('yolov12n.onnx');
+                const arrayBuffer = await response.arrayBuffer();
+                const bytes = new Uint8Array(arrayBuffer.slice(0, 64));
+
+                // Check for valid protobuf header
+                const hex = Array.from(bytes.slice(0, 16))
+                    .map(b => b.toString(16).padStart(2, '0'))
+                    .join(' ');
+
+                log(`📄 First 16 bytes (hex):<pre>${hex}</pre>`, 'info');
+
+                // ONNX models should start with protobuf wire format
+                if (bytes[0] === 0x08) {
+                    log('✅ Valid protobuf header detected (wire type 0x08)', 'success');
+                    return true;
+                } else {
+                    log(`❌ Invalid header! First byte: 0x${bytes[0].toString(16)}`, 'error');
+                    return false;
+                }
+            } catch (error) {
+                log(`❌ Error reading file header: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        async function testONNXRuntimeVersion() {
+            log('🔍 <b>Step 3:</b> Checking ONNX Runtime version...', 'info');
+
+            try {
+                const version = ort.env.versions;
+                log(`✅ ONNX Runtime Web version: ${JSON.stringify(version, null, 2)}<pre>${JSON.stringify(version, null, 2)}</pre>`, 'success');
+                return true;
+            } catch (error) {
+                log(`❌ Error getting version: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        async function testModelLoading() {
+            log('🔍 <b>Step 4:</b> Attempting to load ONNX model...', 'info');
+
+            try {
+                // Configure ONNX Runtime
+                ort.env.wasm.numThreads = 4;
+                ort.env.wasm.simd = true;
+                ort.env.wasm.proxy = false;
+
+                log('⏳ Creating inference session (this may take 10-30 seconds)...', 'info');
+
+                const startTime = performance.now();
+                const session = await ort.InferenceSession.create('yolov12n.onnx', {
+                    executionProviders: ['wasm'],
+                    graphOptimizationLevel: 'all',
+                    enableCpuMemArena: true,
+                    enableMemPattern: true,
+                    executionMode: 'sequential'
+                });
+                const loadTime = (performance.now() - startTime).toFixed(2);
+
+                log(`✅ Model loaded successfully in ${loadTime}ms!`, 'success');
+
+                // Get input/output info
+                const inputs = session.inputNames;
+                const outputs = session.outputNames;
+
+                log(`📥 Model Inputs: <pre>${JSON.stringify(inputs, null, 2)}</pre>`, 'info');
+                log(`📤 Model Outputs: <pre>${JSON.stringify(outputs, null, 2)}</pre>`, 'info');
+
+                return session;
+            } catch (error) {
+                log(`❌ Model loading failed!<pre>Error: ${error.message}\n\nStack: ${error.stack}</pre>`, 'error');
+                return null;
+            }
+        }
+
+        async function testInference(session) {
+            log('🔍 <b>Step 5:</b> Running test inference with dummy data...', 'info');
+
+            try {
+                // Create dummy input (1, 3, 640, 640) - standard YOLO input
+                const inputSize = 640;
+                const dummyData = new Float32Array(3 * inputSize * inputSize);
+
+                // Fill with random values between 0 and 1
+                for (let i = 0; i < dummyData.length; i++) {
+                    dummyData[i] = Math.random();
+                }
+
+                const tensor = new ort.Tensor('float32', dummyData, [1, 3, inputSize, inputSize]);
+
+                log('⏳ Running inference...', 'info');
+                const startTime = performance.now();
+
+                const results = await session.run({ images: tensor });
+
+                const inferenceTime = (performance.now() - startTime).toFixed(2);
+
+                log(`✅ Inference completed successfully in ${inferenceTime}ms!`, 'success');
+
+                // Display output info
+                for (const [key, value] of Object.entries(results)) {
+                    log(`📊 Output "${key}":<pre>Shape: ${value.dims}\nType: ${value.type}\nData size: ${value.data.length}</pre>`, 'info');
+                }
+
+                return true;
+            } catch (error) {
+                log(`❌ Inference failed!<pre>Error: ${error.message}\n\nStack: ${error.stack}</pre>`, 'error');
+                return false;
+            }
+        }
+
+        async function runFullValidation() {
+            clearResults();
+            log('<h2>🚀 Starting Full Validation...</h2>', 'info');
+
+            // Step 1: Check file exists
+            const fileExists = await checkFileExists();
+            if (!fileExists) {
+                log('❌ Validation failed: Model file not found!', 'error');
+                return;
+            }
+
+            // Step 2: Check file header
+            const validHeader = await checkFileHeader();
+            if (!validHeader) {
+                log('⚠️ Warning: File header appears invalid, but continuing...', 'error');
+            }
+
+            // Step 3: Check ONNX Runtime version
+            await testONNXRuntimeVersion();
+
+            // Step 4: Load model
+            const session = await testModelLoading();
+            if (!session) {
+                log('❌ Validation failed: Could not load model!', 'error');
+                log('<h3>💡 Troubleshooting Tips:</h3><ul><li>Ensure the ONNX file is not corrupted</li><li>Try re-downloading the model</li><li>Check browser console for detailed errors</li><li>Ensure file path is correct</li><li>Try a different browser (Chrome/Edge recommended)</li></ul>', 'info');
+                return;
+            }
+
+            // Step 5: Test inference
+            const inferenceSuccess = await testInference(session);
+
+            if (inferenceSuccess) {
+                log('<h2>✅ ALL TESTS PASSED! Model is working correctly.</h2>', 'success');
+            } else {
+                log('<h2>⚠️ Model loaded but inference failed. Check the error details above.</h2>', 'error');
+            }
+        }
+
+        // Auto-run on page load
+        window.addEventListener('load', () => {
+            log('📋 Ready to test. Click "Run Full Validation" to begin.', 'info');
+        });
+    </script>
+</body>
+</html>
