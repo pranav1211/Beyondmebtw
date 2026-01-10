@@ -2,15 +2,22 @@
 
 import Camera from './components/Camera.js';
 import BoundaryEditor from './components/BoundaryEditor.js';
+import Detector from './components/Detector.js';
 import storage from './utils/storage.js';
 import { CONFIG } from './config/constants.js';
+import { isPointInPolygon } from './utils/geometry.js';
 
 class BBASApp {
     constructor() {
         this.camera = null;
         this.boundaryEditor = null;
+        this.detector = null;
         this.canvas = null;
         this.ctx = null;
+
+        // Detection state
+        this.detectionLoop = null;
+        this.lastDetections = [];
 
         this.init();
     }
@@ -38,6 +45,9 @@ class BBASApp {
         // Initialize boundary editor
         this.boundaryEditor = new BoundaryEditor(this.canvas);
 
+        // Initialize detector
+        this.detector = new Detector();
+
         // Setup event listeners
         this.setupEventListeners();
 
@@ -63,9 +73,18 @@ class BBASApp {
         document.getElementById('save-boundary-btn').addEventListener('click', () => this.saveBoundary());
         document.getElementById('load-boundary-btn').addEventListener('click', () => this.loadBoundary());
 
+        // Detection controls
+        document.getElementById('load-model-btn').addEventListener('click', () => this.loadModel());
+        document.getElementById('start-detection-btn').addEventListener('click', () => this.startDetection());
+        document.getElementById('stop-detection-btn').addEventListener('click', () => this.stopDetection());
+
         // Confidence slider
         document.getElementById('confidence-threshold').addEventListener('input', (e) => {
-            document.getElementById('confidence-value').textContent = e.target.value;
+            const value = parseFloat(e.target.value);
+            document.getElementById('confidence-value').textContent = value;
+            if (this.detector) {
+                this.detector.setConfidenceThreshold(value);
+            }
         });
 
         // Alert cooldown slider
@@ -231,6 +250,195 @@ class BBASApp {
 
         document.getElementById('save-boundary-btn').disabled = !hasBoundaries;
         document.getElementById('clear-boundary-btn').disabled = !hasBoundaries && !this.boundaryEditor.isDrawing;
+    }
+
+    // Detection Methods
+
+    async loadModel() {
+        try {
+            const modelSelect = document.getElementById('model-select');
+            const modelName = modelSelect.value;
+            const loadBtn = document.getElementById('load-model-btn');
+            const startBtn = document.getElementById('start-detection-btn');
+
+            loadBtn.disabled = true;
+            loadBtn.textContent = 'Loading...';
+
+            this.updateStatus('model', 'Loading...', false);
+
+            // Load model with progress callback
+            await this.detector.loadModel(modelName, (progress) => {
+                console.log('[BBAS] Model loading progress:', progress);
+                if (progress.status === 'loading') {
+                    this.updateStatus('model', progress.message, false);
+                }
+            });
+
+            this.updateStatus('model', 'Loaded', true);
+            loadBtn.textContent = 'Model Loaded';
+            startBtn.disabled = false;
+
+            console.log('[BBAS] Model loaded successfully');
+
+        } catch (error) {
+            console.error('[BBAS] Failed to load model:', error);
+            this.updateStatus('model', 'Load Failed', false);
+            document.getElementById('load-model-btn').disabled = false;
+            document.getElementById('load-model-btn').textContent = 'Load Model';
+            alert(`Failed to load model: ${error.message}\n\nMake sure the model file exists at: /bbas/models/yolov8n.onnx`);
+        }
+    }
+
+    async startDetection() {
+        if (!this.detector.isLoaded) {
+            alert('Please load the model first!');
+            return;
+        }
+
+        if (!this.camera.isActive) {
+            alert('Please start the camera first!');
+            return;
+        }
+
+        if (this.detectionLoop) {
+            console.warn('[BBAS] Detection already running');
+            return;
+        }
+
+        console.log('[BBAS] Starting detection...');
+
+        const startBtn = document.getElementById('start-detection-btn');
+        const stopBtn = document.getElementById('stop-detection-btn');
+
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+
+        this.updateStatus('detection', 'Running', true);
+
+        // Start detection loop
+        this.runDetectionLoop();
+    }
+
+    stopDetection() {
+        if (this.detectionLoop) {
+            clearTimeout(this.detectionLoop);
+            this.detectionLoop = null;
+        }
+
+        const startBtn = document.getElementById('start-detection-btn');
+        const stopBtn = document.getElementById('stop-detection-btn');
+
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+
+        this.updateStatus('detection', 'Stopped', false);
+
+        // Clear detections from canvas
+        this.lastDetections = [];
+        this.redrawCanvas();
+
+        console.log('[BBAS] Detection stopped');
+    }
+
+    async runDetectionLoop() {
+        try {
+            // Get video element
+            const videoElement = document.getElementById('video');
+
+            // Run detection
+            const detections = await this.detector.detect(videoElement);
+            this.lastDetections = detections;
+
+            // Check boundary violations
+            this.checkBoundaryViolations(detections);
+
+            // Redraw canvas with boundaries and detections
+            this.redrawCanvas();
+
+        } catch (error) {
+            console.error('[BBAS] Detection error:', error);
+        }
+
+        // Schedule next detection
+        if (this.detectionLoop !== null) {
+            this.detectionLoop = setTimeout(() => this.runDetectionLoop(), CONFIG.DETECTION.INFERENCE_INTERVAL);
+        }
+    }
+
+    checkBoundaryViolations(detections) {
+        const boundaries = this.boundaryEditor.getBoundaries();
+        if (boundaries.length === 0) return;
+
+        for (const detection of detections) {
+            // Check center point of bounding box
+            const centerX = detection.x + detection.width / 2;
+            const centerY = detection.y + detection.height / 2;
+            const centerPoint = { x: centerX, y: centerY };
+
+            // Check if center is in any boundary
+            for (const boundary of boundaries) {
+                if (isPointInPolygon(centerPoint, boundary)) {
+                    console.warn('[BBAS] ⚠️ BOUNDARY VIOLATION DETECTED!');
+                    this.triggerAlert(detection);
+                    break;
+                }
+            }
+        }
+    }
+
+    triggerAlert(detection) {
+        // Visual alert
+        if (document.getElementById('visual-alerts').checked) {
+            const alertOverlay = document.getElementById('alert-overlay');
+            const alertText = document.getElementById('alert-text');
+            const message = document.getElementById('alert-message').value;
+
+            alertText.textContent = message;
+            alertOverlay.classList.remove('hidden');
+
+            setTimeout(() => {
+                alertOverlay.classList.add('hidden');
+            }, 2000);
+        }
+
+        // Voice alert
+        if (document.getElementById('voice-alerts').checked && 'speechSynthesis' in window) {
+            const message = document.getElementById('alert-message').value;
+            const utterance = new SpeechSynthesisUtterance(message);
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+            speechSynthesis.speak(utterance);
+        }
+    }
+
+    redrawCanvas() {
+        // Clear canvas
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Redraw boundaries
+        if (this.boundaryEditor) {
+            this.boundaryEditor.draw();
+        }
+
+        // Draw detections
+        this.drawDetections(this.lastDetections);
+    }
+
+    drawDetections(detections) {
+        for (const detection of detections) {
+            // Draw bounding box
+            this.ctx.strokeStyle = '#00ff00';
+            this.ctx.lineWidth = 3;
+            this.ctx.strokeRect(detection.x, detection.y, detection.width, detection.height);
+
+            // Draw confidence label
+            const label = `Person ${(detection.confidence * 100).toFixed(0)}%`;
+            const labelY = detection.y > 30 ? detection.y - 10 : detection.y + 20;
+
+            this.ctx.fillStyle = '#00ff00';
+            this.ctx.font = 'bold 16px Arial';
+            this.ctx.fillText(label, detection.x, labelY);
+        }
     }
 }
 
