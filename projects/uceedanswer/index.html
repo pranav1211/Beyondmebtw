@@ -7,6 +7,21 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+    
+    <div class="sidebar" id="sidebar">
+        <h3>Navigation</h3>
+        <ul class="sidebar-nav">
+            <li><a href="#upload-section">Upload PDF</a></li>
+            <li><a href="#score-summary">Score Summary</a></li>
+            <li><a href="#section-breakdown">Section Breakdown</a></li>
+            <li><a href="#section-1">Section 1 - NAT</a></li>
+            <li><a href="#section-2">Section 2 - MSQ</a></li>
+            <li><a href="#section-3">Section 3 - MCQ</a></li>
+        </ul>
+    </div>
+
+    <div class="content-wrapper" id="contentWrapper">
     <div class="container">
         <div class="header">
             <h1>🎓 UCEED 2026 Score Calculator</h1>
@@ -17,7 +32,7 @@
         </div>
 
         <div class="main-content">
-            <div class="upload-section" id="uploadSection">
+            <div class="upload-section" id="upload-section">
                 <h3>📄 Upload Your Response PDF</h3>
                 <p class="upload-hint">Upload your UCEED 2026 response sheet PDF to calculate your score</p>
                 <div class="upload-area" id="uploadArea">
@@ -44,13 +59,11 @@
             </div>
 
             <div class="output-section" id="outputSection">
-                <div class="score-summary">
+                <div class="score-summary" id="score-summary">
                     <h2>Your UCEED 2026 Score</h2>
+                    <div class="total-score-display" id="totalScore">0</div>
+                    <div class="total-score-label">out of 200 marks</div>
                     <div class="score-grid">
-                        <div class="score-card">
-                            <div class="score-value" id="totalScore">0</div>
-                            <div class="score-label">Total Score</div>
-                        </div>
                         <div class="score-card">
                             <div class="score-value" id="totalCorrect">0</div>
                             <div class="score-label">Correct</div>
@@ -60,10 +73,19 @@
                             <div class="score-label">Incorrect</div>
                         </div>
                         <div class="score-card">
+                            <div class="score-value" id="totalPartial">0</div>
+                            <div class="score-label">Partial</div>
+                        </div>
+                        <div class="score-card">
                             <div class="score-value" id="totalUnattempted">0</div>
                             <div class="score-label">Unattempted</div>
                         </div>
                     </div>
+                </div>
+
+                <div class="section-breakdown" id="section-breakdown">
+                    <h3>Section-wise Breakdown</h3>
+                    <div class="breakdown-grid" id="breakdownGrid"></div>
                 </div>
 
                 <div id="detailedResults"></div>
@@ -73,10 +95,11 @@
         <div class="footer">
             <p><strong>Thanks to <a href="https://aaruxhhh.github.io/UCEED-2026-Score-Calculator/" target="_blank">aaruxhhh</a> for the inspiration!</strong></p>
             <div class="credits">
-                <p>&copy; Beyondmebtw 2022-present</p>
-                <p>Beyondmebtw created by <a href="https://beyondmebtw.com" target="_blank">Pranav Veeraghanta</a></p>
+                <p>&copy; beyondmebtw 2022-present</p>
+                <p>beyondmebtw created by <a href="https://beyondmebtw.com" target="_blank">Pranav Veeraghanta</a></p>
             </div>
         </div>
+    </div>
     </div>
 
     <!-- PDF.js library -->
