@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Text Extractor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.95em;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .upload-section {
+            background: #f8f9fa;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .upload-section:hover {
+            border-color: #764ba2;
+            background: #f0f1ff;
+        }
+
+        .upload-section.drag-over {
+            background: #e8eaff;
+            border-color: #764ba2;
+            transform: scale(1.02);
+        }
+
+        .file-input-label {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+
+        .file-input-label:hover {
+            transform: translateY(-2px);
+        }
+
+        #pdfInput {
+            display: none;
+        }
+
+        .file-name {
+            margin-top: 15px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #5a6268;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .format-selector {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .format-selector label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .format-selector select {
+            padding: 8px 15px;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .output-section {
+            display: none;
+        }
+
+        .output-section.active {
+            display: block;
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .output-header h2 {
+            color: #333;
+            font-size: 1.5em;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .output-content {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .output-content pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .page-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+
+        .page-header {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #f5c6cb;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📄 PDF Text Extractor</h1>
+            <p>Extract and structure text content from PDF documents using PDF.js</p>
+        </div>
+
+        <div class="main-content">
+            <div class="upload-section" id="uploadSection">
+                <label for="pdfInput" class="file-input-label">
+                    📁 Choose PDF File
+                </label>
+                <input type="file" id="pdfInput" accept=".pdf">
+                <div class="file-name" id="fileName">or drag and drop a PDF file here</div>
+            </div>
+
+            <div class="error" id="errorMsg"></div>
+
+            <div class="controls">
+                <div class="format-selector">
+                    <label for="formatSelect">Output Format:</label>
+                    <select id="formatSelect">
+                        <option value="structured">Structured (By Page)</option>
+                        <option value="json">JSON</option>
+                        <option value="plain">Plain Text</option>
+                        <option value="markdown">Markdown</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" id="extractBtn" disabled>Extract Text</button>
+                <button class="btn btn-secondary" id="downloadBtn" disabled>Download Output</button>
+                <button class="btn btn-secondary" id="copyBtn" disabled>Copy to Clipboard</button>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Processing PDF...</p>
+            </div>
+
+            <div class="output-section" id="outputSection">
+                <div class="output-header">
+                    <h2>Extracted Content</h2>
+                </div>
+                
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="pageCount">0</div>
+                        <div class="stat-label">Pages</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="wordCount">0</div>
+                        <div class="stat-label">Words</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="charCount">0</div>
+                        <div class="stat-label">Characters</div>
+                    </div>
+                </div>
+
+                <div class="output-content" id="outputContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PDF.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        // Initialize PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        // DOM elements
+        const pdfInput = document.getElementById('pdfInput');
+        const uploadSection = document.getElementById('uploadSection');
+        const fileName = document.getElementById('fileName');
+        const extractBtn = document.getElementById('extractBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const formatSelect = document.getElementById('formatSelect');
+        const loading = document.getElementById('loading');
+        const outputSection = document.getElementById('outputSection');
+        const outputContent = document.getElementById('outputContent');
+        const errorMsg = document.getElementById('errorMsg');
+        const pageCount = document.getElementById('pageCount');
+        const wordCount = document.getElementById('wordCount');
+        const charCount = document.getElementById('charCount');
+
+        let selectedFile = null;
+        let extractedData = null;
+
+        // File input handler
+        pdfInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file && file.type === 'application/pdf') {
+                selectedFile = file;
+                fileName.textContent = `Selected: ${file.name}`;
+                extractBtn.disabled = false;
+                hideError();
+            } else {
+                showError('Please select a valid PDF file');
+                extractBtn.disabled = true;
+            }
+        });
+
+        // Drag and drop handlers
+        uploadSection.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadSection.classList.add('drag-over');
+        });
+
+        uploadSection.addEventListener('dragleave', () => {
+            uploadSection.classList.remove('drag-over');
+        });
+
+        uploadSection.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadSection.classList.remove('drag-over');
+            
+            const file = e.dataTransfer.files[0];
+            if (file && file.type === 'application/pdf') {
+                selectedFile = file;
+                fileName.textContent = `Selected: ${file.name}`;
+                extractBtn.disabled = false;
+                hideError();
+            } else {
+                showError('Please drop a valid PDF file');
+            }
+        });
+
+        // Extract button handler
+        extractBtn.addEventListener('click', async () => {
+            if (!selectedFile) return;
+            
+            loading.classList.add('active');
+            outputSection.classList.remove('active');
+            hideError();
+            
+            try {
+                const arrayBuffer = await selectedFile.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                
+                const pagesData = [];
+                let allText = '';
+                
+                // Extract text from each page
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    
+                    const pageText = textContent.items
+                        .map(item => item.str)
+                        .join(' ')
+                        .replace(/\s+/g, ' ')
+                        .trim();
+                    
+                    pagesData.push({
+                        pageNumber: i,
+                        text: pageText,
+                        itemCount: textContent.items.length
+                    });
+                    
+                    allText += pageText + ' ';
+                }
+                
+                extractedData = {
+                    fileName: selectedFile.name,
+                    totalPages: pdf.numPages,
+                    pages: pagesData,
+                    fullText: allText.trim()
+                };
+                
+                displayOutput();
+                updateStats();
+                
+                downloadBtn.disabled = false;
+                copyBtn.disabled = false;
+                
+            } catch (error) {
+                showError(`Error extracting PDF: ${error.message}`);
+            } finally {
+                loading.classList.remove('active');
+            }
+        });
+
+        // Display output based on selected format
+        function displayOutput() {
+            const format = formatSelect.value;
+            let output = '';
+            
+            switch (format) {
+                case 'structured':
+                    output = generateStructuredOutput();
+                    break;
+                case 'json':
+                    output = `<pre>${JSON.stringify(extractedData, null, 2)}</pre>`;
+                    break;
+                case 'plain':
+                    output = `<pre>${extractedData.fullText}</pre>`;
+                    break;
+                case 'markdown':
+                    output = generateMarkdownOutput();
+                    break;
+            }
+            
+            outputContent.innerHTML = output;
+            outputSection.classList.add('active');
+        }
+
+        // Generate structured HTML output
+        function generateStructuredOutput() {
+            let html = '';
+            extractedData.pages.forEach(page => {
+                html += `
+                    <div class="page-section">
+                        <div class="page-header">Page ${page.pageNumber} (${page.itemCount} text items)</div>
+                        <div>${page.text || '<em>No text content</em>'}</div>
+                    </div>
+                `;
+            });
+            return html;
+        }
+
+        // Generate markdown output
+        function generateMarkdownOutput() {
+            let md = `# ${extractedData.fileName}\n\n`;
+            md += `**Total Pages:** ${extractedData.totalPages}\n\n`;
+            md += `---\n\n`;
+            
+            extractedData.pages.forEach(page => {
+                md += `## Page ${page.pageNumber}\n\n`;
+                md += `${page.text}\n\n`;
+            });
+            
+            return `<pre>${md}</pre>`;
+        }
+
+        // Update statistics
+        function updateStats() {
+            const words = extractedData.fullText.split(/\s+/).filter(w => w.length > 0).length;
+            const chars = extractedData.fullText.length;
+            
+            pageCount.textContent = extractedData.totalPages;
+            wordCount.textContent = words.toLocaleString();
+            charCount.textContent = chars.toLocaleString();
+        }
+
+        // Format change handler
+        formatSelect.addEventListener('change', () => {
+            if (extractedData) {
+                displayOutput();
+            }
+        });
+
+        // Download button handler
+        downloadBtn.addEventListener('click', () => {
+            const format = formatSelect.value;
+            let content = '';
+            let fileExtension = 'txt';
+            
+            switch (format) {
+                case 'json':
+                    content = JSON.stringify(extractedData, null, 2);
+                    fileExtension = 'json';
+                    break;
+                case 'markdown':
+                    content = generateMarkdownText();
+                    fileExtension = 'md';
+                    break;
+                default:
+                    content = extractedData.fullText;
+                    fileExtension = 'txt';
+            }
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${extractedData.fileName.replace('.pdf', '')}_extracted.${fileExtension}`;
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        // Generate markdown text for download
+        function generateMarkdownText() {
+            let md = `# ${extractedData.fileName}\n\n`;
+            md += `**Total Pages:** ${extractedData.totalPages}\n\n`;
+            md += `---\n\n`;
+            
+            extractedData.pages.forEach(page => {
+                md += `## Page ${page.pageNumber}\n\n`;
+                md += `${page.text}\n\n`;
+            });
+            
+            return md;
+        }
+
+        // Copy to clipboard handler
+        copyBtn.addEventListener('click', async () => {
+            const format = formatSelect.value;
+            let content = '';
+            
+            switch (format) {
+                case 'json':
+                    content = JSON.stringify(extractedData, null, 2);
+                    break;
+                case 'markdown':
+                    content = generateMarkdownText();
+                    break;
+                default:
+                    content = extractedData.fullText;
+            }
+            
+            try {
+                await navigator.clipboard.writeText(content);
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '✓ Copied!';
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                }, 2000);
+            } catch (error) {
+                showError('Failed to copy to clipboard');
+            }
+        });
+
+        // Error handling
+        function showError(message) {
+            errorMsg.textContent = message;
+            errorMsg.classList.add('active');
+        }
+
+        function hideError() {
+            errorMsg.classList.remove('active');
+        }
+    </script>
+</body>
+</html>
