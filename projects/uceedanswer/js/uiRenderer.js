@@ -8,15 +8,21 @@ function displayResults(results) {
     document.getElementById('totalScore').textContent = results.total_score.toFixed(2);
     document.getElementById('totalCorrect').textContent = results.total_correct;
     document.getElementById('totalIncorrect').textContent = results.total_incorrect;
+    document.getElementById('totalPartial').textContent = results.total_partial;
     document.getElementById('totalUnattempted').textContent = results.total_unattempted;
+    
+    // Render section breakdown
+    renderSectionBreakdown(results);
     
     // Render detailed results
     const detailedResults = document.getElementById('detailedResults');
     detailedResults.innerHTML = '';
     
+    let sectionIndex = 1;
     Object.values(results.sections).forEach(section => {
-        const sectionHtml = generateSectionHTML(section);
+        const sectionHtml = generateSectionHTML(section, sectionIndex);
         detailedResults.innerHTML += sectionHtml;
+        sectionIndex++;
     });
     
     // Show output section
@@ -24,11 +30,71 @@ function displayResults(results) {
 }
 
 /**
+ * Render section-wise breakdown
+ */
+function renderSectionBreakdown(results) {
+    const breakdownGrid = document.getElementById('breakdownGrid');
+    breakdownGrid.innerHTML = '';
+    
+    const sections = [
+        { 
+            key: 'section_1_nat', 
+            name: 'Section 1 - NAT', 
+            maxMarks: 56,
+            color: '#28a745'
+        },
+        { 
+            key: 'section_2_msq', 
+            name: 'Section 2 - MSQ', 
+            maxMarks: 60,
+            color: '#ffc107'
+        },
+        { 
+            key: 'section_3_mcq', 
+            name: 'Section 3 - MCQ', 
+            maxMarks: 84,
+            color: '#dc3545'
+        }
+    ];
+    
+    sections.forEach(section => {
+        const sectionData = results.sections[section.key];
+        const card = document.createElement('div');
+        card.className = 'breakdown-card';
+        card.innerHTML = `
+            <h4>${section.name}</h4>
+            <div class="breakdown-item">
+                <span class="breakdown-label">Correct:</span>
+                <span class="breakdown-value">${sectionData.correct_count}</span>
+            </div>
+            <div class="breakdown-item">
+                <span class="breakdown-label">Incorrect:</span>
+                <span class="breakdown-value">${sectionData.incorrect_count}</span>
+            </div>
+            ${sectionData.partial_count !== undefined ? `
+            <div class="breakdown-item">
+                <span class="breakdown-label">Partial:</span>
+                <span class="breakdown-value">${sectionData.partial_count}</span>
+            </div>` : ''}
+            <div class="breakdown-item">
+                <span class="breakdown-label">Unattempted:</span>
+                <span class="breakdown-value">${sectionData.unattempted_count}</span>
+            </div>
+            <div class="breakdown-item">
+                <span class="breakdown-label">Score:</span>
+                <span class="breakdown-value" style="color: #8B4513;">${sectionData.score} / ${section.maxMarks}</span>
+            </div>
+        `;
+        breakdownGrid.appendChild(card);
+    });
+}
+
+/**
  * Generate HTML for a section
  */
-function generateSectionHTML(section) {
+function generateSectionHTML(section, sectionIndex) {
     let html = `
-        <div class="section-results">
+        <div class="section-results" id="section-${sectionIndex}">
             <div class="section-header">
                 <span>${section.name}</span>
                 <span class="section-score">${section.score} marks</span>

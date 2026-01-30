@@ -46,6 +46,67 @@ function setupEventListeners() {
     
     // Download button
     downloadBtn.addEventListener('click', handleDownload);
+    
+    // Sidebar toggle
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    const contentWrapper = document.getElementById('contentWrapper');
+    
+    sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('show');
+    });
+    
+    // Sidebar navigation - smooth scroll
+    const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // Update active state
+                sidebarLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                
+                // Close sidebar on mobile
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('show');
+                }
+            }
+        });
+    });
+    
+    // Update active nav on scroll
+    window.addEventListener('scroll', updateActiveNav);
+}
+
+/**
+ * Update active navigation based on scroll position
+ */
+function updateActiveNav() {
+    const sections = document.querySelectorAll('[id^="section-"], #upload-section, #score-summary, #section-breakdown');
+    const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+    
+    let currentSection = '';
+    
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        
+        if (window.pageYOffset >= (sectionTop - 200)) {
+            currentSection = section.getAttribute('id');
+        }
+    });
+    
+    sidebarLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${currentSection}`) {
+            link.classList.add('active');
+        }
+    });
 }
 
 /**
