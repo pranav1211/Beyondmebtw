@@ -132,10 +132,23 @@ function processMSQSection(userQuestions, answerKeySection) {
             let status = 'unattempted';
 
             if (isAnswered) {
-                const userAnswerSet = new Set(userQ.answer.map(a =>
-                    typeof a === 'number' ? String.fromCharCode(64 + a) : a
-                ));
-                const correctAnswerSet = new Set(matchedQ.correct_answers);
+                const userAnswerSet = new Set(userQ.answer.map(a => {
+                    if (typeof a === 'number') {
+                        return String.fromCharCode(64 + a).toUpperCase();
+                    } else if (typeof a === 'string') {
+                        // If it's already a letter, use it; if it's a number string, convert
+                        const parsed = parseInt(a);
+                        if (!isNaN(parsed)) {
+                            return String.fromCharCode(64 + parsed).toUpperCase();
+                        }
+                        return a.trim().toUpperCase();
+                    }
+                    return '';
+                }).filter(a => a)); // Remove empty strings
+                const correctAnswerSet = new Set(
+                    matchedQ.correct_answers.map(a => a.trim().toUpperCase())
+                );
+
 
                 const correctCount = [...userAnswerSet].filter(a => correctAnswerSet.has(a)).length;
                 const incorrectCount = userAnswerSet.size - correctCount;
@@ -199,9 +212,21 @@ function processMCQSection(userQuestions, answerKeySection) {
             let marks = 0;
 
             if (isAnswered) {
-                const userAnswer = typeof userQ.answer === 'number' ?
-                    String.fromCharCode(64 + userQ.answer) : userQ.answer;
-                isCorrect = userAnswer === matchedQ.correct_answer;
+                let userAnswer;
+
+                if (typeof userQ.answer === 'number') {
+                    userAnswer = String.fromCharCode(64 + userQ.answer).toUpperCase();
+                } else if (typeof userQ.answer === 'string') {
+                    const parsed = parseInt(userQ.answer);
+                    if (!isNaN(parsed)) {
+                        userAnswer = String.fromCharCode(64 + parsed).toUpperCase();
+                    } else {
+                        userAnswer = userQ.answer.trim().toUpperCase();
+                    }
+                }
+
+                const correctAnswer = matchedQ.correct_answer.trim().toUpperCase();
+                isCorrect = userAnswer === correctAnswer;
 
                 marks = isCorrect ?
                     answerKeySection.marks_per_question :
