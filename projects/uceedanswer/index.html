@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF Text Extractor</title>
+    <title>UCEED Question Paper Parser</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -28,7 +28,7 @@
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
             color: white;
             padding: 30px;
             text-align: center;
@@ -50,7 +50,7 @@
 
         .upload-section {
             background: #f8f9fa;
-            border: 2px dashed #667eea;
+            border: 2px dashed #8B4513;
             border-radius: 8px;
             padding: 40px;
             text-align: center;
@@ -59,20 +59,20 @@
         }
 
         .upload-section:hover {
-            border-color: #764ba2;
-            background: #f0f1ff;
+            border-color: #D2691E;
+            background: #FFF8DC;
         }
 
         .upload-section.drag-over {
-            background: #e8eaff;
-            border-color: #764ba2;
+            background: #FAEBD7;
+            border-color: #D2691E;
             transform: scale(1.02);
         }
 
         .file-input-label {
             display: inline-block;
             padding: 12px 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
             color: white;
             border-radius: 6px;
             cursor: pointer;
@@ -113,22 +113,22 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
             color: white;
         }
 
         .btn-primary:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.4);
         }
 
         .btn-secondary {
-            background: #6c757d;
+            background: #A0522D;
             color: white;
         }
 
         .btn-secondary:hover:not(:disabled) {
-            background: #5a6268;
+            background: #8B4513;
         }
 
         .btn:disabled {
@@ -149,7 +149,7 @@
 
         .format-selector select {
             padding: 8px 15px;
-            border: 2px solid #667eea;
+            border: 2px solid #8B4513;
             border-radius: 6px;
             font-size: 14px;
             cursor: pointer;
@@ -159,7 +159,7 @@
             display: none;
             text-align: center;
             padding: 20px;
-            color: #667eea;
+            color: #8B4513;
             font-weight: 600;
         }
 
@@ -169,7 +169,7 @@
 
         .spinner {
             border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
+            border-top: 3px solid #8B4513;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -210,7 +210,7 @@
         }
 
         .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
             color: white;
             padding: 15px;
             border-radius: 8px;
@@ -246,17 +246,67 @@
             color: #333;
         }
 
+        .question-card {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            border-left: 4px solid #8B4513;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .question-header {
+            font-weight: bold;
+            color: #8B4513;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .question-text {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .options {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .option {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .answer {
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: #FFF8DC;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #8B4513;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+            color: white;
+            padding: 15px 20px;
+            margin: 20px 0 15px 0;
+            border-radius: 6px;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
         .page-section {
             margin-bottom: 30px;
             padding: 15px;
             background: white;
             border-radius: 6px;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #8B4513;
         }
 
         .page-header {
             font-weight: bold;
-            color: #667eea;
+            color: #8B4513;
             margin-bottom: 10px;
             font-size: 1.1em;
         }
@@ -293,8 +343,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>📄 PDF Text Extractor</h1>
-            <p>Extract and structure text content from PDF documents using PDF.js</p>
+            <h1>📄 UCEED Question Paper Parser</h1>
+            <p>Extract and structure answered question papers from UCEED PDFs</p>
         </div>
 
         <div class="main-content">
@@ -309,17 +359,8 @@
             <div class="error" id="errorMsg"></div>
 
             <div class="controls">
-                <div class="format-selector">
-                    <label for="formatSelect">Output Format:</label>
-                    <select id="formatSelect">
-                        <option value="structured">Structured (By Page)</option>
-                        <option value="json">JSON</option>
-                        <option value="plain">Plain Text</option>
-                        <option value="markdown">Markdown</option>
-                    </select>
-                </div>
-                <button class="btn btn-primary" id="extractBtn" disabled>Extract Text</button>
-                <button class="btn btn-secondary" id="downloadBtn" disabled>Download Output</button>
+                <button class="btn btn-primary" id="extractBtn" disabled>Parse Question Paper</button>
+                <button class="btn btn-secondary" id="downloadBtn" disabled>Download JSON</button>
                 <button class="btn btn-secondary" id="copyBtn" disabled>Copy to Clipboard</button>
             </div>
 
@@ -335,16 +376,20 @@
                 
                 <div class="stats">
                     <div class="stat-card">
-                        <div class="stat-value" id="pageCount">0</div>
-                        <div class="stat-label">Pages</div>
+                        <div class="stat-value" id="section1Count">0</div>
+                        <div class="stat-label">NAT Questions</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value" id="wordCount">0</div>
-                        <div class="stat-label">Words</div>
+                        <div class="stat-value" id="section2Count">0</div>
+                        <div class="stat-label">MSQ Questions</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value" id="charCount">0</div>
-                        <div class="stat-label">Characters</div>
+                        <div class="stat-value" id="section3Count">0</div>
+                        <div class="stat-label">MCQ Questions</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="answeredCount">0</div>
+                        <div class="stat-label">Answered</div>
                     </div>
                 </div>
 
@@ -366,17 +411,17 @@
         const extractBtn = document.getElementById('extractBtn');
         const downloadBtn = document.getElementById('downloadBtn');
         const copyBtn = document.getElementById('copyBtn');
-        const formatSelect = document.getElementById('formatSelect');
         const loading = document.getElementById('loading');
         const outputSection = document.getElementById('outputSection');
         const outputContent = document.getElementById('outputContent');
         const errorMsg = document.getElementById('errorMsg');
-        const pageCount = document.getElementById('pageCount');
-        const wordCount = document.getElementById('wordCount');
-        const charCount = document.getElementById('charCount');
+        const section1Count = document.getElementById('section1Count');
+        const section2Count = document.getElementById('section2Count');
+        const section3Count = document.getElementById('section3Count');
+        const answeredCount = document.getElementById('answeredCount');
 
         let selectedFile = null;
-        let extractedData = null;
+        let parsedData = null;
 
         // File input handler
         pdfInput.addEventListener('change', (e) => {
@@ -429,10 +474,9 @@
                 const arrayBuffer = await selectedFile.arrayBuffer();
                 const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
                 
-                const pagesData = [];
                 let allText = '';
                 
-                // Extract text from each page
+                // Extract text from all pages
                 for (let i = 1; i <= pdf.numPages; i++) {
                     const page = await pdf.getPage(i);
                     const textContent = await page.getTextContent();
@@ -443,21 +487,11 @@
                         .replace(/\s+/g, ' ')
                         .trim();
                     
-                    pagesData.push({
-                        pageNumber: i,
-                        text: pageText,
-                        itemCount: textContent.items.length
-                    });
-                    
                     allText += pageText + ' ';
                 }
                 
-                extractedData = {
-                    fileName: selectedFile.name,
-                    totalPages: pdf.numPages,
-                    pages: pagesData,
-                    fullText: allText.trim()
-                };
+                // Parse the extracted text
+                parsedData = parseQuestionPaper(allText.trim());
                 
                 displayOutput();
                 updateStats();
@@ -466,139 +500,220 @@
                 copyBtn.disabled = false;
                 
             } catch (error) {
-                showError(`Error extracting PDF: ${error.message}`);
+                showError(`Error parsing PDF: ${error.message}`);
+                console.error(error);
             } finally {
                 loading.classList.remove('active');
             }
         });
 
-        // Display output based on selected format
-        function displayOutput() {
-            const format = formatSelect.value;
-            let output = '';
+        // Parse question paper text into structured format
+        function parseQuestionPaper(text) {
+            // Remove participant information
+            text = text.replace(/UCEED \d{4}.*?Subject UCEED \d{4}\./g, '');
             
-            switch (format) {
-                case 'structured':
-                    output = generateStructuredOutput();
-                    break;
-                case 'json':
-                    output = `<pre>${JSON.stringify(extractedData, null, 2)}</pre>`;
-                    break;
-                case 'plain':
-                    output = `<pre>${extractedData.fullText}</pre>`;
-                    break;
-                case 'markdown':
-                    output = generateMarkdownOutput();
-                    break;
+            // Split by Q. to get individual questions
+            const questionBlocks = text.split(/Q\.\s*(\d+)/g).filter(s => s.trim());
+            
+            const result = {
+                section_1_nat: [],
+                section_2_msq: [],
+                section_3_mcq: []
+            };
+            
+            // Process questions in pairs (number, content)
+            for (let i = 0; i < questionBlocks.length; i += 2) {
+                if (i + 1 >= questionBlocks.length) break;
+                
+                const questionNum = parseInt(questionBlocks[i].trim());
+                const questionContent = questionBlocks[i + 1];
+                
+                const question = parseQuestion(questionNum, questionContent);
+                
+                if (question) {
+                    // Determine section based on question number and type
+                    if (questionNum <= 14) {
+                        result.section_1_nat.push(question);
+                    } else if (questionNum <= 29) {
+                        result.section_2_msq.push(question);
+                    } else {
+                        result.section_3_mcq.push(question);
+                    }
+                }
             }
             
-            outputContent.innerHTML = output;
+            return result;
+        }
+
+        // Parse individual question
+        function parseQuestion(questionNum, content) {
+            try {
+                // Extract question ID
+                const questionIdMatch = content.match(/Question ID\s*:\s*(\d+)/);
+                const questionId = questionIdMatch ? questionIdMatch[1] : null;
+                
+                // Extract status
+                const statusMatch = content.match(/Status\s*:\s*(Answered|Not Answered|Marked for Review|Not Visited)/);
+                const status = statusMatch ? statusMatch[1] : 'Unknown';
+                
+                // Check if question has options (MSQ or MCQ)
+                const hasOptions = content.includes('Options');
+                
+                let questionText = '';
+                let options = [];
+                let answer = null;
+                let questionType = '';
+                
+                if (hasOptions) {
+                    // Extract question text (before "Options")
+                    const textMatch = content.match(/^(.*?)Options/s);
+                    questionText = textMatch ? textMatch[1].trim() : '';
+                    questionText = questionText.replace(/Question ID.*$/s, '').trim();
+                    
+                    // Extract options
+                    const optionsSection = content.match(/Options(.*?)Question ID/s);
+                    if (optionsSection) {
+                        const optionsText = optionsSection[1];
+                        const optionMatches = optionsText.match(/(\d+)\.\s*([^0-9]+?)(?=\d+\.|$)/g);
+                        
+                        if (optionMatches) {
+                            options = optionMatches.map(opt => {
+                                const match = opt.match(/(\d+)\.\s*(.+)/);
+                                return match ? {
+                                    number: parseInt(match[1]),
+                                    text: match[2].trim()
+                                } : null;
+                            }).filter(Boolean);
+                        }
+                    }
+                    
+                    // Extract answer (Chosen Option)
+                    const answerMatch = content.match(/Chosen Option\s*:\s*([\d,\s]+)/);
+                    if (answerMatch) {
+                        const answerStr = answerMatch[1].trim();
+                        if (answerStr.includes(',')) {
+                            // MSQ - multiple answers
+                            answer = answerStr.split(',').map(a => parseInt(a.trim()));
+                            questionType = 'MSQ';
+                        } else {
+                            // MCQ - single answer
+                            answer = parseInt(answerStr);
+                            questionType = 'MCQ';
+                        }
+                    }
+                } else {
+                    // NAT question - numerical answer
+                    questionText = content.replace(/Given Answer.*$/s, '').trim();
+                    questionText = questionText.replace(/Question ID.*$/s, '').trim();
+                    
+                    const answerMatch = content.match(/Given Answer\s*:\s*([\d.]+)/);
+                    answer = answerMatch ? parseFloat(answerMatch[1]) : null;
+                    questionType = 'NAT';
+                }
+                
+                return {
+                    question_number: questionNum,
+                    question_text: questionText,
+                    question_type: questionType,
+                    options: options.length > 0 ? options : null,
+                    answer: answer,
+                    status: status,
+                    question_id: questionId
+                };
+            } catch (error) {
+                console.error(`Error parsing question ${questionNum}:`, error);
+                return null;
+            }
+        }
+
+        // Display output
+        function displayOutput() {
+            let html = '';
+            
+            // Section 1: NAT
+            if (parsedData.section_1_nat.length > 0) {
+                html += '<div class="section-header">Section 1: Numerical Answer Type (NAT)</div>';
+                parsedData.section_1_nat.forEach(q => {
+                    html += formatQuestionCard(q);
+                });
+            }
+            
+            // Section 2: MSQ
+            if (parsedData.section_2_msq.length > 0) {
+                html += '<div class="section-header">Section 2: Multiple Select Questions (MSQ)</div>';
+                parsedData.section_2_msq.forEach(q => {
+                    html += formatQuestionCard(q);
+                });
+            }
+            
+            // Section 3: MCQ
+            if (parsedData.section_3_mcq.length > 0) {
+                html += '<div class="section-header">Section 3: Multiple Choice Questions (MCQ)</div>';
+                parsedData.section_3_mcq.forEach(q => {
+                    html += formatQuestionCard(q);
+                });
+            }
+            
+            outputContent.innerHTML = html;
             outputSection.classList.add('active');
         }
 
-        // Generate structured HTML output
-        function generateStructuredOutput() {
-            let html = '';
-            extractedData.pages.forEach(page => {
-                html += `
-                    <div class="page-section">
-                        <div class="page-header">Page ${page.pageNumber} (${page.itemCount} text items)</div>
-                        <div>${page.text || '<em>No text content</em>'}</div>
-                    </div>
-                `;
-            });
+        // Format question card for display
+        function formatQuestionCard(question) {
+            let html = `<div class="question-card">`;
+            html += `<div class="question-header">Q.${question.question_number} [${question.question_type}]</div>`;
+            html += `<div class="question-text">${question.question_text}</div>`;
+            
+            if (question.options) {
+                html += '<div class="options">';
+                question.options.forEach(opt => {
+                    html += `<div class="option">${opt.number}. ${opt.text}</div>`;
+                });
+                html += '</div>';
+            }
+            
+            html += `<div class="answer">`;
+            if (Array.isArray(question.answer)) {
+                html += `Selected: ${question.answer.join(', ')}`;
+            } else {
+                html += `Answer: ${question.answer !== null ? question.answer : 'Not Answered'}`;
+            }
+            html += ` | Status: ${question.status}</div>`;
+            html += `</div>`;
+            
             return html;
-        }
-
-        // Generate markdown output
-        function generateMarkdownOutput() {
-            let md = `# ${extractedData.fileName}\n\n`;
-            md += `**Total Pages:** ${extractedData.totalPages}\n\n`;
-            md += `---\n\n`;
-            
-            extractedData.pages.forEach(page => {
-                md += `## Page ${page.pageNumber}\n\n`;
-                md += `${page.text}\n\n`;
-            });
-            
-            return `<pre>${md}</pre>`;
         }
 
         // Update statistics
         function updateStats() {
-            const words = extractedData.fullText.split(/\s+/).filter(w => w.length > 0).length;
-            const chars = extractedData.fullText.length;
+            section1Count.textContent = parsedData.section_1_nat.length;
+            section2Count.textContent = parsedData.section_2_msq.length;
+            section3Count.textContent = parsedData.section_3_mcq.length;
             
-            pageCount.textContent = extractedData.totalPages;
-            wordCount.textContent = words.toLocaleString();
-            charCount.textContent = chars.toLocaleString();
+            const totalAnswered = [
+                ...parsedData.section_1_nat,
+                ...parsedData.section_2_msq,
+                ...parsedData.section_3_mcq
+            ].filter(q => q.status === 'Answered').length;
+            
+            answeredCount.textContent = totalAnswered;
         }
-
-        // Format change handler
-        formatSelect.addEventListener('change', () => {
-            if (extractedData) {
-                displayOutput();
-            }
-        });
 
         // Download button handler
         downloadBtn.addEventListener('click', () => {
-            const format = formatSelect.value;
-            let content = '';
-            let fileExtension = 'txt';
-            
-            switch (format) {
-                case 'json':
-                    content = JSON.stringify(extractedData, null, 2);
-                    fileExtension = 'json';
-                    break;
-                case 'markdown':
-                    content = generateMarkdownText();
-                    fileExtension = 'md';
-                    break;
-                default:
-                    content = extractedData.fullText;
-                    fileExtension = 'txt';
-            }
-            
-            const blob = new Blob([content], { type: 'text/plain' });
+            const content = JSON.stringify(parsedData, null, 2);
+            const blob = new Blob([content], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `${extractedData.fileName.replace('.pdf', '')}_extracted.${fileExtension}`;
+            a.download = `uceed_parsed_${new Date().getTime()}.json`;
             a.click();
             URL.revokeObjectURL(url);
         });
 
-        // Generate markdown text for download
-        function generateMarkdownText() {
-            let md = `# ${extractedData.fileName}\n\n`;
-            md += `**Total Pages:** ${extractedData.totalPages}\n\n`;
-            md += `---\n\n`;
-            
-            extractedData.pages.forEach(page => {
-                md += `## Page ${page.pageNumber}\n\n`;
-                md += `${page.text}\n\n`;
-            });
-            
-            return md;
-        }
-
         // Copy to clipboard handler
         copyBtn.addEventListener('click', async () => {
-            const format = formatSelect.value;
-            let content = '';
-            
-            switch (format) {
-                case 'json':
-                    content = JSON.stringify(extractedData, null, 2);
-                    break;
-                case 'markdown':
-                    content = generateMarkdownText();
-                    break;
-                default:
-                    content = extractedData.fullText;
-            }
+            const content = JSON.stringify(parsedData, null, 2);
             
             try {
                 await navigator.clipboard.writeText(content);

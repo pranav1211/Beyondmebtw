@@ -1,0 +1,557 @@
+{
+  "sections": {
+    "section_1_nat": {
+      "description": "Numerical Answer Type (NAT)",
+      "total_questions": 14,
+      "marks_per_question": 4,
+      "negative_marking": 0,
+      "total_marks": 56,
+      "questions": [
+        {
+          "question_number": 1,
+          "question_text": "How many times does the most used black coloured shape appear in the composition shown below?",
+          "question_type": "NAT",
+          "answer": 14,
+          "answer_range": null
+        },
+        {
+          "question_number": 2,
+          "question_text": "In the image shown below, PQ = QR = QS = 2 units. Also, QT = TS = QU = UR. The points T and U are the centre points of the semicircles. What is the total area of shaded portions in square units?",
+          "question_type": "NAT",
+          "answer": 2,
+          "answer_range": null
+        },
+        {
+          "question_number": 3,
+          "question_text": "What is the number that you get when you divide the difference between the number of triangles and number of circles by the number of rectangles for the image shown below?",
+          "question_type": "NAT",
+          "answer": 6,
+          "answer_range": null
+        },
+        {
+          "question_number": 4,
+          "question_text": "Shown below is the front and top views of two cubes. The red and blue cubes are made up of metal and wax respectively. Red cube is heated and is hot enough to melt wax in the blue cube. As shown in the front and top views, the red cube is moved along the path PQRS creating sharp edges and flat surfaces on the blue cube. What is the total number of surfaces the blue cube will have after the red cube reaches the point S?",
+          "question_type": "NAT",
+          "answer": 16,
+          "answer_range": null
+        },
+        {
+          "question_number": 5,
+          "question_text": "One of the pots does not belong to the group of pots shown below. What is the number written on that pot?",
+          "question_type": "NAT",
+          "answer": 62,
+          "answer_range": null
+        },
+        {
+          "question_number": 6,
+          "question_text": "What is the number of different patterns on the capsules shown below?",
+          "question_type": "NAT",
+          "answer": 4,
+          "answer_range": null
+        },
+        {
+          "question_number": 7,
+          "question_text": "A composition made of letters is shown below. What is the total number of letters used to create this image?",
+          "question_type": "NAT",
+          "answer": 31,
+          "answer_range": null
+        },
+        {
+          "question_number": 8,
+          "question_text": "A sharpened pencil with eraser is shown in image P. How many sharpened pencils with erasers are in image Q?",
+          "question_type": "NAT",
+          "answer": 8,
+          "answer_range": null
+        },
+        {
+          "question_number": 9,
+          "question_text": "Several kettles are shown below. What is the total number of usable kettles that are designed to store and pour hot water?",
+          "question_type": "NAT",
+          "answer": 13,
+          "answer_range": null
+        },
+        {
+          "question_number": 10,
+          "question_text": "Given below are 8 triangular pieces of a puzzle made from the shape P. What is the three-digit number formed when these pieces are arranged correctly?",
+          "question_type": "NAT",
+          "answer": 745,
+          "answer_range": null
+        },
+        {
+          "question_number": 11,
+          "question_text": "Given below is a drawing on a sheet of paper. Make a cut along the solid arcs and fold the resulting semicircular rings at 90 degrees along the dotted lines. What is the number of raised semicircular rings after following these steps?",
+          "question_type": "NAT",
+          "answer": 5,
+          "answer_range": null
+        },
+        {
+          "question_number": 12,
+          "question_text": "A mobile screen has a dimension of 10 cm x 4 cm (height x width). A mobile user is viewing a picture in portrait mode and it occupies the entire screen. The user rotates the screen to landscape mode. After rotation, the height of the picture is now the width of the screen and its width gets reduced proportionately, leaving equal blank spaces on both sides of the picture. What is the area (in square centimeters) of the blank space on the left-hand side of the picture?",
+          "question_type": "NAT",
+          "answer": 16.8,
+          "answer_range": null
+        },
+        {
+          "question_number": 13,
+          "question_text": "What number will replace the question mark?",
+          "question_type": "NAT",
+          "answer": 34,
+          "answer_range": null
+        },
+        {
+          "question_number": 14,
+          "question_text": "A tank with internal dimension 10 cm x 10 cm x 10 cm (length x width x height) is fully filled with spherical marbles, each marble having a diameter of 1 cm. Each layer of marbles should have equal number of marbles. Water is then poured into the tank. What is the volume of water in cubic centimeters required to fill the voids? (Use π=22/7)",
+          "question_type": "NAT",
+          "answer": 476,
+          "answer_range": "470-480"
+        }
+      ]
+    },
+    "section_2_msq": {
+      "description": "Multiple Select Questions (MSQ)",
+      "total_questions": 15,
+      "marks_scheme": {
+        "full_marks": 4,
+        "partial_3": 3,
+        "partial_2": 2,
+        "partial_1": 1,
+        "zero": 0,
+        "negative": -1
+      },
+      "total_marks": 60,
+      "questions": [
+        {
+          "question_number": 15,
+          "question_text": "Image P shows an object as seen from the top. Which of the objects given below will appear as shown in image P when viewed from the top? Consider all the objects are made with opaque solids.",
+          "question_type": "MSQ",
+          "options": ["A", "B", "C", "D"],
+          "correct_answers": ["A", "B", "C"]
+        },
+        {
+          "question_number": 16,
+          "question_text": "Q, R, S and T are cut-out shapes used to create a composition shown in image P. These cut-out shapes could be rotated and combined without overlapping to create the composition. These cut-out shapes can also be repeated. What is/are the correct combination(s) that can be used to create the composition shown in image P?",
+          "question_type": "MSQ",
+          "options": ["A", "B", "C", "D"],
+          "correct_answers": ["B", "C"]
+        },
+        {
+          "question_number": 17,
+          "question_text": "Given below is a pattern P, composed of three different shapes 1, 2, and 3. Which options show the pattern(s) that is/are possible if the shape 2 is cut in half along the vertical axis, the shape 3 is rotated clockwise at the center by 45 degrees, and the shape 1 remains unchanged? Overlapping of shapes is not allowed.",
+          "question_type": "MSQ",
+          "options": ["A", "B", "C", "D"],
+          "correct_answers": ["A", "B", "D"]
+        },
+        {
+          "question_number": 18,
+          "question_text": "Given below are five images P, Q, R, S and T. Each of these is rotated about its center. Which of the following statement(s) is/are TRUE? (Ignore minor variations due to pixelated appearance)",
+          "question_type": "MSQ",
+          "options": [
+            "A. Patterns Q, S and T will look the same when rotated by 60°",
+            "B. Patterns Q, R and T will look the same when rotated by 120°",
+            "C. Patterns P, S and T will not look the same when rotated by 60°",
+            "D. Patterns Q, R and T will look the same when rotated by 60° or 120°"
+          ],
+          "correct_answers": ["B", "C", "D"],
+          "note": "Answer key shows B,C or B,C,D"
+        },
+        {
+          "question_number": 19,
+          "question_text": "In the image below, a combination of gears (1-5), pulley (6), weight (W), belts (connecting 1&2, 4&6) and a shaft drive is shown. The shaft rotates in the direction of the arrow without any horizontal translation. Which of the following statement is /are CORRECT?",
+          "question_type": "MSQ",
+          "options": [
+            "A. 5 rotates clockwise and W moves upwards",
+            "B. 4 rotates anticlockwise and W moves downwards",
+            "C. 5 and 4 rotate in opposite directions",
+            "D. 1 and 4 rotate in opposite direction"
+          ],
+          "correct_answers": ["A", "C"]
+        },
+        {
+          "question_number": 20,
+          "question_text": "Which of the following statements are TRUE for Ajrakh, Paithani, Kalamkari, Phulkari, Khes and Bandhani?",
+          "question_type": "MSQ",
+          "options": [
+            "A. All of the above are related to textiles of India",
+            "B. At least three of the above are painting techniques of India",
+            "C. Three of the above are artforms from Punjab",
+            "D. Two of the above are weaving crafts from India"
+          ],
+          "correct_answers": ["A", "D"]
+        },
+        {
+          "question_number": 21,
+          "question_text": "Which of the options is/are paintings by the artist M. F. Hussain?",
+          "question_type": "MSQ",
+          "options": ["A", "B", "C", "D"],
+          "correct_answers": ["A", "B", "C", "D"]
+        },
+        {
+          "question_number": 22,
+          "question_text": "Which of the below is a/are cinema camera maker(s)?",
+          "question_type": "MSQ",
+          "options": [
+            "A. RED",
+            "B. ARRI",
+            "C. Canon",
+            "D. Wacom"
+          ],
+          "correct_answers": ["A", "B", "C"]
+        },
+        {
+          "question_number": 23,
+          "question_text": "Which Indian city/cities is/are designated by UNESCO as a Creative City, until 2024?",
+          "question_type": "MSQ",
+          "options": [
+            "A. Pune",
+            "B. Kozhikode",
+            "C. Gwalior",
+            "D. Varanasi"
+          ],
+          "correct_answers": ["B", "C", "D"]
+        },
+        {
+          "question_number": 24,
+          "question_text": "Shown below are Indian vehicle number plates with colour codes. Which of the option/s is/are correct?",
+          "question_type": "MSQ",
+          "options": [
+            "A. R is a private vehicle",
+            "B. P, S & U are private vehicles",
+            "C. Q, R, T & X are commercial vehicles",
+            "D. X is a defence vehicle"
+          ],
+          "correct_answers": ["B", "D"]
+        },
+        {
+          "question_number": 25,
+          "question_text": "1, 2, 3 and 4 are photographs captured using a camera with a lens set at aperture P, Q, R or S. Which of the options is/are correct?",
+          "question_type": "MSQ",
+          "options": [
+            "A. P - 3",
+            "B. P - 2",
+            "C. R - 1",
+            "D. S - 3"
+          ],
+          "correct_answers": ["A", "C"]
+        },
+        {
+          "question_number": 26,
+          "question_text": "Which of the following image(s) can be created by the nib type illustrated below?",
+          "question_type": "MSQ",
+          "options": ["A", "B", "C", "D"],
+          "correct_answers": ["A", "B", "C"]
+        },
+        {
+          "question_number": 27,
+          "question_text": "Which of these photographs follow the Rule of Thirds?",
+          "question_type": "MSQ",
+          "options": ["A", "B", "C", "D"],
+          "correct_answers": ["A", "B", "C"]
+        },
+        {
+          "question_number": 28,
+          "question_text": "A continuous strip with a pattern is shown below. Which of the options given below is/are part of the continuous strip?",
+          "question_type": "MSQ",
+          "options": ["A", "B", "C", "D"],
+          "correct_answers": ["A", "D"]
+        },
+        {
+          "question_number": 29,
+          "question_text": "A composition made using letters from a specific font is shown below. Some letters are repeated but there is no distortion, rotation, flip or any change in orientation. Letters are used in the original form as seen in the font. Which of the following words can be formed using the letters shown in the image below?",
+          "question_type": "MSQ",
+          "options": [
+            "A. note",
+            "B. ghost",
+            "C. short",
+            "D. enter"
+          ],
+          "correct_answers": ["B", "C"]
+        }
+      ]
+    },
+    "section_3_mcq": {
+      "description": "Multiple Choice Questions (MCQ)",
+      "total_questions": 28,
+      "marks_per_question": 3,
+      "negative_marking": -0.71,
+      "total_marks": 84,
+      "questions": [
+        {
+          "question_number": 30,
+          "question_text": "Which of the following statements is correct for a longitudinal marking provided at the centre of a road?",
+          "question_type": "MCQ",
+          "options": [
+            "A. A broken longitudinal line allows overtaking",
+            "B. A solid longitudinal line always permits overtaking",
+            "C. Longitudinal markings are meant only for aesthetics",
+            "D. Double solid lines may be crossed when overtaking a slow-moving vehicle"
+          ],
+          "correct_answer": "A"
+        },
+        {
+          "question_number": 31,
+          "question_text": "Four lines of text from a poem by E. E. Cummings is given below: 'may come home with smooth round stone / as small as a world and as large as alone / for whatever we may lose (like a you or a me) / its always ourselves we find at sea'. One of the four lines is depicted in the images below. Identify the image which correctly represents one line of the poem.",
+          "question_type": "MCQ",
+          "options": ["A", "B", "C", "D"],
+          "correct_answer": "B"
+        },
+        {
+          "question_number": 32,
+          "question_text": "Samantha, Reema and Payal went late at night to visit an adventure place called The Mystery Spot. The place has a strange window-less room with white walls. One of the walls has a blue triangle and a red circle painted on it. The girls entered the room in turns. First, Samantha entered the room and came out telling that there were two shapes painted on the wall—one triangle and one circle. Then, Reema entered the same room and came out surprised as she saw only a triangle on the wall. Lastly, Payal entered the room and claimed that she saw only a circle on the wall. Which of the four statements is correct?",
+          "question_type": "MCQ",
+          "options": [
+            "A. When Samantha entered, the room was lit by a blue light. When Reema entered the room, the light was changed to white light and when Payal entered the room, the light was changed to red",
+            "B. When Samantha entered, the room was lit by a white light. When Reema entered the room, the light was changed to blue light and when Payal entered the room, the light was changed to red",
+            "C. When Samantha entered, the room was lit by a white light. When Reema entered the room, the light was changed to red light and when Payal entered the room, the light was changed to blue",
+            "D. When Samantha entered, the room was lit by a blue light. When Reema entered the room, the light was changed to red light and when Payal entered the room, the light was changed to white"
+          ],
+          "correct_answer": "C"
+        },
+        {
+          "question_number": 33,
+          "question_text": "Which of the options will replace the question mark?",
+          "question_type": "MCQ",
+          "options": ["A", "B", "C", "D"],
+          "correct_answer": "B"
+        },
+        {
+          "question_number": 34,
+          "question_text": "Given below are four letterboxes, three of them are written in the same font. Find the one which is written in a different font.",
+          "question_type": "MCQ",
+          "options": ["A", "B", "C", "D"],
+          "correct_answer": "D"
+        },
+        {
+          "question_number": 35,
+          "question_text": "Who is the first Indian to receive an Academy Award (Oscar)?",
+          "question_type": "MCQ",
+          "options": [
+            "A. Bhanu Athaiya",
+            "B. A. R. Rahman",
+            "C. Satyajit Ray",
+            "D. M. Night Shyamalan"
+          ],
+          "correct_answer": "A"
+        },
+        {
+          "question_number": 36,
+          "question_text": "Shown below are four options, each showing consecutive frames representing the movement of a pendulum of an old-style wall clock for an animation movie. Which is the correct option?",
+          "question_type": "MCQ",
+          "options": ["A", "B", "C", "D"],
+          "correct_answer": "C"
+        },
+        {
+          "question_number": 37,
+          "question_text": "Match the animals (1, 2, 3, 4) with their respective footprints (P,Q, R, S).",
+          "question_type": "MCQ",
+          "options": [
+            "A. 1-P, 2-R, 3-Q, 4-S",
+            "B. 1-Q, 2-R, 3-S, 4-P",
+            "C. 1-P, 2-S, 3-R, 4-Q",
+            "D. 1-R, 2-S, 3-P, 4-Q"
+          ],
+          "correct_answer": "B"
+        },
+        {
+          "question_number": 38,
+          "question_text": "Identify the final image created if a circular transparent plastic sheet P printed with opaque shapes is folded in the sequence shown below.",
+          "question_type": "MCQ",
+          "options": ["A", "B", "C", "D"],
+          "correct_answer": "B"
+        },
+        {
+          "question_number": 39,
+          "question_text": "ChatGPT is an extremely popular artificial intelligence (AI) chatbot from OpenAI. Which of the following options is the correct symbol/logo of ChatGPT?",
+          "question_type": "MCQ",
+          "options": ["A", "B", "C", "D"],
+          "correct_answer": "D"
+        },
+        {
+          "question_number": 40,
+          "question_text": "The word 'HOME' was printed on a circular disc and a smaller disc from the center was cut and removed from it. Later, another disc was cut from the smaller disc in the same manner. Find the correct set of discs, if the discs were rotated.",
+          "question_type": "MCQ",
+          "options": ["A", "B", "C", "D"],
+          "correct_answer": "C"
+        },
+        {
+          "question_number": 41,
+          "question_text": "P is a completed puzzle made of four-square pieces. If the four pieces are removed to play the puzzle again, which piece shown below will NOT fit into the final image?",
+          "question_type": "MCQ",
+          "options": ["A", "B", "C", "D"],
+          "correct_answer": "C"
+        },
+        {
+          "question_number": 42,
+          "question_text": "A delicious triangular shaped chocolate was left open at night. A mouse could smell the yummy chocolate and could not resist but eat some of it. The remaining chocolate is shown below. How many triangles (including partial) have been eaten?",
+          "question_type": "MCQ",
+          "options": [
+            "A. 23",
+            "B. 24",
+            "C. 25",
+            "D. 26"
+          ],
+          "correct_answer": "C"
+        },
+        {
+          "question_number": 43,
+          "question_text": "Closely observe the effect of light and shadow caused by the Sun on the spheres P, Q, R and S. Which is the correct option?",
+          "question_type": "MCQ",
+          "options": [
+            "A. P =10 am Q = 10:30 am R = 12 noon S = 6 pm",
+            "B. P = 3 pm Q = 6 am R = 12 noon S = 10:30 am",
+            "C. P = 9:30 am Q = 3 pm R = 12 noon S = 9 am",
+            "D. P = 10:30 am Q = 6 pm R =12 noon S = 1 pm"
+          ],
+          "correct_answer": "D"
+        },
+        {
+          "question_number": 44,
+          "question_text": "The little ones of parents A, B, C, and D were separated by a 2D maze. Only one parent could find its baby. Identify the parent.",
+          "question_type": "MCQ",
+          "options": ["A", "B", "C", "D"],
+          "correct_answer": "B"
+        },
+        {
+          "question_number": 45,
+          "question_text": "What is the total number of capital letter 'T' shown in the image below?",
+          "question_type": "MCQ",
+          "options": [
+            "A. 12",
+            "B. 14",
+            "C. 16",
+            "D. 18"
+          ],
+          "correct_answer": "C"
+        },
+        {
+          "question_number": 46,
+          "question_text": "If delulu = 010101, skibidi = 0010101, bussin = 010010, and ghosted = 0010010, then what is 010100?",
+          "question_type": "MCQ",
+          "options": [
+            "A. boujee",
+            "B. mewing",
+            "C. pookie",
+            "D. cheugy"
+          ],
+          "correct_answer": "B"
+        },
+        {
+          "question_number": 47,
+          "question_text": "Which of the options fits with the black solid figure and makes it a square?",
+          "question_type": "MCQ",
+          "options": ["A", "B", "C", "D"],
+          "correct_answer": "C"
+        },
+        {
+          "question_number": 48,
+          "question_text": "The following images show cave paintings from India. Which of the options is correct?",
+          "question_type": "MCQ",
+          "options": [
+            "A. P - Ellora, Q - Ajanta, R - Bhimbetka, S - Sittanavasal",
+            "B. P - Ellora, Q - Ajanta, R - Jhalawar, S - Bhimbetka",
+            "C. P - Ajanta, Q - Ellora, R - Bhimbetka, S - Sittanavasal",
+            "D. P - Ajanta, Q - Ellora, R - Jhalawar, S - Bhimbetka"
+          ],
+          "correct_answer": "C"
+        },
+        {
+          "question_number": 49,
+          "question_text": "The following image shows a set of letters in different fonts. Which of the options is the word formed by letters of the same font?",
+          "question_type": "MCQ",
+          "options": [
+            "A. knowing",
+            "B. pester",
+            "C. delight",
+            "D. navel"
+          ],
+          "correct_answer": "C"
+        },
+        {
+          "question_number": 50,
+          "question_text": "P is a transparent glass filled with water as shown below. Q is a white cylinder with parallel lines printed around it. If the cylinder is viewed through the glass from the direction of the arrow, find the correct pattern observed.",
+          "question_type": "MCQ",
+          "options": ["A", "B", "C", "D"],
+          "correct_answer": "B"
+        },
+        {
+          "question_number": 51,
+          "question_text": "A toy is made with cardboard and rivets. As shown below, the two car cut-outs are attached on top of the parallel cardboard strips which should move when the child pushes or pulls the horizontal cardboard strip. Different linkage mechanisms are made with cardboard strips (rectangles) and connector pivots (circles). Black circles are fixed pivots (attached to the grey base) and white circles are moving pivots (not attached to the grey base). Which option will show a collision between the two cars?",
+          "question_type": "MCQ",
+          "options": ["A", "B", "C", "D"],
+          "correct_answer": "B"
+        },
+        {
+          "question_number": 52,
+          "question_text": "What is the total number of musical instruments in the image below?",
+          "question_type": "MCQ",
+          "options": [
+            "A. 27",
+            "B. 28",
+            "C. 26",
+            "D. 25"
+          ],
+          "correct_answer": "A"
+        },
+        {
+          "question_number": 53,
+          "question_text": "Shown below are letters 'e' taken from four popular logos, arranged in a sequence. Which of the options is the correct sequence?",
+          "question_type": "MCQ",
+          "options": [
+            "A. Reliance – Nestle – Google – Acer",
+            "B. Nestle – Reliance – Google – Acer",
+            "C. Google – Nestle – Reliance – Acer",
+            "D. Reliance – Google – Nestle – Acer"
+          ],
+          "correct_answer": "D"
+        },
+        {
+          "question_number": 54,
+          "question_text": "Shown below are the key frames of a bird flying. Which of the following options is the correct order?",
+          "question_type": "MCQ",
+          "options": [
+            "A. 1, 4, 5, 3, 2",
+            "B. 1, 4, 2, 5, 3",
+            "C. 1, 3, 4, 5, 2",
+            "D. 1, 5, 4, 2, 3"
+          ],
+          "correct_answer": "B"
+        },
+        {
+          "question_number": 55,
+          "question_text": "Shown below is a traditional metal artefact made using the lost-wax casting technique. What is this craft called?",
+          "question_type": "MCQ",
+          "options": [
+            "A. Bidriware",
+            "B. Thewa",
+            "C. Filigree",
+            "D. Dokra"
+          ],
+          "correct_answer": "D"
+        },
+        {
+          "question_number": 56,
+          "question_text": "A lever mechanism has Effort (E), Fulcrum (F) and Load (L). For example, a pair of scissors will have an order 'EFL' as shown in the image below. Similarly, choose the correct order for a Tweezer and a Nutcracker.",
+          "question_type": "MCQ",
+          "options": [
+            "A. Tweezer=EFL, Nutcracker=FEL",
+            "B. Tweezer=FEL, Nutcracker=ELF",
+            "C. Tweezer=FLE, Nutcracker=FEL",
+            "D. Tweezer=LFE, Nutcracker=LFE"
+          ],
+          "correct_answer": "B"
+        },
+        {
+          "question_number": 57,
+          "question_text": "What is the main purpose for the presence of water in a toilet bowl (Western Commode/ Water Closet)?",
+          "question_type": "MCQ",
+          "options": [
+            "A. To prevent back flow of sewer gases",
+            "B. To efficiently flush solid, semi-solid fecal matter",
+            "C. To regulate water temperature in plumbing lines",
+            "D. To neutralize acidic waste materials"
+          ],
+          "correct_answer": "A"
+        }
+      ]
+    }
+  }
+}
