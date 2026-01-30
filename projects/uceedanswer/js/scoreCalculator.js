@@ -13,28 +13,28 @@ function calculateScore(userResponses, answerKey) {
         total_unattempted: 0,
         total_questions: 0
     };
-    
+
     // Process Section 1 (NAT)
     const section1 = processNATSection(
         userResponses.section_1_nat,
         answerKey.sections.section_1_nat
     );
     results.sections.section_1_nat = section1;
-    
+
     // Process Section 2 (MSQ)
     const section2 = processMSQSection(
         userResponses.section_2_msq,
         answerKey.sections.section_2_msq
     );
     results.sections.section_2_msq = section2;
-    
+
     // Process Section 3 (MCQ)
     const section3 = processMCQSection(
         userResponses.section_3_mcq,
         answerKey.sections.section_3_mcq
     );
     results.sections.section_3_mcq = section3;
-    
+
     // Calculate totals
     [section1, section2, section3].forEach(section => {
         results.total_score += section.score;
@@ -44,7 +44,7 @@ function calculateScore(userResponses, answerKey) {
         results.total_unattempted += section.unattempted_count;
         results.total_questions += section.total_questions;
     });
-    
+
     return results;
 }
 
@@ -61,31 +61,39 @@ function processNATSection(userQuestions, answerKeySection) {
         total_questions: answerKeySection.total_questions,
         questions: []
     };
-    
+
     userQuestions.forEach(userQ => {
         const matchedQ = findMatchingQuestion(userQ, answerKeySection.questions);
-        
+
         if (matchedQ) {
             const isAnswered = userQ.answer !== null && userQ.status === 'Answered';
             let isCorrect = false;
             let marks = 0;
-            
+
             if (isAnswered) {
                 if (matchedQ.answer_range) {
                     const [min, max] = matchedQ.answer_range.split('-').map(parseFloat);
-                    isCorrect = userQ.answer >= min && userQ.answer <= max;
+                    const userAnswerNum = parseFloat(userQ.answer);
+                    isCorrect = !isNaN(userAnswerNum) && userAnswerNum >= min && userAnswerNum <= max;
                 } else {
-                    isCorrect = Math.abs(userQ.answer - matchedQ.answer) < 0.01;
+                    const userAnswerNum = parseFloat(userQ.answer);
+                    const correctAnswerNum = parseFloat(matchedQ.answer);
+
+                    // Check both are valid numbers before comparing
+                    if (!isNaN(userAnswerNum) && !isNaN(correctAnswerNum)) {
+                        isCorrect = Math.abs(userAnswerNum - correctAnswerNum) < 0.01;
+                    } else {
+                        isCorrect = false;
+                    }
                 }
-                
+
                 marks = isCorrect ? answerKeySection.marks_per_question : 0;
-                
+
                 if (isCorrect) result.correct_count++;
                 else result.incorrect_count++;
-            } else {
-                result.unattempted_count++;
             }
-            
+
+
             result.score += marks;
             result.questions.push({
                 ...userQ,
@@ -96,7 +104,7 @@ function processNATSection(userQuestions, answerKeySection) {
             });
         }
     });
-    
+
     return result;
 }
 
@@ -114,25 +122,25 @@ function processMSQSection(userQuestions, answerKeySection) {
         total_questions: answerKeySection.total_questions,
         questions: []
     };
-    
+
     userQuestions.forEach(userQ => {
         const matchedQ = findMatchingQuestion(userQ, answerKeySection.questions);
-        
+
         if (matchedQ) {
             const isAnswered = userQ.answer && userQ.answer.length > 0 && userQ.status === 'Answered';
             let marks = 0;
             let status = 'unattempted';
-            
+
             if (isAnswered) {
-                const userAnswerSet = new Set(userQ.answer.map(a => 
+                const userAnswerSet = new Set(userQ.answer.map(a =>
                     typeof a === 'number' ? String.fromCharCode(64 + a) : a
                 ));
                 const correctAnswerSet = new Set(matchedQ.correct_answers);
-                
+
                 const correctCount = [...userAnswerSet].filter(a => correctAnswerSet.has(a)).length;
                 const incorrectCount = userAnswerSet.size - correctCount;
                 const totalCorrect = correctAnswerSet.size;
-                
+
                 if (correctCount === totalCorrect && incorrectCount === 0) {
                     marks = answerKeySection.marks_scheme.full_marks;
                     status = 'correct';
@@ -153,7 +161,7 @@ function processMSQSection(userQuestions, answerKeySection) {
             } else {
                 result.unattempted_count++;
             }
-            
+
             result.score += marks;
             result.questions.push({
                 ...userQ,
@@ -164,7 +172,7 @@ function processMSQSection(userQuestions, answerKeySection) {
             });
         }
     });
-    
+
     return result;
 }
 
@@ -181,30 +189,30 @@ function processMCQSection(userQuestions, answerKeySection) {
         total_questions: answerKeySection.total_questions,
         questions: []
     };
-    
+
     userQuestions.forEach(userQ => {
         const matchedQ = findMatchingQuestion(userQ, answerKeySection.questions);
-        
+
         if (matchedQ) {
             const isAnswered = userQ.answer !== null && userQ.status === 'Answered';
             let isCorrect = false;
             let marks = 0;
-            
+
             if (isAnswered) {
-                const userAnswer = typeof userQ.answer === 'number' ? 
+                const userAnswer = typeof userQ.answer === 'number' ?
                     String.fromCharCode(64 + userQ.answer) : userQ.answer;
                 isCorrect = userAnswer === matchedQ.correct_answer;
-                
-                marks = isCorrect ? 
-                    answerKeySection.marks_per_question : 
+
+                marks = isCorrect ?
+                    answerKeySection.marks_per_question :
                     answerKeySection.negative_marking;
-                
+
                 if (isCorrect) result.correct_count++;
                 else result.incorrect_count++;
             } else {
                 result.unattempted_count++;
             }
-            
+
             result.score += marks;
             result.questions.push({
                 ...userQ,
@@ -215,6 +223,6 @@ function processMCQSection(userQuestions, answerKeySection) {
             });
         }
     });
-    
+
     return result;
 }
