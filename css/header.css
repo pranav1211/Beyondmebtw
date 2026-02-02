@@ -1,0 +1,240 @@
+/* ========================================
+   HEADER.CSS - Unified header styles
+   Ensures complete visual uniformity across ALL pages
+   ======================================== */
+
+/* ========================================
+   Header Container
+   ======================================== */
+header {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 30px;
+}
+
+/* ========================================
+   Brand Name (#name)
+   STANDARDIZED: All pages use identical values
+   ======================================== */
+#name {
+    font-family: "Permanent Marker", cursive;
+    font-weight: 400;
+    font-style: normal;
+    font-optical-sizing: auto;
+    font-size: 58px;
+    margin-top: 15px;
+    margin-left: 95px;
+    display: block;
+    color: #3b342d;
+}
+
+/* ========================================
+   Navigation Links (#links)
+   STANDARDIZED: Using consistent margin-top and padding
+   - margin-top: 27px (picked for optimal alignment)
+   - padding: 7.5px (provides best spacing)
+   ======================================== */
+#links {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    margin-top: 27px;
+    font-optical-sizing: auto;
+    font-size: 27px;
+    font-style: normal;
+    background-color: #E8D9CD;
+    padding: 7.5px;
+    border-radius: 60px;
+    font-family: "Delius", cursive;
+    font-weight: 600;
+}
+
+/* ========================================
+   Individual Link Items
+   ======================================== */
+.link {
+    padding: 10px 40px;
+    cursor: pointer;
+    transition: background-color 0.3s, border-radius 0.3s;
+    border-radius: 60px;
+}
+
+.link:hover {
+    background-color: rgba(244, 242, 239, 0.7);
+    border-radius: 60px;
+}
+
+/* ========================================
+   Responsive Header Styles
+   ======================================== */
+
+/* Desktop to Tablet Transition (max-width: 1440px) */
+@media (max-width: 1440px) {
+    header {
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    #name {
+        font-size: 52px;
+        margin: 20px 0 15px 0;
+        text-align: center;
+        width: 100%;
+        display: block;
+    }
+
+    #links {
+        position: relative;
+        left: auto;
+        transform: none;
+        width: auto;
+        margin: 0 auto 15px auto;
+        font-size: 25px;
+    }
+
+    .link {
+        padding: 8px 30px;
+    }
+}
+
+/* Medium Screens (max-width: 1200px) */
+@media (max-width: 1200px) {
+    #links {
+        font-size: 22px;
+    }
+
+    .link {
+        padding: 8px 25px;
+    }
+}
+
+/* Medium-Small Screens (max-width: 1024px) */
+@media (max-width: 1024px) {
+    header {
+        margin-bottom: 0;
+    }
+
+    #name {
+        font-size: 52px;
+        margin-left: 0;
+    }
+
+    #links {
+        position: relative;
+        font-size: 22px;
+        padding: 8px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .link {
+        padding: 8px 25px;
+    }
+}
+
+/* Small Screens (max-width: 992px) */
+@media (max-width: 992px) {
+    #name {
+        font-size: 30px;
+    }
+
+    #links {
+        font-size: 14px;
+        padding: 5px;
+    }
+
+    .link {
+        padding: 8px 20px;
+    }
+}
+
+/* Mobile Screens (max-width: 768px) */
+@media (max-width: 768px) {
+    header {
+        margin-bottom: 0px;
+    }
+
+    #name {
+        font-size: 36px;
+        margin: 20px 0 15px 0;
+    }
+
+    #links {
+        width: 90%;
+        margin: 0 auto 20px auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        text-align: center;
+        grid-gap: 6px;
+        border-radius: 15px;
+        font-size: 20px;
+    }
+
+    .link {
+        display: flex;
+        justify-content: center;
+        padding: 11px 5px;
+        border-radius: 15px;
+    }
+
+    .link:hover {
+        border-radius: 10px;
+    }
+}
+
+/* Extra Small Screens (max-width: 576px) */
+@media (max-width: 576px) {
+    #name {
+        font-size: 36px;
+    }
+
+    .link {
+        padding: 9px 15px;
+        font-size: 20px;
+    }
+}
+
+/* Very Small Screens (max-width: 480px) */
+@media (max-width: 480px) {
+    #name {
+        font-size: 36px;
+    }
+
+    #links {
+        width: 89.1%;
+        margin: 1px auto 15px auto;
+        font-size: 20px;
+        padding: 3px;
+    }
+
+    .link {
+        display: flex;
+        justify-content: center;
+        padding: 11px 5px;
+        border-radius: 15px;
+    }
+}
+
+/* Tiny Screens (max-width: 320px) */
+@media (max-width: 320px) {
+    #name {
+        font-size: 24px;
+        margin: 10px 0 8px 0;
+    }
+
+    #links {
+        width: 100%;
+        font-size: 14px;
+        padding: 1px;
+        grid-gap: 2px;
+    }
+
+    .link {
+        padding: 6px 1px;
+        font-size: 12px;
+    }
+}

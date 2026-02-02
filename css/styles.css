@@ -1,86 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Kreon:wght@300..700&display=swap');
+/* ========================================
+   STYLES.CSS - Index/Home Page Specific Styles
+   Base, Header, Footer, and Buttons moved to shared files
+   ======================================== */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    background-color: #F4F2EF;
-    font-family: "Kreon", serif;
-    padding-bottom: 40px;
-}
-
-header {
-    position: relative;
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 30px;
-}
-
-#name {
-    font-family: "Permanent Marker", cursive;
-    font-weight: 400;
-    font-style: normal;
-    font-optical-sizing: auto;
-    font-size: 58px;
-    margin-top: 15px;
-    margin-left: 95px;
-    display: block;
-    color: #3b342d;
-
-}
-
-#links {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    margin-top: 27px;
-    font-optical-sizing: auto;
-    font-size: 27px;
-    font-style: normal;
-    background-color: #E8D9CD;
-    padding: 7.5px;
-    border-radius: 60px;
-    font-family: "Delius", cursive;
-    font-weight: 600;
-    font-style: normal;
-}
-
-.link {
-    padding: 10px 40px;
-    cursor: pointer;
-    transition: background-color 0.3s, border-radius 0.3s;
-    border-radius: 60px;
-}
-
-.link:hover {
-    background-color: rgba(244, 242, 239, 0.7);
-    border-radius: 60px;
-}
-
-#footer {
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    margin-top: 20px;
-}
-
+/* View All Button Positioning - Index Page Specific */
 .view-all-btn {
     margin-right: 37.5%;
     margin-left: 37.5%;
 }
 
-/* Theme toggle container positioning */
+/* Theme Toggle Container Positioning */
 .theme-toggle-container {
     position: absolute;
     right: 120px;
     top: 37px;
 }
 
-/* For responsive design */
 @media (max-width: 768px) {
     .theme-toggle-container {
         position: static;
@@ -90,11 +25,12 @@ header {
     }
 }
 
-/***** Bento Grid ***/
+/* ========================================
+   Bento Grid Layout - Index Page
+   ======================================== */
 .bento-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    /* Change to 4 equal columns */
     grid-auto-rows: minmax(200px, auto);
     grid-gap: 15px;
     padding: 0 40px;
@@ -102,25 +38,7 @@ header {
     margin: 0 auto;
 }
 
-.bento-item {
-    background-color: #E8D9CD;
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    position: relative;
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.bento-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
+/* Section Title Override for Index Page */
 .section-title {
-    font-family: "Kavoon", serif;
-    font-weight: 100;
-    font-size: 40px;
     margin-bottom: 8px;
-    color: #3b342d;
 }
