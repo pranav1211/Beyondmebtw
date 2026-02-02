@@ -1,99 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Kreon:wght@300..700&display=swap');
+/* ========================================
+   PROJECTS.CSS - Projects Page Specific Styles
+   Base, Header, Footer, and Buttons moved to shared files
+   ======================================== */
 
-:root {
-    /* Color variables */
-    --primary-color: #3b342d;
-    --secondary-color: #F4F2EF;
-    --accent-color: #E8D9CD;
-    --text-color: #000;
-    --text-light-color: #5a5149;
-    --border-color: rgba(0, 0, 0, 0.1);
-    --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
-    /* Gradient variables */
-    --gradient-blue: linear-gradient(90deg, #4285F4 0%, #34A853 100%);
-    --gradient-purple: linear-gradient(90deg, #9C27B0 0%, #E91E63 100%);
-    --gradient-green: linear-gradient(90deg, #34A853 0%, #FBBC05 100%);
-
-    /* Transition variable */
-    --transition: all 0.3s ease;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-html,
-body {
-    background-color: var(--secondary-color);
-    font-family: "Kreon", serif;
-    padding-bottom: 40px;
-    overflow-x: hidden;
-    color: var(--text-color);
-    min-height: 100%;
-}
-
-header {
-    position: relative;
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 30px;
-}
-
-#name {
-    font-family: "Permanent Marker", cursive;
-    font-weight: 400;
-    font-style: normal;
-    font-size: 58px;
-    margin-top: 15px;
-    margin-left: 95px;
-    color: var(--primary-color);
-}
-
-#links {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    margin-top: 28px;
-    font-optical-sizing: auto;
-    font-size: 27px;
-    font-style: normal;
-    background-color: var(--accent-color);
-    padding: 7.2px;
-    border-radius: 60px;
-    font-family: "Delius", cursive;
-    font-weight: 600;
-    font-style: normal;
-}
-
-.link {
-    padding: 10px 40px;
-    cursor: pointer;
-    transition: var(--transition);
-    border-radius: 60px;
-}
-
-.link:hover {
-    background-color: rgba(244, 242, 239, 0.7);
-    border-radius: 60px;
-}
-
-#footer {
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    margin-top: 40px;
-}
-
+/* Section Title Override for Projects Page */
 .section-title {
-    font-family: "Kavoon", serif;
-    font-weight: 100;
-    font-size: 40px;
     margin: 20px 0;
-    color: var(--primary-color);
     padding: 0 40px;
     max-width: 1800px;
     margin-left: auto;
@@ -101,7 +13,7 @@ header {
     text-align: center;
 }
 
-/* Image Viewer */
+/* Image Viewer - Projects Page Specific */
 .image-viewer {
     position: fixed;
     top: 0;
@@ -139,11 +51,7 @@ header {
     position: absolute;
     top: -50px;
     right: 0;
-    background: transparent;
-    border: none;
     color: white;
-    font-size: 30px;
-    cursor: pointer;
 }
 
 .image-nav {
@@ -153,25 +61,6 @@ header {
     bottom: -50px;
     left: 50%;
     transform: translateX(-50%);
-}
-
-.nav-btn {
-    background-color: rgba(255, 255, 255, 0.3);
-    border: none;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.nav-btn:hover {
-    background-color: rgba(255, 255, 255, 0.5);
 }
 
 .expanded-description {

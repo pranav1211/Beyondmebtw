@@ -1,0 +1,93 @@
+/* ========================================
+   BASE.CSS - Core styles and CSS variables
+   ======================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Kreon:wght@300..700&display=swap');
+
+/* ========================================
+   CSS Custom Properties (Variables)
+   ======================================== */
+:root {
+    /* Color variables */
+    --primary-color: #3b342d;
+    --secondary-color: #F4F2EF;
+    --accent-color: #E8D9CD;
+    --text-color: #000;
+    --text-light-color: #5a5149;
+    --border-color: rgba(0, 0, 0, 0.1);
+    --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --card-shadow-hover: 0 6px 12px rgba(0, 0, 0, 0.15);
+
+    /* Gradient variables */
+    --gradient-blue: linear-gradient(90deg, #4285F4 0%, #34A853 100%);
+    --gradient-purple: linear-gradient(90deg, #9C27B0 0%, #E91E63 100%);
+    --gradient-green: linear-gradient(90deg, #34A853 0%, #FBBC05 100%);
+
+    /* Transition variable */
+    --transition: all 0.3s ease;
+
+    /* Typography */
+    --font-primary: "Kreon", serif;
+    --font-heading: "Kavoon", serif;
+    --font-brand: "Permanent Marker", cursive;
+    --font-accent: "Delius", cursive;
+}
+
+/* ========================================
+   CSS Reset and Base Styles
+   ======================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    background-color: var(--secondary-color);
+    font-family: var(--font-primary);
+    padding-bottom: 40px;
+    overflow-x: hidden;
+    color: var(--text-color);
+    min-height: 100%;
+}
+
+/* ========================================
+   Footer Styles
+   ======================================== */
+#footer {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin-top: 40px;
+    color: var(--primary-color);
+}
+
+/* ========================================
+   Common Section Title
+   ======================================== */
+.section-title {
+    font-family: var(--font-heading);
+    font-weight: 100;
+    font-size: 40px;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+}
+
+/* ========================================
+   Common Bento Grid Item Styles
+   ======================================== */
+.bento-item {
+    background-color: var(--accent-color);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.bento-item:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--card-shadow-hover);
+}

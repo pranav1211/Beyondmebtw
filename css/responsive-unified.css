@@ -1,0 +1,912 @@
+/* ========================================
+   UNIFIED RESPONSIVE.CSS
+   Consolidated responsive styles from all pages
+   ======================================== */
+
+/* ========================================
+   SHARED RESPONSIVE STYLES
+   Applied across all pages
+   ======================================== */
+
+/* Desktop to Tablet Transition (max-width: 1440px) */
+@media (max-width: 1440px) {
+    /* Header styles moved to header.css */
+
+    /* Main container adjustments */
+    .main-container {
+        max-width: 1350px;
+        padding: 0 30px;
+    }
+}
+
+/* Medium Screens (max-width: 1200px) */
+@media (max-width: 1200px) {
+    /* Bento Grid Adjustments */
+    .bento-grid {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        padding: 0 20px;
+    }
+
+    /* Featured Posts and Projects Grid */
+    .featured-posts-container,
+    .projects-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Blog Posts Grid */
+    .posts-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        width: 100%;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    /* Latest Post Responsiveness */
+    .latest-post-content {
+        flex-direction: column;
+    }
+
+    .latest-post-img {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+
+    .latest-post-details {
+        width: 100%;
+    }
+
+    /* Text Size Adjustments */
+    .latest-post-header {
+        font-size: 28px;
+        align-self: center;
+    }
+
+    .contact-header {
+        font-size: 22px;
+    }
+
+    /* About Page - Bento Container */
+    .bento-container {
+        grid-template-columns: 2fr 1fr;
+        grid-template-areas:
+            "who-i-am image-slider"
+            "who-i-am image-slider"
+            "experience skills"
+            "quotes quotes";
+    }
+
+    /* Projects Expanded View */
+    .projects-grid.expanded-view {
+        grid-template-columns: 220px 1fr;
+    }
+
+    .sidebar-card {
+        height: 110px;
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .sidebar-card .project-image {
+        height: 80px;
+        width: 80px;
+    }
+
+    .sidebar-card .project-info {
+        height: 80px;
+    }
+
+    .sidebar-card .project-info h3 {
+        font-size: 12px;
+    }
+
+    .expanded-header {
+        padding: 20px;
+    }
+
+    .project-logo {
+        width: 80px;
+        height: 80px;
+        margin-right: 20px;
+    }
+
+    .header-content h2 {
+        font-size: 26px;
+    }
+
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}
+
+/* Additional Tablet Improvements (max-width: 1200px and min-width: 769px) */
+@media (max-width: 1200px) and (min-width: 769px) {
+    .get-in-touch {
+        padding: 20px;
+    }
+
+    .contact-header {
+        margin-bottom: 15px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        padding: 10px;
+    }
+
+    .send-message-btn {
+        padding: 10px 20px;
+        align-self: flex-start;
+    }
+}
+
+/* Medium-Small Screens (max-width: 1024px) */
+@media (max-width: 1024px) {
+    /* Bento Grid Layout */
+    .bento-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    /* Index Page Grid Positioning */
+    .latest-post {
+        grid-column: 2 / 3;
+        grid-row: 2 / 3;
+    }
+
+    .featured-posts {
+        grid-column: 1 / 3;
+        grid-row: 4 / 5;
+    }
+
+    .projects-showcase {
+        grid-column: 1 / 3;
+        grid-row: 5 / 6;
+    }
+
+    .get-in-touch {
+        grid-column: 1 / 4;
+        grid-row: 3 / 4;
+        min-height: 400px;
+        height: auto;
+    }
+
+    /* Blog Posts Grid */
+    .posts-grid {
+        grid-template-columns: repeat(2, 1fr);
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    /* About Page Layout */
+    .bento-container {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "image-slider"
+            "who-i-am"
+            "experience"
+            "skills"
+            "quotes";
+        max-width: 95%;
+        padding: 10px;
+    }
+
+    .image-slider {
+        min-height: 450px;
+    }
+
+    .img2 {
+        position: absolute;
+        top: 10%;
+        transform: translateY(-10%);
+    }
+
+    .section-title {
+        font-size: 30px;
+    }
+
+    .skills-container {
+        flex-direction: column;
+    }
+
+    .skill-category {
+        width: 100%;
+    }
+
+    /* Projects Expanded View */
+    .projects-grid.expanded-view {
+        grid-template-columns: 180px 1fr;
+        gap: 15px;
+    }
+
+    .sidebar-card {
+        height: 90px;
+        margin-bottom: 10px;
+        padding: 8px;
+        gap: 8px;
+    }
+
+    .sidebar-card .project-image {
+        height: 70px;
+        width: 70px;
+    }
+
+    .sidebar-card .project-info {
+        height: 70px;
+    }
+
+    .sidebar-card .project-info h3 {
+        font-size: 11px;
+    }
+
+    .expanded-body {
+        padding: 20px;
+    }
+
+    .expanded-description {
+        font-size: 16px;
+    }
+
+    .nav-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    .prev-btn {
+        margin-left: -50px;
+    }
+
+    .next-btn {
+        margin-right: -50px;
+    }
+}
+
+/* Small Screens (max-width: 992px) */
+@media (max-width: 992px) {
+    /* Index Page Grid Positioning */
+    .latest-post {
+        grid-column: 2 / 3;
+        grid-row: 2 / 3;
+    }
+
+    .featured-posts {
+        grid-column: 1 / 3;
+        grid-row: 3 / 4;
+    }
+
+    .projects-showcase {
+        grid-column: 1 / 3;
+        grid-row: 4 / 5;
+    }
+
+    .get-in-touch {
+        grid-column: 1 / 2;
+        grid-row: 5 / 6;
+        min-height: 400px;
+        height: auto;
+    }
+
+    .form-group textarea {
+        min-height: 100px;
+    }
+
+    .twitter-feed {
+        grid-column: 2 / 3;
+        grid-row: 5 / 6;
+    }
+
+    /* Grid Column Stacking */
+    .featured-posts-container,
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* View All Button */
+    .view-all-btn {
+        margin-right: 25%;
+        margin-left: 25%;
+    }
+
+    /* Blog Posts Grid */
+    .posts-grid {
+        grid-template-columns: 1fr;
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .post-card {
+        min-height: 250px;
+    }
+
+    .post-thumbnail {
+        aspect-ratio: 16 / 9;
+        height: auto;
+    }
+
+    /* About Page Adjustments */
+    .bento-container {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+            "who-i-am image-slider"
+            "experience skills"
+            "quotes quotes";
+    }
+
+    .image-slider {
+        min-height: 400px;
+    }
+}
+
+/* Mobile Screens (max-width: 768px) */
+@media (max-width: 768px) {
+    /* Bento Grid - Single Column */
+    .bento-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Index Page Grid Items */
+    .profile-card,
+    .get-in-touch,
+    .welcome-section,
+    .latest-post,
+    .projects-showcase,
+    .featured-posts,
+    .twitter-feed {
+        grid-column: 1 / 2;
+    }
+
+    .profile-card {
+        grid-row: 1 / 3;
+        height: auto;
+        min-height: 350px;
+    }
+
+    .welcome-section {
+        grid-row: 3 / 4;
+    }
+
+    .latest-post {
+        grid-row: 4 / 5;
+    }
+
+    .get-in-touch {
+        grid-row: 5 / 7;
+        min-height: 450px;
+    }
+
+    .projects-showcase {
+        grid-row: 8 / 9;
+    }
+
+    .featured-posts {
+        grid-row: 7 / 8;
+    }
+
+    .twitter-feed {
+        grid-row: 9 / 10;
+    }
+
+    /* Latest Post */
+    .latest-post-content {
+        flex-direction: column;
+    }
+
+    .latest-post-img {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    /* View All Button */
+    .view-all-btn {
+        margin-right: 0%;
+        margin-left: 0%;
+    }
+
+    /* Blog Page */
+    .main-container {
+        padding: 0 15px;
+    }
+
+    .posts-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .post-card {
+        min-height: 280px;
+    }
+
+    .post-thumbnail {
+        aspect-ratio: 16 / 9;
+        height: auto;
+        font-size: 20px;
+    }
+
+    .search-container {
+        padding: 0 15px;
+    }
+
+    .search-input {
+        padding: 12px 18px 12px 45px;
+        font-size: 14px;
+    }
+
+    .search-icon {
+        left: 15px;
+        font-size: 16px;
+    }
+
+    .intro-section {
+        padding: 20px 15px;
+    }
+
+    .intro-section p {
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    .filter-section {
+        padding: 20px 15px;
+    }
+
+    .category-filters {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .category-filter {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+
+    .subcategory-filters {
+        justify-content: flex-start;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    .subcategory-filters.visible {
+        max-height: 300px;
+        justify-content: center;
+    }
+
+    .subcategory-filter {
+        flex: 0 0 auto;
+        min-width: fit-content;
+        text-align: center;
+        margin-bottom: 8px;
+    }
+
+    /* Projects Page */
+    .projects-container {
+        padding: 0 20px;
+    }
+
+    .section-title {
+        padding: 0 20px;
+        font-size: 32px;
+    }
+
+    .projects-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+        gap: 20px;
+    }
+
+    .projects-grid.expanded-view {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "main"
+            "sidebar";
+    }
+
+    .sidebar-container {
+        grid-area: sidebar;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .expanded-project {
+        grid-area: main;
+    }
+
+    .sidebar-card {
+        height: 80px;
+        margin-bottom: 0;
+        padding: 6px;
+        gap: 6px;
+    }
+
+    .sidebar-card .project-image {
+        height: 60px;
+        width: 60px;
+    }
+
+    .sidebar-card .project-info {
+        height: 60px;
+    }
+
+    .sidebar-card .project-info h3 {
+        font-size: 11px;
+    }
+
+    .project-image {
+        height: 200px;
+    }
+
+    .expanded-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .project-logo {
+        margin-bottom: 15px;
+    }
+
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+
+    .gallery-item {
+        height: 120px;
+    }
+
+    .image-nav {
+        width: 100%;
+    }
+
+    .prev-btn {
+        margin-left: -20px;
+    }
+
+    .next-btn {
+        margin-right: -20px;
+    }
+
+    /* About Page */
+    .bento-container {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "image-slider"
+            "who-i-am"
+            "experience"
+            "skills"
+            "quotes";
+        max-width: 95%;
+        padding: 10px;
+    }
+
+    .image-slider {
+        min-height: 450px;
+    }
+
+    .img1 {
+        position: absolute;
+        top: 5%;
+        transform: translateY(-5%);
+    }
+
+    .section-title {
+        font-size: 28px;
+    }
+
+    .skills-container {
+        flex-direction: column;
+    }
+
+    .skill-category {
+        width: 100%;
+    }
+}
+
+/* Extra Small Screens (max-width: 576px) */
+@media (max-width: 576px) {
+    /* Contact Form */
+    .get-in-touch {
+        padding: 15px;
+    }
+
+    .contact-header {
+        font-size: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 10px;
+    }
+
+    /* About Page */
+    .bento-item {
+        padding: 20px;
+    }
+
+    .section-title {
+        font-size: 24px;
+    }
+
+    .skill-category-title {
+        font-size: 20px;
+    }
+
+    .bento-container {
+        padding: 10px;
+        gap: 15px;
+    }
+
+    .image-slider {
+        min-height: 300px;
+    }
+
+    /* Projects Page */
+    .project-info h3 {
+        font-size: 20px;
+    }
+
+    .expanded-project {
+        border-radius: 15px;
+    }
+
+    .expanded-header {
+        padding: 15px;
+    }
+
+    .header-content h2 {
+        font-size: 22px;
+        margin-bottom: 10px;
+    }
+
+    .expanded-body {
+        padding: 15px;
+    }
+
+    .expanded-description {
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+
+    .project-links {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .project-link {
+        width: 100%;
+        text-align: center;
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+
+    .gallery-title {
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 10px;
+    }
+
+    .gallery-item {
+        height: 100px;
+    }
+
+    .close-expanded {
+        width: 32px;
+        height: 32px;
+        font-size: 18px;
+        top: 10px;
+        right: 10px;
+    }
+
+    .sidebar-container {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+
+    .sidebar-card {
+        height: 70px;
+        padding: 5px;
+        gap: 5px;
+    }
+
+    .sidebar-card .project-image {
+        height: 50px;
+        width: 50px;
+    }
+
+    .sidebar-card .project-info {
+        height: 50px;
+    }
+
+    .sidebar-card .project-info h3 {
+        font-size: 10px;
+    }
+}
+
+/* Very Small Screens (max-width: 480px) */
+@media (max-width: 480px) {
+    body {
+        overflow-x: hidden;
+    }
+
+    /* Blog Page */
+    .main-container {
+        padding: 0 10px;
+        max-width: 100%;
+    }
+
+    .posts-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .post-card {
+        padding: 12px;
+        min-height: 240px;
+    }
+
+    .post-thumbnail {
+        aspect-ratio: 16 / 9;
+        height: auto;
+        font-size: 16px;
+    }
+
+    .post-title {
+        font-size: 18px;
+        line-height: 1.3;
+    }
+
+    .post-excerpt {
+        font-size: 14px;
+        font-weight: 590;
+    }
+
+    .search-input {
+        padding: 8px 12px 8px 35px;
+        font-size: 12px;
+    }
+
+    .search-icon {
+        left: 10px;
+        font-size: 13px;
+    }
+
+    .filter-section {
+        padding: 15px 10px;
+    }
+
+    .filter-section h2 {
+        font-size: 22px;
+    }
+
+    .category-filter,
+    .subcategory-filter {
+        font-size: 18px;
+        padding: 10px 10px;
+    }
+
+    .subcategory-filters {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .subcategory-filters.visible {
+        max-height: 400px;
+    }
+}
+
+/* Tiny Screens (max-width: 320px) */
+@media (max-width: 320px) {
+    /* Blog Page */
+    .main-container {
+        padding: 0 5px;
+    }
+
+    .posts-grid {
+        grid-template-columns: 1fr;
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    .post-card {
+        padding: 8px;
+        min-height: 200px;
+    }
+
+    .post-title {
+        font-size: 14px;
+    }
+
+    .post-excerpt {
+        font-size: 12px;
+    }
+
+    .search-container {
+        padding: 0 5px;
+    }
+
+    .search-input {
+        padding: 6px 10px 6px 30px;
+        font-size: 11px;
+    }
+
+    .search-icon {
+        left: 8px;
+        font-size: 12px;
+    }
+
+    .subcategory-filters {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    .subcategory-filters.visible {
+        max-height: 500px;
+    }
+
+    .subcategory-filter {
+        font-size: 12px;
+        padding: 8px 16px;
+    }
+}
+
+/* Large Desktop Screens (min-width: 1920px) */
+@media (min-width: 1920px) {
+    .main-container {
+        max-width: 1800px;
+        padding: 0 40px;
+    }
+
+    .posts-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px;
+        width: 100%;
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+}
+
+/* ========================================
+   PROJECTS PAGE SPECIFIC RESPONSIVE
+   ======================================== */
+
+/* Category Projects Responsive Grid */
+@media (min-width: 1200px) {
+    .category-projects {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 1199px) and (min-width: 900px) {
+    .category-projects {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 899px) and (min-width: 600px) {
+    .category-projects {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 599px) {
+    .category-projects {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* About Page Cards Responsive */
+@media (max-width: 900px) {
+    .cards-container {
+        grid-template-columns: 1fr;
+    }
+}

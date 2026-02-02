@@ -14,6 +14,10 @@ The Current Home Page
 
 ## Changelog:
 
+## 4.0 (02/02/26) 
+- major revamp mostly code related
+- uniformity in the styling css across the pages
+
 ### 3.5 (20/12/25)
 - made some backend changes to the manage site, featured posts was still using the old authentication format, updated that.
 - logout button was not working and not styled properly, that has been fixed
