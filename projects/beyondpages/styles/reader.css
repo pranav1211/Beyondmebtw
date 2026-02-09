@@ -1,0 +1,159 @@
+/* Reading Area */
+.reading-area {
+    flex: 1;
+    overflow-y: auto;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.page-container {
+    max-width: 800px;
+    width: 100%;
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    min-height: 500px;
+}
+
+.page-content {
+    padding: 3rem 4rem;
+    font-family: 'Bookerly', 'Georgia', 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.8;
+    color: #0f1111;
+    text-align: justify;
+    word-spacing: 0.05em;
+}
+
+.page-content p {
+    margin-bottom: 1.2em;
+    text-indent: 1.5em;
+}
+
+.page-content p:first-child {
+    text-indent: 0;
+}
+
+/* Reader Footer */
+.reader-footer {
+    background-color: white;
+    border-top: 1px solid var(--border-color);
+    padding: 0;
+}
+
+.progress-bar {
+    height: 4px;
+    background-color: #e0e0e0;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.navigation-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+}
+
+.nav-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.nav-button:hover:not(:disabled) {
+    background-color: #1a252f;
+    transform: translateY(-1px);
+}
+
+.nav-button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.nav-button svg {
+    width: 18px;
+    height: 18px;
+}
+
+.page-info {
+    font-size: 1rem;
+    color: var(--secondary-text);
+    font-weight: 500;
+}
+
+.page-info span {
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+/* Scrollbar Styling (Webkit) */
+.reading-area::-webkit-scrollbar {
+    width: 8px;
+}
+
+.reading-area::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.reading-area::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.reading-area::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .page-content {
+        padding: 2rem 1.5rem;
+        font-size: 16px;
+    }
+
+    .navigation-controls {
+        padding: 0.75rem 1rem;
+    }
+
+    .nav-button {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .page-info {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-content {
+        padding: 1.5rem 1rem;
+        font-size: 15px;
+    }
+
+    .nav-button span {
+        display: none;
+    }
+
+    .nav-button {
+        padding: 0.6rem;
+    }
+}
