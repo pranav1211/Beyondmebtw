@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kindle PDF Reader</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/reader.css">
+</head>
+<body>
+    <!-- Upload Section -->
+    <div id="upload-section" class="upload-container">
+        <div class="upload-box">
+            <h1>📚 Kindle PDF Reader</h1>
+            <p>Upload a PDF to start reading</p>
+            <input type="file" id="pdf-upload" accept=".pdf" />
+            <label for="pdf-upload" class="upload-button">Choose PDF File</label>
+            <p class="upload-hint">or drag and drop here</p>
+        </div>
+    </div>
+
+    <!-- Reader Section -->
+    <div id="reader-section" class="reader-container" style="display: none;">
+        <!-- Header -->
+        <header class="reader-header">
+            <button id="back-button" class="icon-button" title="Back to upload">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+            </button>
+            <div class="book-info">
+                <h2 id="book-title">Document Title</h2>
+            </div>
+            <div class="header-spacer"></div>
+        </header>
+
+        <!-- Reading Area -->
+        <main class="reading-area">
+            <div class="page-container">
+                <div id="page-content" class="page-content">
+                    <div class="loading">Loading page...</div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Navigation Footer -->
+        <footer class="reader-footer">
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill"></div>
+            </div>
+            <div class="navigation-controls">
+                <button id="prev-page" class="nav-button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 18l-6-6 6-6"/>
+                    </svg>
+                    Previous
+                </button>
+                <div class="page-info">
+                    <span id="current-page">1</span> / <span id="total-pages">1</span>
+                </div>
+                <button id="next-page" class="nav-button">
+                    Next
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 18l6-6-6-6"/>
+                    </svg>
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- PDF.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    
+    <!-- Application Scripts -->
+    <script src="js/pdf-handler.js"></script>
+    <script src="js/reader.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
