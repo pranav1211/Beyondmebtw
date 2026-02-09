@@ -1,101 +1,155 @@
 /**
- * Reader - Manages the reading interface and text display
+ * Reader - Manages the reading interface and page navigation
  */
 
 class Reader {
     constructor(pdfHandler) {
         this.pdfHandler = pdfHandler;
+        this.currentPage = 1;
         
-        // DOM Elements
-        this.pageText = document.getElementById('pageText');
-        this.currentPageSpan = document.getElementById('currentPage');
-        this.totalPagesSpan = document.getElementById('totalPages');
-        this.prevBtn = document.getElementById('prevBtn');
-        this.nextBtn = document.getElementById('nextBtn');
-        this.bookTitle = document.getElementById('bookTitle');
-        this.readingContainer = document.getElementById('readingContainer');
+        // DOM elements - get references
+        this.pageContent = document.getElementById('page-content');
+        this.currentPageSpan = document.getElementById('current-page');
+        this.totalPagesSpan = document.getElementById('total-pages');
+        this.progressFill = document.getElementById('progress-fill');
+        this.prevButton = document.getElementById('prev-page');
+        this.nextButton = document.getElementById('next-page');
+        this.bookTitle = document.getElementById('book-title');
+        
+        this.initializeEventListeners();
+    }
+
+    /**
+     * Initialize event listeners
+     */
+    initializeEventListeners() {
+        // Verify elements exist
+        if (!this.prevButton || !this.nextButton) {
+            console.error('Navigation buttons not found');
+            return;
+        }
+
+        // Navigation buttons
+        this.prevButton.addEventListener('click', () => this.goToPreviousPage());
+        this.nextButton.addEventListener('click', () => this.goToNextPage());
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            // Only handle keys when reader is visible
+            const readerSection = document.getElementById('reader-section');
+            if (readerSection?.style.display === 'flex') {
+                if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                    e.preventDefault();
+                    this.goToPreviousPage();
+                } else if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+                    e.preventDefault();
+                    this.goToNextPage();
+                } else if (e.key === 'Home') {
+                    e.preventDefault();
+                    this.loadPage(1);
+                } else if (e.key === 'End') {
+                    e.preventDefault();
+                    this.loadPage(this.pdfHandler.getTotalPages());
+                }
+            }
+        });
     }
 
     /**
      * Initialize reader with PDF
-     * @param {string} fileName - Name of the PDF file
+     * @returns {Promise<void>}
      */
-    async initialize(fileName) {
-        this.updateBookTitle(fileName);
-        await this.displayCurrentPage();
-        this.updateNavigation();
-    }
-
-    /**
-     * Display the current page text
-     */
-    async displayCurrentPage() {
-        try {
-            const text = await this.pdfHandler.extractPageText(
-                this.pdfHandler.currentPage
-            );
-            
-            this.renderText(text);
-            this.updatePageInfo();
-            this.scrollToTop();
-        } catch (error) {
-            console.error('Error displaying page:', error);
-            this.renderError('Failed to load page content');
+    async initialize() {
+        const totalPages = this.pdfHandler.getTotalPages();
+        const fileName = this.pdfHandler.getFileName();
+        
+        // Update UI
+        if (this.bookTitle) {
+            this.bookTitle.textContent = fileName;
         }
+        
+        if (this.totalPagesSpan) {
+            this.totalPagesSpan.textContent = totalPages.toString();
+        }
+        
+        // Load first page
+        await this.loadPage(1);
+        
+        // Preload next pages
+        await this.pdfHandler.preloadPages(1);
     }
 
     /**
-     * Render text content with basic formatting
-     * @param {string} text - Text to render
+     * Load and display a specific page
+     * @param {number} pageNumber - Page number to load
+     * @returns {Promise<void>}
      */
-    renderText(text) {
-        if (!text || text.trim() === '') {
-            this.renderEmpty();
+    async loadPage(pageNumber) {
+        // Validate page number
+        const totalPages = this.pdfHandler.getTotalPages();
+        if (pageNumber < 1 || pageNumber > totalPages) {
             return;
         }
 
-        // Split into paragraphs
-        const paragraphs = text.split('\n\n').filter(p => p.trim());
+        // Show loading state
+        if (this.pageContent) {
+            this.pageContent.innerHTML = '<div class="loading">Loading page...</div>';
+        }
         
-        // Build HTML
-        let html = '';
-        paragraphs.forEach(para => {
-            para = para.trim();
-            if (para) {
-                // Simple heuristic for headings (all caps, short)
-                if (para === para.toUpperCase() && para.length < 100 && para.split(' ').length < 10) {
-                    html += `<h2>${this.escapeHtml(para)}</h2>`;
-                } else {
-                    html += `<p>${this.escapeHtml(para)}</p>`;
-                }
+        try {
+            // Extract and display page text
+            const pageText = await this.pdfHandler.extractPageText(pageNumber);
+            this.displayPageText(pageText);
+            
+            // Update current page
+            this.currentPage = pageNumber;
+            this.updateUI();
+            
+            // Preload adjacent pages in background
+            this.pdfHandler.preloadPages(pageNumber).catch(err => {
+                console.warn('Preload failed:', err);
+            });
+            
+            // Scroll to top
+            const readingArea = document.querySelector('.reading-area');
+            if (readingArea) {
+                readingArea.scrollTop = 0;
             }
-        });
-
-        this.pageText.innerHTML = html;
-        this.pageText.classList.remove('empty');
+        } catch (error) {
+            console.error('Error loading page:', error);
+            if (this.pageContent) {
+                this.pageContent.innerHTML = '<div class="loading">Error loading page. Please try again.</div>';
+            }
+        }
     }
 
     /**
-     * Render empty state
+     * Display page text with proper formatting
+     * @param {string} text - Text content to display
      */
-    renderEmpty() {
-        this.pageText.innerHTML = '<p class="empty">This page appears to be empty</p>';
-        this.pageText.classList.add('empty');
-    }
+    displayPageText(text) {
+        if (!this.pageContent) return;
 
-    /**
-     * Render error message
-     * @param {string} message - Error message
-     */
-    renderError(message) {
-        this.pageText.innerHTML = `<p class="empty">${this.escapeHtml(message)}</p>`;
-        this.pageText.classList.add('empty');
+        // Split text into paragraphs
+        const paragraphs = text
+            .split('\n\n')
+            .filter(p => p.trim().length > 0);
+        
+        // Create paragraph elements
+        const html = paragraphs.length > 0
+            ? paragraphs.map(para => {
+                const cleaned = para.trim().replace(/\n/g, ' ');
+                return `<p>${this.escapeHtml(cleaned)}</p>`;
+            }).join('')
+            : '<p>No text content found on this page.</p>';
+        
+        this.pageContent.innerHTML = html;
     }
 
     /**
      * Escape HTML to prevent XSS
      * @param {string} text - Text to escape
-     * @returns {string}
+     * @returns {string} Escaped HTML
      */
     escapeHtml(text) {
         const div = document.createElement('div');
@@ -104,89 +158,75 @@ class Reader {
     }
 
     /**
-     * Update page information display
+     * Go to previous page
+     * @returns {Promise<void>}
      */
-    updatePageInfo() {
-        const info = this.pdfHandler.getCurrentPageInfo();
-        this.currentPageSpan.textContent = info.currentPage;
-        this.totalPagesSpan.textContent = info.totalPages;
-    }
-
-    /**
-     * Update navigation button states
-     */
-    updateNavigation() {
-        const info = this.pdfHandler.getCurrentPageInfo();
-        this.prevBtn.disabled = !info.hasPrevious;
-        this.nextBtn.disabled = !info.hasNext;
-    }
-
-    /**
-     * Navigate to next page
-     */
-    async nextPage() {
-        const result = await this.pdfHandler.nextPage();
-        if (result) {
-            this.renderText(result.text);
-            this.updatePageInfo();
-            this.updateNavigation();
-            this.scrollToTop();
+    async goToPreviousPage() {
+        if (this.currentPage > 1) {
+            await this.loadPage(this.currentPage - 1);
         }
     }
 
     /**
-     * Navigate to previous page
+     * Go to next page
+     * @returns {Promise<void>}
      */
-    async previousPage() {
-        const result = await this.pdfHandler.previousPage();
-        if (result) {
-            this.renderText(result.text);
-            this.updatePageInfo();
-            this.updateNavigation();
-            this.scrollToTop();
+    async goToNextPage() {
+        if (this.currentPage < this.pdfHandler.getTotalPages()) {
+            await this.loadPage(this.currentPage + 1);
         }
     }
 
     /**
-     * Go to specific page
-     * @param {number} pageNumber - Target page number
+     * Update UI elements (page numbers, progress, buttons)
      */
-    async goToPage(pageNumber) {
-        const result = await this.pdfHandler.goToPage(pageNumber);
-        if (result) {
-            this.renderText(result.text);
-            this.updatePageInfo();
-            this.updateNavigation();
-            this.scrollToTop();
+    updateUI() {
+        const totalPages = this.pdfHandler.getTotalPages();
+        
+        // Update page numbers
+        if (this.currentPageSpan) {
+            this.currentPageSpan.textContent = this.currentPage.toString();
+        }
+        
+        // Update progress bar
+        if (this.progressFill) {
+            const progress = (this.currentPage / totalPages) * 100;
+            this.progressFill.style.width = `${progress}%`;
+        }
+        
+        // Update button states
+        if (this.prevButton) {
+            this.prevButton.disabled = this.currentPage === 1;
+        }
+        
+        if (this.nextButton) {
+            this.nextButton.disabled = this.currentPage === totalPages;
         }
     }
 
     /**
-     * Update book title
-     * @param {string} fileName - File name
+     * Reset reader state
      */
-    updateBookTitle(fileName) {
-        // Remove .pdf extension and clean up
-        const title = fileName.replace(/\.pdf$/i, '').replace(/[_-]/g, ' ');
-        this.bookTitle.textContent = title;
-    }
-
-    /**
-     * Scroll reading container to top
-     */
-    scrollToTop() {
-        this.readingContainer.scrollTop = 0;
-    }
-
-    /**
-     * Clear reader state
-     */
-    clear() {
-        this.pageText.innerHTML = '';
-        this.currentPageSpan.textContent = '1';
-        this.totalPagesSpan.textContent = '1';
-        this.bookTitle.textContent = 'Document';
-        this.prevBtn.disabled = true;
-        this.nextBtn.disabled = true;
+    reset() {
+        this.currentPage = 1;
+        
+        if (this.pageContent) {
+            this.pageContent.innerHTML = '<div class="loading">Loading page...</div>';
+        }
+        
+        if (this.currentPageSpan) {
+            this.currentPageSpan.textContent = '1';
+        }
+        
+        if (this.totalPagesSpan) {
+            this.totalPagesSpan.textContent = '1';
+        }
+        
+        if (this.progressFill) {
+            this.progressFill.style.width = '0%';
+        }
     }
 }
+
+// Make available globally
+window.Reader = Reader;

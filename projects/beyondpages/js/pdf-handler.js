@@ -1,21 +1,25 @@
-// PDF Handler - Handles PDF loading and text extraction using PDF.js
+/**
+ * PDF Handler - Manages PDF loading and text extraction using PDF.js
+ */
 
 class PDFHandler {
     constructor() {
         this.pdfDoc = null;
         this.totalPages = 0;
-        this.pages = []; // Store extracted text for each page
+        this.pages = new Map(); // Use Map for better performance
         this.fileName = '';
         
         // Configure PDF.js worker
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 
-            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 
+                'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
     }
 
     /**
      * Load PDF from file
      * @param {File} file - PDF file object
-     * @returns {Promise}
+     * @returns {Promise<number>} Total number of pages
      */
     async loadPDF(file) {
         this.fileName = file.name.replace('.pdf', '');
@@ -37,12 +41,12 @@ class PDFHandler {
     /**
      * Extract text from a specific page
      * @param {number} pageNumber - Page number (1-indexed)
-     * @returns {Promise<string>}
+     * @returns {Promise<string>} Extracted text content
      */
     async extractPageText(pageNumber) {
         // Return cached page if already extracted
-        if (this.pages[pageNumber]) {
-            return this.pages[pageNumber];
+        if (this.pages.has(pageNumber)) {
+            return this.pages.get(pageNumber);
         }
 
         try {
@@ -53,7 +57,7 @@ class PDFHandler {
             let pageText = '';
             let lastY = null;
             
-            textContent.items.forEach((item, index) => {
+            for (const [index, item] of textContent.items.entries()) {
                 const currentY = item.transform[5];
                 
                 // Add paragraph breaks when Y position changes significantly
@@ -74,13 +78,13 @@ class PDFHandler {
                 }
                 
                 lastY = currentY;
-            });
+            }
             
             // Clean up the text
             pageText = this.cleanText(pageText);
             
             // Cache the page
-            this.pages[pageNumber] = pageText;
+            this.pages.set(pageNumber, pageText);
             
             return pageText;
         } catch (error) {
@@ -92,7 +96,7 @@ class PDFHandler {
     /**
      * Clean and format extracted text
      * @param {string} text - Raw text
-     * @returns {string}
+     * @returns {string} Cleaned text
      */
     cleanText(text) {
         return text
@@ -106,7 +110,7 @@ class PDFHandler {
 
     /**
      * Get total number of pages
-     * @returns {number}
+     * @returns {number} Total pages
      */
     getTotalPages() {
         return this.totalPages;
@@ -114,7 +118,7 @@ class PDFHandler {
 
     /**
      * Get PDF file name
-     * @returns {string}
+     * @returns {string} File name without extension
      */
     getFileName() {
         return this.fileName;
@@ -124,18 +128,21 @@ class PDFHandler {
      * Preload multiple pages for better performance
      * @param {number} currentPage - Current page number
      * @param {number} lookahead - Number of pages to preload ahead
+     * @returns {Promise<void>}
      */
     async preloadPages(currentPage, lookahead = 2) {
         const promises = [];
         
         for (let i = 1; i <= lookahead; i++) {
             const pageNum = currentPage + i;
-            if (pageNum <= this.totalPages && !this.pages[pageNum]) {
+            if (pageNum <= this.totalPages && !this.pages.has(pageNum)) {
                 promises.push(this.extractPageText(pageNum));
             }
         }
         
-        await Promise.all(promises);
+        if (promises.length > 0) {
+            await Promise.all(promises);
+        }
     }
 
     /**
@@ -144,10 +151,10 @@ class PDFHandler {
     reset() {
         this.pdfDoc = null;
         this.totalPages = 0;
-        this.pages = [];
+        this.pages.clear();
         this.fileName = '';
     }
 }
 
-// Export for use in other modules
+// Make available globally
 window.PDFHandler = PDFHandler;

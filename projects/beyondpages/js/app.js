@@ -1,200 +1,216 @@
 /**
- * Main Application - Coordinates PDF loading and reading interface
+ * Main Application - Coordinates PDF upload and reader initialization
  */
 
 class KindlePDFReader {
     constructor() {
-        // Initialize modules
         this.pdfHandler = new PDFHandler();
-        this.reader = new Reader(this.pdfHandler);
+        this.reader = null;
         
-        // DOM Elements
-        this.uploadScreen = document.getElementById('uploadScreen');
-        this.readingScreen = document.getElementById('readingScreen');
-        this.uploadArea = document.getElementById('uploadArea');
-        this.fileInput = document.getElementById('fileInput');
-        this.loadingOverlay = document.getElementById('loadingOverlay');
-        this.backBtn = document.getElementById('backBtn');
+        // Initialize DOM elements and event listeners
+        this.initializeDOMElements();
         
-        // State
-        this.currentFile = null;
-        
-        this.initializeEventListeners();
+        if (this.areElementsReady()) {
+            this.initializeEventListeners();
+        } else {
+            console.error('Critical DOM elements not found');
+        }
     }
 
     /**
-     * Set up all event listeners
+     * Initialize DOM element references
+     */
+    initializeDOMElements() {
+        this.uploadSection = document.getElementById('upload-section');
+        this.readerSection = document.getElementById('reader-section');
+        this.pdfUpload = document.getElementById('pdf-upload');
+        this.backButton = document.getElementById('back-button');
+        this.uploadBox = document.querySelector('.upload-box');
+    }
+
+    /**
+     * Check if critical elements are available
+     * @returns {boolean} True if all elements exist
+     */
+    areElementsReady() {
+        return !!(
+            this.uploadSection && 
+            this.readerSection && 
+            this.pdfUpload && 
+            this.backButton && 
+            this.uploadBox
+        );
+    }
+
+    /**
+     * Initialize event listeners
      */
     initializeEventListeners() {
-        // File upload events
-        this.uploadArea.addEventListener('click', () => {
-            this.fileInput.click();
-        });
-
-        this.fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                this.handleFileUpload(file);
-            }
-        });
-
-        // Drag and drop
-        this.uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            this.uploadArea.classList.add('drag-over');
-        });
-
-        this.uploadArea.addEventListener('dragleave', () => {
-            this.uploadArea.classList.remove('drag-over');
-        });
-
-        this.uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            this.uploadArea.classList.remove('drag-over');
-            
-            const file = e.dataTransfer.files[0];
-            if (file && file.type === 'application/pdf') {
-                this.handleFileUpload(file);
-            } else {
-                this.showError('Please upload a valid PDF file');
-            }
-        });
-
-        // Navigation events
-        this.reader.prevBtn.addEventListener('click', () => {
-            this.reader.previousPage();
-        });
-
-        this.reader.nextBtn.addEventListener('click', () => {
-            this.reader.nextPage();
-        });
-
+        // File upload
+        this.pdfUpload.addEventListener('change', (e) => this.handleFileUpload(e));
+        
         // Back button
-        this.backBtn.addEventListener('click', () => {
-            this.returnToUpload();
-        });
+        this.backButton.addEventListener('click', () => this.returnToUpload());
+        
+        // Drag and drop
+        this.setupDragAndDrop();
+    }
 
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (this.readingScreen.classList.contains('active')) {
-                this.handleKeyPress(e);
+    /**
+     * Setup drag and drop functionality
+     */
+    setupDragAndDrop() {
+        this.uploadBox.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.uploadBox.style.borderColor = '#667eea';
+            this.uploadBox.style.backgroundColor = '#f0f4ff';
+        });
+        
+        this.uploadBox.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.uploadBox.style.borderColor = '';
+            this.uploadBox.style.backgroundColor = '';
+        });
+        
+        this.uploadBox.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.uploadBox.style.borderColor = '';
+            this.uploadBox.style.backgroundColor = '';
+            
+            const files = e.dataTransfer?.files;
+            if (files?.length > 0 && files[0].type === 'application/pdf') {
+                this.handleFileUpload({ target: { files } });
+            } else {
+                alert('Please drop a valid PDF file');
             }
         });
     }
 
     /**
-     * Handle file upload
-     * @param {File} file - PDF file
+     * Handle PDF file upload
+     * @param {Event} event - File input change event
+     * @returns {Promise<void>}
      */
-    async handleFileUpload(file) {
-        if (file.type !== 'application/pdf') {
-            this.showError('Please select a PDF file');
+    async handleFileUpload(event) {
+        const file = event.target?.files?.[0];
+        
+        if (!file) {
             return;
         }
-
-        this.currentFile = file;
-        this.showLoading(true);
-
+        
+        if (file.type !== 'application/pdf') {
+            alert('Please select a valid PDF file');
+            return;
+        }
+        
         try {
-            // Load the PDF
+            // Show loading message
+            this.showLoading('Loading PDF...');
+            
+            // Load PDF
             await this.pdfHandler.loadPDF(file);
             
             // Initialize reader
-            await this.reader.initialize(file.name);
+            this.reader = new Reader(this.pdfHandler);
+            await this.reader.initialize();
             
-            // Switch to reading screen
-            this.showReadingScreen();
+            // Switch to reader view
+            this.showReader();
             
-            this.showLoading(false);
         } catch (error) {
-            console.error('Error loading PDF:', error);
-            this.showError(error.message || 'Failed to load PDF');
-            this.showLoading(false);
+            console.error('Error handling file upload:', error);
+            alert(`Failed to load PDF: ${error.message || 'Unknown error'}`);
+            this.hideLoading();
         }
     }
 
     /**
-     * Show/hide loading overlay
-     * @param {boolean} show - Whether to show loading
+     * Show loading state
+     * @param {string} message - Loading message
      */
-    showLoading(show) {
-        if (show) {
-            this.loadingOverlay.classList.add('active');
-        } else {
-            this.loadingOverlay.classList.remove('active');
+    showLoading(message) {
+        if (!this.uploadBox) return;
+        
+        this.uploadBox.innerHTML = `
+            <h1>📚 Kindle PDF Reader</h1>
+            <p>${this.escapeHtml(message)}</p>
+            <div class="loading">Please wait...</div>
+        `;
+    }
+
+    /**
+     * Hide loading state and restore upload UI
+     */
+    hideLoading() {
+        if (!this.uploadBox) return;
+        
+        this.uploadBox.innerHTML = `
+            <h1>📚 Kindle PDF Reader</h1>
+            <p>Upload a PDF to start reading</p>
+            <input type="file" id="pdf-upload" accept=".pdf" />
+            <label for="pdf-upload" class="upload-button">Choose PDF File</label>
+            <p class="upload-hint">or drag and drop here</p>
+        `;
+        
+        // Re-initialize DOM elements and event listeners
+        this.initializeDOMElements();
+        
+        if (this.areElementsReady()) {
+            this.initializeEventListeners();
         }
     }
 
     /**
-     * Show error message
-     * @param {string} message - Error message
+     * Show reader interface
      */
-    showError(message) {
-        alert(message); // Simple for now, can be improved in later phases
-    }
-
-    /**
-     * Switch to reading screen
-     */
-    showReadingScreen() {
-        this.uploadScreen.classList.remove('active');
-        this.readingScreen.classList.add('active');
+    showReader() {
+        if (!this.uploadSection || !this.readerSection) return;
+        
+        this.uploadSection.style.display = 'none';
+        this.readerSection.style.display = 'flex';
     }
 
     /**
      * Return to upload screen
      */
     returnToUpload() {
-        if (confirm('Are you sure you want to close this document?')) {
-            this.readingScreen.classList.remove('active');
-            this.uploadScreen.classList.add('active');
-            
-            // Clear state
-            this.pdfHandler.clear();
-            this.reader.clear();
-            this.fileInput.value = '';
-            this.currentFile = null;
+        const confirmLeave = confirm('Are you sure you want to close this book? Your progress will be lost.');
+        
+        if (!confirmLeave) {
+            return;
         }
+
+        // Reset reader and PDF handler
+        this.reader?.reset();
+        this.pdfHandler.reset();
+        
+        // Switch to upload view
+        if (this.readerSection && this.uploadSection) {
+            this.readerSection.style.display = 'none';
+            this.uploadSection.style.display = 'flex';
+        }
+        
+        // Reset file input
+        this.hideLoading();
     }
 
     /**
-     * Handle keyboard shortcuts
-     * @param {KeyboardEvent} e - Keyboard event
+     * Escape HTML to prevent XSS
+     * @param {string} text - Text to escape
+     * @returns {string} Escaped HTML
      */
-    handleKeyPress(e) {
-        switch(e.key) {
-            case 'ArrowLeft':
-            case 'PageUp':
-                e.preventDefault();
-                if (!this.reader.prevBtn.disabled) {
-                    this.reader.previousPage();
-                }
-                break;
-                
-            case 'ArrowRight':
-            case 'PageDown':
-            case ' ': // Space bar
-                e.preventDefault();
-                if (!this.reader.nextBtn.disabled) {
-                    this.reader.nextPage();
-                }
-                break;
-                
-            case 'Home':
-                e.preventDefault();
-                this.reader.goToPage(1);
-                break;
-                
-            case 'End':
-                e.preventDefault();
-                this.reader.goToPage(this.pdfHandler.totalPages);
-                break;
-        }
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 }
 
-// Initialize the application when DOM is ready
+// Initialize application when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    window.app = new KindlePDFReader();
+    window.kindleApp = new KindlePDFReader();
     console.log('Kindle PDF Reader initialized');
 });
