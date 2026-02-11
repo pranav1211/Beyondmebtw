@@ -13,10 +13,11 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;           
-            background-color: #3d3de2;
+            font-family: 'Arial', sans-serif;
+            background-color: #3d3de2;            
             opacity: 0.8;
-            background-image: repeating-radial-gradient(circle at 0 0, transparent 0, #e5e5f7 10px), repeating-linear-gradient(#444cf755, #444cf7);
+            background: radial-gradient(circle, transparent 20%, #e5e5f7 20%, #e5e5f7 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #e5e5f7 20%, #e5e5f7 80%, transparent 80%, transparent) 25px 25px, linear-gradient(#444cf7 2px, transparent 2px) 0 -1px, linear-gradient(90deg, #444cf7 2px, #e5e5f7 2px) -1px 0;
+            background-size: 50px 50px, 50px 50px, 25px 25px, 25px 25px;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -32,6 +33,7 @@
             max-width: 500px;
             width: 90%;
             backdrop-filter: blur(10px);
+            opacity: 1;
         }
 
         .welcome-text {
@@ -188,6 +190,7 @@
             z-index: 1000;
             transition: all 0.3s ease;
             display: none;
+            opacity: 1;
         }
 
         .logout-btn:hover {
