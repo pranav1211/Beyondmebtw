@@ -3,77 +3,376 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BeyondPages | BeyondMeBtw /title>
-    <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="styles/reader.css">
+    <title>Kindle PDF Reader</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #upload-screen {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        #upload-screen h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #232f3e;
+        }
+
+        #upload-screen p {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: #232f3e;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .upload-btn:hover {
+            background: #1a252f;
+            transform: translateY(-2px);
+        }
+
+        #reader-screen {
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+            width: 100vw;
+            background: white;
+        }
+
+        #reader-screen.active {
+            display: flex;
+        }
+
+        .header {
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .book-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #232f3e;
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            background: #f9f9f9;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .page-wrapper {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            padding: 3rem 4rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+        }
+
+        .page-text {
+            font-family: Georgia, serif;
+            font-size: 18px;
+            line-height: 1.8;
+            color: #0f1111;
+            text-align: justify;
+        }
+
+        .page-text p {
+            margin-bottom: 1.2em;
+            text-indent: 1.5em;
+        }
+
+        .page-text p:first-child {
+            text-indent: 0;
+        }
+
+        .footer {
+            border-top: 1px solid #e0e0e0;
+            background: white;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #e0e0e0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+        }
+
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            background: #232f3e;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: #1a252f;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            font-size: 1rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+    </style>
 </head>
 <body>
-    <!-- Upload Section -->
-    <div id="upload-section" class="upload-container">
-        <div class="upload-box">
-            <h1>📚 BeyondPages</h1>
-            <p>Upload a PDF to start reading</p>
-            <input type="file" id="pdf-upload" accept=".pdf" />
-            <label for="pdf-upload" class="upload-button">Choose PDF File</label>
-            <p class="upload-hint">or drag and drop here</p>
+    <!-- Upload Screen -->
+    <div id="upload-screen">
+        <h1>📚 Kindle PDF Reader</h1>
+        <p>Upload a PDF to start reading</p>
+        <input type="file" id="file-input" accept=".pdf">
+        <label for="file-input" class="upload-btn">Choose PDF File</label>
+    </div>
+
+    <!-- Reader Screen -->
+    <div id="reader-screen">
+        <div class="header">
+            <button class="back-btn" id="back-btn">←</button>
+            <div class="book-title" id="book-title">Book Title</div>
+            <div style="width: 40px;"></div>
+        </div>
+
+        <div class="content-area">
+            <div class="page-wrapper">
+                <div class="page-text" id="page-content">
+                    <div class="loading">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+            <div class="nav-controls">
+                <button class="nav-btn" id="prev-btn">← Previous</button>
+                <div class="page-info">
+                    Page <span id="current-page">1</span> / <span id="total-pages">1</span>
+                </div>
+                <button class="nav-btn" id="next-btn">Next →</button>
+            </div>
         </div>
     </div>
 
-    <!-- Reader Section -->
-    <div id="reader-section" class="reader-container" style="display: none;">
-        <!-- Header -->
-        <header class="reader-header">
-            <button id="back-button" class="icon-button" title="Back to upload">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 12H5M12 19l-7-7 7-7"/>
-                </svg>
-            </button>
-            <div class="book-info">
-                <h2 id="book-title">Document Title</h2>
-            </div>
-            <div class="header-spacer"></div>
-        </header>
-
-        <!-- Reading Area -->
-        <main class="reading-area">
-            <div class="page-container">
-                <div id="page-content" class="page-content">
-                    <div class="loading">Loading page...</div>
-                </div>
-            </div>
-        </main>
-
-        <!-- Navigation Footer -->
-        <footer class="reader-footer">
-            <div class="progress-bar">
-                <div id="progress-fill" class="progress-fill"></div>
-            </div>
-            <div class="navigation-controls">
-                <button id="prev-page" class="nav-button">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M15 18l-6-6 6-6"/>
-                    </svg>
-                    Previous
-                </button>
-                <div class="page-info">
-                    <span id="current-page">1</span> / <span id="total-pages">1</span>
-                </div>
-                <button id="next-page" class="nav-button">
-                    Next
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 18l6-6-6-6"/>
-                    </svg>
-                </button>
-            </div>
-        </footer>
-    </div>
-
-    <!-- PDF.js Library -->
+    <!-- PDF.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    
-    <!-- Application Scripts -->
-    <script src="js/pdf-handler.js"></script>
-    <script src="js/reader.js"></script>
-    <script src="js/app.js"></script>
+    <script>
+        // Configure PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        // State
+        let pdfDoc = null;
+        let currentPage = 1;
+        let totalPages = 0;
+        let pageCache = {};
+
+        // Elements
+        const uploadScreen = document.getElementById('upload-screen');
+        const readerScreen = document.getElementById('reader-screen');
+        const fileInput = document.getElementById('file-input');
+        const backBtn = document.getElementById('back-btn');
+        const bookTitle = document.getElementById('book-title');
+        const pageContent = document.getElementById('page-content');
+        const currentPageSpan = document.getElementById('current-page');
+        const totalPagesSpan = document.getElementById('total-pages');
+        const progress = document.getElementById('progress');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+        // File upload
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file && file.type === 'application/pdf') {
+                await loadPDF(file);
+            }
+        });
+
+        // Navigation
+        prevBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                showPage(currentPage - 1);
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                showPage(currentPage + 1);
+            }
+        });
+
+        backBtn.addEventListener('click', () => {
+            if (confirm('Close this book?')) {
+                readerScreen.classList.remove('active');
+                uploadScreen.style.display = 'block';
+                pdfDoc = null;
+                pageCache = {};
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (readerScreen.classList.contains('active')) {
+                if (e.key === 'ArrowLeft' && currentPage > 1) {
+                    showPage(currentPage - 1);
+                } else if (e.key === 'ArrowRight' && currentPage < totalPages) {
+                    showPage(currentPage + 1);
+                }
+            }
+        });
+
+        // Load PDF
+        async function loadPDF(file) {
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                totalPages = pdfDoc.numPages;
+                
+                bookTitle.textContent = file.name.replace('.pdf', '');
+                totalPagesSpan.textContent = totalPages;
+                
+                uploadScreen.style.display = 'none';
+                readerScreen.classList.add('active');
+                
+                await showPage(1);
+            } catch (error) {
+                alert('Error loading PDF: ' + error.message);
+            }
+        }
+
+        // Show page
+        async function showPage(pageNum) {
+            pageContent.innerHTML = '<div class="loading">Loading...</div>';
+            
+            try {
+                let text = pageCache[pageNum];
+                
+                if (!text) {
+                    const page = await pdfDoc.getPage(pageNum);
+                    const textContent = await page.getTextContent();
+                    
+                    let pageText = '';
+                    let lastY = null;
+                    
+                    textContent.items.forEach((item, i) => {
+                        const y = item.transform[5];
+                        
+                        if (lastY !== null && Math.abs(lastY - y) > 10) {
+                            pageText += '\n\n';
+                        }
+                        
+                        pageText += item.str;
+                        
+                        if (i < textContent.items.length - 1) {
+                            const nextY = textContent.items[i + 1].transform[5];
+                            if (Math.abs(y - nextY) < 5) {
+                                pageText += ' ';
+                            }
+                        }
+                        
+                        lastY = y;
+                    });
+                    
+                    text = pageText.trim();
+                    pageCache[pageNum] = text;
+                }
+                
+                // Display text
+                const paragraphs = text.split('\n\n').filter(p => p.trim());
+                const html = paragraphs.map(p => `<p>${escapeHtml(p.trim())}</p>`).join('');
+                pageContent.innerHTML = html || '<p>No text found</p>';
+                
+                currentPage = pageNum;
+                currentPageSpan.textContent = pageNum;
+                progress.style.width = (pageNum / totalPages * 100) + '%';
+                
+                prevBtn.disabled = pageNum === 1;
+                nextBtn.disabled = pageNum === totalPages;
+                
+                document.querySelector('.content-area').scrollTop = 0;
+                
+            } catch (error) {
+                pageContent.innerHTML = '<div class="loading">Error loading page</div>';
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
 </body>
 </html>
