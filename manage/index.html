@@ -14,20 +14,31 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #3d3de2;            
-            opacity: 0.8;
-            background: radial-gradient(circle, transparent 20%, #e5e5f7 20%, #e5e5f7 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #e5e5f7 20%, #e5e5f7 80%, transparent 80%, transparent) 25px 25px, linear-gradient(#444cf7 2px, transparent 2px) 0 -1px, linear-gradient(90deg, #444cf7 2px, #e5e5f7 2px) -1px 0;
-            background-size: 50px 50px, 50px 50px, 25px 25px, 25px 25px;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #333;
-            z-index: 0;
+            position: relative;
+            overflow: hidden;
         }
 
-        .container {
-            background: rgba(255, 255, 255, 0.95);
+        /* Background layer */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle, transparent 20%, #e5e5f7 20%, #e5e5f7 80%, transparent 80%, transparent),
+                radial-gradient(circle, transparent 20%, #e5e5f7 20%, #e5e5f7 80%, transparent 80%, transparent) 25px 25px,
+                linear-gradient(#444cf7 2px, transparent 2px) 0 -1px,
+                linear-gradient(90deg, #444cf7 2px, #e5e5f7 2px) -1px 0;
+            background-size: 50px 50px, 50px 50px, 25px 25px, 25px 25px;
+            opacity: 0.8;
+            z-index: -1;
+        }
+
+        .container {            
             padding: 3rem;
             border-radius: 20px;
             text-align: center;
@@ -35,7 +46,9 @@
             width: 90%;
             backdrop-filter: blur(10px);
             opacity: 1;
+            position: relative;
             z-index: 1;
+            background: rgba(255, 255, 255, 0.95);
         }
 
         .welcome-text {
@@ -191,8 +204,7 @@
             cursor: pointer;
             z-index: 2;
             transition: all 0.3s ease;
-            display: none;
-            opacity: 1;
+            display: none;            
         }
 
         .logout-btn:hover {
