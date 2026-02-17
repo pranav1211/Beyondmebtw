@@ -3,7 +3,7 @@
     "title": "Dhurandhar Movie Review",
     "date": "2026-02-06",
     "excerpt": "Dhurandhar shakes the genre and delivers a fun and thrilling experience. Rooted in indian history the movie sees…",
-    "thumbnail": "https://content.beyondmebtw.com/movietv/movie/dhurandhar.webp",
+    "thumbnail": "https://content.beyondmebtw.com/thumbnails/movietv/movie/dhurandhar.webp",
     "link": "https://medium.com/@beyondmebtw/dhurandhar-movie-review-61b9abd71e04"
   },
   "featured": [
@@ -11,28 +11,28 @@
       "title": "The 2024 Formula 1 Season Review",
       "date": "January 18, 2025",
       "excerpt": "I never understood the appeal of Formula 1. To me, Formula 1 was just cars going around in circles — a repetitive and pointless activity. But then ...",
-      "thumbnail": "https://content.beyondmebtw.com/f1/general/gen1.webp",
+      "thumbnail": "https://content.beyondmebtw.com/thumbnails/f1/general/gen1.webp",
       "link": "https://medium.com/@beyondmebtw/the-2024-formula-1-season-review-eab959704540"
     },
     {
       "title": "The End — My Gradient Club Journey",
       "date": "2025-12-20",
       "excerpt": "A reflection on my journey as Tech Head. The work, the chaos and the people who made it worth it.",
-      "thumbnail": "https://content.beyondmebtw.com/experience/exper32.webp",
+      "thumbnail": "https://content.beyondmebtw.com/thumbnails/experience/exper32.webp",
       "link": "https://medium.com/@beyondmebtw/the-end-my-gradient-club-journey-8829d749f4b7"
     },
     {
       "title": "Perfetti Sconosciuti (Perfect Strangers) Review",
       "date": "November 12, 2024",
       "excerpt": "Bong Joon-ho said, 'Once you overcome the one-inch tall barrier of subtitles, you will be introduced to so many more amazing films.' And watching Perfetti Sconosciuti has made that quote feel more true than ever....",
-      "thumbnail": "https://content.beyondmebtw.com/movietv/movie/mov38.webp",
+      "thumbnail": "https://content.beyondmebtw.com/thumbnails/movietv/movie/mov38.webp",
       "link": "https://medium.com/@beyondmebtw/perfetti-sconosciuti-perfect-strangers-review-3db8a6dc36f1"
     },
     {
       "title": "F1 : The Movie Review. Fast, Fun and Entertaining",
       "date": "2025-07-11",
       "excerpt": "This movie is a love letter, to motorsport, to Formula 1, to the machines that defy limits. A seamless blend of drama and racing…",
-      "thumbnail": "https://content.beyondmebtw.com/movietv/movie/mov44.webp",
+      "thumbnail": "https://content.beyondmebtw.com/thumbnails/movietv/movie/mov44.webp",
       "link": "https://medium.com/@beyondmebtw/f1-the-movie-review-fast-fun-and-entertaining-68be7e150f6d"
     }
   ],
@@ -43,14 +43,14 @@
           "mainPost": {
             "uid": "f12025re_24",
             "title": "The 2025 Abu Dhabi Grand Prix Recap",
-            "thumbnail": "https://content.beyondmebtw.com/f1/2025/24.webp"
+            "thumbnail": "https://content.beyondmebtw.com/thumbnails/f1/2025/24.webp"
           }
         },
         "general": {
           "mainPost": {
             "uid": "f1gen_2",
             "title": "F1 75 Recap — Unveiling the colors of speed",
-            "thumbnail": "https://content.beyondmebtw.com/f1/general/gen2.webp"
+            "thumbnail": "https://content.beyondmebtw.com/thumbnails/f1/general/gen2.webp"
           }
         }
       }
@@ -61,14 +61,14 @@
           "mainPost": {
             "uid": "movies_77",
             "title": "Dhurandhar Movie Review",
-            "thumbnail": "https://content.beyondmebtw.com/movietv/movie/dhurandhar.webp"
+            "thumbnail": "https://content.beyondmebtw.com/thumbnails/movietv/movie/dhurandhar.webp"
           }
         },
         "tv": {
           "mainPost": {
             "uid": "tv_13",
             "title": "Gen V Season 2 Review",
-            "thumbnail": "https://content.beyondmebtw.com/movietv/tv/tv13.webp"
+            "thumbnail": "https://content.beyondmebtw.com/thumbnails/movietv/tv/tv13.webp"
           }
         }
       }
@@ -77,14 +77,14 @@
       "mainPost": {
         "uid": "exper_33",
         "title": "Hello 2026!",
-        "thumbnail": "https://content.beyondmebtw.com/experience/exper33.webp"
+        "thumbnail": "https://content.beyondmebtw.com/thumbnails/experience/exper33.webp"
       }
     },
     "techart": {
       "mainPost": {
         "uid": "tech_002",
         "title": "How to Block an App from Accessing the Internet in Windows 10",
-        "thumbnail": "https://content.beyondmebtw.com/tech/tech2.png"
+        "thumbnail": "https://content.beyondmebtw.com/thumbnails/tech/tech2.webp"
       }
     }
   }
