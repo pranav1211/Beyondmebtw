@@ -11,6 +11,8 @@ header {
     display: flex;
     align-items: flex-start;
     margin-bottom: 30px;
+    min-height: 88px;
+    contain: layout;
 }
 
 /* ========================================
@@ -156,6 +158,9 @@ header {
 @media (max-width: 768px) {
     header {
         margin-bottom: 0px;
+        min-height: 200px;
+        flex-direction: column;
+        align-items: center;
     }
 
     #name {

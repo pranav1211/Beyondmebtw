@@ -14,6 +14,13 @@ The Current Home Page
 
 ## Changelog:
 
+## 4.1 (24/02/26)
+- css code file paths configured to use https
+- styling changes to about section skills and expeirence data structures generated
+- projects styling improved with the logos and cta
+- changed email on homepage
+- overall ui fixes regarding shifting during loading
+
 ## 4.0 (02/02/26) 
 - major revamp mostly code related
 - uniformity in the styling css across the pages
