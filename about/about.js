@@ -74,6 +74,13 @@ function renderSkills() {
             </div>
         `;
 
+        // Application description (moved to top)
+        const applicationHTML = `
+            <div class="skill-application">
+                ${categoryData.application}
+            </div>
+        `;
+
         let contentHTML = '';
 
         // Check if this category has subcategories (Software Development)
@@ -110,14 +117,7 @@ function renderSkills() {
             `;
         }
 
-        // Application description
-        contentHTML += `
-            <div class="skill-application">
-                ${categoryData.application}
-            </div>
-        `;
-
-        categoryElement.innerHTML = headerHTML + contentHTML;
+        categoryElement.innerHTML = headerHTML + applicationHTML + contentHTML;
         skillsContainer.appendChild(categoryElement);
     });
 }

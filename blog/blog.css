@@ -3,6 +3,49 @@
    Base, Header, Footer, and Buttons moved to shared files
    ======================================== */
 
+/* ========================================
+   Header Jitter Prevention
+   ======================================== */
+header {
+    min-height: 88px;
+    contain: layout;
+    position: relative;
+}
+
+/* Prevent layout shift during initial load */
+body {
+    overflow-x: hidden;
+}
+
+/* Ensure stable positioning for header elements */
+#name {
+    contain: layout style;
+}
+
+#links {
+    contain: layout;
+}
+
+.minis-button {
+    will-change: transform;
+    contain: layout style;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Prevent font loading jitter */
+@media (max-width: 768px) {
+    header {
+        min-height: 200px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1440px) {
+    header {
+        min-height: 120px;
+    }
+}
+
 /* Loading and Load More - Blog Specific */
 .loading-container {
     text-align: center;

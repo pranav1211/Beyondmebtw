@@ -76,10 +76,29 @@
     grid-area: sidebar;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    max-height: 80vh;
+    gap: 15px;
+    max-height: calc(100vh - 200px);
     overflow-y: auto;
-    padding-right: 10px;
+    padding-right: 5px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(59, 52, 45, 0.3) transparent;
+}
+
+.sidebar-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-container::-webkit-scrollbar-thumb {
+    background-color: rgba(59, 52, 45, 0.3);
+    border-radius: 3px;
+}
+
+.sidebar-container::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(59, 52, 45, 0.5);
 }
 
 .sidebar-category {
@@ -134,15 +153,15 @@
 
 /* Sidebar Cards - Square Layout */
 .project-card.sidebar-card {
-    height: 130px;
+    height: 150px;
     width: 100%;
     border-radius: 16px;
     margin-bottom: 0;
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 12px;
-    gap: 12px;
+    padding: 15px;
+    gap: 15px;
     position: relative;
     overflow: hidden;
 }
@@ -179,14 +198,14 @@
 }
 
 .sidebar-card .project-image {
-    height: 100px;
-    width: 100px;
+    height: 120px;
+    width: 120px;
     flex-shrink: 0;
     border-radius: 12px;
     overflow: hidden;
     position: relative;
     background: linear-gradient(135deg, #F4F2EF 0%, #E8D9CD 100%);
-    padding: 8px;
+    padding: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -230,17 +249,18 @@
     flex-direction: column;
     justify-content: center;
     min-width: 0;
-    height: 100px;
+    height: 120px;
 }
 
 .sidebar-card .project-info h3 {
-    font-size: 14px;
+    font-size: 16px;
     margin: 0;
     line-height: 1.4;
     overflow: hidden;
     text-overflow: ellipsis;
-    display: -webkit-box;    
+    display: -webkit-box;
     -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
 }
 
 /* Hide elements in sidebar cards */
