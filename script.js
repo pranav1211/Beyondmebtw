@@ -35,14 +35,11 @@ if (profilePic) {
 
 document.getElementById('copy-email').addEventListener('click', function (event) {
     event.preventDefault();
-    const email = document.getElementById('email-address').innerText;
-    navigator.clipboard.writeText(email)
-        .then(() => {
-            showToast('Email copied to clipboard!');
-        })
-        .catch((err) => {
-            console.error('Failed to copy email: ', err);
-        });
+    const email = "pranav@beyondmebtw.com";
+
+    const gmailUrl = `https://mail.google.com/mail/u/0/?to=${encodeURIComponent(email)}&tf=cm`;
+
+    window.open(gmailUrl, '_blank');
 });
 
 function showToast(message) {
@@ -114,13 +111,13 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelector('.latest-post-date').innerText = formattedDate;
             document.querySelector('.latest-post-excerpt').innerText = mainPost.excerpt;
             document.querySelector('.latest-post-img').src = mainPost.thumbnail;
-            
+
             document.querySelector('.latest-post-content').onclick = () => window.open(mainPost.link, '_blank');
             document.querySelector('.read-more').onclick = () => window.open(mainPost.link, '_blank');
 
             // Render featured posts using component approach
-            renderFeaturedPosts(data.featured);           
-            
+            renderFeaturedPosts(data.featured);
+
         })
         .catch((error) => {
             console.error("Error fetching JSON data:", error);
