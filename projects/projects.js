@@ -40,11 +40,13 @@ new Vue({
             // Select the project
             this.selectedProject = projectId;
 
-            // Scroll to the top of the projects container
+            // Only scroll on mobile (width <= 768px), desktop just opens in place
             this.$nextTick(() => {
-                const container = this.$el.querySelector('.projects-container');
-                if (container) {
-                    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                if (window.innerWidth <= 768) {
+                    const container = this.$el.querySelector('.projects-container');
+                    if (container) {
+                        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
                 }
             });
         },

@@ -146,8 +146,7 @@
   white-space: normal !important;
   word-break: break-word !important;
   overflow-wrap: break-word !important;
-  display: -webkit-box !important;
-  -webkit-line-clamp: 2 !important;
+  display: -webkit-box !important;  
   -webkit-box-orient: vertical !important;
   overflow: hidden !important;
 }
@@ -532,17 +531,27 @@
     gap: 20px;
   }
 
+  /* Single column list — full width, names wrap freely */
   .sidebar-container {
     position: static !important;
     max-height: none !important;
-    display: grid !important;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
-    flex-direction: unset !important;
-    gap: 8px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
     overflow: visible !important;
+    padding: 0 !important;
   }
 
   .project-card.sidebar-card {
-    min-height: 48px !important;
+    width: 100% !important;
+    min-height: 52px !important;
+  }
+
+  .sidebar-card .project-info h3 {
+    font-size: 13px !important;
+    /* Full wrap on mobile, no clamp */
+    display: block !important;    
+    overflow: visible !important;
+    white-space: normal !important;
   }
 }
