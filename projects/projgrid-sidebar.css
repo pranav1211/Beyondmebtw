@@ -1,0 +1,560 @@
+/* ========================================
+   projgrid-sidebar.css - HORIZONTAL CHIP BAR
+   ======================================== */
+
+/* Expanded Grid Layout — single column, chip bar on top */
+.projects-grid.expanded-view {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "sidebar"
+    "main";
+  gap: 20px;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Chip Bar Container ── */
+.sidebar-container {
+  grid-area: sidebar;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  gap: 10px;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding: 6px 4px 12px 4px;   /* bottom pad for shadow room */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 52, 45, 0.25) transparent;
+
+  /* Fade out at the right edge to hint scroll */
+  -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+  mask-image: linear-gradient(to right, black 85%, transparent 100%);
+}
+
+.sidebar-container::-webkit-scrollbar {
+  height: 4px;
+}
+.sidebar-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-container::-webkit-scrollbar-thumb {
+  background-color: rgba(59, 52, 45, 0.25);
+  border-radius: 2px;
+}
+.sidebar-container::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(59, 52, 45, 0.45);
+}
+
+/* ── Individual Chip Card ── */
+.project-card.sidebar-card {
+  /* Reset square constraint */
+  width: auto !important;
+  height: 52px !important;
+  aspect-ratio: unset !important;
+  min-height: unset !important;
+  flex-shrink: 0 !important;
+
+  /* Layout */
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 9px !important;
+  padding: 0 16px 0 8px !important;
+
+  /* Appearance */
+  border-radius: 26px !important;
+  background: linear-gradient(135deg, #E8D9CD 0%, #F4F2EF 100%) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  border: 2px solid transparent !important;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  white-space: nowrap;
+  margin-bottom: 0 !important;
+}
+
+/* Shimmer sweep on hover */
+.project-card.sidebar-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.35),
+    transparent
+  );
+  transition: left 0.45s ease;
+  pointer-events: none;
+}
+
+.project-card.sidebar-card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14) !important;
+  border-color: rgba(59, 52, 45, 0.12) !important;
+}
+
+.project-card.sidebar-card:hover::after {
+  left: 150%;
+}
+
+/* ── Active / Selected chip ── */
+.project-card.sidebar-card.active {
+  background: linear-gradient(135deg, #3b342d 0%, #5a5149 100%) !important;
+  border-color: #3b342d !important;
+  box-shadow: 0 4px 14px rgba(59, 52, 45, 0.35) !important;
+  transform: translateY(-2px) scale(1.03) !important;
+}
+
+.project-card.sidebar-card.active .project-info h3 {
+  color: #F4F2EF !important;
+}
+
+/* ── Chip Logo — no container, raw image ── */
+.sidebar-card .project-image {
+  width: 32px !important;
+  height: 32px !important;
+  flex-shrink: 0 !important;
+  background: none !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+  box-shadow: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  transition: transform 0.25s ease !important;
+}
+
+.sidebar-card .project-image img {
+  width: 32px !important;
+  height: 32px !important;
+  object-fit: contain !important;
+  display: block !important;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.15)) !important;
+}
+
+.sidebar-card:hover .project-image {
+  transform: scale(1.12) !important;
+}
+
+/* ── Chip Text ── */
+.sidebar-card .project-info {
+  flex: 0 1 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  height: auto !important;
+  min-width: 0 !important;
+}
+
+.sidebar-card .project-info h3 {
+  font-family: 'Kavoon', serif !important;
+  font-size: 13.5px !important;
+  font-weight: 400 !important;
+  font-style: italic !important;
+  letter-spacing: 0.02em !important;
+  margin: 0 !important;
+  line-height: 1.2 !important;
+  color: #3b342d !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 160px !important;
+}
+
+.sidebar-card.active .project-info h3 {
+  color: #F4F2EF !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2) !important;
+}
+
+/* ── Show card-header (contains the h3 name) ── */
+.sidebar-card .card-header {
+  display: flex !important;
+  align-items: center !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+/* ── Hide everything else on chip cards ── */
+.sidebar-card .project-tags,
+.sidebar-card .click-me-btn,
+.sidebar-card .project-info p,
+.sidebar-card .project-category-badge {
+  display: none !important;
+}
+
+/* ========================================
+   EXPANDED MAIN PROJECT
+   ======================================== */
+.expanded-project {
+  grid-area: main;
+  background: linear-gradient(135deg, #E8D9CD 0%, #F4F2EF 100%);
+  border-radius: 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  opacity: 1;
+  transform: translateX(0);
+  height: min-content;
+  position: relative;
+  border: 2px solid rgba(59, 52, 45, 0.05);
+  overflow: visible;   /* allow close btn to sit outside if needed */
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Clip only the top colour bar, not the whole card */
+.expanded-project::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #4285F4 0%, #34A853 33%, #FBBC05 66%, #EA4335 100%);
+  border-radius: 22px 22px 0 0;
+  z-index: 1;
+}
+
+.expanded-project.active {
+  animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.close-expanded {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background-color: #F4F2EF;
+  border: 1.5px solid rgba(59, 52, 45, 0.2);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 100;
+  transition: background-color 0.2s, transform 0.2s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  line-height: 1;
+}
+
+.close-expanded:hover {
+  background-color: rgba(59, 52, 45, 0.12);
+  transform: scale(1.08) rotate(90deg);
+}
+
+/* ── Expanded Header — logo left, content right ── */
+.expanded-header {
+  padding: 20px 70px 24px 30px;  /* right padding makes room for close btn */
+  display: flex;
+  align-items: flex-start;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding-top: 24px;
+}
+
+/* Category badge reset — inline flow inside header-content, not absolute */
+.expanded-header .project-category-badge {
+  position: static !important;
+  display: inline-flex !important;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  letter-spacing: 0.05em;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  top: auto !important;
+  right: auto !important;
+}
+
+.project-logo {
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+  margin-right: 30px;
+  background: linear-gradient(135deg, #F4F2EF 0%, #E8D9CD 100%);
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 12px;
+}
+
+.project-logo::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  left: -50px;
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.4) 50%, transparent 70%);
+  animation: logoShine 3s ease-in-out infinite;
+}
+
+@keyframes logoShine {
+  0%,  100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  50%        { transform: translateX(100%)  translateY(100%)  rotate(45deg); }
+}
+
+.project-logo:hover {
+  transform: scale(1.05) rotate(-2deg);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+}
+
+.project-logo img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.header-content h2 {
+  font-family: 'Kavoon', serif;
+  font-size: 32px;
+  margin-bottom: 15px;
+  color: #000;
+}
+
+.category-badge.large {
+  position: relative;
+  top: auto;
+  right: auto;
+  display: inline-block;
+  margin-bottom: 10px;
+  font-size: 16px;
+  padding: 7px 14px;
+}
+
+.header-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.header-tags .tag {
+  font-size: 13px;
+  padding: 5px 12px;
+  background-color: rgba(59, 52, 45, 0.1);
+  color: #3b342d;
+  border-radius: 20px;
+  font-family: 'Delius', cursive;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  border: 1px solid rgba(59, 52, 45, 0.12);
+  display: inline-block;
+}
+
+/* Expanded Body */
+.expanded-body {
+  padding: 30px;
+}
+
+.expanded-description {
+  font-size: 22px;
+  line-height: 1.6;
+  margin-bottom: 25px;
+  color: black;
+  white-space: pre-line;
+}
+
+.project-links {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.project-link {
+  display: inline-block;
+  background: linear-gradient(135deg, #3b342d 0%, #5a5149 100%);
+  color: #F4F2EF;
+  text-decoration: none;
+  border-radius: 16px;
+  padding: 12px 24px;
+  font-family: 'Delius', cursive;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.project-link::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.5s, height 0.5s;
+}
+
+.project-link:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.project-link:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.project-link:active {
+  transform: translateY(-1px) scale(1.02);
+}
+
+/* Gallery */
+.project-gallery {
+  margin-top: 30px;
+}
+
+.gallery-title {
+  font-family: 'Kavoon', serif;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #000;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.gallery-item {
+  height: 180px;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.gallery-item::before {
+  content: '👁';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 40px;
+  z-index: 2;
+  transition: transform 0.3s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.gallery-item:hover::before {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gallery-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.gallery-item:hover img {
+  transform: scale(1.1);
+  filter: brightness(0.7);
+}
+
+/* Image Viewer Modal */
+.image-viewer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+.image-viewer.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.viewer-content {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+}
+
+.viewer-image {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 5px;
+}
+
+.close-viewer {
+  position: absolute;
+  top: -50px;
+  right: 0;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.image-nav {
+  position: absolute;
+  bottom: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-btn {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.nav-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}

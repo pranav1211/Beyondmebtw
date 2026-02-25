@@ -1,0 +1,144 @@
+/* Projects Container & Grid - Normal View */
+.projects-container {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 0 40px;
+  position: relative;
+}
+
+.projects-grid:not(.expanded-view) {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Normal Project Cards */
+.project-card:not(.sidebar-card) {
+  background: linear-gradient(135deg, #E8D9CD 0%, #F4F2EF 100%);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid transparent;
+}
+
+.project-card:not(.sidebar-card)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #4285F4 0%, #34A853 50%, #FBBC05 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.project-card:not(.sidebar-card):hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  border-color: rgba(59, 52, 45, 0.1);
+}
+
+.project-card:not(.sidebar-card):hover::before {
+  opacity: 1;
+}
+
+/* Normal Card Image */
+.project-card:not(.sidebar-card) .project-image {
+  height: 180px;
+  overflow: hidden;
+  transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.project-card:not(.sidebar-card) .project-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.project-card:not(.sidebar-card):hover .project-image img {
+  transform: scale(1.05);
+}
+
+/* Normal Card Info */
+.project-card:not(.sidebar-card) .project-info {
+  padding: 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s;
+}
+
+.project-card:not(.sidebar-card) .project-info h3 {
+  font-family: 'Kavoon', serif;
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #3b342d;
+  transition: all 0.3s;
+}
+
+.project-card:not(.sidebar-card) .project-info p {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #5a5149;
+  transition: all 0.3s;
+}
+
+.project-card:not(.sidebar-card) .project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 15px;
+  transition: all 0.3s;
+}
+
+.project-card:not(.sidebar-card) .tag {
+  background-color: rgba(244, 242, 239, 0.7);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.project-card:not(.sidebar-card) .click-me-btn {
+  background-color: #3b342d;
+  color: #F4F2EF;
+  border: none;
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-family: 'Delius', cursive;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: auto;
+}
+
+.project-card:not(.sidebar-card) .click-me-btn:hover {
+  background-color: #5a5149;
+}
+
+/* Category Badge (normal view) */
+.project-category-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 5px 10px;
+  border-radius: 15px;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}

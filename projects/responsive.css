@@ -1,4 +1,4 @@
-/* Responsive layout for projects page */
+/* Base responsive adjustments */
 @media screen and (max-width: 1440px) {
     header {
         flex-direction: column;
@@ -25,29 +25,17 @@
         padding: 8px 30px;
     }
 
-    .projects-grid {
+    .projects-grid:not(.expanded-view) {
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     }
 
-    .projects-grid.expanded-view {
-        grid-template-columns: 250px 1fr;
+    /* Chip bar: no layout changes needed at this size */
+    .expanded-header {
+        padding: 24px 28px;
     }
 
-    .sidebar-card {
-        height: 120px;
-    }
-
-    .sidebar-card .project-image {
-        height: 90px;
-        width: 90px;
-    }
-
-    .sidebar-card .project-info {
-        height: 90px;
-    }
-
-    .sidebar-card .project-info h3 {
-        font-size: 13px;
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     }
 }
 
@@ -62,29 +50,6 @@
 
     .section-title {
         font-size: 36px;
-    }
-
-    .projects-grid.expanded-view {
-        grid-template-columns: 220px 1fr;
-    }
-
-    .sidebar-card {
-        height: 110px;
-        padding: 10px;
-        gap: 10px;
-    }
-
-    .sidebar-card .project-image {
-        height: 80px;
-        width: 80px;
-    }
-
-    .sidebar-card .project-info {
-        height: 80px;
-    }
-
-    .sidebar-card .project-info h3 {
-        font-size: 12px;
     }
 
     .expanded-header {
@@ -106,7 +71,6 @@
     }
 }
 
-/* Medium-Small Screens (max-width: 1024px) */
 @media screen and (max-width: 1024px) {
     header {
         margin-bottom: 0;
@@ -130,31 +94,6 @@
         padding: 8px 25px;
     }
 
-    .projects-grid.expanded-view {
-        grid-template-columns: 180px 1fr;
-        gap: 15px;
-    }
-
-    .sidebar-card {
-        height: 90px;
-        margin-bottom: 10px;
-        padding: 8px;
-        gap: 8px;
-    }
-
-    .sidebar-card .project-image {
-        height: 70px;
-        width: 70px;
-    }
-
-    .sidebar-card .project-info {
-        height: 70px;
-    }
-
-    .sidebar-card .project-info h3 {
-        font-size: 11px;        
-    }
-
     .expanded-body {
         padding: 20px;
     }
@@ -163,21 +102,23 @@
         font-size: 16px;
     }
 
-    .nav-btn {
-        width: 40px;
-        height: 40px;
+    /* Chip bar: slightly smaller chips */
+    .project-card.sidebar-card {
+        height: 46px !important;
+        padding: 0 14px 0 7px !important;
     }
 
-    .prev-btn {
-        margin-left: -50px;
+    .sidebar-card .project-image {
+        width: 30px !important;
+        height: 30px !important;
     }
 
-    .next-btn {
-        margin-right: -50px;
+    .sidebar-card .project-info h3 {
+        font-size: 13px !important;
+        max-width: 130px !important;
     }
 }
 
-/* Mobile Screens (max-width: 768px) */
 @media screen and (max-width: 768px) {
     header {
         margin-bottom: 0px;
@@ -219,48 +160,33 @@
         font-size: 32px;
     }
 
-    .projects-grid {
+    .projects-grid:not(.expanded-view) {
         grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
         gap: 20px;
     }
 
-    .projects-grid.expanded-view {
-        grid-template-columns: 1fr;
-        grid-template-areas:
-            "main"
-            "sidebar";
-    }
-
+    /* Chip bar on mobile: full width scrollable strip, smaller chips */
     .sidebar-container {
-        grid-area: sidebar;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 10px;
-        margin-top: 20px;
+        padding: 4px 4px 10px 4px;
+        gap: 8px;
     }
 
-    .expanded-project {
-        grid-area: main;
-    }
-
-    .sidebar-card {
-        height: 80px;
-        margin-bottom: 0;
-        padding: 6px;
-        gap: 6px;
+    .project-card.sidebar-card {
+        height: 42px !important;
+        padding: 0 12px 0 6px !important;
+        gap: 7px !important;
+        border-radius: 21px !important;
     }
 
     .sidebar-card .project-image {
-        height: 60px;
-        width: 60px;
-    }
-
-    .sidebar-card .project-info {
-        height: 60px;
+        width: 28px !important;
+        height: 28px !important;
+        border-radius: 8px !important;
     }
 
     .sidebar-card .project-info h3 {
-        font-size: 11px;        
+        font-size: 12px !important;
+        max-width: 100px !important;
     }
 
     .project-image {
@@ -378,52 +304,46 @@
         right: 10px;
     }
 
-    .sidebar-container {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    }
-
-    .sidebar-card {
-        height: 70px;
-        padding: 5px;
-        gap: 5px;
-    }
-
-    .sidebar-card .project-image {
-        height: 50px;
-        width: 50px;
+    /* Chip bar: icon-only on very small screens */
+    .project-card.sidebar-card {
+        height: 40px !important;
+        padding: 0 10px !important;
+        gap: 0 !important;
+        border-radius: 20px !important;
+        width: 40px !important;
     }
 
     .sidebar-card .project-info {
-        height: 50px;
+        display: none !important;
     }
 
-    .sidebar-card .project-info h3 {
-        font-size: 10px;        
+    .sidebar-card .project-image {
+        width: 24px !important;
+        height: 24px !important;
+        border-radius: 6px !important;
+        margin: 0 auto !important;
     }
 }
 
-/* Category projects responsive grid */
+/* Category Grid Responsive (keep existing) */
 @media (min-width: 1200px) {
     .category-projects {
         grid-template-columns: repeat(4, 1fr);
     }
 }
 
-/* Medium screens - 3 per row */
 @media (max-width: 1199px) and (min-width: 900px) {
     .category-projects {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
-/* Small screens - 2 per row */
 @media (max-width: 899px) and (min-width: 600px) {
     .category-projects {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-/* Smallest screens - 1 per row */
 @media (max-width: 599px) {
     .category-projects {
         grid-template-columns: 1fr;

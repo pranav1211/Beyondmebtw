@@ -17,6 +17,41 @@ const categoryJsonFiles = {
     'tech': 'https://beyondmebtw.com/blog/techart.json'
 };
 
+// Cache TTL: 1 hour in milliseconds
+const CACHE_TTL = 60 * 60 * 1000;
+
+// Fetch with localStorage cache. Returns parsed JSON.
+// On cache hit: instant, no network request.
+// On cache miss or expired: fetches, stores result, returns data.
+async function fetchWithCache(url) {
+    const cacheKey = 'blog_cache_' + url;
+    try {
+        const cached = localStorage.getItem(cacheKey);
+        if (cached) {
+            const { data, timestamp } = JSON.parse(cached);
+            if (Date.now() - timestamp < CACHE_TTL) {
+                return data;
+            }
+        }
+    } catch (_) {
+        // Corrupt cache entry — fall through to network fetch
+    }
+
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+
+    try {
+        localStorage.setItem(cacheKey, JSON.stringify({ data, timestamp: Date.now() }));
+    } catch (_) {
+        // localStorage may be full or unavailable (private browsing) — ignore
+    }
+
+    return data;
+}
+
 // Subcategory mappings
 const subcategoryMappings = {
     'movie-tv': ['Movies', 'TV Shows'],
@@ -78,14 +113,10 @@ async function loadAllData() {
         showLoading();
         allPosts = [];
 
-        // Load all category-specific data
+        // Load all category-specific data (served from cache when available)
         const categoryPromises = Object.entries(categoryJsonFiles).map(async ([categoryKey, jsonFile]) => {
             try {
-                const response = await fetch(jsonFile);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const categoryData = await response.json();
+                const categoryData = await fetchWithCache(jsonFile);
 
                 if (categoryData.posts && Array.isArray(categoryData.posts)) {
                     // Add category info to each post
