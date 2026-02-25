@@ -6,6 +6,13 @@
 /* ========================================
    Header Jitter Prevention
    ======================================== */
+
+/* Reserve scrollbar gutter from the start so dynamic content loading
+   (JSON fetches) doesn't cause a viewport width shift that moves the header */
+html {
+    scrollbar-gutter: stable;
+}
+
 header {
     min-height: 88px;
     contain: layout;
