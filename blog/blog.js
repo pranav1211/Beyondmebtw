@@ -249,7 +249,6 @@ async function initializePage() {
 
         if (dataLoaded) {
             applyUrlFilters();
-            applyFilters();
             console.log('Data loaded, rendering posts...');
             applyFilters();
         } else {
