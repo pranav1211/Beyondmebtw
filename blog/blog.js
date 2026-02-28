@@ -170,6 +170,44 @@ function getCategoryTitle(categoryKey) {
     return titles[categoryKey] || categoryKey;
 }
 
+function applyUrlFilters() {
+    const path = window.location.pathname;
+
+    // Example: /blog/f1/2025
+    const parts = path.split('/').filter(Boolean);
+
+    // Find "blog" index
+    const blogIndex = parts.indexOf('blog');
+
+    if (blogIndex !== -1) {
+        const category = parts[blogIndex + 1];
+        const sub = parts[blogIndex + 2];
+
+        if (category && categoryJsonFiles[category]) {
+            currentFilter = category;
+
+            if (sub) {
+                // Convert URL-friendly slug to actual subcategory name
+                if (category === 'f1' && sub === '2025') {
+                    currentSubfilter = '2025 Season';
+                }
+
+                if (category === 'f1' && sub === 'general') {
+                    currentSubfilter = 'General';
+                }
+
+                if (category === 'movie-tv' && sub === 'movies') {
+                    currentSubfilter = 'Movies';
+                }
+
+                if (category === 'movie-tv' && sub === 'tv') {
+                    currentSubfilter = 'TV Shows';
+                }
+            }
+        }
+    }
+}
+
 // Initialize the page
 async function initializePage() {
     try {
@@ -184,6 +222,7 @@ async function initializePage() {
         const dataLoaded = await loadAllData();
 
         if (dataLoaded) {
+            applyUrlFilters();
             console.log('Data loaded, rendering posts...');
             applyFilters();
         } else {
