@@ -173,22 +173,65 @@ function getCategoryTitle(categoryKey) {
 function applyUrlFilters() {
     const params = new URLSearchParams(window.location.search);
 
-    const category = params.get('category');
-    const season = params.get('season');
+    Object.keys(categoryJsonFiles).forEach(categoryKey => {
+        if (params.has(categoryKey)) {
 
-    if (category && categoryJsonFiles[category]) {
-        currentFilter = category;
+            const value = params.get(categoryKey);
+
+            // Set category
+            currentFilter = categoryKey;
+            currentSubfilter = null;
+
+            // Activate category button
+            const categoryBtn = document.querySelector(
+                `.category-filter[data-category="${categoryKey}"]`
+            );
+
+            if (categoryBtn) {
+                document
+                    .querySelectorAll('.category-filter')
+                    .forEach(btn => btn.classList.remove('active'));
+
+                categoryBtn.classList.add('active');
+            }
+
+            // If category has subcategories, render them
+            updateSubcategoryFilters(categoryKey);
+
+            // Only handle subcategory if value exists
+            if (value) {
+                handleSubcategoryFromUrl(categoryKey, value);
+            }
+        }
+    });
+}
+
+function handleSubcategoryFromUrl(categoryKey, value) {
+
+    if (categoryKey === 'f1') {
+        if (value === '2025') activateSubcategory('2025 Season');
+        if (value === 'general') activateSubcategory('General');
     }
 
-    if (season && category === 'f1') {
-        if (season === '2025') {
-            currentSubfilter = '2025 Season';
-        }
-        else if (season === 'general') {
-            currentSubfilter = 'General';
-        }
+    if (categoryKey === 'movie-tv') {
+        if (value === 'movies') activateSubcategory('Movies');
+        if (value === 'tv') activateSubcategory('TV Shows');
     }
-    
+
+}
+
+function activateSubcategory(name) {
+    currentSubfilter = name;
+
+    const subButtons = document.querySelectorAll('.subcategory-filter');
+
+    subButtons.forEach(btn => {
+        btn.classList.remove('active');
+
+        if (btn.textContent.trim() === name) {
+            btn.classList.add('active');
+        }
+    });
 }
 
 // Initialize the page
@@ -206,6 +249,7 @@ async function initializePage() {
 
         if (dataLoaded) {
             applyUrlFilters();
+            applyFilters();
             console.log('Data loaded, rendering posts...');
             applyFilters();
         } else {
