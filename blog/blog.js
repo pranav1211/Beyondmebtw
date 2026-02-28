@@ -171,41 +171,24 @@ function getCategoryTitle(categoryKey) {
 }
 
 function applyUrlFilters() {
-    const path = window.location.pathname;
+    const params = new URLSearchParams(window.location.search);
 
-    // Example: /blog/f1/2025
-    const parts = path.split('/').filter(Boolean);
+    const category = params.get('category');
+    const season = params.get('season');
 
-    // Find "blog" index
-    const blogIndex = parts.indexOf('blog');
+    if (category && categoryJsonFiles[category]) {
+        currentFilter = category;
+    }
 
-    if (blogIndex !== -1) {
-        const category = parts[blogIndex + 1];
-        const sub = parts[blogIndex + 2];
-
-        if (category && categoryJsonFiles[category]) {
-            currentFilter = category;
-
-            if (sub) {
-                // Convert URL-friendly slug to actual subcategory name
-                if (category === 'f1' && sub === '2025') {
-                    currentSubfilter = '2025 Season';
-                }
-
-                if (category === 'f1' && sub === 'general') {
-                    currentSubfilter = 'General';
-                }
-
-                if (category === 'movie-tv' && sub === 'movies') {
-                    currentSubfilter = 'Movies';
-                }
-
-                if (category === 'movie-tv' && sub === 'tv') {
-                    currentSubfilter = 'TV Shows';
-                }
-            }
+    if (season && category === 'f1') {
+        if (season === '2025') {
+            currentSubfilter = '2025 Season';
+        }
+        else if (season === 'general') {
+            currentSubfilter = 'General';
         }
     }
+    
 }
 
 // Initialize the page
