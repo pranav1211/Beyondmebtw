@@ -5,6 +5,19 @@ Check out the site [BeyondMeBtw.com](https://beyondmebtw.com)
 Also check out other showcases
 
 - **Blog:** [Blog.BeyondMeBtw.com](https://blog.beyondmebtw.com)
+  
+  - Movies → https://blog.beyondmebtw.com/movies
+
+  - TV → https://blog.beyondmebtw.com/tv
+
+  - F1 2025 → https://blog.beyondmebtw.com/f1-2025
+
+  - F1 General → https://blog.beyondmebtw.com/f1-general
+
+  - Experiences → https://blog.beyondmebtw.com/experiences
+
+  - Tech → https://blog.beyondmebtw.com/tech
+
 - **Minis:** [Minis.BeyondMeBtw.com](https://minis.beyondmebtw.com)
 
 
@@ -13,6 +26,9 @@ The Current Home Page
 
 
 ## Changelog:
+
+## 4.2 (02/03/26)
+- Created new url methods to access blog categories and sub categories via the url. all js only, just query parameters and sorting through them
 
 ## 4.1 (24/02/26)
 - css code file paths configured to use https
