@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QWERTY Keyboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #0e0e0e;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      gap: 28px;
+      padding: 32px 16px;
+    }
+
+    /* ── Output display ── */
+    #output-display {
+      width: 100%;
+      max-width: 900px;
+      min-height: 64px;
+      background: #161616;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 16px 22px;
+      color: #e9e9e9;
+      font-size: 22px;
+      font-family: 'Segoe UI', monospace;
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);
+      word-break: break-all;
+      flex-wrap: wrap;
+    }
+    #output-display .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1.2em;
+      background: #e9e9e9;
+      animation: blink 1s step-end infinite;
+      vertical-align: middle;
+      border-radius: 1px;
+      flex-shrink: 0;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* ── Style picker ── */
+    .style-picker {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .style-btn {
+      padding: 8px 20px;
+      border-radius: 8px;
+      border: 1.5px solid #333;
+      background: #1c1c1c;
+      color: #aaa;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .style-btn:hover { border-color: #555; color: #ddd; }
+    .style-btn.active { border-color: #666; background: #2e2e2e; color: #fff; }
+
+    /* ── Keyboard shell ── */
+    .keyboard {
+      border-radius: 18px;
+      padding: 24px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.4s, box-shadow 0.4s;
+    }
+
+    .row {
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ══════════════════════════════════════
+       THEME: DEFAULT (dark)
+    ══════════════════════════════════════ */
+    .theme-default .keyboard {
+      background: linear-gradient(180deg, #1a1a1a, #141414);
+      box-shadow: 0 0 0 2px #000, 0 30px 60px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    .theme-default .keycap {
+      background: linear-gradient(180deg, #282828, #202020);
+      box-shadow:
+        inset -8px 0 8px rgba(0,0,0,0.15),
+        inset 0 -8px 8px rgba(0,0,0,0.25),
+        0 0 0 2px rgba(0,0,0,0.75),
+        10px 20px 25px rgba(0,0,0,0.4);
+    }
+    .theme-default .keycap::before {
+      background: linear-gradient(90deg, #232323, #4a4a4a);
+      box-shadow: -10px -10px 10px rgba(255,255,255,0.25), 10px 5px 10px rgba(0,0,0,0.15);
+      border-left: 1px solid #0004;
+      border-bottom: 1px solid #0004;
+      border-top: 1px solid #0009;
+    }
+    .theme-default .keycap:active {
+      box-shadow:
+        inset -4px 0 4px rgba(0,0,0,0.1),
+        inset 0 -4px 4px rgba(0,0,0,0.15),
+        0 0 0 2px rgba(0,0,0,0.5),
+        5px 10px 15px rgba(0,0,0,0.3);
+    }
+    .theme-default .keycap:active::before {
+      box-shadow: -5px -5px 5px rgba(255,255,255,0.15), 5px 3px 5px rgba(0,0,0,0.1);
+    }
+    .theme-default .letter { color: #e9e9e9; }
+    .theme-default .subletter { color: #777; }
+
+    /* ══════════════════════════════════════
+       THEME: RGB
+    ══════════════════════════════════════ */
+    .theme-rgb .keyboard {
+      background: #0d0d0d;
+      box-shadow: 0 0 0 2px #000, 0 30px 80px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+
+    /* animated RGB underglow */
+    .theme-rgb .keyboard::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      border-radius: 18px;
+      background: linear-gradient(270deg,
+        rgba(255,0,128,0.18),
+        rgba(255,100,0,0.18),
+        rgba(0,255,180,0.18),
+        rgba(0,120,255,0.18),
+        rgba(180,0,255,0.18),
+        rgba(255,0,128,0.18)
+      );
+      background-size: 600% 100%;
+      animation: rgbShift 5s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes rgbShift {
+      0%   { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+
+    .theme-rgb .row { position: relative; z-index: 1; }
+
+    .theme-rgb .keycap {
+      background: linear-gradient(180deg, #1c1c1c, #141414);
+      box-shadow:
+        inset -8px 0 8px rgba(0,0,0,0.2),
+        inset 0 -8px 8px rgba(0,0,0,0.3),
+        0 0 0 2px rgba(0,0,0,0.8),
+        10px 20px 25px rgba(0,0,0,0.5);
+    }
+    .theme-rgb .keycap::before {
+      background: linear-gradient(90deg, #1e1e1e, #3a3a3a);
+      box-shadow: -10px -10px 10px rgba(255,255,255,0.15), 10px 5px 10px rgba(0,0,0,0.2);
+      border-left: 1px solid #0004;
+      border-bottom: 1px solid #0004;
+      border-top: 1px solid #0009;
+    }
+    .theme-rgb .keycap:active {
+      box-shadow:
+        inset -4px 0 4px rgba(0,0,0,0.1),
+        inset 0 -4px 4px rgba(0,0,0,0.15),
+        0 0 0 2px rgba(0,0,0,0.5),
+        5px 10px 15px rgba(0,0,0,0.3);
+    }
+    .theme-rgb .keycap:active::before {
+      box-shadow: -5px -5px 5px rgba(255,255,255,0.1), 5px 3px 5px rgba(0,0,0,0.1);
+    }
+
+    /* per-key RGB glow via CSS variables set by JS */
+    .theme-rgb .keycap {
+      --rgb-color: 255,255,255;
+      box-shadow:
+        inset -8px 0 8px rgba(0,0,0,0.2),
+        inset 0 -8px 8px rgba(0,0,0,0.3),
+        0 0 0 2px rgba(0,0,0,0.8),
+        0 0 12px 2px rgba(var(--rgb-color), 0.35),
+        10px 20px 25px rgba(0,0,0,0.5);
+    }
+    .theme-rgb .letter { color: #e9e9e9; }
+    .theme-rgb .subletter { color: #666; }
+
+    /* ══════════════════════════════════════
+       THEME: MARBLE
+    ══════════════════════════════════════ */
+    .theme-marble .keyboard {
+      background: linear-gradient(135deg, #e8e4df 0%, #d4cfc9 50%, #cbc5be 100%);
+      box-shadow: 0 0 0 2px #a09890, 0 30px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.6);
+    }
+
+    .theme-marble .keycap {
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E"),
+        linear-gradient(145deg, #f0ece7 0%, #ddd8d0 40%, #cec8c0 70%, #d8d2cb 100%);
+      box-shadow:
+        inset -8px 0 8px rgba(0,0,0,0.08),
+        inset 0 -8px 8px rgba(0,0,0,0.12),
+        0 0 0 1.5px rgba(140,130,120,0.6),
+        10px 20px 25px rgba(0,0,0,0.2);
+    }
+    .theme-marble .keycap::before {
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.1'/%3E%3C/svg%3E"),
+        linear-gradient(120deg, #f5f1ec 0%, #e8e2da 35%, #ddd6cc 65%, #e5dfd8 100%);
+      box-shadow:
+        -10px -10px 14px rgba(255,255,255,0.7),
+        10px 5px 10px rgba(0,0,0,0.08);
+      border-left: 1px solid rgba(255,255,255,0.5);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      border-top: 1px solid rgba(255,255,255,0.8);
+    }
+    .theme-marble .keycap:active {
+      box-shadow:
+        inset -4px 0 4px rgba(0,0,0,0.06),
+        inset 0 -4px 4px rgba(0,0,0,0.08),
+        0 0 0 1.5px rgba(140,130,120,0.5),
+        5px 10px 15px rgba(0,0,0,0.15);
+    }
+    .theme-marble .keycap:active::before {
+      box-shadow:
+        -5px -5px 7px rgba(255,255,255,0.5),
+        5px 3px 5px rgba(0,0,0,0.06);
+    }
+    .theme-marble .letter { color: #3a3330; }
+    .theme-marble .subletter { color: #8a8078; }
+
+    /* ── Shared keycap geometry ── */
+    .keycap {
+      position: relative;
+      display: inline-block;
+      width: 58px;
+      height: 58px;
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in, background 0.4s;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .keycap .letter {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: transform 0.1s ease-in-out;
+      z-index: 1;
+      line-height: 1;
+    }
+    .keycap::before {
+      content: "";
+      position: absolute;
+      top: 3px; left: 4px; bottom: 14px; right: 12px;
+      border-radius: 8px;
+      transition: all 0.1s ease-in-out;
+    }
+    .keycap:active { transform: translateY(2px); }
+    .keycap:active::before { top: 5px; left: 5px; bottom: 11px; right: 11px; }
+    .keycap:active .letter { transform: translateY(1px); }
+
+    .keycap .subletter {
+      position: absolute;
+      left: 10px;
+      top: 30px;
+      font-size: 10px;
+      z-index: 1;
+    }
+
+    /* Wide keys */
+    .keycap.w-backspace { width: 90px; }
+    .keycap.w-tab       { width: 84px; }
+    .keycap.w-caps      { width: 98px; }
+    .keycap.w-enter     { width: 108px; }
+    .keycap.w-lshift    { width: 120px; }
+    .keycap.w-rshift    { width: 120px; }
+    .keycap.w-lctrl,
+    .keycap.w-rctrl     { width: 78px; }
+    .keycap.w-lalt,
+    .keycap.w-ralt      { width: 78px; }
+    .keycap.w-space     { width: 320px; }
+    .keycap.w-fn,
+    .keycap.w-meta      { width: 68px; }
+  </style>
+</head>
+<body>
+
+<!-- Output display -->
+<div id="output-display"><span id="typed-text"></span><span class="cursor"></span></div>
+
+<!-- Style picker -->
+<div class="style-picker">
+  <button class="style-btn active" data-theme="default">⬛ Default</button>
+  <button class="style-btn" data-theme="rgb">🌈 RGB</button>
+  <button class="style-btn" data-theme="marble">🪨 Marble</button>
+</div>
+
+<!-- Keyboard -->
+<div class="theme-default">
+<div class="keyboard">
+
+  <div class="row">
+    <article class="keycap" data-key="`"><aside class="letter">`</aside><aside class="subletter">~</aside></article>
+    <article class="keycap" data-key="1"><aside class="letter">1</aside><aside class="subletter">!</aside></article>
+    <article class="keycap" data-key="2"><aside class="letter">2</aside><aside class="subletter">@</aside></article>
+    <article class="keycap" data-key="3"><aside class="letter">3</aside><aside class="subletter">#</aside></article>
+    <article class="keycap" data-key="4"><aside class="letter">4</aside><aside class="subletter">$</aside></article>
+    <article class="keycap" data-key="5"><aside class="letter">5</aside><aside class="subletter">%</aside></article>
+    <article class="keycap" data-key="6"><aside class="letter">6</aside><aside class="subletter">^</aside></article>
+    <article class="keycap" data-key="7"><aside class="letter">7</aside><aside class="subletter">&amp;</aside></article>
+    <article class="keycap" data-key="8"><aside class="letter">8</aside><aside class="subletter">*</aside></article>
+    <article class="keycap" data-key="9"><aside class="letter">9</aside><aside class="subletter">(</aside></article>
+    <article class="keycap" data-key="0"><aside class="letter">0</aside><aside class="subletter">)</aside></article>
+    <article class="keycap" data-key="-"><aside class="letter">-</aside><aside class="subletter">_</aside></article>
+    <article class="keycap" data-key="="><aside class="letter">=</aside><aside class="subletter">+</aside></article>
+    <article class="keycap w-backspace" data-key="Backspace"><aside class="letter">⌫</aside></article>
+  </div>
+
+  <div class="row">
+    <article class="keycap w-tab" data-key="Tab"><aside class="letter">Tab</aside></article>
+    <article class="keycap" data-key="q"><aside class="letter">Q</aside></article>
+    <article class="keycap" data-key="w"><aside class="letter">W</aside></article>
+    <article class="keycap" data-key="e"><aside class="letter">E</aside></article>
+    <article class="keycap" data-key="r"><aside class="letter">R</aside></article>
+    <article class="keycap" data-key="t"><aside class="letter">T</aside></article>
+    <article class="keycap" data-key="y"><aside class="letter">Y</aside></article>
+    <article class="keycap" data-key="u"><aside class="letter">U</aside></article>
+    <article class="keycap" data-key="i"><aside class="letter">I</aside></article>
+    <article class="keycap" data-key="o"><aside class="letter">O</aside></article>
+    <article class="keycap" data-key="p"><aside class="letter">P</aside></article>
+    <article class="keycap" data-key="["><aside class="letter">[</aside><aside class="subletter">{</aside></article>
+    <article class="keycap" data-key="]"><aside class="letter">]</aside><aside class="subletter">}</aside></article>
+    <article class="keycap" data-key="\"><aside class="letter">\</aside><aside class="subletter">|</aside></article>
+  </div>
+
+  <div class="row">
+    <article class="keycap w-caps" data-key="CapsLock"><aside class="letter">Caps</aside></article>
+    <article class="keycap" data-key="a"><aside class="letter">A</aside></article>
+    <article class="keycap" data-key="s"><aside class="letter">S</aside></article>
+    <article class="keycap" data-key="d"><aside class="letter">D</aside></article>
+    <article class="keycap" data-key="f"><aside class="letter">F</aside></article>
+    <article class="keycap" data-key="g"><aside class="letter">G</aside></article>
+    <article class="keycap" data-key="h"><aside class="letter">H</aside></article>
+    <article class="keycap" data-key="j"><aside class="letter">J</aside></article>
+    <article class="keycap" data-key="k"><aside class="letter">K</aside></article>
+    <article class="keycap" data-key="l"><aside class="letter">L</aside></article>
+    <article class="keycap" data-key=";"><aside class="letter">;</aside><aside class="subletter">:</aside></article>
+    <article class="keycap" data-key="'"><aside class="letter">'</aside><aside class="subletter">"</aside></article>
+    <article class="keycap w-enter" data-key="Enter"><aside class="letter">Enter ↵</aside></article>
+  </div>
+
+  <div class="row">
+    <article class="keycap w-lshift" data-key="Shift"><aside class="letter">Shift</aside></article>
+    <article class="keycap" data-key="z"><aside class="letter">Z</aside></article>
+    <article class="keycap" data-key="x"><aside class="letter">X</aside></article>
+    <article class="keycap" data-key="c"><aside class="letter">C</aside></article>
+    <article class="keycap" data-key="v"><aside class="letter">V</aside></article>
+    <article class="keycap" data-key="b"><aside class="letter">B</aside></article>
+    <article class="keycap" data-key="n"><aside class="letter">N</aside></article>
+    <article class="keycap" data-key="m"><aside class="letter">M</aside></article>
+    <article class="keycap" data-key=","><aside class="letter">,</aside><aside class="subletter">&lt;</aside></article>
+    <article class="keycap" data-key="."><aside class="letter">.</aside><aside class="subletter">&gt;</aside></article>
+    <article class="keycap" data-key="/"><aside class="letter">/</aside><aside class="subletter">?</aside></article>
+    <article class="keycap w-rshift" data-key="Shift"><aside class="letter">Shift</aside></article>
+  </div>
+
+  <div class="row">
+    <article class="keycap w-lctrl" data-key="Control"><aside class="letter">Ctrl</aside></article>
+    <article class="keycap w-meta" data-key="Meta"><aside class="letter">⊞</aside></article>
+    <article class="keycap w-lalt" data-key="Alt"><aside class="letter">Alt</aside></article>
+    <article class="keycap w-space" data-key=" "><aside class="letter"></aside></article>
+    <article class="keycap w-ralt" data-key="Alt"><aside class="letter">Alt</aside></article>
+    <article class="keycap w-fn" data-key="Fn"><aside class="letter">Fn</aside></article>
+    <article class="keycap w-meta" data-key="ContextMenu"><aside class="letter">☰</aside></article>
+    <article class="keycap w-rctrl" data-key="Control"><aside class="letter">Ctrl</aside></article>
+  </div>
+
+</div>
+</div>
+
+<script>
+  // ── Theme switching ──
+  const themeWrapper = document.querySelector('.theme-default').parentElement ? 
+    document.querySelector('.theme-default') : 
+    document.body.querySelector('.theme-default');
+  const wrapper = document.querySelector('[class^="theme-"]');
+  const btns = document.querySelectorAll('.style-btn');
+
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const theme = btn.dataset.theme;
+      wrapper.className = 'theme-' + theme;
+      btns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if (theme === 'rgb') assignRgbColors();
+    });
+  });
+
+  // ── RGB per-key hue animation ──
+  let rgbInterval = null;
+  function assignRgbColors() {
+    clearInterval(rgbInterval);
+    const keys = document.querySelectorAll('.keycap');
+    const total = keys.length;
+    let tick = 0;
+    function update() {
+      keys.forEach((k, i) => {
+        const hue = (tick * 2 + (i / total) * 360) % 360;
+        const r = Math.round(128 + 127 * Math.sin(hue * Math.PI / 180));
+        const g = Math.round(128 + 127 * Math.sin((hue + 120) * Math.PI / 180));
+        const b = Math.round(128 + 127 * Math.sin((hue + 240) * Math.PI / 180));
+        k.style.setProperty('--rgb-color', \`\${r},\${g},\${b}\`);
+      });
+      tick++;
+    }
+    update();
+    rgbInterval = setInterval(update, 40);
+  }
+
+  // Stop RGB animation when switching away
+  const observer = new MutationObserver(() => {
+    if (!wrapper.classList.contains('theme-rgb')) {
+      clearInterval(rgbInterval);
+      document.querySelectorAll('.keycap').forEach(k => k.style.removeProperty('--rgb-color'));
+    }
+  });
+  observer.observe(wrapper, { attributes: true, attributeFilter: ['class'] });
+
+  // ── Typing output ──
+  const typedEl = document.getElementById('typed-text');
+  let typed = '';
+
+  function updateDisplay() {
+    typedEl.textContent = typed;
+  }
+
+  // Click on key
+  document.querySelectorAll('.keycap').forEach(key => {
+    key.addEventListener('click', () => {
+      const k = key.dataset.key;
+      handleKey(k);
+    });
+  });
+
+  // Physical keyboard
+  document.addEventListener('keydown', e => {
+    const k = e.key;
+    // Highlight matching keycap
+    const match = document.querySelector(\`.keycap[data-key="\${CSS.escape(k.toLowerCase())}"]\`) ||
+                  document.querySelector(\`.keycap[data-key="\${CSS.escape(k)}"]\`);
+    if (match) {
+      match.classList.add('key-pressed');
+      setTimeout(() => match.classList.remove('key-pressed'), 150);
+    }
+    if (!['F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12'].includes(k)) {
+      e.preventDefault();
+      handleKey(k);
+    }
+  });
+
+  function handleKey(k) {
+    if (k === 'Backspace') {
+      typed = typed.slice(0, -1);
+    } else if (k === 'Enter') {
+      typed += '\n';
+    } else if (k === ' ' || k === 'Space') {
+      typed += ' ';
+    } else if (k === 'Tab') {
+      typed += '    ';
+    } else if (k.length === 1) {
+      typed += k;
+    }
+    updateDisplay();
+  }
+</script>
+</body>
+</html>
