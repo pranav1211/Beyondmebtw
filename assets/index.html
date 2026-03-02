@@ -206,8 +206,8 @@
 <body>
 
   <h1>🧠 Smart Question Generator</h1>
-  <div class="version-badge">BASE v1.1</div>
-  <p class="subtitle">Powered by Flan-T5-Base · Runs 100% in your browser</p>
+  <div class="version-badge">BASE v1.2</div>
+  <p class="subtitle">Powered by Flan-T5-248M · Runs 100% in your browser</p>
 
   <!-- Input Card -->
   <div class="card">
@@ -241,7 +241,7 @@
     </div>
   </div>
 
-  <footer>Smart Question Generator · Base v1.1 · Flan-T5-Base q8</footer>
+  <footer>Smart Question Generator · Base v1.1 · Flan-T5-248M q8</footer>
 
   <script type="module">
     import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@next/dist/transformers.min.js';
@@ -265,7 +265,7 @@
     // ── Load model (flan-t5-base for better instruction-following) ──
     (async () => {
       try {
-        generator = await pipeline('text2text-generation', 'Xenova/flan-t5-base', {
+        generator = await pipeline('text2text-generation', 'Xenova/LaMini-Flan-T5-248M', {
           dtype: 'q8',
           progress_callback: (p) => {
             if (p.status === 'progress') {
