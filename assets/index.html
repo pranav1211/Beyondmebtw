@@ -216,6 +216,9 @@
       <div class="status-bar" id="statusBar"><span class="loader"></span> Loading model...</div>
     </div>
   </div>
+  <div class="divider"><span></span> click one to answer <span></span>
+  <button class="btn btn-sm" id="regenBtn" style="display:none;">↻ Regenerate</button>
+</div>
 
   <!-- Two column: NLP | LLM -->
   <div class="two-col">
@@ -358,6 +361,39 @@ function buildNLPQuestions(text) {
   ];
   return keyphrases.map((phrase, i) => templates[i % templates.length](phrase));
 }
+
+    const regenBtn = document.getElementById('regenBtn');
+
+// Show the button after first generation
+// Add this line at the end of your LLM try block (after renderQuestions):
+regenBtn.style.display = 'inline-block';
+
+// Regenerate handler
+regenBtn.addEventListener('click', async () => {
+  if (!currentText || !generator) return;
+
+  regenBtn.disabled = true;
+  regenBtn.textContent = '↻ Regenerating...';
+  answerBox.classList.remove('visible');
+  followupCard.style.display = 'none';
+  setLoading(llmQList, 'Generating new questions...');
+
+  try {
+    // Add a tiny variation to the prompt to break repetition
+    const variation = ['List', 'Write', 'Give'][Math.floor(Math.random() * 3)];
+    const prompt = llmPrompt(currentText).replace('Task: Generate', `Task: ${variation}`);
+
+    const out = await generator(prompt, { max_new_tokens: 140 });
+    const qs = parseQuestions(out[0].generated_text);
+    renderQuestions(llmQList, qs, onLLMQuestionClick);
+    regenBtn.textContent = '↻ Regenerate';
+  } catch (e) {
+    llmQList.innerHTML = `<p class="empty-state">Error: ${e.message}</p>`;
+  }
+
+  regenBtn.disabled = false;
+});
+
 
 
     // ════════════════════════════════════════════════════════════
