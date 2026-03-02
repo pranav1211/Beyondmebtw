@@ -14,7 +14,7 @@ Also check out other showcases
 
   - F1 General → https://blog.beyondmebtw.com/f1-general
 
-  - Experiences → https://blog.beyondmebtw.com/experiences
+  - Experiences → https://blog.beyondmebtw.com/experience
 
   - Tech → https://blog.beyondmebtw.com/tech
 
