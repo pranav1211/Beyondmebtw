@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Question Generator</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f0f13;
+      color: #e0e0e0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 16px;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #c084fc;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 32px;
+    }
+
+    .card {
+      background: #1a1a24;
+      border: 1px solid #2a2a3a;
+      border-radius: 14px;
+      padding: 24px;
+      width: 100%;
+      max-width: 680px;
+      margin-bottom: 20px;
+    }
+
+    .card h2 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #888;
+      margin-bottom: 12px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 140px;
+      background: #12121a;
+      border: 1px solid #2a2a3a;
+      border-radius: 10px;
+      color: #e0e0e0;
+      font-size: 0.95rem;
+      padding: 14px;
+      resize: vertical;
+      outline: none;
+      font-family: inherit;
+      line-height: 1.6;
+      transition: border-color 0.2s;
+    }
+
+    textarea:focus { border-color: #7c3aed; }
+
+    .btn {
+      margin-top: 14px;
+      padding: 10px 24px;
+      background: #7c3aed;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+    }
+
+    .btn:hover { background: #6d28d9; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .status-bar {
+      font-size: 0.8rem;
+      color: #a78bfa;
+      margin-top: 10px;
+      min-height: 20px;
+    }
+
+    .questions-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .question-chip {
+      background: #12121a;
+      border: 1px solid #2a2a3a;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .question-chip:hover {
+      border-color: #7c3aed;
+      background: #1e1e2e;
+    }
+
+    .question-chip .q-num {
+      color: #7c3aed;
+      font-weight: 700;
+      font-size: 0.8rem;
+      min-width: 18px;
+      padding-top: 2px;
+    }
+
+    .followup-input-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .followup-input-row input {
+      flex: 1;
+      background: #12121a;
+      border: 1px solid #2a2a3a;
+      border-radius: 8px;
+      color: #e0e0e0;
+      font-size: 0.9rem;
+      padding: 10px 14px;
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    .followup-input-row input:focus { border-color: #7c3aed; }
+
+    .empty-state {
+      font-size: 0.85rem;
+      color: #444;
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .loader {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid #7c3aed;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .section-label {
+      font-size: 0.75rem;
+      color: #666;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-label span {
+      display: inline-block;
+      height: 1px;
+      flex: 1;
+      background: #2a2a3a;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🧠 Smart Question Generator</h1>
+  <p class="subtitle">Powered by Flan-T5-Small · Runs 100% in your browser</p>
+
+  <!-- Input Card -->
+  <div class="card">
+    <h2>Your Text</h2>
+    <textarea id="inputText" placeholder="Paste any text here — a summary, article, document excerpt, etc..."></textarea>
+    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+      <button class="btn" id="generateBtn" disabled>Generate Questions</button>
+      <div class="status-bar" id="statusBar"><span class="loader"></span> Loading model...</div>
+    </div>
+  </div>
+
+  <!-- Initial Questions Card -->
+  <div class="card" id="initialCard" style="display:none;">
+    <h2>Generated Questions</h2>
+    <div class="section-label">Click any question to get follow-ups <span></span></div>
+    <ul class="questions-list" id="initialQuestions"></ul>
+  </div>
+
+  <!-- Follow-up Questions Card -->
+  <div class="card" id="followupCard" style="display:none;">
+    <h2>Follow-up Questions</h2>
+    <div class="section-label" id="followupLabel">Based on your question <span></span></div>
+
+    <div class="followup-input-row">
+      <input type="text" id="customQuestion" placeholder="Or type your own question and press Enter..." />
+      <button class="btn" id="followupBtn" style="margin-top:0">Ask</button>
+    </div>
+
+    <div style="margin-top:16px;">
+      <ul class="questions-list" id="followupQuestions"></ul>
+    </div>
+  </div>
+
+  <script type="module">
+    import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@next/dist/transformers.min.js';
+
+    // Allow remote model download (CDN-based, no local setup needed)
+    env.allowRemoteModels = true;
+
+    const generateBtn = document.getElementById('generateBtn');
+    const statusBar   = document.getElementById('statusBar');
+    const inputText   = document.getElementById('inputText');
+    const initialCard = document.getElementById('initialCard');
+    const followupCard= document.getElementById('followupCard');
+    const initialQList= document.getElementById('initialQuestions');
+    const followupQList=document.getElementById('followupQuestions');
+    const customQ     = document.getElementById('customQuestion');
+    const followupBtn = document.getElementById('followupBtn');
+    const followupLabel=document.getElementById('followupLabel');
+
+    let generator = null;
+    let currentText = '';
+
+    // ── Load model ──────────────────────────────────────────────
+    (async () => {
+      try {
+        generator = await pipeline('text2text-generation', 'Xenova/flan-t5-small', {
+          dtype: 'q8',
+          progress_callback: (p) => {
+            if (p.status === 'progress') {
+              const pct = p.total ? Math.round((p.loaded / p.total) * 100) : '...';
+              statusBar.innerHTML = `<span class="loader"></span> Downloading model ${pct}%`;
+            }
+          }
+        });
+        statusBar.textContent = '✅ Model ready';
+        generateBtn.disabled = false;
+      } catch (e) {
+        statusBar.textContent = '❌ Failed to load model: ' + e.message;
+      }
+    })();
+
+    // ── Prompts ──────────────────────────────────────────────────
+    function summaryPrompt(text) {
+      return `You are a helpful research assistant.
+A user is reading this text:
+"${text.slice(0, 800)}"
+Generate exactly 3 short specific questions a reader would want answered.
+Format: numbered list only, no intro.`;
+    }
+
+    function followUpPrompt(question, text) {
+      return `You are a helpful research assistant.
+Context text: "${text.slice(0, 600)}"
+The user asked: "${question}"
+Generate exactly 3 follow-up questions that dig deeper into the same topic.
+Format: numbered list only, no intro.`;
+    }
+
+    // ── Parse output ─────────────────────────────────────────────
+    function parseQuestions(raw) {
+      return raw
+        .split('\n')
+        .map(l => l.replace(/^\d+[\.\)]\s*/, '').trim())
+        .filter(l => l.length > 8)
+        .slice(0, 3);
+    }
+
+    // ── Render helpers ───────────────────────────────────────────
+    function renderQuestions(listEl, questions, onClick) {
+      listEl.innerHTML = '';
+      if (!questions.length) {
+        listEl.innerHTML = '<p class="empty-state">No questions generated. Try longer text.</p>';
+        return;
+      }
+      questions.forEach((q, i) => {
+        const li = document.createElement('li');
+        li.className = 'question-chip';
+        li.innerHTML = `<span class="q-num">${i + 1}</span><span>${q}</span>`;
+        if (onClick) li.addEventListener('click', () => onClick(q));
+        listEl.appendChild(li);
+      });
+    }
+
+    function setLoading(el, msg) {
+      el.innerHTML = `<p class="empty-state"><span class="loader"></span> ${msg}</p>`;
+    }
+
+    // ── Generate initial questions ───────────────────────────────
+    generateBtn.addEventListener('click', async () => {
+      const text = inputText.value.trim();
+      if (!text) return;
+      currentText = text;
+
+      generateBtn.disabled = true;
+      statusBar.innerHTML = '<span class="loader"></span> Generating questions...';
+
+      initialCard.style.display = 'block';
+      followupCard.style.display = 'none';
+      setLoading(initialQList, 'Thinking...');
+
+      try {
+        const out = await generator(summaryPrompt(text), { max_new_tokens: 120 });
+        const qs = parseQuestions(out[0].generated_text);
+        renderQuestions(initialQList, qs, handleQuestionClick);
+        statusBar.textContent = '✅ Done — click a question for follow-ups';
+        followupCard.style.display = 'block';
+        followupQList.innerHTML = '<p class="empty-state">Click a question above or type one below.</p>';
+      } catch (e) {
+        statusBar.textContent = '❌ Error: ' + e.message;
+      }
+
+      generateBtn.disabled = false;
+    });
+
+    // ── Generate follow-ups ──────────────────────────────────────
+    async function handleQuestionClick(question) {
+      followupLabel.innerHTML = `Based on: <em style="color:#c084fc">"${question}"</em> <span></span>`;
+      setLoading(followupQList, 'Generating follow-ups...');
+      statusBar.innerHTML = '<span class="loader"></span> Follow-up generation...';
+
+      try {
+        const out = await generator(followUpPrompt(question, currentText), { max_new_tokens: 120 });
+        const qs = parseQuestions(out[0].generated_text);
+        renderQuestions(followupQList, qs, handleQuestionClick);
+        statusBar.textContent = '✅ Follow-ups ready';
+      } catch (e) {
+        statusBar.textContent = '❌ Error: ' + e.message;
+      }
+    }
+
+    followupBtn.addEventListener('click', () => {
+      const q = customQuestion.value.trim();
+      if (q && currentText) handleQuestionClick(q);
+    });
+
+    customQ.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const q = customQ.value.trim();
+        if (q && currentText) handleQuestionClick(q);
+      }
+    });
+  </script>
+</body>
+</html>
