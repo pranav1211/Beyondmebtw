@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Smart Question Generator — Base v1.1</title>
+  <title>Smart Question Generator — Base v1.2</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -18,12 +18,7 @@
       padding: 40px 16px;
     }
 
-    h1 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: #c084fc;
-      margin-bottom: 4px;
-    }
+    h1 { font-size: 1.6rem; font-weight: 700; color: #c084fc; margin-bottom: 4px; }
 
     .version-badge {
       display: inline-block;
@@ -38,11 +33,7 @@
       margin-bottom: 6px;
     }
 
-    .subtitle {
-      font-size: 0.85rem;
-      color: #666;
-      margin-bottom: 32px;
-    }
+    .subtitle { font-size: 0.85rem; color: #666; margin-bottom: 32px; }
 
     .card {
       background: #1a1a24;
@@ -50,7 +41,7 @@
       border-radius: 14px;
       padding: 24px;
       width: 100%;
-      max-width: 680px;
+      max-width: 720px;
       margin-bottom: 20px;
     }
 
@@ -77,8 +68,32 @@
       line-height: 1.6;
       transition: border-color 0.2s;
     }
-
     textarea:focus { border-color: #7c3aed; }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      width: 100%;
+      max-width: 720px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 560px) { .two-col { grid-template-columns: 1fr; } }
+
+    .method-badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      padding: 2px 8px;
+      border-radius: 12px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    .badge-nlp { background: #0d2a1a; color: #34d399; border: 1px solid #34d39944; }
+    .badge-llm { background: #2a1a4a; color: #a78bfa; border: 1px solid #7c3aed44; }
 
     .btn {
       margin-top: 14px;
@@ -92,9 +107,13 @@
       cursor: pointer;
       transition: background 0.2s, opacity 0.2s;
     }
-
     .btn:hover { background: #6d28d9; }
     .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-sm {
+      padding: 7px 16px;
+      font-size: 0.82rem;
+      margin-top: 0;
+    }
 
     .status-bar {
       font-size: 0.8rem;
@@ -103,19 +122,14 @@
       min-height: 20px;
     }
 
-    .questions-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+    .questions-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
 
     .question-chip {
       background: #12121a;
       border: 1px solid #2a2a3a;
       border-radius: 10px;
       padding: 12px 16px;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       line-height: 1.5;
       cursor: pointer;
       transition: border-color 0.2s, background 0.2s;
@@ -123,40 +137,37 @@
       align-items: flex-start;
       gap: 10px;
     }
+    .question-chip:hover { border-color: #7c3aed; background: #1e1e2e; }
+    .question-chip.selected { border-color: #c084fc; background: #1e1230; }
 
-    .question-chip:hover {
-      border-color: #7c3aed;
-      background: #1e1e2e;
-    }
-
-    .question-chip .q-num {
+    .q-num {
       color: #7c3aed;
       font-weight: 700;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       min-width: 18px;
       padding-top: 2px;
     }
 
-    .followup-input-row {
-      display: flex;
+    .answer-box {
+      margin-top: 16px;
+      display: none;
+      flex-direction: column;
       gap: 10px;
-      margin-top: 4px;
+    }
+    .answer-box.visible { display: flex; }
+
+    .answer-label {
+      font-size: 0.78rem;
+      color: #888;
+    }
+    .answer-label em { color: #c084fc; font-style: normal; font-weight: 600; }
+
+    .answer-box textarea {
+      min-height: 80px;
+      font-size: 0.88rem;
     }
 
-    .followup-input-row input {
-      flex: 1;
-      background: #12121a;
-      border: 1px solid #2a2a3a;
-      border-radius: 8px;
-      color: #e0e0e0;
-      font-size: 0.9rem;
-      padding: 10px 14px;
-      outline: none;
-      font-family: inherit;
-      transition: border-color 0.2s;
-    }
-
-    .followup-input-row input:focus { border-color: #7c3aed; }
+    .answer-actions { display: flex; gap: 10px; align-items: center; }
 
     .empty-state {
       font-size: 0.85rem;
@@ -167,8 +178,7 @@
 
     .loader {
       display: inline-block;
-      width: 14px;
-      height: 14px;
+      width: 12px; height: 12px;
       border: 2px solid #7c3aed;
       border-top-color: transparent;
       border-radius: 50%;
@@ -176,93 +186,101 @@
       vertical-align: middle;
       margin-right: 6px;
     }
-
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .section-label {
-      font-size: 0.75rem;
-      color: #666;
-      margin-bottom: 10px;
+    .divider {
+      font-size: 0.72rem;
+      color: #555;
       display: flex;
       align-items: center;
       gap: 8px;
+      margin-bottom: 12px;
     }
+    .divider span { flex: 1; height: 1px; background: #2a2a3a; display: block; }
 
-    .section-label span {
-      display: inline-block;
-      height: 1px;
-      flex: 1;
-      background: #2a2a3a;
-    }
-
-    footer {
-      margin-top: 40px;
-      font-size: 0.75rem;
-      color: #333;
-      text-align: center;
-    }
+    footer { margin-top: 40px; font-size: 0.72rem; color: #333; text-align: center; }
   </style>
 </head>
 <body>
 
   <h1>🧠 Smart Question Generator</h1>
   <div class="version-badge">BASE v1.2</div>
-  <p class="subtitle">Powered by Flan-T5-248M · Runs 100% in your browser</p>
+  <p class="subtitle">NLP + LaMini-248M · Runs 100% in your browser</p>
 
-  <!-- Input Card -->
-  <div class="card">
+  <!-- Input -->
+  <div class="card" style="max-width:720px;">
     <h2>Your Text</h2>
-    <textarea id="inputText" placeholder="Paste any text here — a summary, article, document excerpt, etc..."></textarea>
+    <textarea id="inputText" placeholder="Paste any text — article, summary, document excerpt..."></textarea>
     <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
       <button class="btn" id="generateBtn" disabled>Generate Questions</button>
       <div class="status-bar" id="statusBar"><span class="loader"></span> Loading model...</div>
     </div>
   </div>
 
-  <!-- Initial Questions Card -->
-  <div class="card" id="initialCard" style="display:none;">
-    <h2>Generated Questions <span style="color:#555;font-size:0.75rem;text-transform:none;letter-spacing:0;">(7)</span></h2>
-    <div class="section-label">Click any question to get follow-ups <span></span></div>
-    <ul class="questions-list" id="initialQuestions"></ul>
-  </div>
+  <!-- Two column: NLP | LLM -->
+  <div class="two-col">
 
-  <!-- Follow-up Questions Card -->
-  <div class="card" id="followupCard" style="display:none;">
-    <h2>Follow-up Questions <span style="color:#555;font-size:0.75rem;text-transform:none;letter-spacing:0;">(7)</span></h2>
-    <div class="section-label" id="followupLabel">Based on your question <span></span></div>
-
-    <div class="followup-input-row">
-      <input type="text" id="customQuestion" placeholder="Or type your own question and press Enter..." />
-      <button class="btn" id="followupBtn" style="margin-top:0">Ask</button>
+    <!-- NLP Column -->
+    <div class="card" id="nlpCard" style="display:none;">
+      <h2>Questions <span class="method-badge badge-nlp">NLP</span></h2>
+      <div class="divider"><span></span> keyword-extracted <span></span></div>
+      <ul class="questions-list" id="nlpQuestions"></ul>
     </div>
 
-    <div style="margin-top:16px;">
-      <ul class="questions-list" id="followupQuestions"></ul>
+    <!-- LLM Column -->
+    <div class="card" id="llmCard" style="display:none;">
+      <h2>Questions <span class="method-badge badge-llm">LLM</span></h2>
+      <div class="divider"><span></span> click one to answer <span></span></div>
+      <ul class="questions-list" id="llmQuestions"></ul>
+
+      <!-- Answer box — appears when a question is clicked -->
+      <div class="answer-box" id="answerBox">
+        <div class="answer-label">Answering: <em id="selectedQLabel"></em></div>
+        <textarea id="answerInput" placeholder="Type your answer here..."></textarea>
+        <div class="answer-actions">
+          <button class="btn btn-sm" id="submitAnswer">Generate follow-ups →</button>
+          <span class="status-bar" id="answerStatus" style="margin-top:0;"></span>
+        </div>
+      </div>
     </div>
+
   </div>
 
-  <footer>Smart Question Generator · Base v1.1 · Flan-T5-248M q8</footer>
+  <!-- Follow-up Questions (full width, below) -->
+  <div class="card" id="followupCard" style="display:none; max-width:720px;">
+    <h2>Follow-up Questions <span class="method-badge badge-llm">LLM</span></h2>
+    <div class="divider" id="followupLabel"><span></span> based on your answer <span></span></div>
+    <ul class="questions-list" id="followupQuestions"></ul>
+  </div>
+
+  <footer>Smart Question Generator · Base v1.2 · NLP + LaMini-Flan-T5-248M q8</footer>
 
   <script type="module">
     import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@next/dist/transformers.min.js';
 
     env.allowRemoteModels = true;
 
-    const generateBtn  = document.getElementById('generateBtn');
-    const statusBar    = document.getElementById('statusBar');
-    const inputText    = document.getElementById('inputText');
-    const initialCard  = document.getElementById('initialCard');
-    const followupCard = document.getElementById('followupCard');
-    const initialQList = document.getElementById('initialQuestions');
-    const followupQList= document.getElementById('followupQuestions');
-    const customQ      = document.getElementById('customQuestion');
-    const followupBtn  = document.getElementById('followupBtn');
-    const followupLabel= document.getElementById('followupLabel');
+    const generateBtn   = document.getElementById('generateBtn');
+    const statusBar     = document.getElementById('statusBar');
+    const inputText     = document.getElementById('inputText');
+    const nlpCard       = document.getElementById('nlpCard');
+    const llmCard       = document.getElementById('llmCard');
+    const nlpQList      = document.getElementById('nlpQuestions');
+    const llmQList      = document.getElementById('llmQuestions');
+    const answerBox     = document.getElementById('answerBox');
+    const answerInput   = document.getElementById('answerInput');
+    const selectedQLabel= document.getElementById('selectedQLabel');
+    const submitAnswer  = document.getElementById('submitAnswer');
+    const answerStatus  = document.getElementById('answerStatus');
+    const followupCard  = document.getElementById('followupCard');
+    const followupQList = document.getElementById('followupQuestions');
+    const followupLabel = document.getElementById('followupLabel');
 
     let generator = null;
     let currentText = '';
+    let selectedQuestion = '';
 
-    // ── Load model (flan-t5-base for better instruction-following) ──
+    // ── Load model ───────────────────────────────────────────────
     (async () => {
       try {
         generator = await pipeline('text2text-generation', 'Xenova/LaMini-Flan-T5-248M', {
@@ -277,62 +295,132 @@
         statusBar.textContent = '✅ Model ready';
         generateBtn.disabled = false;
       } catch (e) {
-        statusBar.textContent = '❌ Failed to load model: ' + e.message;
+        statusBar.textContent = '❌ Model failed: ' + e.message;
       }
     })();
 
-    // ── Clean dense text before passing to model ─────────────────
+    // ── Clean text ───────────────────────────────────────────────
     function cleanText(text) {
       return text
         .replace(/₹[\d,\.]+\s*(Mn|Cr)?/g, '[amount]')
         .replace(/\d+(\.\d+)?%/g, '[percentage]')
         .replace(/FY\d{2,4}/g, '[fiscal year]')
-        .slice(0, 700);
+        .slice(0, 600);
     }
 
-    // ── Prompts ──────────────────────────────────────────────────
-    function summaryPrompt(text) {
-      return `Read this and write 7 questions:
-${cleanText(text)}
+    // ════════════════════════════════════════════════════════════
+    // NLP METHOD — pure JS, no model
+    // Extracts keyphrases → builds "What/Why/How" questions
+    // ════════════════════════════════════════════════════════════
+    const STOPWORDS = new Set([
+      'the','a','an','and','or','but','in','on','at','to','for','of','with',
+      'is','are','was','were','be','been','being','have','has','had','do','does',
+      'did','will','would','could','should','may','might','shall','can','this',
+      'that','these','those','its','it','as','by','from','into','than','their',
+      'they','we','he','she','his','her','our','your','you','i','my','not','also',
+      'which','who','what','where','when','how','why','about','after','before',
+      'between','through','during','without','within','along','across','behind',
+      'despite','although','however','therefore','thus','hence','while','since',
+      'both','each','more','most','other','some','such','over','under','per'
+    ]);
+
+    function extractKeyphrases(text) {
+      // Split into sentences
+      const sentences = text.match(/[^.!?]+[.!?]*/g) || [text];
+
+      // Score words by frequency, excluding stopwords
+      const freq = {};
+      const words = text.toLowerCase().match(/\b[a-z][a-z\-]{2,}\b/g) || [];
+      words.forEach(w => {
+        if (!STOPWORDS.has(w)) freq[w] = (freq[w] || 0) + 1;
+      });
+
+      // Score each sentence by sum of word scores
+      const scored = sentences.map(s => {
+        const ws = s.toLowerCase().match(/\b[a-z][a-z\-]{2,}\b/g) || [];
+        const score = ws.reduce((sum, w) => sum + (freq[w] || 0), 0);
+        return { s: s.trim(), score };
+      });
+
+      // Top 3 sentences by score
+      return scored
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 3)
+        .map(x => x.s);
+    }
+
+    function buildNLPQuestions(text) {
+      const keyphrases = extractKeyphrases(text);
+      const templates = [
+        (s) => `What does the following reveal? — "${s.slice(0, 80)}..."`,
+        (s) => `Why is this significant: "${s.slice(0, 80)}..."?`,
+        (s) => `How does this impact the overall subject: "${s.slice(0, 80)}..."?`,
+      ];
+      return keyphrases.map((phrase, i) => templates[i % templates.length](phrase));
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // LLM METHOD — LaMini-248M, exactly 3 questions
+    // ════════════════════════════════════════════════════════════
+    function llmPrompt(text) {
+      return `Task: Generate questions about a given text.
+
+Example:
+Text: "The company reported high revenue but losses due to costs."
+Questions:
+1. Why are costs outpacing revenue?
+2. What drives the company's revenue?
+3. Can the company reach profitability?
+
+Now:
+Text: "${cleanText(text)}"
 Questions:
 1.`;
     }
 
-    function followUpPrompt(question, text) {
-      return `Context: "${cleanText(text)}"
-The user asked: "${question}"
-Write 7 follow-up questions that dig deeper into the same topic.
-Questions:
+    function followUpPrompt(question, answer) {
+      return `Task: Generate follow-up questions based on a question and its answer.
+
+Example:
+Question: "Why are costs high?"
+Answer: "Because of heavy investment in automation equipment."
+Follow-up questions:
+1. What automation equipment is being used?
+2. Will automation reduce costs long-term?
+3. Are there cheaper automation alternatives?
+
+Now:
+Question: "${question}"
+Answer: "${answer}"
+Follow-up questions:
 1.`;
     }
 
-    // ── Parse output ─────────────────────────────────────────────
-    const promptWords = ['reader', 'generate', 'assistant', 'user', 'format', 'intro', 'write', 'context'];
+    const PROMPT_ECHO = ['task','example','generate','assistant','format','text:','questions:'];
 
-    function parseQuestions(raw, seed = '1.') {
-      // Re-attach the seeded "1." that was part of the prompt
-      const full = seed + raw;
+    function parseQuestions(raw) {
+      const full = '1.' + raw;
       return full
-        .split('\n')
+        .split(/\n/)
         .map(l => l.replace(/^\d+[\.\)]\s*/, '').trim())
         .filter(l => l.length > 10)
         .filter(l => l.endsWith('?'))
-        .filter(l => !promptWords.some(w => l.toLowerCase().includes(w)))
-        .slice(0, 7);
+        .filter(l => !PROMPT_ECHO.some(w => l.toLowerCase().startsWith(w)))
+        .slice(0, 3);
     }
 
-    // ── Render helpers ───────────────────────────────────────────
+    // ── Render ───────────────────────────────────────────────────
     function renderQuestions(listEl, questions, onClick) {
       listEl.innerHTML = '';
       if (!questions.length) {
-        listEl.innerHTML = '<p class="empty-state">No questions generated. Try longer or simpler text.</p>';
+        listEl.innerHTML = '<p class="empty-state">No questions generated.</p>';
         return;
       }
       questions.forEach((q, i) => {
         const li = document.createElement('li');
         li.className = 'question-chip';
         li.innerHTML = `<span class="q-num">${i + 1}</span><span>${q}</span>`;
-        if (onClick) li.addEventListener('click', () => onClick(q));
+        if (onClick) li.addEventListener('click', () => onClick(q, li));
         listEl.appendChild(li);
       });
     }
@@ -341,61 +429,85 @@ Questions:
       el.innerHTML = `<p class="empty-state"><span class="loader"></span> ${msg}</p>`;
     }
 
-    // ── Generate initial questions ───────────────────────────────
+    // ── Main generate ────────────────────────────────────────────
     generateBtn.addEventListener('click', async () => {
       const text = inputText.value.trim();
       if (!text) return;
       currentText = text;
 
       generateBtn.disabled = true;
-      statusBar.innerHTML = '<span class="loader"></span> Generating 7 questions...';
-
-      initialCard.style.display = 'block';
       followupCard.style.display = 'none';
-      setLoading(initialQList, 'Thinking...');
+      answerBox.classList.remove('visible');
+
+      // NLP — instant
+      nlpCard.style.display = 'block';
+      const nlpQs = buildNLPQuestions(text);
+      renderQuestions(nlpQList, nlpQs, null); // NLP questions not clickable for follow-up
+
+      // LLM — async
+      llmCard.style.display = 'block';
+      setLoading(llmQList, 'Generating 3 questions...');
+      statusBar.innerHTML = '<span class="loader"></span> LLM thinking...';
 
       try {
-        const out = await generator(summaryPrompt(text), { max_new_tokens: 280 });
+        const out = await generator(llmPrompt(text), { max_new_tokens: 140 });
         const qs = parseQuestions(out[0].generated_text);
-        renderQuestions(initialQList, qs, handleQuestionClick);
-        statusBar.textContent = `✅ ${qs.length} questions generated — click any to get follow-ups`;
-        followupCard.style.display = 'block';
-        followupQList.innerHTML = '<p class="empty-state">Click a question above or type one below.</p>';
+        renderQuestions(llmQList, qs, onLLMQuestionClick);
+        statusBar.textContent = `✅ Done — click an LLM question to answer it`;
       } catch (e) {
-        statusBar.textContent = '❌ Error: ' + e.message;
-        initialQList.innerHTML = `<p class="empty-state">Error: ${e.message}</p>`;
+        llmQList.innerHTML = `<p class="empty-state">Error: ${e.message}</p>`;
+        statusBar.textContent = '❌ ' + e.message;
       }
 
       generateBtn.disabled = false;
     });
 
-    // ── Generate follow-ups ──────────────────────────────────────
-    async function handleQuestionClick(question) {
-      followupLabel.innerHTML = `Based on: <em style="color:#c084fc">"${question}"</em> <span></span>`;
-      setLoading(followupQList, 'Generating 7 follow-up questions...');
-      statusBar.innerHTML = '<span class="loader"></span> Generating follow-ups...';
+    // ── Question clicked → show answer box ──────────────────────
+    function onLLMQuestionClick(question, chipEl) {
+      selectedQuestion = question;
+      selectedQLabel.textContent = question;
+      answerInput.value = '';
+      answerStatus.textContent = '';
+      answerBox.classList.add('visible');
+      followupCard.style.display = 'none';
 
-      try {
-        const out = await generator(followUpPrompt(question, currentText), { max_new_tokens: 280 });
-        const qs = parseQuestions(out[0].generated_text);
-        renderQuestions(followupQList, qs, handleQuestionClick);
-        statusBar.textContent = `✅ ${qs.length} follow-up questions ready`;
-      } catch (e) {
-        statusBar.textContent = '❌ Error: ' + e.message;
-        followupQList.innerHTML = `<p class="empty-state">Error: ${e.message}</p>`;
-      }
+      // Highlight selected chip
+      llmQList.querySelectorAll('.question-chip').forEach(c => c.classList.remove('selected'));
+      chipEl.classList.add('selected');
+
+      answerInput.focus();
     }
 
-    followupBtn.addEventListener('click', () => {
-      const q = customQ.value.trim();
-      if (q && currentText) handleQuestionClick(q);
-    });
+    // ── Answer submitted → generate follow-ups ───────────────────
+    submitAnswer.addEventListener('click', async () => {
+      const answer = answerInput.value.trim();
+      if (!answer || !selectedQuestion) return;
 
-    customQ.addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        const q = customQ.value.trim();
-        if (q && currentText) handleQuestionClick(q);
+      submitAnswer.disabled = true;
+      answerStatus.innerHTML = '<span class="loader"></span>';
+
+      followupCard.style.display = 'block';
+      followupLabel.innerHTML = `<span></span> follow-ups from your answer <span></span>`;
+      setLoading(followupQList, 'Generating 3 follow-up questions...');
+
+      try {
+        const out = await generator(followUpPrompt(selectedQuestion, answer), { max_new_tokens: 140 });
+        const qs = parseQuestions(out[0].generated_text);
+        renderQuestions(followupQList, qs, (q, chip) => onLLMQuestionClick(q, chip));
+        answerStatus.textContent = '✅';
+
+        // Swap follow-up chips to also trigger answer flow
+        followupQList.querySelectorAll('.question-chip').forEach(chip => {
+          const qText = chip.querySelector('span:last-child').textContent;
+          chip.addEventListener('click', () => onLLMQuestionClick(qText, chip));
+        });
+
+      } catch (e) {
+        answerStatus.textContent = '❌ ' + e.message;
+        followupQList.innerHTML = `<p class="empty-state">Error: ${e.message}</p>`;
       }
+
+      submitAnswer.disabled = false;
     });
   </script>
 </body>
