@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Smart Question Generator</title>
+  <title>Smart Question Generator — Base v1.1</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -22,6 +22,19 @@
       font-size: 1.6rem;
       font-weight: 700;
       color: #c084fc;
+      margin-bottom: 4px;
+    }
+
+    .version-badge {
+      display: inline-block;
+      background: #2a1a4a;
+      color: #a78bfa;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid #7c3aed44;
       margin-bottom: 6px;
     }
 
@@ -181,11 +194,19 @@
       flex: 1;
       background: #2a2a3a;
     }
+
+    footer {
+      margin-top: 40px;
+      font-size: 0.75rem;
+      color: #333;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
 
-  <h1>🧠 Smart Question Generator V1</h1>
+  <h1>🧠 Smart Question Generator</h1>
+  <div class="version-badge">BASE v1.1</div>
   <p class="subtitle">Powered by Flan-T5-Base · Runs 100% in your browser</p>
 
   <!-- Input Card -->
@@ -200,14 +221,14 @@
 
   <!-- Initial Questions Card -->
   <div class="card" id="initialCard" style="display:none;">
-    <h2>Generated Questions</h2>
+    <h2>Generated Questions <span style="color:#555;font-size:0.75rem;text-transform:none;letter-spacing:0;">(7)</span></h2>
     <div class="section-label">Click any question to get follow-ups <span></span></div>
     <ul class="questions-list" id="initialQuestions"></ul>
   </div>
 
   <!-- Follow-up Questions Card -->
   <div class="card" id="followupCard" style="display:none;">
-    <h2>Follow-up Questions</h2>
+    <h2>Follow-up Questions <span style="color:#555;font-size:0.75rem;text-transform:none;letter-spacing:0;">(7)</span></h2>
     <div class="section-label" id="followupLabel">Based on your question <span></span></div>
 
     <div class="followup-input-row">
@@ -220,27 +241,28 @@
     </div>
   </div>
 
+  <footer>Smart Question Generator · Base v1.1 · Flan-T5-Base q8</footer>
+
   <script type="module">
     import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@next/dist/transformers.min.js';
 
-    // Allow remote model download (CDN-based, no local setup needed)
     env.allowRemoteModels = true;
 
-    const generateBtn = document.getElementById('generateBtn');
-    const statusBar   = document.getElementById('statusBar');
-    const inputText   = document.getElementById('inputText');
-    const initialCard = document.getElementById('initialCard');
-    const followupCard= document.getElementById('followupCard');
-    const initialQList= document.getElementById('initialQuestions');
-    const followupQList=document.getElementById('followupQuestions');
-    const customQ     = document.getElementById('customQuestion');
-    const followupBtn = document.getElementById('followupBtn');
-    const followupLabel=document.getElementById('followupLabel');
+    const generateBtn  = document.getElementById('generateBtn');
+    const statusBar    = document.getElementById('statusBar');
+    const inputText    = document.getElementById('inputText');
+    const initialCard  = document.getElementById('initialCard');
+    const followupCard = document.getElementById('followupCard');
+    const initialQList = document.getElementById('initialQuestions');
+    const followupQList= document.getElementById('followupQuestions');
+    const customQ      = document.getElementById('customQuestion');
+    const followupBtn  = document.getElementById('followupBtn');
+    const followupLabel= document.getElementById('followupLabel');
 
     let generator = null;
     let currentText = '';
 
-    // ── Load model ──────────────────────────────────────────────
+    // ── Load model (flan-t5-base for better instruction-following) ──
     (async () => {
       try {
         generator = await pipeline('text2text-generation', 'Xenova/flan-t5-base', {
@@ -259,41 +281,51 @@
       }
     })();
 
+    // ── Clean dense text before passing to model ─────────────────
+    function cleanText(text) {
+      return text
+        .replace(/₹[\d,\.]+\s*(Mn|Cr)?/g, '[amount]')
+        .replace(/\d+(\.\d+)?%/g, '[percentage]')
+        .replace(/FY\d{2,4}/g, '[fiscal year]')
+        .slice(0, 700);
+    }
+
     // ── Prompts ──────────────────────────────────────────────────
-function summaryPrompt(text) {
-  return `Read this and write 5 questions:
-${text.slice(0, 600)}
+    function summaryPrompt(text) {
+      return `Read this and write 7 questions:
+${cleanText(text)}
 Questions:
-1.`;  // seed the output — forces the model to start numbering
-}
+1.`;
+    }
 
     function followUpPrompt(question, text) {
-      return `You are a helpful research assistant.
-Context text: "${text.slice(0, 600)}"
+      return `Context: "${cleanText(text)}"
 The user asked: "${question}"
-Generate exactly 3 follow-up questions that dig deeper into the same topic.
-Format: numbered list only, no intro.`;
+Write 7 follow-up questions that dig deeper into the same topic.
+Questions:
+1.`;
     }
 
     // ── Parse output ─────────────────────────────────────────────
-function parseQuestions(raw) {
-  const promptWords = ['reader', 'generate', 'assistant', 'user', 'format', 'intro'];
-function parseQuestions(raw) {
-  return raw
-    .split('\n')
-    .map(l => l.replace(/^\d+[\.\)]\s*/, '').trim())
-    .filter(l => l.length > 10)
-    .filter(l => l.endsWith('?'))
-    .slice(0, 5); // ← change this to however many you want
-}
-}
+    const promptWords = ['reader', 'generate', 'assistant', 'user', 'format', 'intro', 'write', 'context'];
 
+    function parseQuestions(raw, seed = '1.') {
+      // Re-attach the seeded "1." that was part of the prompt
+      const full = seed + raw;
+      return full
+        .split('\n')
+        .map(l => l.replace(/^\d+[\.\)]\s*/, '').trim())
+        .filter(l => l.length > 10)
+        .filter(l => l.endsWith('?'))
+        .filter(l => !promptWords.some(w => l.toLowerCase().includes(w)))
+        .slice(0, 7);
+    }
 
     // ── Render helpers ───────────────────────────────────────────
     function renderQuestions(listEl, questions, onClick) {
       listEl.innerHTML = '';
       if (!questions.length) {
-        listEl.innerHTML = '<p class="empty-state">No questions generated. Try longer text.</p>';
+        listEl.innerHTML = '<p class="empty-state">No questions generated. Try longer or simpler text.</p>';
         return;
       }
       questions.forEach((q, i) => {
@@ -316,7 +348,7 @@ function parseQuestions(raw) {
       currentText = text;
 
       generateBtn.disabled = true;
-      statusBar.innerHTML = '<span class="loader"></span> Generating questions...';
+      statusBar.innerHTML = '<span class="loader"></span> Generating 7 questions...';
 
       initialCard.style.display = 'block';
       followupCard.style.display = 'none';
@@ -326,11 +358,12 @@ function parseQuestions(raw) {
         const out = await generator(summaryPrompt(text), { max_new_tokens: 280 });
         const qs = parseQuestions(out[0].generated_text);
         renderQuestions(initialQList, qs, handleQuestionClick);
-        statusBar.textContent = '✅ Done — click a question for follow-ups';
+        statusBar.textContent = `✅ ${qs.length} questions generated — click any to get follow-ups`;
         followupCard.style.display = 'block';
         followupQList.innerHTML = '<p class="empty-state">Click a question above or type one below.</p>';
       } catch (e) {
         statusBar.textContent = '❌ Error: ' + e.message;
+        initialQList.innerHTML = `<p class="empty-state">Error: ${e.message}</p>`;
       }
 
       generateBtn.disabled = false;
@@ -339,21 +372,22 @@ function parseQuestions(raw) {
     // ── Generate follow-ups ──────────────────────────────────────
     async function handleQuestionClick(question) {
       followupLabel.innerHTML = `Based on: <em style="color:#c084fc">"${question}"</em> <span></span>`;
-      setLoading(followupQList, 'Generating follow-ups...');
-      statusBar.innerHTML = '<span class="loader"></span> Follow-up generation...';
+      setLoading(followupQList, 'Generating 7 follow-up questions...');
+      statusBar.innerHTML = '<span class="loader"></span> Generating follow-ups...';
 
       try {
-        const out = await generator(followUpPrompt(question, currentText), { max_new_tokens: 120 });
+        const out = await generator(followUpPrompt(question, currentText), { max_new_tokens: 280 });
         const qs = parseQuestions(out[0].generated_text);
         renderQuestions(followupQList, qs, handleQuestionClick);
-        statusBar.textContent = '✅ Follow-ups ready';
+        statusBar.textContent = `✅ ${qs.length} follow-up questions ready`;
       } catch (e) {
         statusBar.textContent = '❌ Error: ' + e.message;
+        followupQList.innerHTML = `<p class="empty-state">Error: ${e.message}</p>`;
       }
     }
 
     followupBtn.addEventListener('click', () => {
-      const q = customQuestion.value.trim();
+      const q = customQ.value.trim();
       if (q && currentText) handleQuestionClick(q);
     });
 
