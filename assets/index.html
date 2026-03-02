@@ -243,7 +243,7 @@
     // ── Load model ──────────────────────────────────────────────
     (async () => {
       try {
-        generator = await pipeline('text2text-generation', 'Xenova/flan-t5-small', {
+        generator = await pipeline('text2text-generation', 'Xenova/flan-t5-base', {
           dtype: 'q8',
           progress_callback: (p) => {
             if (p.status === 'progress') {
@@ -260,13 +260,12 @@
     })();
 
     // ── Prompts ──────────────────────────────────────────────────
-    function summaryPrompt(text) {
-      return `You are a helpful research assistant.
-A user is reading this text:
-"${text.slice(0, 800)}"
-Generate exactly 3 short specific questions a reader would want answered.
-Format: numbered list only, no intro.`;
-    }
+function summaryPrompt(text) {
+  return `Read this and write 3 questions:
+${text.slice(0, 600)}
+Questions:
+1.`;  // seed the output — forces the model to start numbering
+}
 
     function followUpPrompt(question, text) {
       return `You are a helpful research assistant.
@@ -277,13 +276,17 @@ Format: numbered list only, no intro.`;
     }
 
     // ── Parse output ─────────────────────────────────────────────
-    function parseQuestions(raw) {
-      return raw
-        .split('\n')
-        .map(l => l.replace(/^\d+[\.\)]\s*/, '').trim())
-        .filter(l => l.length > 8)
-        .slice(0, 3);
-    }
+function parseQuestions(raw) {
+  const promptWords = ['reader', 'generate', 'assistant', 'user', 'format', 'intro'];
+  return raw
+    .split('\n')
+    .map(l => l.replace(/^\d+[\.\)]\s*/, '').trim())
+    .filter(l => l.length > 10)
+    .filter(l => l.endsWith('?'))                          // must be a question
+    .filter(l => !promptWords.some(w => l.toLowerCase().includes(w)))  // no prompt echo
+    .slice(0, 3);
+}
+
 
     // ── Render helpers ───────────────────────────────────────────
     function renderQuestions(listEl, questions, onClick) {
