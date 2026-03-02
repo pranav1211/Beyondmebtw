@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Smart Question Generator — Base v1.2</title>
+  <title>Smart Question Generator — Base v1.3</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -204,7 +204,7 @@
 <body>
 
   <h1>🧠 Smart Question Generator</h1>
-  <div class="version-badge">BASE v1.2</div>
+  <div class="version-badge">BASE v1.3</div>
   <p class="subtitle">NLP + LaMini-248M · Runs 100% in your browser</p>
 
   <!-- Input -->
@@ -253,7 +253,7 @@
     <ul class="questions-list" id="followupQuestions"></ul>
   </div>
 
-  <footer>Smart Question Generator · Base v1.2 · NLP + LaMini-Flan-T5-248M q8</footer>
+  <footer>Smart Question Generator · Base v1.3 · NLP + LaMini-Flan-T5-248M q8</footer>
 
   <script type="module">
     import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@next/dist/transformers.min.js';
@@ -349,15 +349,16 @@
         .map(x => x.s);
     }
 
-    function buildNLPQuestions(text) {
-      const keyphrases = extractKeyphrases(text);
-      const templates = [
-        (s) => `What does the following reveal? — "${s.slice(0, 80)}..."`,
-        (s) => `Why is this significant: "${s.slice(0, 80)}..."?`,
-        (s) => `How does this impact the overall subject: "${s.slice(0, 80)}..."?`,
-      ];
-      return keyphrases.map((phrase, i) => templates[i % templates.length](phrase));
-    }
+function buildNLPQuestions(text) {
+  const keyphrases = extractKeyphrases(text);
+  const templates = [
+    (s) => `What does this reveal: "${s}"?`,
+    (s) => `Why is this significant: "${s}"?`,
+    (s) => `How does this impact the overall subject: "${s}"?`,
+  ];
+  return keyphrases.map((phrase, i) => templates[i % templates.length](phrase));
+}
+
 
     // ════════════════════════════════════════════════════════════
     // LLM METHOD — LaMini-248M, exactly 3 questions
@@ -398,16 +399,24 @@ Follow-up questions:
 
     const PROMPT_ECHO = ['task','example','generate','assistant','format','text:','questions:'];
 
-    function parseQuestions(raw) {
-      const full = '1.' + raw;
-      return full
-        .split(/\n/)
-        .map(l => l.replace(/^\d+[\.\)]\s*/, '').trim())
-        .filter(l => l.length > 10)
-        .filter(l => l.endsWith('?'))
-        .filter(l => !PROMPT_ECHO.some(w => l.toLowerCase().startsWith(w)))
-        .slice(0, 3);
-    }
+    ffunction parseQuestions(raw) {
+  const full = '1.' + raw;
+
+  // Try splitting by newline first, fall back to inline "2." "3." pattern
+  let lines = full.split(/\n/).map(l => l.trim()).filter(Boolean);
+  if (lines.length <= 1) {
+    // Model put everything on one line — split on "2." or "3." markers
+    lines = full.split(/(?=\d+[\.\)])/g);
+  }
+
+  return lines
+    .map(l => l.replace(/^\d+[\.\)]\s*/, '').trim())
+    .filter(l => l.length > 10)
+    .filter(l => l.endsWith('?'))
+    .filter(l => !PROMPT_ECHO.some(w => l.toLowerCase().startsWith(w)))
+    .slice(0, 3);
+}
+
 
     // ── Render ───────────────────────────────────────────────────
     function renderQuestions(listEl, questions, onClick) {
