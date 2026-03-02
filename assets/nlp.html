@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Question Generator — NLP v1.0</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f0f13;
+      color: #e0e0e0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 16px;
+    }
+
+    h1 { font-size: 1.6rem; font-weight: 700; color: #34d399; margin-bottom: 4px; }
+
+    .version-badge {
+      display: inline-block;
+      background: #0d2a1a;
+      color: #34d399;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid #34d39944;
+      margin-bottom: 6px;
+    }
+
+    .subtitle { font-size: 0.85rem; color: #666; margin-bottom: 32px; }
+
+    .card {
+      background: #1a1a24;
+      border: 1px solid #2a2a3a;
+      border-radius: 14px;
+      padding: 24px;
+      width: 100%;
+      max-width: 700px;
+      margin-bottom: 20px;
+    }
+
+    .card h2 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #888;
+      margin-bottom: 12px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      background: #12121a;
+      border: 1px solid #2a2a3a;
+      border-radius: 10px;
+      color: #e0e0e0;
+      font-size: 0.95rem;
+      padding: 14px;
+      resize: vertical;
+      outline: none;
+      font-family: inherit;
+      line-height: 1.6;
+      transition: border-color 0.2s;
+    }
+    textarea:focus { border-color: #34d399; }
+
+    .btn {
+      margin-top: 14px;
+      padding: 10px 24px;
+      background: #059669;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+    }
+    .btn:hover { background: #047857; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid #2a2a3a;
+      color: #888;
+      font-size: 0.8rem;
+      padding: 6px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 0;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-ghost:hover { border-color: #34d399; color: #34d399; }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .status-bar {
+      font-size: 0.8rem;
+      color: #34d399;
+      min-height: 20px;
+    }
+
+    .questions-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+    .question-chip {
+      background: #12121a;
+      border: 1px solid #2a2a3a;
+      border-radius: 10px;
+      padding: 13px 16px;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      user-select: none;
+    }
+    .question-chip:hover { border-color: #34d399; background: #111a15; }
+    .question-chip.selected { border-color: #34d399; background: #0d2a1a; }
+
+    .q-num {
+      color: #34d399;
+      font-weight: 700;
+      font-size: 0.78rem;
+      min-width: 18px;
+      padding-top: 3px;
+    }
+
+    .q-type {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 2px 7px;
+      border-radius: 10px;
+      white-space: nowrap;
+      margin-top: 3px;
+    }
+    .type-what { background: #1a2a3a; color: #60a5fa; }
+    .type-why  { background: #2a1a2a; color: #e879f9; }
+    .type-how  { background: #1a2a1a; color: #34d399; }
+    .type-who  { background: #2a2a1a; color: #fbbf24; }
+    .type-when { background: #2a1a1a; color: #f87171; }
+
+    .answer-section {
+      margin-top: 20px;
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .answer-section.visible { display: flex; }
+
+    .answer-header {
+      font-size: 0.78rem;
+      color: #666;
+      line-height: 1.5;
+    }
+    .answer-header strong { color: #34d399; font-weight: 600; }
+
+    .answer-section textarea { min-height: 90px; font-size: 0.9rem; }
+
+    .divider {
+      font-size: 0.72rem;
+      color: #444;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .divider span { flex: 1; height: 1px; background: #2a2a3a; display: block; }
+
+    .empty-state {
+      font-size: 0.85rem;
+      color: #444;
+      text-align: center;
+      padding: 24px 0;
+    }
+
+    .stats-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .stat {
+      font-size: 0.75rem;
+      color: #555;
+    }
+    .stat strong { color: #34d399; }
+
+    footer { margin-top: 40px; font-size: 0.72rem; color: #2a2a3a; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <h1>🧠 Smart Question Generator</h1>
+  <div class="version-badge">NLP v1.0</div>
+  <p class="subtitle">Pure NLP · Zero model · Instant · Runs offline</p>
+
+  <!-- Input -->
+  <div class="card">
+    <h2>Your Text</h2>
+    <textarea id="inputText" placeholder="Paste any text — article, summary, document excerpt..."></textarea>
+    <div class="btn-row">
+      <button class="btn" id="generateBtn">Generate Questions</button>
+      <div class="status-bar" id="statusBar">Ready</div>
+    </div>
+  </div>
+
+  <!-- Questions -->
+  <div class="card" id="questionsCard" style="display:none;">
+    <h2>Generated Questions</h2>
+
+    <div class="stats-row">
+      <div class="stat">Questions: <strong id="qCount">0</strong></div>
+      <div class="stat">Keywords extracted: <strong id="kwCount">0</strong></div>
+      <div class="stat">Entities found: <strong id="entCount">0</strong></div>
+    </div>
+
+    <div class="divider"><span></span> click one to answer <span></span>
+      <button class="btn-ghost" id="regenBtn">↻ Regenerate</button>
+    </div>
+
+    <ul class="questions-list" id="questionsList"></ul>
+
+    <!-- Answer box -->
+    <div class="answer-section" id="answerSection">
+      <div class="answer-header">Answering: <strong id="selectedQLabel"></strong></div>
+      <textarea id="answerInput" placeholder="Type your answer here..."></textarea>
+      <div class="btn-row" style="margin-top:0;">
+        <button class="btn" id="submitAnswerBtn" style="margin-top:0;">Get follow-up questions →</button>
+        <span class="status-bar" id="answerStatus"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Follow-up Questions -->
+  <div class="card" id="followupCard" style="display:none;">
+    <h2>Follow-up Questions</h2>
+    <div class="divider" id="followupMeta"><span></span> based on your answer <span></span></div>
+    <ul class="questions-list" id="followupList"></ul>
+    <div class="btn-row" style="margin-top:16px;">
+      <button class="btn-ghost" id="regenFollowupBtn">↻ Regenerate follow-ups</button>
+    </div>
+  </div>
+
+  <footer>Smart Question Generator · NLP v1.0 · Pure JavaScript · No model required</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// CONSTANTS
+// ═══════════════════════════════════════════════════════════════
+const STOPWORDS = new Set([
+  'the','a','an','and','or','but','in','on','at','to','for','of','with','is',
+  'are','was','were','be','been','being','have','has','had','do','does','did',
+  'will','would','could','should','may','might','shall','can','this','that',
+  'these','those','its','it','as','by','from','into','than','their','they',
+  'we','he','she','his','her','our','your','you','i','my','not','also','which',
+  'who','what','where','when','how','why','about','after','before','between',
+  'through','during','without','within','along','across','behind','despite',
+  'although','however','therefore','thus','hence','while','since','both','each',
+  'more','most','other','some','such','over','under','per','then','so','if',
+  'all','any','no','up','out','just','been','because','there','here','very',
+  'only','even','back','still','way','take','every','good','new','old','same'
+]);
+
+const MIN_Q_LEN = 40;
+const MAX_Q_LEN = 140;
+const MAX_QUESTIONS = 5;
+const SIMILARITY_THRESHOLD = 0.55;
+
+// ═══════════════════════════════════════════════════════════════
+// TEXT UTILITIES
+// ═══════════════════════════════════════════════════════════════
+function tokenize(text) {
+  return text.toLowerCase().match(/\b[a-z][a-z\-]{2,}\b/g) || [];
+}
+
+function sentences(text) {
+  return text
+    .replace(/([.!?])\s+/g, '$1\n')
+    .split('\n')
+    .map(s => s.trim())
+    .filter(s => s.length > 20);
+}
+
+function truncateAtWord(str, max) {
+  if (str.length <= max) return str;
+  return str.slice(0, max).replace(/\s\S+$/, '') + '...';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TF-IDF KEYWORD EXTRACTION
+// ═══════════════════════════════════════════════════════════════
+// Approximate IDF using a small general-language frequency list
+const COMMON_WORDS = new Set([
+  'company','year','people','time','work','life','world','day','man','woman',
+  'place','case','fact','point','number','part','group','problem','hand','system',
+  'government','state','country','business','market','product','service','information',
+  'use','result','change','area','large','high','small','long','big','great',
+  'real','different','important','public','private','social','economic','political'
+]);
+
+function scoreWords(text) {
+  const words = tokenize(text);
+  const tf = {};
+  words.forEach(w => {
+    if (!STOPWORDS.has(w)) tf[w] = (tf[w] || 0) + 1;
+  });
+
+  // Boost rare/domain-specific words, penalise very common ones
+  const scored = {};
+  Object.entries(tf).forEach(([w, count]) => {
+    const idfBoost = COMMON_WORDS.has(w) ? 0.5 : 1.4;
+    scored[w] = count * idfBoost;
+  });
+
+  return scored;
+}
+
+function topKeywords(scores, n = 12) {
+  return Object.entries(scores)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, n)
+    .map(e => e[0]);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// BIGRAM EXTRACTION
+// ═══════════════════════════════════════════════════════════════
+function extractBigrams(text) {
+  const words = tokenize(text);
+  const bigrams = {};
+  for (let i = 0; i < words.length - 1; i++) {
+    const a = words[i], b = words[i + 1];
+    if (!STOPWORDS.has(a) && !STOPWORDS.has(b) && a.length > 3 && b.length > 3) {
+      const bg = `${a} ${b}`;
+      bigrams[bg] = (bigrams[bg] || 0) + 1;
+    }
+  }
+  return Object.entries(bigrams)
+    .filter(([, c]) => c >= 2)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(e => e[0]);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NAMED ENTITY DETECTION (regex-based)
+// ═══════════════════════════════════════════════════════════════
+function extractEntities(text) {
+  const entities = { orgs: [], metrics: [], concepts: [] };
+
+  // Capitalized multi-word phrases (likely org/product names)
+  const orgMatches = text.match(/\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,3})\b/g) || [];
+  entities.orgs = [...new Set(orgMatches)].slice(0, 4);
+
+  // Numbers with units / percentages / currencies
+  const metricMatches = text.match(/\b[\d,\.]+\s*(%|Mn|Cr|billion|million|thousand|units|kg|km|USD|INR|₹)?\b/g) || [];
+  entities.metrics = [...new Set(metricMatches)].filter(m => m.trim().length > 1).slice(0, 3);
+
+  // Domain concepts: capitalized single words not at sentence start
+  const conceptMatches = text.match(/(?<=[a-z,;]\s)([A-Z][a-z]{3,})\b/g) || [];
+  entities.concepts = [...new Set(conceptMatches)].slice(0, 4);
+
+  return entities;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SENTENCE RANKING
+// ═══════════════════════════════════════════════════════════════
+function rankSentences(text, wordScores) {
+  return sentences(text)
+    .map(s => {
+      const ws = tokenize(s);
+      const score = ws.reduce((sum, w) => sum + (wordScores[w] || 0), 0) / (ws.length || 1);
+      return { s, score };
+    })
+    .sort((a, b) => b.score - a.score);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// QUESTION TEMPLATES
+// ═══════════════════════════════════════════════════════════════
+function capitalize(s) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function buildQuestionsFromSeeds(keywords, bigrams, entities, rankedSentences, variant = 0) {
+  const questions = [];
+  const offset = variant * 3; // shift template selection on regenerate
+
+  const templates = [
+    // WHAT
+    (kw) => ({ text: `What is the significance of ${kw} in this context?`, type: 'what' }),
+    (kw) => ({ text: `What role does ${kw} play in the overall subject?`, type: 'what' }),
+    (kw) => ({ text: `What challenges are associated with ${kw}?`, type: 'what' }),
+    (kw) => ({ text: `What are the implications of ${kw}?`, type: 'what' }),
+
+    // WHY
+    (kw) => ({ text: `Why is ${kw} considered a critical factor here?`, type: 'why' }),
+    (kw) => ({ text: `Why does ${kw} matter in this situation?`, type: 'why' }),
+    (kw) => ({ text: `Why has ${kw} become a point of focus?`, type: 'why' }),
+
+    // HOW
+    (kw) => ({ text: `How does ${kw} affect the broader outcome?`, type: 'how' }),
+    (kw) => ({ text: `How can ${kw} be improved or optimized?`, type: 'how' }),
+    (kw) => ({ text: `How is ${kw} being addressed or managed?`, type: 'how' }),
+
+    // WHO / WHEN
+    (kw) => ({ text: `Who is responsible for managing ${kw}?`, type: 'who' }),
+    (kw) => ({ text: `When did ${kw} become a relevant concern?`, type: 'when' }),
+  ];
+
+  // From top bigrams (most specific seeds)
+  bigrams.slice(0, 3).forEach((bg, i) => {
+    const t = templates[(i + offset) % templates.length];
+    questions.push(t(bg));
+  });
+
+  // From top keywords (fill remaining slots)
+  keywords.slice(0, 6).forEach((kw, i) => {
+    const t = templates[(i + bigrams.length + offset) % templates.length];
+    questions.push(t(kw));
+  });
+
+  // From named entities
+  entities.orgs.slice(0, 2).forEach(org => {
+    questions.push({ text: `What is the role of ${org} in this context?`, type: 'who' });
+  });
+  entities.concepts.slice(0, 2).forEach(c => {
+    questions.push({ text: `Why is ${c} highlighted as a key concept?`, type: 'why' });
+  });
+
+  // From top-ranked sentence (context question)
+  if (rankedSentences.length > 0) {
+    const topSentence = rankedSentences[0].s;
+    questions.push({
+      text: `What does the following suggest about the subject: "${truncateAtWord(topSentence, 80)}"?`,
+      type: 'what'
+    });
+  }
+
+  return questions;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SAFEGUARDS
+// ═══════════════════════════════════════════════════════════════
+function wordSet(q) {
+  return new Set(tokenize(q));
+}
+
+function similarity(q1, q2) {
+  const s1 = wordSet(q1), s2 = wordSet(q2);
+  const intersection = [...s1].filter(w => s2.has(w)).length;
+  return intersection / Math.max(s1.size, s2.size, 1);
+}
+
+function applyGuards(questions) {
+  const passed = [];
+
+  for (const q of questions) {
+    const text = q.text.trim();
+
+    // Length check
+    if (text.length < MIN_Q_LEN) continue;
+    const capped = truncateAtWord(text, MAX_Q_LEN);
+    const final = capped.endsWith('?') ? capped : capped.replace(/[.…]+$/, '') + '?';
+
+    // Must contain at least one non-stopword content word
+    const contentWords = tokenize(final).filter(w => !STOPWORDS.has(w));
+    if (contentWords.length < 2) continue;
+
+    // Deduplication — reject if too similar to already accepted question
+    const isDuplicate = passed.some(p => similarity(p.text, final) > SIMILARITY_THRESHOLD);
+    if (isDuplicate) continue;
+
+    passed.push({ text: final, type: q.type });
+    if (passed.length >= MAX_QUESTIONS) break;
+  }
+
+  // Fallback if not enough questions
+  const fallbacks = [
+    { text: 'What is the main argument or claim being made in this text?', type: 'what' },
+    { text: 'Why is this topic considered significant or worth examining?', type: 'why' },
+    { text: 'How does the information presented support the central theme?', type: 'how' },
+  ];
+
+  let fi = 0;
+  while (passed.length < 3 && fi < fallbacks.length) {
+    const isDuplicate = passed.some(p => similarity(p.text, fallbacks[fi].text) > SIMILARITY_THRESHOLD);
+    if (!isDuplicate) passed.push(fallbacks[fi]);
+    fi++;
+  }
+
+  return passed;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FOLLOW-UP QUESTION GENERATOR (from user's answer)
+// ═══════════════════════════════════════════════════════════════
+function generateFollowUps(originalQuestion, answerText, originalTextScores) {
+  const answerScores = scoreWords(answerText);
+  const answerKeywords = topKeywords(answerScores, 8);
+  const answerBigrams = extractBigrams(answerText);
+  const answerEntities = extractEntities(answerText);
+
+  // Merge original text scores at lower weight for context
+  const mergedScores = { ...originalTextScores };
+  Object.entries(answerScores).forEach(([w, s]) => {
+    mergedScores[w] = (mergedScores[w] || 0) + s * 1.8; // answer keywords weighted higher
+  });
+
+  const mergedKeywords = topKeywords(mergedScores, 10);
+  const rankedSents = rankSentences(answerText, answerScores);
+
+  const followUpTemplates = [
+    (kw) => ({ text: `What evidence supports the claim about ${kw}?`, type: 'what' }),
+    (kw) => ({ text: `How does ${kw} connect to the broader context?`, type: 'how' }),
+    (kw) => ({ text: `Why is ${kw} a key outcome of this situation?`, type: 'why' }),
+    (kw) => ({ text: `What are the long-term implications of ${kw}?`, type: 'what' }),
+    (kw) => ({ text: `How could ${kw} change if conditions were different?`, type: 'how' }),
+    (kw) => ({ text: `Who benefits most from the current state of ${kw}?`, type: 'who' }),
+    (kw) => ({ text: `When did ${kw} begin to shape the current situation?`, type: 'when' }),
+    (kw) => ({ text: `Why has ${kw} not been fully resolved yet?`, type: 'why' }),
+  ];
+
+  const raw = [];
+
+  // Prioritise answer-specific keywords
+  answerBigrams.slice(0, 2).forEach((bg, i) => {
+    raw.push(followUpTemplates[i % followUpTemplates.length](bg));
+  });
+
+  answerKeywords.slice(0, 5).forEach((kw, i) => {
+    raw.push(followUpTemplates[(i + 2) % followUpTemplates.length](kw));
+  });
+
+  mergedKeywords.slice(0, 4).forEach((kw, i) => {
+    raw.push(followUpTemplates[(i + 5) % followUpTemplates.length](kw));
+  });
+
+  answerEntities.orgs.slice(0, 2).forEach(org => {
+    raw.push({ text: `What decisions has ${org} made that led to this outcome?`, type: 'who' });
+  });
+
+  if (rankedSents.length > 0) {
+    raw.push({
+      text: `What does this imply: "${truncateAtWord(rankedSents[0].s, 75)}"?`,
+      type: 'what'
+    });
+  }
+
+  return applyGuards(raw);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════════
+function renderQuestions(listEl, questions, onClickFn) {
+  listEl.innerHTML = '';
+  questions.forEach((q, i) => {
+    const li = document.createElement('li');
+    li.className = 'question-chip';
+    li.innerHTML = `
+      <span class="q-num">${i + 1}</span>
+      <span>${q.text}</span>
+      <span class="q-type type-${q.type}">${q.type.toUpperCase()}</span>
+    `;
+    if (onClickFn) li.addEventListener('click', () => onClickFn(q, li));
+    listEl.appendChild(li);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+let state = {
+  text: '',
+  wordScores: {},
+  keywords: [],
+  bigrams: [],
+  entities: {},
+  rankedSents: [],
+  variant: 0,
+  selectedQ: null,
+  lastAnswer: ''
+};
+
+// ═══════════════════════════════════════════════════════════════
+// DOM
+// ═══════════════════════════════════════════════════════════════
+const inputText      = document.getElementById('inputText');
+const generateBtn    = document.getElementById('generateBtn');
+const statusBar      = document.getElementById('statusBar');
+const questionsCard  = document.getElementById('questionsCard');
+const questionsList  = document.getElementById('questionsList');
+const qCount         = document.getElementById('qCount');
+const kwCount        = document.getElementById('kwCount');
+const entCount       = document.getElementById('entCount');
+const regenBtn       = document.getElementById('regenBtn');
+const answerSection  = document.getElementById('answerSection');
+const selectedQLabel = document.getElementById('selectedQLabel');
+const answerInput    = document.getElementById('answerInput');
+const submitAnswerBtn= document.getElementById('submitAnswerBtn');
+const answerStatus   = document.getElementById('answerStatus');
+const followupCard   = document.getElementById('followupCard');
+const followupList   = document.getElementById('followupList');
+const followupMeta   = document.getElementById('followupMeta');
+const regenFollowupBtn = document.getElementById('regenFollowupBtn');
+
+// ═══════════════════════════════════════════════════════════════
+// GENERATE
+// ═══════════════════════════════════════════════════════════════
+function runGenerate(variant = 0) {
+  const text = inputText.value.trim();
+  if (!text) { statusBar.textContent = '⚠️ Please paste some text first.'; return; }
+
+  state.text = text;
+  state.variant = variant;
+  state.wordScores = scoreWords(text);
+  state.keywords   = topKeywords(state.wordScores, 12);
+  state.bigrams    = extractBigrams(text);
+  state.entities   = extractEntities(text);
+  state.rankedSents= rankSentences(text, state.wordScores);
+
+  const raw = buildQuestionsFromSeeds(
+    state.keywords, state.bigrams, state.entities, state.rankedSents, variant
+  );
+  const questions = applyGuards(raw);
+
+  // Stats
+  const entityTotal = state.entities.orgs.length + state.entities.concepts.length;
+  qCount.textContent  = questions.length;
+  kwCount.textContent = state.keywords.length;
+  entCount.textContent= entityTotal;
+
+  questionsCard.style.display = 'block';
+  answerSection.classList.remove('visible');
+  followupCard.style.display = 'none';
+
+  renderQuestions(questionsList, questions, onQuestionClick);
+  statusBar.textContent = `✅ ${questions.length} questions generated instantly`;
+}
+
+generateBtn.addEventListener('click', () => runGenerate(0));
+
+regenBtn.addEventListener('click', () => {
+  state.variant = (state.variant + 1) % 6;
+  runGenerate(state.variant);
+});
+
+// ═══════════════════════════════════════════════════════════════
+// QUESTION CLICK
+// ═══════════════════════════════════════════════════════════════
+function onQuestionClick(q, chipEl) {
+  state.selectedQ = q;
+  selectedQLabel.textContent = q.text;
+  answerInput.value = '';
+  answerStatus.textContent = '';
+  answerSection.classList.add('visible');
+  followupCard.style.display = 'none';
+
+  questionsList.querySelectorAll('.question-chip').forEach(c => c.classList.remove('selected'));
+  chipEl.classList.add('selected');
+  answerInput.focus();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SUBMIT ANSWER → FOLLOW-UPS
+// ═══════════════════════════════════════════════════════════════
+function runFollowUps() {
+  const answer = answerInput.value.trim();
+  if (!answer) { answerStatus.textContent = '⚠️ Please type an answer first.'; return; }
+
+  state.lastAnswer = answer;
+  const followUps = generateFollowUps(state.selectedQ.text, answer, state.wordScores);
+
+  followupMeta.innerHTML = `<span></span> follow-ups from: <em style="color:#34d399">"${truncateAtWord(state.selectedQ.text, 60)}"</em> <span></span>`;
+  followupCard.style.display = 'block';
+  renderQuestions(followupList, followUps, onFollowUpClick);
+  answerStatus.textContent = `✅ ${followUps.length} follow-ups ready`;
+
+  followupCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+submitAnswerBtn.addEventListener('click', runFollowUps);
+answerInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.ctrlKey) runFollowUps();
+});
+
+regenFollowupBtn.addEventListener('click', () => {
+  if (!state.selectedQ || !state.lastAnswer) return;
+  // Shuffle merged weights slightly by reversing keyword order
+  const shuffledScores = Object.fromEntries(
+    Object.entries(state.wordScores).map(([k, v]) => [k, v * (0.8 + Math.random() * 0.4)])
+  );
+  const followUps = generateFollowUps(state.selectedQ.text, state.lastAnswer, shuffledScores);
+  renderQuestions(followupList, followUps, onFollowUpClick);
+});
+
+// Follow-up chips are also clickable to drill deeper
+function onFollowUpClick(q, chipEl) {
+  state.selectedQ = q;
+  selectedQLabel.textContent = q.text;
+  answerInput.value = '';
+  answerStatus.textContent = '';
+  answerSection.classList.add('visible');
+  followupCard.style.display = 'none';
+
+  questionsList.querySelectorAll('.question-chip').forEach(c => c.classList.remove('selected'));
+  answerInput.focus();
+  answerSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+</body>
+</html>
