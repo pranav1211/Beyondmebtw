@@ -7,121 +7,60 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --accent1: #6366f1;
-      --accent2: #0ea5e9;
-      --accent3: #f59e0b;
-      --accent4: #10b981;
-      --accent5: #f43f5e;
-      --text-dark: #1e293b;
-      --text-mid: #475569;
-      --border: rgba(0,0,0,0.07);
-    }
-
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #ffffff;
-      height: 100vh;
-      overflow: hidden;
-      user-select: none;
+      background: #ffffff; height: 100vh; overflow: hidden; user-select: none;
     }
-
-    /* ── Toolbar ── */
     #toolbar {
-      position: fixed;
-      top: 16px; left: 50%; transform: translateX(-50%);
+      position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
       display: flex; align-items: center; gap: 6px;
-      background: #ffffff;
-      border: 1px solid rgba(0,0,0,0.10);
-      border-radius: 14px;
-      padding: 8px 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06);
-      z-index: 300;
+      background: #ffffff; border: 1px solid rgba(0,0,0,0.10); border-radius: 14px;
+      padding: 8px 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06); z-index: 300;
     }
-
     .tb-btn {
-      height: 32px;
-      min-width: 32px;
-      border: 1px solid transparent;
-      background: transparent;
-      color: #334155;
-      border-radius: 8px;
-      font-size: 12.5px;
-      font-weight: 500;
-      cursor: pointer;
-      padding: 0 10px;
-      transition: background 0.15s, border-color 0.15s, color 0.15s;
-      display: flex; align-items: center; gap: 5px;
-      white-space: nowrap;
+      height: 32px; min-width: 32px; border: 1px solid transparent;
+      background: transparent; color: #334155; border-radius: 8px; font-size: 12.5px;
+      font-weight: 500; cursor: pointer; padding: 0 10px;
+      transition: background 0.15s, border-color 0.15s;
+      display: flex; align-items: center; gap: 5px; white-space: nowrap;
     }
     .tb-btn:hover { background: #f1f5f9; border-color: #e2e8f0; }
     .tb-btn:active { background: #e2e8f0; }
-    .tb-btn.primary {
-      background: #6366f1; color: #fff; border-color: #6366f1;
-    }
+    .tb-btn.primary { background: #6366f1; color: #fff; border-color: #6366f1; }
     .tb-btn.primary:hover { background: #4f46e5; border-color: #4f46e5; }
-
     .tb-sep { width: 1px; height: 18px; background: #e2e8f0; margin: 0 2px; }
-
     .tb-icon { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-
-    /* ── Canvas ── */
-    #canvas {
-      width: 100vw;
-      height: 100vh;
-      display: block;
-      background: #ffffff;
-    }
-
-    /* ── Hint ── */
+    #canvas { width: 100vw; height: 100vh; display: block; background: #ffffff; }
     #hint {
-      position: fixed;
-      bottom: 16px; left: 50%; transform: translateX(-50%);
-      background: rgba(255,255,255,0.9);
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 6px 14px;
-      font-size: 11.5px;
-      color: #94a3b8;
-      pointer-events: none;
+      position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+      background: rgba(255,255,255,0.9); border: 1px solid #e2e8f0;
+      border-radius: 8px; padding: 6px 14px; font-size: 11.5px; color: #94a3b8; pointer-events: none;
     }
-
-    /* ── Toast ── */
     #toast {
       position: fixed; bottom: 52px; left: 50%; transform: translateX(-50%);
-      background: #1e293b; color: #fff;
-      padding: 8px 18px; border-radius: 8px;
-      font-size: 12.5px; opacity: 0;
-      transition: opacity 0.3s;
-      pointer-events: none;
-      z-index: 999;
+      background: #1e293b; color: #fff; padding: 8px 18px; border-radius: 8px;
+      font-size: 12.5px; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 999;
     }
     #toast.show { opacity: 1; }
   </style>
 </head>
 <body>
-
 <div id="toolbar">
   <button class="tb-btn" onclick="zoomIn()">
-    <svg class="tb-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-    Zoom In
+    <svg class="tb-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>Zoom In
   </button>
   <button class="tb-btn" onclick="zoomOut()">
-    <svg class="tb-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-    Zoom Out
+    <svg class="tb-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>Zoom Out
   </button>
   <button class="tb-btn" onclick="resetView()">
-    <svg class="tb-icon" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.85"/></svg>
-    Fit
+    <svg class="tb-icon" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.85"/></svg>Fit
   </button>
   <div class="tb-sep"></div>
   <button class="tb-btn" onclick="expandAll()">Expand All</button>
   <button class="tb-btn" onclick="collapseAll()">Collapse All</button>
   <div class="tb-sep"></div>
   <button class="tb-btn primary" onclick="exportPNG()">
-    <svg class="tb-icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-    Export PNG
+    <svg class="tb-icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export PNG
   </button>
 </div>
 
@@ -137,273 +76,250 @@
 </svg>
 
 <div id="hint">Click node to expand / collapse &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Drag to pan</div>
-<div id="toast" id="toast">Exporting…</div>
+<div id="toast"></div>
 
 <script>
-// ─── Palette (depth-indexed) ──────────────────────────────────────────────────
+// ─── Palette ──────────────────────────────────────────────────────────────────
 const PALETTE = [
-  { fill: "#6366f1", light: "#ede9fe", text: "#3730a3" },   // root - indigo
-  { fill: "#0ea5e9", light: "#e0f2fe", text: "#0369a1" },   // depth 1 - sky
-  { fill: "#f59e0b", light: "#fef3c7", text: "#92400e" },   // depth 2 - amber
-  { fill: "#10b981", light: "#d1fae5", text: "#065f46" },   // depth 3 - emerald
-  { fill: "#f43f5e", light: "#ffe4e6", text: "#9f1239" },   // depth 4 - rose
+  { fill: "#6366f1", bg: "#eef2ff", text: "#3730a3", border: "#a5b4fc" },
+  { fill: "#0ea5e9", bg: "#f0f9ff", text: "#0369a1", border: "#7dd3fc" },
+  { fill: "#f59e0b", bg: "#fffbeb", text: "#92400e", border: "#fcd34d" },
+  { fill: "#10b981", bg: "#f0fdf4", text: "#065f46", border: "#6ee7b7" },
+  { fill: "#f43f5e", bg: "#fff1f2", text: "#9f1239", border: "#fda4af" },
 ];
-
 const pal = d => PALETTE[Math.min(d.depth, PALETTE.length - 1)];
 
-// ─── Data ─────────────────────────────────────────────────────────────────────
+// ─── Data — one concept per node, lists split into children ──────────────────
 const DATA = {
   name: "F1 Power Units",
-  note: "1950 → 2026+",
+  sub: "1950 → 2026+",
   children: [
     {
-      name: "Naturally Aspirated V8",
-      note: "2006 – 2013",
+      name: "V8 Era",
+      sub: "2006 – 2013",
       children: [
-        {
-          name: "2.4L V8 Engine",
-          note: "~750 HP",
+        { name: "Engine", sub: "2.4L V8 Naturally Aspirated",
           children: [
-            { name: "ICE", note: "750 HP · Petrol combustion" },
-            { name: "KERS", note: "60 kW · Kinetic energy recovery" }
+            { name: "ICE",       sub: "Petrol combustion" },
+            { name: "KERS",      sub: "Kinetic energy recovery" },
+            { name: "Fuel Type", sub: "Standard Petrol" },
+            { name: "RPM Limit", sub: "18,000 RPM max" }
           ]
         },
-        { name: "Energy Flow", note: "Braking → KERS battery" },
-        { name: "Regulations", note: "18,000 RPM limit · 8 cylinders" }
+        { name: "Horsepower", sub: "~750 HP total",
+          children: [
+            { name: "ICE Output",  sub: "~690 HP" },
+            { name: "KERS Boost",  sub: "+60 HP burst" }
+          ]
+        },
+        { name: "Energy Flow", sub: "Braking → KERS → Deploy" }
       ]
     },
     {
       name: "Turbo Hybrid Era",
-      note: "2014 – 2025",
+      sub: "2014 – 2025",
       children: [
-        {
-          name: "1.6L V6 Turbo Hybrid",
-          note: "~1000 HP combined",
+        { name: "Engine", sub: "1.6L V6 Turbo Hybrid",
           children: [
-            { name: "ICE", note: "740 HP · Petrol" },
-            { name: "Turbocharger", note: "Exhaust gas compression" },
-            { name: "MGU-H", note: "Heat recovery unit" },
-            { name: "MGU-K", note: "120 kW · Braking recovery" },
-            { name: "Battery", note: "4 kWh · Li-ion store" }
+            { name: "ICE",          sub: "Turbocharged Petrol" },
+            { name: "Turbocharger", sub: "Exhaust compression" },
+            { name: "MGU-H",        sub: "Heat energy recovery" },
+            { name: "MGU-K",        sub: "Kinetic recovery unit" },
+            { name: "Battery",      sub: "4 kWh Li-ion" }
           ]
         },
-        { name: "Energy Flows", note: "Exhaust → MGU-H → Battery → MGU-K" },
-        { name: "Dominant Makers", note: "Mercedes, Honda, Ferrari, Renault" }
+        { name: "Horsepower", sub: "~1000 HP total",
+          children: [
+            { name: "ICE Output",   sub: "~740 HP" },
+            { name: "MGU-K Boost",  sub: "~160 HP (120 kW)" },
+            { name: "Peak Hybrid",  sub: "~1000 HP combined" }
+          ]
+        },
+        { name: "Energy Flow",
+          children: [
+            { name: "Step 1", sub: "Fuel combustion in ICE" },
+            { name: "Step 2", sub: "Exhaust heat → MGU-H" },
+            { name: "Step 3", sub: "MGU-H charges battery" },
+            { name: "Step 4", sub: "Battery → MGU-K → wheels" }
+          ]
+        },
+        { name: "Key Manufacturers", sub: "4 suppliers",
+          children: [
+            { name: "Mercedes",  sub: "Dominant 2014–2021" },
+            { name: "Ferrari",   sub: "Maranello PU" },
+            { name: "Renault",   sub: "French manufacturer" },
+            { name: "Honda",     sub: "Returned 2015, won 2021" }
+          ]
+        }
       ]
     },
     {
-      name: "Next-Gen Hybrid",
-      note: "2026 →",
+      name: "2026 Regulations",
+      sub: "Next-Gen Hybrid",
       children: [
-        {
-          name: "1.6L V6 Turbo",
-          note: "MGU-H removed · 50/50 split",
+        { name: "Engine", sub: "1.6L V6 Turbo, no MGU-H",
           children: [
-            { name: "ICE", note: "~500 HP · 100% sustainable fuel" },
-            { name: "Turbocharger", note: "New spec aero" },
-            { name: "MGU-K", note: "350 kW · 3× current power" },
-            { name: "Battery", note: "4 kWh · Updated chemistry" }
+            { name: "ICE",          sub: "100% Sustainable Fuel" },
+            { name: "Turbocharger", sub: "Updated spec" },
+            { name: "MGU-K",        sub: "350 kW (3× current)" },
+            { name: "Battery",      sub: "4 kWh new chemistry" }
           ]
         },
-        { name: "New Entrants", note: "Audi · Ford (via Red Bull)" },
-        { name: "Philosophy", note: "Cost cap · Simpler architecture" }
+        { name: "Horsepower", sub: "~1000 HP (50/50 split)",
+          children: [
+            { name: "ICE Target",   sub: "~500 HP" },
+            { name: "MGU-K Target", sub: "~500 HP (350 kW)" },
+            { name: "Philosophy",   sub: "Equal ICE & ERS power" }
+          ]
+        },
+        { name: "New Entrants", sub: "2 new suppliers",
+          children: [
+            { name: "Audi",      sub: "Full works entry" },
+            { name: "Ford",      sub: "Via Red Bull Powertrains" }
+          ]
+        },
+        { name: "MGU-H Removed", sub: "Simplified architecture" }
       ]
     }
   ]
 };
 
-// ─── Node sizing with wrap-aware height ───────────────────────────────────────
-const NODE_W = 148;
-const LINE_H = 15;
-const FONT_SIZE_MAIN = [14, 13, 12, 12];
-const FONT_SIZE_NOTE = 10;
-const PAD_V = 14;
-const PAD_H = 14;
+// ─── Node sizing ──────────────────────────────────────────────────────────────
+const NODE_W = 152;
+const LINE_H = 16;
+const PAD_V  = 13;
+const PAD_H  = 13;
 
 function wrapText(text, maxChars) {
-  const words = text.split(' ');
-  const lines = [];
-  let line = '';
+  const words = text.split(" ");
+  const lines = []; let line = "";
   for (const w of words) {
-    if ((line + ' ' + w).trim().length > maxChars) {
-      if (line) lines.push(line);
-      line = w;
-    } else {
-      line = (line ? line + ' ' : '') + w;
-    }
+    const test = line ? line + " " + w : w;
+    if (test.length > maxChars && line) { lines.push(line); line = w; }
+    else line = test;
   }
   if (line) lines.push(line);
   return lines;
 }
 
 function nodeHeight(d) {
-  const fs = FONT_SIZE_MAIN[Math.min(d.depth, 3)];
-  const maxChars = Math.floor((NODE_W - PAD_H * 2) / (fs * 0.56));
-  const mainLines = wrapText(d.data.name, maxChars).length;
-  const noteLines = d.data.note ? 1 : 0;
-  return PAD_V * 2 + mainLines * LINE_H + noteLines * (LINE_H - 2) + (noteLines ? 4 : 0);
+  const fs = d.depth === 0 ? 14 : d.depth === 1 ? 13 : 12;
+  const mc = Math.floor((NODE_W - PAD_H * 2) / (fs * 0.55));
+  const mainLines = wrapText(d.data.name, mc).length;
+  const sub = d.data.sub ? 1 : 0;
+  return PAD_V * 2 + mainLines * LINE_H + sub * 13 + (sub ? 4 : 0);
 }
 
-// ─── SVG + Zoom setup ─────────────────────────────────────────────────────────
-const W = window.innerWidth;
-const H = window.innerHeight;
-
-const svg = d3.select('#canvas').attr('width', W).attr('height', H);
-const scene = d3.select('#scene');
+// ─── SVG + Zoom ───────────────────────────────────────────────────────────────
+const W = window.innerWidth, H = window.innerHeight;
+const svg = d3.select("#canvas").attr("width", W).attr("height", H);
+const scene = d3.select("#scene");
 
 const zoomBehavior = d3.zoom()
   .scaleExtent([0.1, 3])
-  .on('zoom', e => scene.attr('transform', e.transform));
+  .wheelDelta(e => -e.deltaY * 0.0006)
+  .on("zoom", e => scene.attr("transform", e.transform));
 
 svg.call(zoomBehavior);
-
 const initT = d3.zoomIdentity.translate(W * 0.08, H / 2).scale(0.9);
 svg.call(zoomBehavior.transform, initT);
 
-// ─── D3 tree layout ───────────────────────────────────────────────────────────
-const treeLayout = d3.tree().nodeSize([90, 220]);
+const treeLayout = d3.tree().nodeSize([88, 230]);
 
 function collapse(d) {
-  if (d.children) {
-    d._children = d.children;
-    d._children.forEach(collapse);
-    d.children = null;
-  }
+  if (d.children) { d._children = d.children; d._children.forEach(collapse); d.children = null; }
 }
 
 const root = d3.hierarchy(DATA);
 root.x0 = 0; root.y0 = 0;
 root.children.forEach(collapse);
 
-const linkGroup = scene.append('g').attr('class', 'links');
-const nodeGroup = scene.append('g').attr('class', 'nodes');
+const linkGroup = scene.append("g");
+const nodeGroup = scene.append("g");
 
-// ─── Render ───────────────────────────────────────────────────────────────────
 function update(source) {
   treeLayout(root);
-  const dur = 360;
+  const dur = 340;
 
-  // ── Links ──
+  // Links
   const links = root.links();
-  const link = linkGroup.selectAll('.link').data(links, d => d.target.id || (d.target.id = Math.random()));
+  const link = linkGroup.selectAll(".link").data(links, d => d.target._uid || (d.target._uid = Math.random().toString(36)));
+  const lEnter = link.enter().append("path").attr("class", "link").attr("fill", "none").style("opacity", 0)
+    .attr("d", () => { const o = {x: source.x0??source.x, y: source.y0??source.y}; return bezier(o,o); });
+  lEnter.merge(link).transition().duration(dur).ease(d3.easeCubicOut)
+    .attr("d", d => bezier(d.source, d.target))
+    .attr("stroke", d => pal(d.target).fill)
+    .attr("stroke-width", d => Math.max(1, 2.2 - d.target.depth * 0.4))
+    .attr("stroke-opacity", 0.3).style("opacity", 1);
+  link.exit().transition().duration(dur).attr("d", () => bezier(source,source)).style("opacity",0).remove();
 
-  const lEnter = link.enter().append('path').attr('class', 'link')
-    .attr('fill', 'none')
-    .attr('d', () => {
-      const o = { x: source.x0 ?? source.x, y: source.y0 ?? source.y };
-      return bezier(o, o);
-    })
-    .style('opacity', 0);
-
-  lEnter.merge(link)
-    .transition().duration(dur).ease(d3.easeCubicOut)
-    .attr('d', d => bezier(d.source, d.target))
-    .attr('stroke', d => pal(d.target).fill)
-    .attr('stroke-width', d => Math.max(1, 2.2 - d.target.depth * 0.4))
-    .attr('stroke-opacity', 0.3)
-    .style('opacity', 1);
-
-  link.exit().transition().duration(dur)
-    .attr('d', () => bezier(source, source))
-    .style('opacity', 0).remove();
-
-  // ── Nodes ──
+  // Nodes
   const nodes = root.descendants();
-  const node = nodeGroup.selectAll('.node').data(nodes, d => d.id || (d.id = Math.random()));
+  const node = nodeGroup.selectAll(".node").data(nodes, d => d._uid || (d._uid = Math.random().toString(36)));
 
-  const nEnter = node.enter().append('g').attr('class', 'node')
-    .attr('transform', () => `translate(${source.y0 ?? source.y},${source.x0 ?? source.x})`)
-    .style('opacity', 0)
-    .style('cursor', d => (d.children || d._children) ? 'pointer' : 'default')
-    .on('click', (_, d) => {
+  const nEnter = node.enter().append("g").attr("class", "node")
+    .attr("transform", () => `translate(${source.y0??source.y},${source.x0??source.x})`)
+    .style("opacity", 0)
+    .style("cursor", d => (d.children||d._children) ? "pointer" : "default")
+    .on("click", (_, d) => {
       if (d.children) { d._children = d.children; d.children = null; }
       else if (d._children) { d.children = d._children; d._children = null; }
       else return;
       update(d);
     });
 
-  // Shadow filter inline via rect
-  nEnter.append('rect')
-    .attr('class', 'node-bg')
-    .attr('x', -NODE_W / 2)
-    .attr('y', d => -nodeHeight(d) / 2)
-    .attr('width', NODE_W)
-    .attr('height', d => nodeHeight(d))
-    .attr('rx', 10)
-    .attr('fill', d => d.depth === 0 ? pal(d).fill : pal(d).light)
-    .attr('stroke', d => pal(d).fill)
-    .attr('stroke-width', d => d.depth === 0 ? 0 : 1.2)
-    .attr('stroke-opacity', 0.5);
+  // Card bg — tinted per depth, no left bar
+  nEnter.append("rect").attr("class", "node-bg")
+    .attr("x", -NODE_W/2).attr("y", d => -nodeHeight(d)/2)
+    .attr("width", NODE_W).attr("height", d => nodeHeight(d))
+    .attr("rx", 12)
+    .attr("fill", d => d.depth === 0 ? pal(d).fill : pal(d).bg)
+    .attr("stroke", d => pal(d).border)
+    .attr("stroke-width", 1.5);
 
-  // Left accent stripe (for non-root)
-  nEnter.filter(d => d.depth > 0).append('rect')
-    .attr('x', -NODE_W / 2)
-    .attr('y', d => -nodeHeight(d) / 2)
-    .attr('width', 3)
-    .attr('height', d => nodeHeight(d))
-    .attr('rx', 2)
-    .attr('fill', d => pal(d).fill);
-
-  // Text (main label with wrap)
+  // Text
   nEnter.each(function(d) {
     const g = d3.select(this);
-    const fs = FONT_SIZE_MAIN[Math.min(d.depth, 3)];
-    const maxChars = Math.floor((NODE_W - PAD_H * 2) / (fs * 0.56));
-    const lines = wrapText(d.data.name, maxChars);
-    const hasNote = !!d.data.note;
+    const fs = d.depth === 0 ? 14 : d.depth === 1 ? 13 : 12;
+    const mc = Math.floor((NODE_W - PAD_H * 2) / (fs * 0.55));
+    const lines = wrapText(d.data.name, mc);
+    const hasSub = !!d.data.sub;
     const totalMainH = lines.length * LINE_H;
-    const totalH = totalMainH + (hasNote ? LINE_H - 2 + 4 : 0);
+    const totalH = totalMainH + (hasSub ? 13 + 4 : 0);
     const startY = -totalH / 2 + LINE_H / 2;
 
     lines.forEach((line, i) => {
-      g.append('text')
-        .attr('x', 0)
-        .attr('y', startY + i * LINE_H)
-        .attr('text-anchor', 'middle')
-        .attr('dominant-baseline', 'central')
-        .attr('font-size', fs)
-        .attr('font-weight', d.depth <= 1 ? 600 : 500)
-        .attr('font-family', 'Inter, -apple-system, sans-serif')
-        .attr('fill', d.depth === 0 ? '#ffffff' : pal(d).text)
+      g.append("text")
+        .attr("x", 0).attr("y", startY + i * LINE_H)
+        .attr("text-anchor", "middle").attr("dominant-baseline", "central")
+        .attr("font-size", fs).attr("font-weight", d.depth <= 1 ? 600 : 500)
+        .attr("font-family", "Inter, -apple-system, sans-serif")
+        .attr("fill", d.depth === 0 ? "#ffffff" : pal(d).text)
         .text(line);
     });
 
-    if (hasNote) {
-      g.append('text')
-        .attr('x', 0)
-        .attr('y', startY + lines.length * LINE_H + 6)
-        .attr('text-anchor', 'middle')
-        .attr('dominant-baseline', 'central')
-        .attr('font-size', FONT_SIZE_NOTE)
-        .attr('font-family', 'Inter, -apple-system, sans-serif')
-        .attr('fill', d.depth === 0 ? 'rgba(255,255,255,0.65)' : `${pal(d).fill}bb`)
-        .text(d.data.note);
+    if (hasSub) {
+      g.append("text")
+        .attr("x", 0).attr("y", startY + lines.length * LINE_H + 6)
+        .attr("text-anchor", "middle").attr("dominant-baseline", "central")
+        .attr("font-size", 10).attr("font-family", "Inter, -apple-system, sans-serif")
+        .attr("fill", d.depth === 0 ? "rgba(255,255,255,0.65)" : pal(d).fill)
+        .text(d.data.sub);
     }
   });
 
-  // Expand indicator dot
-  nEnter.filter(d => d.children || d._children).append('circle')
-    .attr('class', 'expand-dot')
-    .attr('cx', NODE_W / 2 - 1)
-    .attr('cy', 0)
-    .attr('r', 4.5)
-    .attr('fill', d => pal(d).fill)
-    .attr('stroke', '#fff')
-    .attr('stroke-width', 1.5);
+  // Expand dot
+  nEnter.filter(d => d.children||d._children).append("circle").attr("class","expand-dot")
+    .attr("cx", NODE_W/2 - 1).attr("cy", 0).attr("r", 4.5).attr("stroke-width", 1.5);
 
   const nUpdate = nEnter.merge(node);
   nUpdate.transition().duration(dur).ease(d3.easeCubicOut)
-    .attr('transform', d => `translate(${d.y},${d.x})`)
-    .style('opacity', 1);
-
-  // Sync expand dot fill state
-  nUpdate.select('.expand-dot')
-    .attr('fill', d => d._children ? pal(d).fill : 'transparent')
-    .attr('stroke', d => d._children ? '#fff' : pal(d).fill);
-
+    .attr("transform", d => `translate(${d.y},${d.x})`).style("opacity", 1);
+  nUpdate.select(".expand-dot")
+    .attr("fill", d => d._children ? pal(d).fill : "transparent")
+    .attr("stroke", d => pal(d).fill);
   node.exit().transition().duration(dur)
-    .attr('transform', () => `translate(${source.y},${source.x})`)
-    .style('opacity', 0).remove();
+    .attr("transform", () => `translate(${source.y},${source.x})`).style("opacity",0).remove();
 
   root.eachBefore(d => { d.x0 = d.x; d.y0 = d.y; });
 }
@@ -416,133 +332,72 @@ function bezier(s, t) {
 // ─── Controls ─────────────────────────────────────────────────────────────────
 function zoomIn()  { svg.transition().duration(280).call(zoomBehavior.scaleBy, 1.3); }
 function zoomOut() { svg.transition().duration(280).call(zoomBehavior.scaleBy, 0.77); }
-function resetView() {
-  svg.transition().duration(500).ease(d3.easeCubicOut)
-     .call(zoomBehavior.transform, initT);
-}
-
+function resetView() { svg.transition().duration(500).ease(d3.easeCubicOut).call(zoomBehavior.transform, initT); }
 function expandAll() {
-  root.eachBefore(d => {
-    if (d._children) { d.children = d._children; d._children = null; }
-  });
+  root.eachBefore(d => { if (d._children) { d.children = d._children; d._children = null; } });
   update(root);
 }
-
 function collapseAll() {
   root.children && root.children.forEach(d => {
-    d.eachBefore(n => {
-      if (n.children) { n._children = n.children; n.children = null; }
-    });
+    d.eachBefore(n => { if (n.children) { n._children = n.children; n.children = null; } });
   });
   update(root);
 }
 
 // ─── PNG Export ───────────────────────────────────────────────────────────────
-// Strategy: expand all → fit → serialize SVG with inlined styles → canvas → PNG
 function exportPNG() {
-  showToast('Preparing export…');
-
-  // 1. Expand all nodes
-  root.eachBefore(d => {
-    if (d._children) { d.children = d._children; d._children = null; }
-  });
+  showToast("Preparing export…");
+  root.eachBefore(d => { if (d._children) { d.children = d._children; d._children = null; } });
   update(root);
-
-  // 2. Wait for transitions, then export
   setTimeout(() => {
     treeLayout(root);
-
-    // Compute bounding box of all nodes
     const nodes = root.descendants();
-    const minX = d3.min(nodes, d => d.y - NODE_W / 2) - 40;
-    const maxX = d3.max(nodes, d => d.y + NODE_W / 2) + 40;
-    const minY = d3.min(nodes, d => d.x - nodeHeight(d) / 2) - 40;
-    const maxY = d3.max(nodes, d => d.x + nodeHeight(d) / 2) + 40;
-
-    const cw = maxX - minX;
-    const ch = maxY - minY;
-    const scale = 2; // retina
-
-    // Build a standalone SVG string with white bg and dot pattern
-    const svgEl = document.getElementById('canvas');
-    const sceneEl = document.getElementById('scene');
-
-    // Temporarily set scene transform to fit the export
-    const exportTransform = `translate(${-minX}, ${-minY})`;
-    sceneEl.setAttribute('transform', exportTransform);
-
-    // Clone SVG, set fixed size
+    const minX = d3.min(nodes, d => d.y - NODE_W/2) - 48;
+    const maxX = d3.max(nodes, d => d.y + NODE_W/2) + 48;
+    const minY = d3.min(nodes, d => d.x - nodeHeight(d)/2) - 48;
+    const maxY = d3.max(nodes, d => d.x + nodeHeight(d)/2) + 48;
+    const cw = maxX - minX, ch = maxY - minY, sc = 2;
+    const sceneEl = document.getElementById("scene");
+    sceneEl.setAttribute("transform", `translate(${-minX},${-minY})`);
+    const svgEl = document.getElementById("canvas");
     const clone = svgEl.cloneNode(true);
-    clone.setAttribute('width', cw);
-    clone.setAttribute('height', ch);
-    clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-
-    // Inline the font
-    const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
-    style.textContent = `
-      text { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-      .link { fill: none; }
-    `;
+    clone.setAttribute("width", cw); clone.setAttribute("height", ch);
+    clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    const style = document.createElementNS("http://www.w3.org/2000/svg","style");
+    style.textContent = `text{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}.link{fill:none;}`;
     clone.insertBefore(style, clone.firstChild);
-
-    // Remove toolbar-related elements from clone if any leaked
-    const svgStr = new XMLSerializer().serializeToString(clone);
-    const blob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
+    const blob = new Blob([new XMLSerializer().serializeToString(clone)], {type:"image/svg+xml;charset=utf-8"});
     const url = URL.createObjectURL(blob);
-
     const img = new Image();
     img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = cw * scale;
-      canvas.height = ch * scale;
-      const ctx = canvas.getContext('2d');
-
-      // White background
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Draw dot pattern
-      ctx.fillStyle = '#e2e8f0';
-      for (let px = 0; px < canvas.width; px += 24 * scale) {
-        for (let py = 0; py < canvas.height; py += 24 * scale) {
-          ctx.beginPath();
-          ctx.arc(px + scale, py + scale, scale, 0, Math.PI * 2);
-          ctx.fill();
+      const canvas = document.createElement("canvas");
+      canvas.width = cw*sc; canvas.height = ch*sc;
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#ffffff"; ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = "#e2e8f0";
+      for (let px=0;px<canvas.width;px+=24*sc)
+        for (let py=0;py<canvas.height;py+=24*sc) {
+          ctx.beginPath(); ctx.arc(px+sc,py+sc,sc,0,Math.PI*2); ctx.fill();
         }
-      }
-
-      ctx.scale(scale, scale);
-      ctx.drawImage(img, 0, 0, cw, ch);
+      ctx.scale(sc,sc); ctx.drawImage(img,0,0,cw,ch);
       URL.revokeObjectURL(url);
-
-      canvas.toBlob(blob2 => {
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob2);
-        a.download = 'f1-power-units.png';
-        a.click();
-        URL.revokeObjectURL(a.href);
-        showToast('PNG saved!');
-      }, 'image/png');
-
-      // Restore scene transform
-      sceneEl.setAttribute('transform', `translate(${initT.x},${initT.y}) scale(${initT.k})`);
+      canvas.toBlob(b => {
+        const a = document.createElement("a"); a.href = URL.createObjectURL(b);
+        a.download = "f1-power-units.png"; a.click(); URL.revokeObjectURL(a.href);
+        showToast("PNG saved!");
+      }, "image/png");
+      sceneEl.setAttribute("transform", `translate(${initT.x},${initT.y}) scale(${initT.k})`);
     };
-    img.onerror = () => {
-      showToast('Export failed — try a different browser');
-      sceneEl.setAttribute('transform', `translate(${initT.x},${initT.y}) scale(${initT.k})`);
-    };
+    img.onerror = () => { showToast("Export failed"); sceneEl.setAttribute("transform",`translate(${initT.x},${initT.y}) scale(${initT.k})`); };
     img.src = url;
   }, 500);
 }
 
 function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
+  const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2200);
 }
 
-// ─── Init ──────────────────────────────────────────────────────────────────────
 update(root);
 </script>
 </body>
