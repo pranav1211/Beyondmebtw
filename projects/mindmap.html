@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NotebookLM-Style Mind Map</title>
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    #network { height: 600px; border: 1px solid #ccc; width: 100%; }
+    button { margin: 10px 0; padding: 10px 20px; background: #4285f4; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #3367d6; }
+    h1 { margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Interactive Mind Map (Entities & Relationships)</h1>
+  <div id="network"></div>
+  <button onclick="exportPNG()">📥 Download PNG</button>
+
+  <script>
+    // Embedded dummy JSON - replace with your data
+    const graphData = {
+      nodes: [
+        { id: 1, label: "AI Ethics", color: "#ff6b6b", font: { size: 16 } },
+        { id: 2, label: "Bias", color: "#4ecdc4" },
+        { id: 3, label: "Fairness", color: "#45b7d1" },
+        { id: 4, label: "Privacy", color: "#f9ca24" },
+        { id: 5, label: "Data Leakage", color: "#6c5ce7" },
+        { id: 6, label: "GDPR Compliance", color: "#fdcb6e" }
+      ],
+      edges: [
+        { from: 1, to: 2, label: "causes", arrows: "to" },
+        { from: 1, to: 3, label: "requires", arrows: "to" },
+        { from: 1, to: 4, label: "addresses", arrows: "to" },
+        { from: 4, to: 5, label: "risk →", arrows: "to" },
+        { from: 4, to: 6, label: "needs", arrows: "to" }
+      ]
+    };
+
+    // Init network
+    const container = document.getElementById('network');
+    const nodes = new vis.DataSet(graphData.nodes);
+    const edges = new vis.DataSet(graphData.edges);
+
+    const networkData = { nodes, edges };
+    const options = {
+      layout: { 
+        hierarchical: { 
+          direction: 'UD', 
+          sortMethod: 'directed',
+          levelSeparation: 250,
+          nodeSpacing: 150
+        } 
+      },
+      physics: false,
+      interaction: { 
+        hover: true, 
+        navigationButtons: true,
+        zoomView: true,
+        dragNodes: true 
+      },
+      nodes: { 
+        shape: 'box', 
+        margin: 12,
+        shadow: true 
+      },
+      edges: { 
+        font: { size: 12, align: 'middle' },
+        color: { color: '#666', highlight: '#000' }
+      }
+    };
+
+    const network = new vis.Network(container, networkData, options);
+
+    // Click events (expand like NotebookLM)
+    network.on('selectNode', (params) => {
+      const nodeId = params.nodes[0];
+      const node = nodes.get(nodeId);
+      alert(`Selected: ${node.label}\nAdd details/query here (e.g., fetch from backend)`);
+    });
+
+    // PNG export
+    function exportPNG() {
+      html2canvas(container, { 
+        backgroundColor: '#ffffff',
+        scale: 1.5 
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/png');
+        link.download = 'mindmap.png';
+        link.click();
+      }).catch(err => console.error('Export error:', err));
+    }
+  </script>
+</body>
+</html>
