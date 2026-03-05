@@ -1,237 +1,502 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>F1 Power Units Mind Map</title>
-  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>F1 Power Units — Mind Map</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { 
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
-      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-      height: 100vh; overflow: hidden;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --accent1: #6366f1;   /* indigo */
+      --accent2: #22d3ee;   /* cyan */
+      --accent3: #f59e0b;   /* amber */
+      --accent4: #10b981;   /* emerald */
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --border: rgba(255,255,255,0.08);
+      --glow: rgba(99,102,241,0.3);
     }
-    #zoom-controls {
-      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-      background: rgba(255,255,255,0.95); backdrop-filter: blur(20px);
-      padding: 12px 20px; border-radius: 25px; box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      display: flex; gap: 8px; z-index: 100;
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      overflow: hidden;
+      user-select: none;
     }
-    .zoom-btn { 
-      width: 45px; height: 45px; border: none; border-radius: 50%; 
-      background: #4285f4; color: white; font-size: 18px; font-weight: bold;
-      cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+
+    /* ── Top bar ── */
+    #topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 56px;
+      background: rgba(15,17,23,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 200;
     }
-    .zoom-btn:hover { background: #3367d6; transform: scale(1.05); }
-    .zoom-btn:active { transform: scale(0.95); }
-    #download-btn { 
-      background: #34a853; margin-left: 15px; padding: 12px 25px; 
-      border-radius: 20px; font-weight: 500; 
+
+    #topbar .title {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 15px; font-weight: 600; letter-spacing: 0.02em;
     }
-    #download-btn:hover { background: #2d8e44; }
-    #network { 
-      width: 100vw; height: 100vh; cursor: grab; 
+    #topbar .title .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent1);
+      box-shadow: 0 0 8px var(--accent1);
     }
-    #network:active { cursor: grabbing !important; }
+
+    #controls {
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .ctrl-btn {
+      height: 34px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 0 14px;
+      transition: background 0.18s, border-color 0.18s, transform 0.12s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .ctrl-btn:hover { background: #2e3250; border-color: var(--accent1); }
+    .ctrl-btn:active { transform: scale(0.96); }
+    .ctrl-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+    .sep { width: 1px; height: 20px; background: var(--border); margin: 0 4px; }
+
+    #hint {
+      position: fixed;
+      bottom: 20px; left: 50%; transform: translateX(-50%);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 18px;
+      font-size: 12px;
+      color: var(--text-muted);
+      pointer-events: none;
+      opacity: 0.85;
+    }
+
+    /* ── SVG canvas ── */
+    #canvas {
+      width: 100vw;
+      height: 100vh;
+      padding-top: 56px;
+      display: block;
+    }
+
+    /* ── Nodes ── */
+    .node-group { cursor: pointer; }
+
+    .node-rect {
+      rx: 10px; ry: 10px;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+      transition: filter 0.2s;
+    }
+    .node-group:hover .node-rect {
+      filter: drop-shadow(0 6px 20px rgba(99,102,241,0.5));
+    }
+
+    .node-label {
+      font-family: 'Inter', sans-serif;
+      dominant-baseline: central;
+      text-anchor: middle;
+      pointer-events: none;
+    }
+
+    .node-badge {
+      font-size: 10px;
+      fill: rgba(255,255,255,0.5);
+      font-family: monospace;
+    }
+
+    /* ── Edges ── */
+    .link {
+      fill: none;
+      stroke: rgba(255,255,255,0.12);
+      stroke-width: 1.5px;
+    }
+
+    /* ── Legend ── */
+    #legend {
+      position: fixed;
+      bottom: 56px; right: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    #legend h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; color: var(--text-muted); }
+    .legend-row { display: flex; align-items: center; gap: 8px; margin: 5px 0; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
   </style>
 </head>
 <body>
-  <div id="zoom-controls">
-    <button class="zoom-btn" onclick="network.moveTo({scale: Math.max(0.1, network.getScale() - 0.2)})">−</button>
-    <button class="zoom-btn" onclick="network.moveTo({scale: Math.min(2, network.getScale() + 0.2)})">+</button>
-    <button class="zoom-btn" onclick="network.moveTo({position: network.getViewPosition(), scale: 1})">⟲</button>
-    <button id="download-btn" onclick="exportPNG()">📥 PNG</button>
+
+<!-- Top bar -->
+<div id="topbar">
+  <div class="title">
+    <span class="dot"></span>
+    F1 Power Units — Mind Map
   </div>
-  <div id="network"></div>
+  <div id="controls">
+    <button class="ctrl-btn" onclick="zoomIn()">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+      Zoom In
+    </button>
+    <button class="ctrl-btn" onclick="zoomOut()">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+      Zoom Out
+    </button>
+    <button class="ctrl-btn" onclick="resetView()">
+      <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.85"/></svg>
+      Reset
+    </button>
+    <div class="sep"></div>
+    <button class="ctrl-btn" onclick="expandAll()">Expand All</button>
+    <button class="ctrl-btn" onclick="collapseAll()">Collapse All</button>
+    <div class="sep"></div>
+    <button class="ctrl-btn" onclick="exportSVG()">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Export SVG
+    </button>
+  </div>
+</div>
 
-  <script>
-    // Your F1 JSON structure
-    const rawData = { /* Your exact JSON here - paste it */ };
+<svg id="canvas">
+  <defs>
+    <radialGradient id="bg-grad" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#141828"/>
+      <stop offset="100%" stop-color="#0a0d14"/>
+    </radialGradient>
+    <!-- Subtle grid -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.025)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#bg-grad)"/>
+  <rect width="100%" height="100%" fill="url(#grid)"/>
+  <g id="scene"></g>
+</svg>
 
-    // Hierarchical tree data for collapsible (children stored separately)
-    const treeData = {
-      id: 'root',
-      label: 'F1 Power Units',
+<div id="hint">Click a node to expand / collapse &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Drag to pan</div>
+
+<div id="legend">
+  <h4>Legend</h4>
+  <div class="legend-row"><div class="legend-dot" style="background:#6366f1"></div>Root</div>
+  <div class="legend-row"><div class="legend-dot" style="background:#22d3ee"></div>Era</div>
+  <div class="legend-row"><div class="legend-dot" style="background:#f59e0b"></div>System</div>
+  <div class="legend-row"><div class="legend-dot" style="background:#10b981"></div>Component</div>
+</div>
+
+<script>
+// ─── Data ────────────────────────────────────────────────────────────────────
+const DATA = {
+  name: "F1 Power Units",
+  note: "Technical Evolution",
+  children: [
+    {
+      name: "Naturally Aspirated\nV8 Era",
+      note: "2006 – 2013",
       children: [
         {
-          id: 'era_v8',
-          label: 'Naturally Aspirated V8 Era\n2006-2013',
+          name: "2.4L V8 Engine",
+          note: "~750 HP",
           children: [
-            {
-              id: 'v8_engine',
-              label: '2.4L V8\n750 HP',
-              children: [
-                { id: 'v8_ice', label: 'ICE\n750 HP Petrol', leaf: true },
-                { id: 'v8_kers', label: 'KERS\n60 kW Battery', leaf: true }
-              ]
-            },
-            { id: 'v8_flow_braking', label: 'braking → KERS\n(kinetic)', leaf: true }
+            { name: "ICE", note: "750 HP · Petrol" },
+            { name: "KERS", note: "60 kW · Battery pack" }
           ]
         },
-        {
-          id: 'era_hybrid',
-          label: 'Turbo Hybrid Era\n2014-present',
-          children: [
-            {
-              id: 'hybrid_engine',
-              label: '1.6L V6 Turbo Hybrid\n1000 HP',
-              children: [
-                { id: 'hybrid_ice', label: 'ICE\n740 HP Petrol', leaf: true },
-                { id: 'hybrid_turbo', label: 'Turbocharger\n(exhaust compression)', leaf: true },
-                { id: 'hybrid_mguh', label: 'MGU-H\n(heat recovery)', leaf: true },
-                { id: 'hybrid_mguk', label: 'MGU-K\n120 kW braking', leaf: true },
-                { id: 'hybrid_battery', label: 'Battery\n4 kWh Li-ion', leaf: true }
-              ]
-            },
-            { id: 'hybrid_flow1', label: 'fuel → ICE\n(chemical)', leaf: true },
-            { id: 'hybrid_flow2', label: 'exhaust → MGU-H → battery', leaf: true }
-          ]
-        },
-        {
-          id: 'era_2026',
-          label: 'Next Gen Hybrid\n2026-',
-          children: [
-            {
-              id: '2026_engine',
-              label: '1.6L V6 Turbo Hybrid\n(MGU-H removed)',
-              children: [
-                { id: '2026_ice', label: 'ICE\n100% Sustainable Fuel', leaf: true },
-                { id: '2026_turbo', label: 'Turbocharger', leaf: true },
-                { id: '2026_mguk', label: 'MGU-K\n350 kW', leaf: true },
-                { id: '2026_battery', label: 'Battery\n4 kWh', leaf: true }
-              ]
-            }
-          ]
-        }
+        { name: "Energy Flow", note: "Braking → KERS (kinetic)" }
       ]
-    };
+    },
+    {
+      name: "Turbo Hybrid Era",
+      note: "2014 – 2025",
+      children: [
+        {
+          name: "1.6L V6 Turbo\nHybrid",
+          note: "~1000 HP total",
+          children: [
+            { name: "ICE", note: "740 HP · Petrol" },
+            { name: "Turbocharger", note: "Exhaust compression" },
+            { name: "MGU-H", note: "Heat energy recovery" },
+            { name: "MGU-K", note: "120 kW · Braking" },
+            { name: "Battery", note: "4 kWh · Li-ion" }
+          ]
+        },
+        { name: "Energy Flow 1", note: "Fuel → ICE (chemical)" },
+        { name: "Energy Flow 2", note: "Exhaust → MGU-H → Battery" }
+      ]
+    },
+    {
+      name: "Next-Gen Hybrid",
+      note: "2026 →",
+      children: [
+        {
+          name: "1.6L V6 Turbo\n(No MGU-H)",
+          note: "50/50 hybrid split",
+          children: [
+            { name: "ICE", note: "100% Sustainable Fuel" },
+            { name: "Turbocharger", note: "Updated aero spec" },
+            { name: "MGU-K", note: "350 kW (3× power)" },
+            { name: "Battery", note: "4 kWh · New chemistry" }
+          ]
+        },
+        { name: "New Engines", note: "Audi, Honda, Ford (Red Bull)" }
+      ]
+    }
+  ]
+};
 
-    // Flatten tree to initial collapsed nodes/edges
-    function buildCollapsedTree(node, parentId = null, idCounter = 1) {
-      const nodes = [];
-      const edges = [];
-      const stack = [{ node, parentId, id: 'root' }];
+// ─── Dimensions & scales ─────────────────────────────────────────────────────
+const W = window.innerWidth;
+const H = window.innerHeight - 56;
 
-      while (stack.length > 0) {
-        const { node: current, parentId: parent } = stack.pop();
-        const currentId = current.id || `node_${idCounter++}`;
+// Depth → color
+const COLORS = ["#6366f1", "#22d3ee", "#f59e0b", "#10b981", "#f87171"];
+const depth2color = d => COLORS[Math.min(d.depth, COLORS.length - 1)];
 
-        nodes.push({ 
-          id: currentId, 
-          label: current.label,
-          isParent: current.children && current.children.length > 0,
-          children: current.children || [],
-          color: parent ? '#4ecdc4' : '#ff6b6b',
-          font: { size: parent ? 12 : 18, color: parent ? '#000' : 'white' }
+// Node size by depth
+const nodeW = d => d.depth === 0 ? 160 : d.depth === 1 ? 148 : d.depth === 2 ? 130 : 118;
+const nodeH = d => {
+  const lines = (d.data.name.match(/\n/g) || []).length + 1;
+  return (d.depth === 0 ? 52 : 44) + (lines > 1 ? 14 : 0);
+};
+
+// ─── Layout ──────────────────────────────────────────────────────────────────
+const svg = d3.select("#canvas");
+const scene = d3.select("#scene");
+
+const zoom = d3.zoom()
+  .scaleExtent([0.15, 3])
+  .on("zoom", e => scene.attr("transform", e.transform));
+
+svg.call(zoom);
+
+// Start with a comfortable initial transform
+const initTransform = d3.zoomIdentity
+  .translate(W * 0.08, H / 2)
+  .scale(0.85);
+
+svg.call(zoom.transform, initTransform);
+
+// Build D3 tree layout (LR direction)
+const treeLayout = d3.tree().nodeSize([80, 260]);
+
+// Convert to hierarchy; initially collapse depth > 1
+function collapse(d) {
+  if (d.children) {
+    d._children = d.children;
+    d._children.forEach(collapse);
+    d.children = null;
+  }
+}
+
+const root = d3.hierarchy(DATA);
+root.x0 = 0;
+root.y0 = 0;
+// Collapse everything except root's direct children
+root.children.forEach(collapse);
+
+let linkGroup = scene.append("g").attr("class", "links");
+let nodeGroup = scene.append("g").attr("class", "nodes");
+
+function update(source) {
+  treeLayout(root);
+
+  // ── Edges ──
+  const links = root.links();
+  const link = linkGroup.selectAll(".link").data(links, d => d.target.data.name + d.source.data.name);
+
+  const linkEnter = link.enter().insert("path", ".node-group")
+    .attr("class", "link")
+    .attr("d", () => {
+      const o = { x: source.x0 ?? source.x, y: source.y0 ?? source.y };
+      return diagonal({ source: o, target: o });
+    })
+    .style("opacity", 0);
+
+  const linkUpdate = linkEnter.merge(link);
+  linkUpdate.transition().duration(380).ease(d3.easeCubicOut)
+    .attr("d", diagonal)
+    .style("opacity", 1)
+    .attr("stroke", d => depth2color(d.target))
+    .attr("stroke-width", d => Math.max(1, 2.5 - d.target.depth * 0.5))
+    .attr("stroke-opacity", d => 0.35 + 0.1 * (3 - d.target.depth));
+
+  link.exit().transition().duration(280)
+    .attr("d", () => {
+      const o = { x: source.x, y: source.y };
+      return diagonal({ source: o, target: o });
+    })
+    .style("opacity", 0).remove();
+
+  // ── Nodes ──
+  const nodes = root.descendants();
+  const node = nodeGroup.selectAll(".node-group").data(nodes, d => d.data.name);
+
+  const nodeEnter = node.enter().append("g")
+    .attr("class", "node-group")
+    .attr("transform", () => `translate(${source.y0 ?? source.y},${source.x0 ?? source.x})`)
+    .style("opacity", 0)
+    .on("click", (event, d) => {
+      if (d.children) { d._children = d.children; d.children = null; }
+      else if (d._children) { d.children = d._children; d._children = null; }
+      update(d);
+    });
+
+  // Background rect
+  nodeEnter.append("rect")
+    .attr("class", "node-rect")
+    .attr("x", d => -nodeW(d) / 2)
+    .attr("y", d => -nodeH(d) / 2)
+    .attr("width", d => nodeW(d))
+    .attr("height", d => nodeH(d))
+    .attr("rx", 10)
+    .attr("fill", d => {
+      const c = depth2color(d);
+      return d.depth === 0 ? c : `${c}18`;
+    })
+    .attr("stroke", d => depth2color(d))
+    .attr("stroke-width", d => d.depth === 0 ? 2 : 1.2)
+    .attr("stroke-opacity", 0.7);
+
+  // Subtle left accent bar
+  nodeEnter.filter(d => d.depth > 0).append("rect")
+    .attr("x", d => -nodeW(d) / 2)
+    .attr("y", d => -nodeH(d) / 2)
+    .attr("width", 3)
+    .attr("height", d => nodeH(d))
+    .attr("rx", 3)
+    .attr("fill", d => depth2color(d))
+    .attr("opacity", 0.8);
+
+  // Main label
+  const labelY = d => (d.data.note ? -7 : 0);
+  nodeEnter.append("text")
+    .attr("class", "node-label")
+    .attr("y", labelY)
+    .attr("font-size", d => d.depth === 0 ? 14 : d.depth === 1 ? 13 : 12)
+    .attr("font-weight", d => d.depth <= 1 ? 600 : 500)
+    .attr("fill", d => d.depth === 0 ? "#fff" : depth2color(d))
+    .each(function(d) {
+      const el = d3.select(this);
+      const lines = d.data.name.split("\n");
+      if (lines.length === 1) {
+        el.text(d.data.name);
+      } else {
+        lines.forEach((line, i) => {
+          el.append("tspan")
+            .attr("x", 0)
+            .attr("dy", i === 0 ? `${-(lines.length - 1) * 7}px` : "15px")
+            .text(line);
         });
-
-        if (parent) {
-          edges.push({ from: parent, to: currentId, label: '→', dashed: true });
-        }
-
-        // Don't add children initially (collapsed)
-      }
-      return { nodes, edges };
-    }
-
-    let allNodes = new vis.DataSet();
-    let allEdges = new vis.DataSet();
-    const nodeChildren = new Map();  // Store children per node
-
-    function initCollapsed() {
-      const { nodes, edges } = buildCollapsedTree(treeData);
-      nodes.forEach(n => nodeChildren.set(n.id, n.children || []));
-      allNodes = new vis.DataSet(nodes);
-      allEdges = new vis.DataSet(edges);
-    }
-
-    const container = document.getElementById('network');
-    initCollapsed();
-
-    const options = {
-      layout: { 
-        hierarchical: { 
-          direction: 'LR',
-          sortMethod: 'directed',
-          levelSeparation: 400,
-          nodeSpacing: 200
-        } 
-      },
-      physics: { enabled: true, stabilization: { iterations: 100 } },
-      interaction: { 
-        hover: true,
-        dragNodes: true,
-        dragView: true,
-        zoomable: true,
-        multiselect: false
-      },
-      nodes: { 
-        shape: 'box', 
-        margin: 15,
-        shadow: true,
-        borderWidthSelected: 3,
-        font: { multi: 'html' }
-      },
-      edges: { 
-        font: { size: 10 },
-        arrows: 'to',
-        dashes: true
-      }
-    };
-
-    window.network = new vis.Network(container, { nodes: allNodes, edges: allEdges }, options);
-
-    // Expand/collapse on click (NotebookLM style)
-    network.on('click', (params) => {
-      if (params.nodes.length === 0) return;
-      const nodeId = params.nodes[0];
-      const node = allNodes.get(nodeId);
-
-      if (node.isParent) {
-        // Collapse: remove children
-        if (node.expanded) {
-          const childIds = nodeChildren.get(nodeId).map(child => buildChildId(child.id));
-          childIds.forEach(childId => {
-            const childIndex = allNodes.getIds().indexOf(childId);
-            if (childIndex > -1) allNodes.remove(childId);
-            allEdges.remove(allEdges.get({ filter: edge => edge.from === childId || edge.to === childId }));
-          });
-          node.expanded = false;
-          node.label += ' (+)';  // Visual indicator
-        } else {
-          // Expand: add children
-          nodeChildren.get(nodeId).forEach(child => {
-            const childId = buildChildId(child.id);
-            allNodes.add({ 
-              id: childId,
-              label: child.label,
-              isParent: child.children && child.children.length > 0,
-              color: '#f9ca24',
-              parentId: nodeId  // Track parent
-            });
-            allEdges.add({ from: nodeId, to: childId });
-          });
-          node.expanded = true;
-          node.label = node.label.replace(' (+)', '');
-        }
-        allNodes.update(node);
-        network.stabilize();
       }
     });
 
-    // Helper to generate consistent child IDs
-    function buildChildId(childId) {
-      return `child_${childId}`;
-    }
+  // Sub-note
+  nodeEnter.filter(d => !!d.data.note).append("text")
+    .attr("class", "node-badge")
+    .attr("y", d => {
+      const lines = (d.data.name.match(/\n/g) || []).length;
+      return lines > 0 ? 14 + lines * 5 : 10;
+    })
+    .attr("text-anchor", "middle")
+    .attr("font-size", 10)
+    .attr("fill", d => `${depth2color(d)}aa`)
+    .text(d => d.data.note);
 
-    function exportPNG() {
-      html2canvas(container, { backgroundColor: null, scale: 2 }).then(canvas => {
-        const link = document.createElement('a');
-        link.href = canvas.toDataURL('image/png');
-        link.download = 'f1-mindmap.png';
-        link.click();
-      });
-    }
-  </script>
+  // Expand/collapse indicator
+  nodeEnter.filter(d => d._children || d.children).append("circle")
+    .attr("class", "expand-dot")
+    .attr("cx", d => nodeW(d) / 2 - 2)
+    .attr("cy", 0)
+    .attr("r", 5)
+    .attr("fill", d => depth2color(d))
+    .attr("opacity", 0.85);
+
+  // Merge & transition
+  const nodeUpdate = nodeEnter.merge(node);
+  nodeUpdate.transition().duration(380).ease(d3.easeCubicOut)
+    .attr("transform", d => `translate(${d.y},${d.x})`)
+    .style("opacity", 1);
+
+  // Update expand dot based on state
+  nodeUpdate.select(".expand-dot")
+    .attr("fill", d => d._children ? depth2color(d) : "transparent")
+    .attr("stroke", d => depth2color(d))
+    .attr("stroke-width", 1.5);
+
+  node.exit().transition().duration(280)
+    .attr("transform", () => `translate(${source.y},${source.x})`)
+    .style("opacity", 0).remove();
+
+  // Store positions
+  root.eachBefore(d => { d.x0 = d.x; d.y0 = d.y; });
+}
+
+// Curved path generator (horizontal)
+function diagonal(d) {
+  return `M${d.source.y},${d.source.x}
+    C${(d.source.y + d.target.y) / 2},${d.source.x}
+     ${(d.source.y + d.target.y) / 2},${d.target.x}
+     ${d.target.y},${d.target.x}`;
+}
+
+// ─── Controls ────────────────────────────────────────────────────────────────
+function zoomIn()  { svg.transition().duration(300).call(zoom.scaleBy, 1.3); }
+function zoomOut() { svg.transition().duration(300).call(zoom.scaleBy, 0.75); }
+function resetView() {
+  svg.transition().duration(500).ease(d3.easeCubicOut)
+     .call(zoom.transform, initTransform);
+}
+
+function expandAll() {
+  root.eachBefore(d => {
+    if (d._children) { d.children = d._children; d._children = null; }
+  });
+  update(root);
+}
+
+function collapseAll() {
+  root.children && root.children.forEach(d => {
+    d.eachBefore(n => {
+      if (n.children) { n._children = n.children; n.children = null; }
+    });
+  });
+  update(root);
+}
+
+function exportSVG() {
+  const svgEl = document.getElementById("canvas");
+  const data = new XMLSerializer().serializeToString(svgEl);
+  const blob = new Blob([data], { type: "image/svg+xml" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "f1-power-units-mindmap.svg"; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+update(root);
+</script>
 </body>
 </html>
