@@ -1,43 +1,174 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>NotebookLM-Style Mind Map</title>
+  <title>F1 Power Units Mind Map</title>
   <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    #network { height: 600px; border: 1px solid #ccc; width: 100%; }
-    button { margin: 10px 0; padding: 10px 20px; background: #4285f4; color: white; border: none; border-radius: 4px; cursor: pointer; }
-    button:hover { background: #3367d6; }
-    h1 { margin-bottom: 10px; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      height: 100vh; 
+      overflow: hidden;
+    }
+    #zoom-controls {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+      background: rgba(255,255,255,0.95); backdrop-filter: blur(20px);
+      padding: 12px 20px; border-radius: 25px; box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      display: flex; gap: 8px; z-index: 100;
+    }
+    .zoom-btn { 
+      width: 45px; height: 45px; border: none; border-radius: 50%; 
+      background: #4285f4; color: white; font-size: 18px; font-weight: bold;
+      cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .zoom-btn:hover { background: #3367d6; transform: scale(1.05); }
+    .zoom-btn:active { transform: scale(0.95); }
+    #download-btn { 
+      background: #34a853; margin-left: 15px; padding: 12px 25px; 
+      border-radius: 20px; font-weight: 500; 
+    }
+    #download-btn:hover { background: #2d8e44; }
+    #network { 
+      width: 100vw; height: 100vh; cursor: grab; 
+    }
+    #network:active { cursor: grabbing !important; }
   </style>
 </head>
 <body>
-  <h1>Interactive Mind Map (Entities & Relationships)</h1>
+  <div id="zoom-controls">
+    <button class="zoom-btn" onclick="network.moveTo({scale: Math.max(0.1, network.getScale() - 0.2)})">−</button>
+    <button class="zoom-btn" onclick="network.moveTo({scale: Math.min(2, network.getScale() + 0.2)})">+</button>
+    <button class="zoom-btn" onclick="network.moveTo({position: network.getViewPosition(), scale: 1})">⟲</button>
+    <button id="download-btn" onclick="exportPNG()">📥 PNG</button>
+  </div>
   <div id="network"></div>
-  <button onclick="exportPNG()">📥 Download PNG</button>
 
   <script>
-    // Embedded dummy JSON - replace with your data
-    const graphData = {
-      nodes: [
-        { id: 1, label: "AI Ethics", color: "#ff6b6b", font: { size: 16 } },
-        { id: 2, label: "Bias", color: "#4ecdc4" },
-        { id: 3, label: "Fairness", color: "#45b7d1" },
-        { id: 4, label: "Privacy", color: "#f9ca24" },
-        { id: 5, label: "Data Leakage", color: "#6c5ce7" },
-        { id: 6, label: "GDPR Compliance", color: "#fdcb6e" }
-      ],
-      edges: [
-        { from: 1, to: 2, label: "causes", arrows: "to" },
-        { from: 1, to: 3, label: "requires", arrows: "to" },
-        { from: 1, to: 4, label: "addresses", arrows: "to" },
-        { from: 4, to: 5, label: "risk →", arrows: "to" },
-        { from: 4, to: 6, label: "needs", arrows: "to" }
-      ]
+    // Your F1 JSON - auto-transformed to nodes/edges
+    const rawData = {
+      "f1_power_units": {
+        "eras": [
+          {
+            "era_id": "era_v8",
+            "name": "Naturally Aspirated V8 Era",
+            "years": "2006-2013",
+            "engine": {
+              "type": "2.4L V8",
+              "max_rpm": 18000,
+              "total_power_hp": 750,
+              "components": [
+                { "id": "ice", "name": "Internal Combustion Engine", "power_hp": 750, "fuel": "Petrol" },
+                { "id": "kers", "name": "KERS", "type": "Kinetic Energy Recovery System", "max_power_kw": 60, "storage": "Battery" }
+              ],
+              "energy_flow": [
+                { "from": "braking", "to": "kers", "energy_type": "kinetic" },
+                { "from": "kers", "to": "rear_wheels", "energy_type": "electrical_boost" }
+              ]
+            }
+          },
+          {
+            "era_id": "era_hybrid",
+            "name": "Turbo Hybrid Era",
+            "years": "2014-present",
+            "engine": {
+              "type": "1.6L V6 Turbo Hybrid",
+              "max_rpm": 15000,
+              "total_power_hp": 1000,
+              "components": [
+                { "id": "ice", "name": "Internal Combustion Engine", "power_hp": 740, "fuel": "Petrol" },
+                { "id": "turbo", "name": "Turbocharger", "function": "Uses exhaust gases to compress intake air" },
+                { "id": "mgu_h", "name": "MGU-H", "type": "Motor Generator Unit - Heat", "role": "Harvests heat energy from turbo" },
+                { "id": "mgu_k", "name": "MGU-K", "type": "Motor Generator Unit - Kinetic", "max_power_kw": 120, "role": "Harvests braking energy" },
+                { "id": "battery", "name": "Energy Store", "capacity_kwh": 4, "type": "Lithium-ion" }
+              ],
+              "energy_flow": [
+                { "from": "fuel_combustion", "to": "ice", "energy_type": "chemical_to_mechanical" },
+                { "from": "exhaust_heat", "to": "mgu_h", "energy_type": "thermal_to_electrical" },
+                { "from": "mgu_h", "to": "battery", "energy_type": "electrical_storage" },
+                { "from": "braking", "to": "mgu_k", "energy_type": "kinetic_to_electrical" },
+                { "from": "battery", "to": "mgu_k", "energy_type": "electrical_boost" },
+                { "from": "mgu_k", "to": "rear_wheels", "energy_type": "mechanical_assist" }
+              ]
+            }
+          },
+          {
+            "era_id": "era_2026",
+            "name": "Next Gen Hybrid",
+            "years": "2026-",
+            "engine": {
+              "type": "1.6L V6 Turbo Hybrid",
+              "notable_change": "MGU-H removed",
+              "components": [
+                { "id": "ice", "name": "Internal Combustion Engine", "fuel": "100% Sustainable Fuel" },
+                { "id": "turbo", "name": "Turbocharger" },
+                { "id": "mgu_k", "name": "MGU-K", "max_power_kw": 350 },
+                { "id": "battery", "name": "Energy Store", "capacity_kwh": 4 }
+              ]
+            }
+          }
+        ]
+      }
     };
 
-    // Init network
+    // Transform complex JSON to flat nodes/edges
+    function transformData(raw) {
+      const nodes = [];
+      const edges = [];
+      let nodeId = 1;
+
+      // Central node
+      nodes.push({ id: 'root', label: 'F1 Power Units', color: '#ff6b6b', font: { size: 18, color: 'white' } });
+
+      raw.f1_power_units.eras.forEach(era => {
+        const eraId = `era_${nodeId++}`;
+        nodes.push({ 
+          id: eraId, 
+          label: `${era.name}\n${era.years}`, 
+          color: '#4ecdc4',
+          group: 'era'
+        });
+        edges.push({ from: 'root', to: eraId, label: 'contains' });
+
+        const engineId = `engine_${nodeId++}`;
+        nodes.push({ 
+          id: engineId, 
+          label: era.engine.type + '\n' + (era.engine.total_power_hp || '') + ' HP',
+          color: '#45b7d1',
+          group: 'engine'
+        });
+        edges.push({ from: eraId, to: engineId, label: 'uses' });
+
+        // Components
+        era.engine.components.forEach(comp => {
+          const compId = `${eraId}_${comp.id}`;
+          nodes.push({ 
+            id: compId, 
+            label: comp.name + '\n' + (comp.power_hp || comp.max_power_kw || '') + (comp.fuel ? ` (${comp.fuel})` : ''),
+            color: '#f9ca24',
+            group: 'component'
+          });
+          edges.push({ from: engineId, to: compId, label: 'has' });
+        });
+
+        // Energy flows (sample edges)
+        era.engine.energy_flow?.slice(0, 3).forEach(flow => { // Limit for demo
+          const flowId = `flow_${nodeId++}`;
+          nodes.push({ 
+            id: flowId, 
+            label: flow.energy_type.replace('_', ' '), 
+            color: '#6c5ce7',
+            shape: 'ellipse'
+          });
+          edges.push({ from: flow.from || 'source', to: flow.to || 'sink', via: { nodes: [flowId], color: '#6c5ce7' } });
+        });
+      });
+
+      return { nodes, edges };
+    }
+
+    const graphData = transformData(rawData);
     const container = document.getElementById('network');
     const nodes = new vis.DataSet(graphData.nodes);
     const edges = new vis.DataSet(graphData.edges);
@@ -46,50 +177,57 @@
     const options = {
       layout: { 
         hierarchical: { 
-          direction: 'UD', 
+          direction: 'LR',  // Left-to-right (side-by-side)
           sortMethod: 'directed',
-          levelSeparation: 250,
-          nodeSpacing: 150
+          levelSeparation: 400,
+          nodeSpacing: 200,
+          treeSpacing: 100,
+          blockShifting: true,
+          edgeMinimization: true
         } 
       },
       physics: false,
       interaction: { 
-        hover: true, 
-        navigationButtons: true,
-        zoomView: true,
-        dragNodes: true 
+        hover: true,
+        dragNodes: true,
+        dragView: true,
+        zoomable: true
       },
       nodes: { 
         shape: 'box', 
-        margin: 12,
-        shadow: true 
+        margin: 15,
+        shadow: { enabled: true, size: 10, color: 'rgba(0,0,0,0.3)' },
+        borderWidth: 2,
+        font: { size: 12, vadjust: 0 }
       },
       edges: { 
-        font: { size: 12, align: 'middle' },
-        color: { color: '#666', highlight: '#000' }
-      }
+        font: { size: 10, align: 'middle' },
+        color: { color: '#333', highlight: '#000' },
+        smooth: { type: 'continuous' },
+        arrows: 'to'
+      },
+      height: '100vh'
     };
 
-    const network = new vis.Network(container, networkData, options);
+    window.network = new vis.Network(container, networkData, options);  // Global for zoom buttons
 
-    // Click events (expand like NotebookLM)
     network.on('selectNode', (params) => {
-      const nodeId = params.nodes[0];
-      const node = nodes.get(nodeId);
-      alert(`Selected: ${node.label}\nAdd details/query here (e.g., fetch from backend)`);
+      const node = nodes.get(params.nodes[0]);
+      console.log('Clicked:', node.label);  // Replace with your logic
     });
 
-    // PNG export
     function exportPNG() {
       html2canvas(container, { 
-        backgroundColor: '#ffffff',
-        scale: 1.5 
+        backgroundColor: null,  // Transparent for gradient bg
+        scale: 2,
+        useCORS: true,
+        allowTaint: true
       }).then(canvas => {
         const link = document.createElement('a');
         link.href = canvas.toDataURL('image/png');
-        link.download = 'mindmap.png';
+        link.download = 'f1-power-units-mindmap.png';
         link.click();
-      }).catch(err => console.error('Export error:', err));
+      });
     }
   </script>
 </body>
