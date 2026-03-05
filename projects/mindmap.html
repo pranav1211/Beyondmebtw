@@ -9,8 +9,7 @@
     body { 
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
       background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-      height: 100vh; 
-      overflow: hidden;
+      height: 100vh; overflow: hidden;
     }
     #zoom-controls {
       position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
@@ -46,186 +45,190 @@
   <div id="network"></div>
 
   <script>
-    // Your F1 JSON - auto-transformed to nodes/edges
-    const rawData = {
-      "f1_power_units": {
-        "eras": [
-          {
-            "era_id": "era_v8",
-            "name": "Naturally Aspirated V8 Era",
-            "years": "2006-2013",
-            "engine": {
-              "type": "2.4L V8",
-              "max_rpm": 18000,
-              "total_power_hp": 750,
-              "components": [
-                { "id": "ice", "name": "Internal Combustion Engine", "power_hp": 750, "fuel": "Petrol" },
-                { "id": "kers", "name": "KERS", "type": "Kinetic Energy Recovery System", "max_power_kw": 60, "storage": "Battery" }
-              ],
-              "energy_flow": [
-                { "from": "braking", "to": "kers", "energy_type": "kinetic" },
-                { "from": "kers", "to": "rear_wheels", "energy_type": "electrical_boost" }
+    // Your F1 JSON structure
+    const rawData = { /* Your exact JSON here - paste it */ };
+
+    // Hierarchical tree data for collapsible (children stored separately)
+    const treeData = {
+      id: 'root',
+      label: 'F1 Power Units',
+      children: [
+        {
+          id: 'era_v8',
+          label: 'Naturally Aspirated V8 Era\n2006-2013',
+          children: [
+            {
+              id: 'v8_engine',
+              label: '2.4L V8\n750 HP',
+              children: [
+                { id: 'v8_ice', label: 'ICE\n750 HP Petrol', leaf: true },
+                { id: 'v8_kers', label: 'KERS\n60 kW Battery', leaf: true }
+              ]
+            },
+            { id: 'v8_flow_braking', label: 'braking → KERS\n(kinetic)', leaf: true }
+          ]
+        },
+        {
+          id: 'era_hybrid',
+          label: 'Turbo Hybrid Era\n2014-present',
+          children: [
+            {
+              id: 'hybrid_engine',
+              label: '1.6L V6 Turbo Hybrid\n1000 HP',
+              children: [
+                { id: 'hybrid_ice', label: 'ICE\n740 HP Petrol', leaf: true },
+                { id: 'hybrid_turbo', label: 'Turbocharger\n(exhaust compression)', leaf: true },
+                { id: 'hybrid_mguh', label: 'MGU-H\n(heat recovery)', leaf: true },
+                { id: 'hybrid_mguk', label: 'MGU-K\n120 kW braking', leaf: true },
+                { id: 'hybrid_battery', label: 'Battery\n4 kWh Li-ion', leaf: true }
+              ]
+            },
+            { id: 'hybrid_flow1', label: 'fuel → ICE\n(chemical)', leaf: true },
+            { id: 'hybrid_flow2', label: 'exhaust → MGU-H → battery', leaf: true }
+          ]
+        },
+        {
+          id: 'era_2026',
+          label: 'Next Gen Hybrid\n2026-',
+          children: [
+            {
+              id: '2026_engine',
+              label: '1.6L V6 Turbo Hybrid\n(MGU-H removed)',
+              children: [
+                { id: '2026_ice', label: 'ICE\n100% Sustainable Fuel', leaf: true },
+                { id: '2026_turbo', label: 'Turbocharger', leaf: true },
+                { id: '2026_mguk', label: 'MGU-K\n350 kW', leaf: true },
+                { id: '2026_battery', label: 'Battery\n4 kWh', leaf: true }
               ]
             }
-          },
-          {
-            "era_id": "era_hybrid",
-            "name": "Turbo Hybrid Era",
-            "years": "2014-present",
-            "engine": {
-              "type": "1.6L V6 Turbo Hybrid",
-              "max_rpm": 15000,
-              "total_power_hp": 1000,
-              "components": [
-                { "id": "ice", "name": "Internal Combustion Engine", "power_hp": 740, "fuel": "Petrol" },
-                { "id": "turbo", "name": "Turbocharger", "function": "Uses exhaust gases to compress intake air" },
-                { "id": "mgu_h", "name": "MGU-H", "type": "Motor Generator Unit - Heat", "role": "Harvests heat energy from turbo" },
-                { "id": "mgu_k", "name": "MGU-K", "type": "Motor Generator Unit - Kinetic", "max_power_kw": 120, "role": "Harvests braking energy" },
-                { "id": "battery", "name": "Energy Store", "capacity_kwh": 4, "type": "Lithium-ion" }
-              ],
-              "energy_flow": [
-                { "from": "fuel_combustion", "to": "ice", "energy_type": "chemical_to_mechanical" },
-                { "from": "exhaust_heat", "to": "mgu_h", "energy_type": "thermal_to_electrical" },
-                { "from": "mgu_h", "to": "battery", "energy_type": "electrical_storage" },
-                { "from": "braking", "to": "mgu_k", "energy_type": "kinetic_to_electrical" },
-                { "from": "battery", "to": "mgu_k", "energy_type": "electrical_boost" },
-                { "from": "mgu_k", "to": "rear_wheels", "energy_type": "mechanical_assist" }
-              ]
-            }
-          },
-          {
-            "era_id": "era_2026",
-            "name": "Next Gen Hybrid",
-            "years": "2026-",
-            "engine": {
-              "type": "1.6L V6 Turbo Hybrid",
-              "notable_change": "MGU-H removed",
-              "components": [
-                { "id": "ice", "name": "Internal Combustion Engine", "fuel": "100% Sustainable Fuel" },
-                { "id": "turbo", "name": "Turbocharger" },
-                { "id": "mgu_k", "name": "MGU-K", "max_power_kw": 350 },
-                { "id": "battery", "name": "Energy Store", "capacity_kwh": 4 }
-              ]
-            }
-          }
-        ]
-      }
+          ]
+        }
+      ]
     };
 
-    // Transform complex JSON to flat nodes/edges
-    function transformData(raw) {
+    // Flatten tree to initial collapsed nodes/edges
+    function buildCollapsedTree(node, parentId = null, idCounter = 1) {
       const nodes = [];
       const edges = [];
-      let nodeId = 1;
+      const stack = [{ node, parentId, id: 'root' }];
 
-      // Central node
-      nodes.push({ id: 'root', label: 'F1 Power Units', color: '#ff6b6b', font: { size: 18, color: 'white' } });
+      while (stack.length > 0) {
+        const { node: current, parentId: parent } = stack.pop();
+        const currentId = current.id || `node_${idCounter++}`;
 
-      raw.f1_power_units.eras.forEach(era => {
-        const eraId = `era_${nodeId++}`;
         nodes.push({ 
-          id: eraId, 
-          label: `${era.name}\n${era.years}`, 
-          color: '#4ecdc4',
-          group: 'era'
-        });
-        edges.push({ from: 'root', to: eraId, label: 'contains' });
-
-        const engineId = `engine_${nodeId++}`;
-        nodes.push({ 
-          id: engineId, 
-          label: era.engine.type + '\n' + (era.engine.total_power_hp || '') + ' HP',
-          color: '#45b7d1',
-          group: 'engine'
-        });
-        edges.push({ from: eraId, to: engineId, label: 'uses' });
-
-        // Components
-        era.engine.components.forEach(comp => {
-          const compId = `${eraId}_${comp.id}`;
-          nodes.push({ 
-            id: compId, 
-            label: comp.name + '\n' + (comp.power_hp || comp.max_power_kw || '') + (comp.fuel ? ` (${comp.fuel})` : ''),
-            color: '#f9ca24',
-            group: 'component'
-          });
-          edges.push({ from: engineId, to: compId, label: 'has' });
+          id: currentId, 
+          label: current.label,
+          isParent: current.children && current.children.length > 0,
+          children: current.children || [],
+          color: parent ? '#4ecdc4' : '#ff6b6b',
+          font: { size: parent ? 12 : 18, color: parent ? '#000' : 'white' }
         });
 
-        // Energy flows (sample edges)
-        era.engine.energy_flow?.slice(0, 3).forEach(flow => { // Limit for demo
-          const flowId = `flow_${nodeId++}`;
-          nodes.push({ 
-            id: flowId, 
-            label: flow.energy_type.replace('_', ' '), 
-            color: '#6c5ce7',
-            shape: 'ellipse'
-          });
-          edges.push({ from: flow.from || 'source', to: flow.to || 'sink', via: { nodes: [flowId], color: '#6c5ce7' } });
-        });
-      });
+        if (parent) {
+          edges.push({ from: parent, to: currentId, label: '→', dashed: true });
+        }
 
+        // Don't add children initially (collapsed)
+      }
       return { nodes, edges };
     }
 
-    const graphData = transformData(rawData);
-    const container = document.getElementById('network');
-    const nodes = new vis.DataSet(graphData.nodes);
-    const edges = new vis.DataSet(graphData.edges);
+    let allNodes = new vis.DataSet();
+    let allEdges = new vis.DataSet();
+    const nodeChildren = new Map();  // Store children per node
 
-    const networkData = { nodes, edges };
+    function initCollapsed() {
+      const { nodes, edges } = buildCollapsedTree(treeData);
+      nodes.forEach(n => nodeChildren.set(n.id, n.children || []));
+      allNodes = new vis.DataSet(nodes);
+      allEdges = new vis.DataSet(edges);
+    }
+
+    const container = document.getElementById('network');
+    initCollapsed();
+
     const options = {
       layout: { 
         hierarchical: { 
-          direction: 'LR',  // Left-to-right (side-by-side)
+          direction: 'LR',
           sortMethod: 'directed',
           levelSeparation: 400,
-          nodeSpacing: 200,
-          treeSpacing: 100,
-          blockShifting: true,
-          edgeMinimization: true
+          nodeSpacing: 200
         } 
       },
-      physics: false,
+      physics: { enabled: true, stabilization: { iterations: 100 } },
       interaction: { 
         hover: true,
         dragNodes: true,
         dragView: true,
-        zoomable: true
+        zoomable: true,
+        multiselect: false
       },
       nodes: { 
         shape: 'box', 
         margin: 15,
-        shadow: { enabled: true, size: 10, color: 'rgba(0,0,0,0.3)' },
-        borderWidth: 2,
-        font: { size: 12, vadjust: 0 }
+        shadow: true,
+        borderWidthSelected: 3,
+        font: { multi: 'html' }
       },
       edges: { 
-        font: { size: 10, align: 'middle' },
-        color: { color: '#333', highlight: '#000' },
-        smooth: { type: 'continuous' },
-        arrows: 'to'
-      },
-      height: '100vh'
+        font: { size: 10 },
+        arrows: 'to',
+        dashes: true
+      }
     };
 
-    window.network = new vis.Network(container, networkData, options);  // Global for zoom buttons
+    window.network = new vis.Network(container, { nodes: allNodes, edges: allEdges }, options);
 
-    network.on('selectNode', (params) => {
-      const node = nodes.get(params.nodes[0]);
-      console.log('Clicked:', node.label);  // Replace with your logic
+    // Expand/collapse on click (NotebookLM style)
+    network.on('click', (params) => {
+      if (params.nodes.length === 0) return;
+      const nodeId = params.nodes[0];
+      const node = allNodes.get(nodeId);
+
+      if (node.isParent) {
+        // Collapse: remove children
+        if (node.expanded) {
+          const childIds = nodeChildren.get(nodeId).map(child => buildChildId(child.id));
+          childIds.forEach(childId => {
+            const childIndex = allNodes.getIds().indexOf(childId);
+            if (childIndex > -1) allNodes.remove(childId);
+            allEdges.remove(allEdges.get({ filter: edge => edge.from === childId || edge.to === childId }));
+          });
+          node.expanded = false;
+          node.label += ' (+)';  // Visual indicator
+        } else {
+          // Expand: add children
+          nodeChildren.get(nodeId).forEach(child => {
+            const childId = buildChildId(child.id);
+            allNodes.add({ 
+              id: childId,
+              label: child.label,
+              isParent: child.children && child.children.length > 0,
+              color: '#f9ca24',
+              parentId: nodeId  // Track parent
+            });
+            allEdges.add({ from: nodeId, to: childId });
+          });
+          node.expanded = true;
+          node.label = node.label.replace(' (+)', '');
+        }
+        allNodes.update(node);
+        network.stabilize();
+      }
     });
 
+    // Helper to generate consistent child IDs
+    function buildChildId(childId) {
+      return `child_${childId}`;
+    }
+
     function exportPNG() {
-      html2canvas(container, { 
-        backgroundColor: null,  // Transparent for gradient bg
-        scale: 2,
-        useCORS: true,
-        allowTaint: true
-      }).then(canvas => {
+      html2canvas(container, { backgroundColor: null, scale: 2 }).then(canvas => {
         const link = document.createElement('a');
         link.href = canvas.toDataURL('image/png');
-        link.download = 'f1-power-units-mindmap.png';
+        link.download = 'f1-mindmap.png';
         link.click();
       });
     }
