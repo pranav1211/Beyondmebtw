@@ -18,7 +18,7 @@ const projectsData = [
     fullDescription: "• Independently designed and developed the official website for the Gradient AI/ML club at BMSCE from scratch.\n• Built using React, Next.js, and Tailwind CSS with a strong emphasis on performance, responsiveness, and modern design.\n• Created a dynamic content server and multiple custom pages to showcase events, team members, and club updates.\n• Managed hosting and deployment on Vercel to ensure reliability, scalability, and ease of maintenance.\n• Helped improve the club's digital presence and engagement with the student and tech community.",
     logo: "https://gradient-content-server.vercel.app/content/logo.png",
     images: ["/assets/images/projects/grd/Gradient.webp", "https://gradient-content-server.vercel.app/content/gallery/home.png"],
-    link: "https://gradientaiml.tech",
+    link: "https://gradient-website-liart.vercel.app",
     githubLink: "https://github.com/pranav1211/Gradient-website",
     category: "Web Development",
     tags: ["React", "JavaScript", "UI/UX", "Next.js", "Tailwind CSS", "Vercel"]
@@ -42,7 +42,7 @@ const projectsData = [
     fullDescription: "• This project is currently being built.\n• LUMEX (Live Understanding and Mobility EXpert) is an AI-powered real-time visual assistant designed to enhance user interaction with their environment.\n• Utilizes advanced computer vision and machine learning algorithms to provide contextual information, navigation assistance, and real-time object recognition.\n• Serves as a versatile tool for various applications such as smart homes, augmented reality, and personal assistance.\n• Leverages the power of Lidar and depth cameras to create a 3D understanding of the environment.\n• Enables features like obstacle detection and spatial awareness through advanced depth perception.",
     logo: "https://beyondmebtw.com/assets/images/favicon.ico",
     images: ["/assets/images/projects/lumex.webp"],
-    link: "",
+    link: "https://lumexai.live",
     githubLink: "https://github.com/pranav1211/LUMEX-AI",
     category: "AI/ML",
     tags: ["Python", "Computer Vision", "Machine Learning", "Lidar", "Depth Cameras"]
@@ -54,7 +54,7 @@ const projectsData = [
     fullDescription: "An AI-powered solution that monitors driver alertness and behavior in real-time, detecting signs of fatigue and distraction to prevent accidents and improve road safety.",
     logo: "https://beyondmebtw.com/assets/images/favicon.ico",
     images: ["/assets/images/projects/rtdms.webp"],
-    link: "https://beyondmebtw.com/projects/rtdms/",
+    link: "https://github.com/pranav1211/RTDMS",
     githubLink: "https://github.com/pranav1211/RTDMS",
     category: "AI/ML",
     tags: ["Python", "Computer Vision", "Machine Learning"]
@@ -89,7 +89,7 @@ const projectsData = [
     fullDescription: "• A digital treasure hunt hosted during Utsav Ananta 2025, where participants raced against time to solve puzzles and outwit competitors. \n • Co-developed with event volunteers; I led puzzle design, system integration, deployment, marketing, and designed the event's visual artwork. \n • Successfully launched as a playable online game post-event under a dedicated subdomain of the GradientAIML.tech website.",
     logo: "https://gradient-content-server.vercel.app/content/logo.png",
     images: ["https://gradient-content-server.vercel.app/content/utsav25/gallery/unc/ulvfs.png", "https://gradient-content-server.vercel.app/content/utsav25/gallery/unc/2.jpeg", "https://gradient-content-server.vercel.app/content/utsav25/gallery/unc/4.jpg"],
-    link: "https://uncharted3.gradientaiml.tech",
+    link: "https://uncharted-3.vercel.app/",
     githubLink: "https://github.com/pranav1211/Uncharted-3",
     category: "Game Development",
     tags: ["Next.js", "HTML", "CSS", "Vercel"]
@@ -113,6 +113,7 @@ const projectsData = [
   fullDescription: "• A comprehensive Minecraft gamemode created for the 2024 Phaseshift technical fest, featuring three distinct competitive rounds.\n• Round 1: Skill-based minigames including Dropper Challenge, Find the Button, and Line Maze to test player agility and observation.\n• Round 2: 4-stage PvE battle arena where participants faced challenging game bosses requiring strategic combat and quick thinking.\n• Round 3: High-speed multi-style maze race combining parkour elements with complex labyrinth navigation.\n• Successfully hosted 60+ registrations with 50+ active participants, making it one of the fest's standout events.\n• Co-developed with my event coordinator Yashas we handled game design, system architecture, deployment logistics, marketing and visual artwork creation.\n • The game was made with Minecraft version 1.20 for Java and you would need the same to run it due to the mods used.\n •The game files are in the Github Repo, open that to download them",
   logo: "https://gradient-content-server.vercel.app/content/posters/mmrlogo.webp",
   images: ["https://content.beyondmebtw.com/thumbnails/experience/exp21.webp", "https://content.beyondmebtw.com/assets/projects/mmr/mmr.webp", "https://content.beyondmebtw.com/assets/projects/mmr/mmr2.jpg"],
+  link:"https://github.com/pranav1211/Maze-Maniac-Resurrected",  
   githubLink: "https://github.com/pranav1211/Maze-Maniac-Resurrected",
   category: "Game Development",
   tags: ["Minecraft", "Game Design", "Event Management", "Java", "Multiplayer"]
