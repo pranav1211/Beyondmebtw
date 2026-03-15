@@ -55,7 +55,7 @@ async function fetchWithCache(url) {
 // Subcategory mappings
 const subcategoryMappings = {
     'movie-tv': ['Movies', 'TV Shows'],
-    'f1': ['2025 Season', 'General']
+    'f1': ['2025 Season', 'General','2026 Season']
 };
 
 // DOM elements
