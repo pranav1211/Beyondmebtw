@@ -68,9 +68,15 @@ function initTabs() {
       btn.classList.add('active');
       document.getElementById(`tab-${tab}`).classList.add('active');
 
-      // Lazy-load tab data on first visit
-      if (tab === 'blog' && !state.blogData) loadBlogTab();
-      if (tab === 'projects' && state.projects.length === 0) loadProjectsTab();
+      // Lazy-load tab data on first visit; reuse cache if available
+      if (tab === 'blog') {
+        if (!state.blogData) loadBlogTab();
+        else { buildCategoryTabs(); buildBlogCategorySelect(); renderPostsList(); }
+      }
+      if (tab === 'projects') {
+        if (state.projects.length === 0) loadProjectsTab();
+        else renderProjectsList();
+      }
     });
   });
 }
@@ -126,15 +132,19 @@ function initConfirmModal() {
 
 async function loadHomepageTab() {
   try {
-    const data = await fetch('latest.json').then(r => r.json());
-    state.latestData = data;
+    // Reuse cached data if available, otherwise fetch
+    if (!state.latestData) {
+      state.latestData = await fetch('https://beyondmebtw.com/manage/latest.json').then(r => r.json());
+    }
+    const data = state.latestData;
     renderLatestPost(data.mainPost);
     renderFeaturedPosts(data.featured || []);
     renderLatestByCategory(data.categories || {});
 
-    // Load projects for featured projects section (direct public URL)
-    const projects = await fetch(PROJECTS_URL).then(r => r.json());
-    state.projects = projects || [];
+    // Reuse cached projects if available
+    if (state.projects.length === 0) {
+      state.projects = await fetch(PROJECTS_URL).then(r => r.json()) || [];
+    }
     renderFeaturedProjects(data.featuredProjects || [1,2,3,4], state.projects);
   } catch (e) {
     console.error('Homepage load error:', e);
@@ -317,30 +327,32 @@ const KNOWN_BLOG_CATEGORIES = {
 
 async function loadBlogTab() {
   try {
-    // Fetch latest.json and try to get categories from manage server in parallel.
-    // If manage server fails, we fall back to KNOWN_BLOG_CATEGORIES.
-    const [catsResult, latestData] = await Promise.all([
-      apiCall('GET', '/categories').catch(() => null),
-      state.latestData ? Promise.resolve(state.latestData) : fetch('latest.json').then(r => r.json())
-    ]);
+    // Categories come from KNOWN_BLOG_CATEGORIES (no manage server read needed).
+    // latest.json is served directly from the public URL.
+    if (!state.latestData) {
+      state.latestData = await fetch('https://beyondmebtw.com/manage/latest.json').then(r => r.json());
+    }
+    // Deep-copy so mutations to state.categories don't affect the constant
+    if (!state.categories || Object.keys(state.categories).length === 0) {
+      state.categories = JSON.parse(JSON.stringify(KNOWN_BLOG_CATEGORIES));
+    }
 
-    state.categories = (catsResult && Object.keys(catsResult).length > 0) ? catsResult : KNOWN_BLOG_CATEGORIES;
-    if (!state.latestData) state.latestData = latestData;
-
-    // Fetch each category's blog JSON directly from the public URL
-    const catKeys = Object.keys(state.categories);
-    const fetched = await Promise.allSettled(
-      catKeys.map(key => fetch(`${BLOG_BASE_URL}/${key}.json`).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }))
-    );
-    state.blogData = {};
-    catKeys.forEach((key, i) => {
-      if (fetched[i].status === 'fulfilled') {
-        state.blogData[key] = fetched[i].value;
-      } else {
-        console.warn(`Could not load ${key}.json:`, fetched[i].reason);
-        state.blogData[key] = { subcategories: [], posts: [] };
-      }
-    });
+    // Only fetch blog JSONs if not already cached
+    if (!state.blogData) {
+      const catKeys = Object.keys(state.categories);
+      const fetched = await Promise.allSettled(
+        catKeys.map(key => fetch(`${BLOG_BASE_URL}/${key}.json`).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }))
+      );
+      state.blogData = {};
+      catKeys.forEach((key, i) => {
+        if (fetched[i].status === 'fulfilled') {
+          state.blogData[key] = fetched[i].value;
+        } else {
+          console.warn(`Could not load ${key}.json:`, fetched[i].reason);
+          state.blogData[key] = { subcategories: [], posts: [] };
+        }
+      });
+    }
 
     buildCategoryTabs();
     buildBlogCategorySelect();
@@ -912,8 +924,10 @@ function initCategoryModal() {
 
 async function loadProjectsTab() {
   try {
-    const projects = await fetch(PROJECTS_URL).then(r => r.json());
-    state.projects = projects || [];
+    // Reuse cached projects if already fetched (e.g. from homepage tab)
+    if (state.projects.length === 0) {
+      state.projects = await fetch(PROJECTS_URL).then(r => r.json()) || [];
+    }
     renderProjectsList();
   } catch (e) {
     document.getElementById('projects-list').innerHTML = '<div class="empty-msg">Failed to load projects.</div>';
