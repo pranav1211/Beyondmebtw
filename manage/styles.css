@@ -2,27 +2,27 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #0d0d14;
-  --surface: #13131e;
-  --surface2: #1a1a28;
-  --surface3: #22223a;
-  --border: #2a2a40;
-  --border2: #363654;
-  --text: #e8e8f0;
-  --text-muted: #8888aa;
-  --text-dim: #555577;
-  --accent: #b06ef3;
-  --accent2: #f06ecc;
-  --accent-grad: linear-gradient(135deg, #b06ef3 0%, #f06ecc 100%);
-  --accent-hover: linear-gradient(135deg, #c084fa 0%, #f87de0 100%);
-  --danger: #ef4444;
-  --danger-hover: #dc2626;
-  --success: #22c55e;
-  --warning: #f59e0b;
+  --bg: #f0f0f7;
+  --surface: #ffffff;
+  --surface2: #f5f5fc;
+  --surface3: #eaeaf5;
+  --border: #dcdcee;
+  --border2: #c8c8e0;
+  --text: #1e1e30;
+  --text-muted: #5a5a80;
+  --text-dim: #9090b0;
+  --accent: #8b52e0;
+  --accent2: #d44fb5;
+  --accent-grad: linear-gradient(135deg, #8b52e0 0%, #d44fb5 100%);
+  --accent-hover: linear-gradient(135deg, #9d68e8 0%, #dc69c7 100%);
+  --danger: #dc2626;
+  --danger-hover: #b91c1c;
+  --success: #16a34a;
+  --warning: #d97706;
   --sidebar-w: 200px;
   --radius: 10px;
   --radius-sm: 6px;
-  --shadow: 0 4px 20px rgba(0,0,0,0.4);
+  --shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
 html, body { height: 100%; }
@@ -798,7 +798,7 @@ select option { background: var(--surface2); }
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.65);
+  background: rgba(30,30,48,0.45);
   z-index: 100;
   display: flex;
   align-items: center;

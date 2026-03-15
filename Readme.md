@@ -29,6 +29,7 @@ The Current Home Page
 
 ## 4.3 (15/03/26)
 - enhanced manage page, added better operations of CRUD for the posts and added management of projects via the application.
+- new ui for the manage page
 
 ## 4.2 (02/03/26)
 - Created new url methods to access blog categories and sub categories via the url. all js only, just query parameters and sorting through them

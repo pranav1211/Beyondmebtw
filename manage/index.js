@@ -3,13 +3,17 @@
 
 const BASE_URL = "https://manage.beyondmebtw.com";
 
+const PROJECTS_URL = 'https://beyondmebtw.com/projects/project-data.json';
+const BLOG_BASE_URL = 'https://beyondmebtw.com/blog';
+
 // ─── State ────────────────────────────────────────────────────────────────────
 let state = {
   latestData: null,          // from latest.json
-  blogData: null,            // from /blogposts
-  projects: [],              // from /projectsdata
+  blogData: null,            // from direct blog JSON URLs
+  projects: [],              // from project-data.json
   categories: {},            // from /categories
   currentBlogCategory: 'all',
+  blogSearch: '',
   editingBlogPost: null,     // { category, uid } when editing
   editingProjectId: null,    // id when editing
   catModalAction: 'addCategory',
@@ -128,8 +132,8 @@ async function loadHomepageTab() {
     renderFeaturedPosts(data.featured || []);
     renderLatestByCategory(data.categories || {});
 
-    // Load projects for featured projects section
-    const projects = await apiCall('GET', '/projectsdata');
+    // Load projects for featured projects section (direct public URL)
+    const projects = await fetch(PROJECTS_URL).then(r => r.json());
     state.projects = projects || [];
     renderFeaturedProjects(data.featuredProjects || [1,2,3,4], state.projects);
   } catch (e) {
@@ -200,7 +204,7 @@ function renderFeaturedPosts(posts) {
         </div>
         <div class="form-group">
           <label>Excerpt</label>
-          <textarea name="excerpt" rows="2" placeholder="Excerpt...">${esc(post.excerpt||'')}</textarea>
+          <textarea name="excerpt" rows="4" placeholder="Excerpt...">${esc(post.excerpt||'')}</textarea>
         </div>
         <div class="form-group">
           <label>Thumbnail URL</label>
@@ -305,21 +309,34 @@ function initLatestForm() {
 
 async function loadBlogTab() {
   try {
-    // Load categories and blog posts in parallel
-    const [cats, blogData, latestData] = await Promise.all([
+    // Load categories from manage server, latest.json locally — in parallel
+    const [cats, latestData] = await Promise.all([
       apiCall('GET', '/categories'),
-      apiCall('GET', '/blogposts'),
       state.latestData ? Promise.resolve(state.latestData) : fetch('latest.json').then(r => r.json())
     ]);
 
     state.categories = cats || {};
-    state.blogData = blogData || {};
     if (!state.latestData) state.latestData = latestData;
+
+    // Fetch each category's blog JSON directly from the public URL
+    const catKeys = Object.keys(state.categories);
+    const fetched = await Promise.allSettled(
+      catKeys.map(key => fetch(`${BLOG_BASE_URL}/${key}.json`).then(r => r.json()))
+    );
+    state.blogData = {};
+    catKeys.forEach((key, i) => {
+      if (fetched[i].status === 'fulfilled') {
+        state.blogData[key] = fetched[i].value;
+      } else {
+        console.warn(`Could not load ${key}.json:`, fetched[i].reason);
+        state.blogData[key] = { subcategories: [], posts: [] };
+      }
+    });
 
     buildCategoryTabs();
     buildBlogCategorySelect();
     buildSubcategoryChips();
-    renderPostsList(state.currentBlogCategory);
+    renderPostsList();
     renderLatestByCategory(state.latestData.categories || {});
   } catch (e) {
     console.error('Blog tab load error:', e);
@@ -351,25 +368,61 @@ function buildCategoryTabs() {
 
 function switchBlogCategory(key) {
   state.currentBlogCategory = key;
+  state.blogSearch = '';
+  const searchInput = document.getElementById('blog-search');
+  if (searchInput) searchInput.value = '';
   document.querySelectorAll('.cat-tab-btn').forEach(b => {
     b.classList.toggle('active', b.textContent === (key === 'all' ? 'All' : (state.categories[key]?.name || key)));
   });
-  renderPostsList(key);
+  renderPostsList();
 }
 
-function renderPostsList(categoryFilter) {
+// Render posts: first 4 per category by default, or search results across all categories
+function renderPostsList() {
   const container = document.getElementById('blog-posts-list');
   if (!container || !state.blogData) return;
 
-  const categoriesToShow = categoryFilter === 'all'
+  const query = (state.blogSearch || '').toLowerCase().trim();
+  const isSearching = query.length >= 2;
+
+  // Which categories to show
+  const categoriesToShow = state.currentBlogCategory === 'all'
     ? Object.keys(state.blogData)
-    : [categoryFilter].filter(k => state.blogData[k]);
+    : [state.currentBlogCategory].filter(k => state.blogData[k]);
 
   if (categoriesToShow.length === 0) {
     container.innerHTML = '<div class="empty-msg">No posts found.</div>';
     return;
   }
 
+  // Search mode: find matching posts across all shown categories
+  if (isSearching) {
+    let html = '<div class="posts-list-header"><span>Thumb</span><span>Title / UID</span><span>Category</span><span>Date</span><span>Actions</span></div>';
+    let totalMatches = 0;
+
+    categoriesToShow.forEach(catKey => {
+      const catData = state.blogData[catKey];
+      if (!catData) return;
+      const catName = state.categories[catKey]?.name || catKey;
+
+      (catData.posts || []).forEach(post => {
+        if ((post.title || '').toLowerCase().includes(query) || (post.uid || '').toLowerCase().includes(query)) {
+          html += renderPostRow(post, catKey, catName);
+          totalMatches++;
+        }
+      });
+    });
+
+    if (totalMatches === 0) {
+      container.innerHTML = `<div class="empty-msg">No posts matching "${esc(query)}".</div>`;
+    } else {
+      container.innerHTML = `<div class="search-result-count">${totalMatches} result${totalMatches !== 1 ? 's' : ''} for "${esc(query)}"</div>` + html;
+      attachPostRowHandlers(container);
+    }
+    return;
+  }
+
+  // Default mode: first 4 per category
   let html = '<div class="posts-list-header"><span>Thumb</span><span>Title / UID</span><span>Subcategory</span><span>Date</span><span>Actions</span></div>';
 
   categoriesToShow.forEach(catKey => {
@@ -378,10 +431,13 @@ function renderPostsList(categoryFilter) {
 
     const catConfig = state.categories[catKey] || {};
     const posts = catData.posts || [];
+    const preview = posts.slice(0, 4);
+
     html += `
       <div class="category-section-header">
         <span class="cat-name">${esc(catConfig.name || catKey)}</span>
-        <span class="post-count">${posts.length} post${posts.length !== 1 ? 's' : ''}</span>
+        <span class="post-count">${posts.length} post${posts.length !== 1 ? 's' : ''} — showing ${preview.length}</span>
+        ${posts.length > 4 ? '<span class="search-hint">Search to find older posts</span>' : ''}
       </div>
     `;
 
@@ -390,36 +446,14 @@ function renderPostsList(categoryFilter) {
       return;
     }
 
-    // Group by subcategory if available
-    const hasSubcategories = catConfig.subcategories && catConfig.subcategories.length > 0;
-    if (hasSubcategories) {
-      const grouped = {};
-      const noSubcat = [];
-      posts.forEach(post => {
-        if (post.subcategory) {
-          if (!grouped[post.subcategory]) grouped[post.subcategory] = [];
-          grouped[post.subcategory].push(post);
-        } else {
-          noSubcat.push(post);
-        }
-      });
-
-      Object.keys(grouped).forEach(subcat => {
-        html += `<div class="subcategory-divider">${esc(subcat)}</div>`;
-        grouped[subcat].forEach(post => { html += renderPostRow(post, catKey); });
-      });
-      if (noSubcat.length) {
-        html += `<div class="subcategory-divider">Uncategorized</div>`;
-        noSubcat.forEach(post => { html += renderPostRow(post, catKey); });
-      }
-    } else {
-      posts.forEach(post => { html += renderPostRow(post, catKey); });
-    }
+    preview.forEach(post => { html += renderPostRow(post, catKey); });
   });
 
   container.innerHTML = html;
+  attachPostRowHandlers(container);
+}
 
-  // Attach event handlers
+function attachPostRowHandlers(container) {
   container.querySelectorAll('[data-action="edit-post"]').forEach(btn => {
     btn.addEventListener('click', () => openEditBlogPost(btn.dataset.category, btn.dataset.uid));
   });
@@ -428,8 +462,23 @@ function renderPostsList(categoryFilter) {
   });
 }
 
-function renderPostRow(post, catKey) {
+function initBlogSearch() {
+  const input = document.getElementById('blog-search');
+  if (!input) return;
+  let debounceTimer;
+  input.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      state.blogSearch = input.value;
+      renderPostsList();
+    }, 250);
+  });
+}
+
+// displayLabel: optional override for the subcategory/category column (used in search results)
+function renderPostRow(post, catKey, displayLabel) {
   const date = post.date ? post.date : '';
+  const label = displayLabel || post.subcategory || '—';
   return `
     <div class="post-row">
       <img class="thumb" src="${esc(post.thumbnail)}" alt="" onerror="this.style.display='none'">
@@ -437,7 +486,7 @@ function renderPostRow(post, catKey) {
         <div class="post-title">${esc(post.title)}</div>
         <div class="post-uid">${esc(post.uid)}</div>
       </div>
-      <div class="post-subcat">${esc(post.subcategory || '—')}</div>
+      <div class="post-subcat">${esc(label)}</div>
       <div class="post-date">${esc(date)}</div>
       <div class="post-actions">
         <button class="btn-icon edit" data-action="edit-post" data-category="${esc(catKey)}" data-uid="${esc(post.uid)}" title="Edit">Edit</button>
@@ -850,7 +899,7 @@ function initCategoryModal() {
 
 async function loadProjectsTab() {
   try {
-    const projects = await apiCall('GET', '/projectsdata');
+    const projects = await fetch(PROJECTS_URL).then(r => r.json());
     state.projects = projects || [];
     renderProjectsList();
   } catch (e) {
@@ -1033,6 +1082,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initLatestForm();
   initFeaturedProjectsForm();
   initBlogForm();
+  initBlogSearch();
   initCategoryModal();
   initProjectForm();
   buildSecondaryCategoryChips();
