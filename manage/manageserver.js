@@ -492,6 +492,62 @@ const server = http.createServer((request, response) => {
         if (err) return sendError(response, "Bad JSON");
         const { action, category, uid, title, date, excerpt, thumbnail, link, subcategory, secondaryCategory, secondarySubcategory, key, subcategoryName } = body;
         if (!validateKey(key, response)) return;
+
+        // ── Project actions (no category needed) ──────────────────────────────
+        if (action === "projectCreate") {
+          if (!body.title) return sendError(response, "Missing title");
+          const projects = readProjectsJSON();
+          const maxId = projects.reduce((max, p) => Math.max(max, p.id || 0), 0);
+          const newProject = { id: maxId + 1 };
+          const fields = ['title','category','shortDescription','fullDescription','logo','link','githubLink','tags','images'];
+          fields.forEach(f => { if (body[f] !== undefined) newProject[f] = body[f]; });
+          if (typeof newProject.tags === 'string') newProject.tags = newProject.tags.split(',').map(t => t.trim()).filter(Boolean);
+          if (typeof newProject.images === 'string') newProject.images = newProject.images.split(',').map(u => u.trim()).filter(Boolean);
+          projects.push(newProject);
+          writeProjectsJSONSafe(projects, err2 => {
+            if (err2) return sendError(response, "Error writing projects file", 500);
+            runScriptIgnoreError(() => {
+              sendJSON(response, { success: true, message: "Project created", project: newProject });
+            });
+          });
+          return;
+        }
+
+        if (action === "projectUpdate") {
+          const projId = parseInt(body.id, 10);
+          if (!projId) return sendError(response, "Missing id");
+          const projects = readProjectsJSON();
+          const idx = projects.findIndex(p => p.id === projId);
+          if (idx === -1) return sendError(response, "Project not found");
+          const fields = ['title','category','shortDescription','fullDescription','logo','link','githubLink','tags','images'];
+          fields.forEach(f => { if (body[f] !== undefined) projects[idx][f] = body[f]; });
+          if (typeof projects[idx].tags === 'string') projects[idx].tags = projects[idx].tags.split(',').map(t => t.trim()).filter(Boolean);
+          if (typeof projects[idx].images === 'string') projects[idx].images = projects[idx].images.split(',').map(u => u.trim()).filter(Boolean);
+          writeProjectsJSONSafe(projects, err2 => {
+            if (err2) return sendError(response, "Error writing projects file", 500);
+            runScriptIgnoreError(() => {
+              sendJSON(response, { success: true, message: "Project updated", project: projects[idx] });
+            });
+          });
+          return;
+        }
+
+        if (action === "projectDelete") {
+          const projId = parseInt(body.id, 10);
+          if (!projId) return sendError(response, "Missing id");
+          const projects = readProjectsJSON();
+          const before = projects.length;
+          const filtered = projects.filter(p => p.id !== projId);
+          if (filtered.length === before) return sendError(response, "Project not found");
+          writeProjectsJSONSafe(filtered, err2 => {
+            if (err2) return sendError(response, "Error writing projects file", 500);
+            runScriptIgnoreError(() => {
+              sendJSON(response, { success: true, message: "Project deleted" });
+            });
+          });
+          return;
+        }
+
         if (!category) return sendError(response, "Missing category");
 
         // Handle addCategory action — creates a new blog JSON file

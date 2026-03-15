@@ -1007,7 +1007,7 @@ function openEditProject(id) {
 function promptDeleteProject(id, title) {
   confirm(`Delete project "${title}"? This cannot be undone.`, async () => {
     try {
-      await apiCall('DELETE', '/projectsdata', { id });
+      await apiCall('POST', '/blogdata', { action: 'projectDelete', id });
       state.projects = state.projects.filter(p => p.id !== id);
       renderProjectsList();
       toast('Project deleted');
@@ -1059,12 +1059,12 @@ function initProjectForm() {
 
     try {
       if (isEdit) {
-        const res = await apiCall('PUT', '/projectsdata', { id: parseInt(editId, 10), ...body });
+        const res = await apiCall('POST', '/blogdata', { action: 'projectUpdate', id: parseInt(editId, 10), ...body });
         const idx = state.projects.findIndex(p => p.id === parseInt(editId, 10));
         if (idx !== -1 && res.project) state.projects[idx] = res.project;
         toast('Project updated');
       } else {
-        const res = await apiCall('POST', '/projectsdata', body);
+        const res = await apiCall('POST', '/blogdata', { action: 'projectCreate', ...body });
         if (res.project) state.projects.push(res.project);
         toast('Project created');
       }
