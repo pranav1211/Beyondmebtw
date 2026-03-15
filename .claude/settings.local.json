@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls \"c:\\\\Users\\\\pranav\\\\Downloads\\\\Beyondmebtw\\\\blog\"\" 2>/dev/null || echo \"No blog directory found locally \")"
+    ]
+  }
+}

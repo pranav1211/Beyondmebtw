@@ -307,21 +307,30 @@ function initLatestForm() {
 // BLOG TAB
 // ═══════════════════════════════════════════════════════════════════════════════
 
+// Known category keys — these map directly to blog JSON filenames
+const KNOWN_BLOG_CATEGORIES = {
+  f1arti:     { name: 'F1 Articles',    subcategories: ['2025 Season', 'General'] },
+  movietv:    { name: 'Movie/TV',       subcategories: ['Movies', 'TV Shows'] },
+  experience: { name: 'Experience',     subcategories: [] },
+  techart:    { name: 'Tech Articles',  subcategories: [] }
+};
+
 async function loadBlogTab() {
   try {
-    // Load categories from manage server, latest.json locally — in parallel
-    const [cats, latestData] = await Promise.all([
-      apiCall('GET', '/categories'),
+    // Fetch latest.json and try to get categories from manage server in parallel.
+    // If manage server fails, we fall back to KNOWN_BLOG_CATEGORIES.
+    const [catsResult, latestData] = await Promise.all([
+      apiCall('GET', '/categories').catch(() => null),
       state.latestData ? Promise.resolve(state.latestData) : fetch('latest.json').then(r => r.json())
     ]);
 
-    state.categories = cats || {};
+    state.categories = (catsResult && Object.keys(catsResult).length > 0) ? catsResult : KNOWN_BLOG_CATEGORIES;
     if (!state.latestData) state.latestData = latestData;
 
     // Fetch each category's blog JSON directly from the public URL
     const catKeys = Object.keys(state.categories);
     const fetched = await Promise.allSettled(
-      catKeys.map(key => fetch(`${BLOG_BASE_URL}/${key}.json`).then(r => r.json()))
+      catKeys.map(key => fetch(`${BLOG_BASE_URL}/${key}.json`).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }))
     );
     state.blogData = {};
     catKeys.forEach((key, i) => {
@@ -873,6 +882,9 @@ function initCategoryModal() {
 
         await apiCall('POST', '/categories', { action: 'addCategory', categoryKey, categoryName });
         state.categories[categoryKey] = { name: categoryName, subcategories: [] };
+        // Also seed blogData for the new category so posts list works immediately
+        state.blogData = state.blogData || {};
+        state.blogData[categoryKey] = { subcategories: [], posts: [] };
         toast(`Category "${categoryName}" created`);
       } else {
         const parentKey = document.getElementById('subcat-parent').value;
@@ -887,6 +899,7 @@ function initCategoryModal() {
       buildCategoryTabs();
       buildBlogCategorySelect();
       buildSubcategoryChips();
+      renderPostsList();
     } catch (e) {
       toast(`Error: ${e.message}`, 'error');
     }
