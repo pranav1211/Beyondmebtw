@@ -791,7 +791,7 @@ function initBlogForm() {
 
         // Add to local state (approximate — server adds actual uid)
         if (!state.blogData[category]) state.blogData[category] = { subcategories: [], posts: [] };
-        state.blogData[category].posts.unshift({ uid: uid || `${category}_new`, title, date, excerpt, thumbnail, link, subcategory });
+        state.blogData[category].posts.push({ uid: uid || `${category}_new`, title, date, excerpt, thumbnail, link, subcategory });
 
         toast('Post added');
       }
@@ -901,9 +901,9 @@ function initCategoryModal() {
 
         // category key goes in `category` field; server creates the JSON file
         await apiCall('POST', '/blogdata', { action: 'addCategory', category: categoryKey, categoryName });
-        state.categories[categoryKey] = { name: categoryName, subcategories: [] };
-        state.blogData = state.blogData || {};
-        state.blogData[categoryKey] = { subcategories: [], posts: [] };
+        // Invalidate cache so blog tab re-fetches fresh data on next visit
+        state.blogData = null;
+        state.categories = {};
         toast(`Category "${categoryName}" created`);
       } else {
         const parentKey = document.getElementById('subcat-parent').value;
@@ -912,8 +912,9 @@ function initCategoryModal() {
 
         // Write subcategory directly into the blog JSON via /blogdata
         await apiCall('POST', '/blogdata', { action: 'addSubcategory', category: parentKey, subcategoryName });
+        // Update in-memory cache immediately so subcategory is available for new posts in this session
         if (state.categories[parentKey]) state.categories[parentKey].subcategories.push(subcategoryName);
-        if (state.blogData[parentKey]) state.blogData[parentKey].subcategories.push(subcategoryName);
+        if (state.blogData && state.blogData[parentKey]) state.blogData[parentKey].subcategories.push(subcategoryName);
         toast(`Subcategory "${subcategoryName}" added`);
       }
       closeModal('category-modal');

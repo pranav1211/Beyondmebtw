@@ -26,7 +26,7 @@ const CACHE_TTL = 60 * 60 * 1000;
 async function fetchWithCache(url) {
     const cacheKey = 'blog_cache_' + url;
     try {
-        const cached = localStorage.getItem(cacheKey);
+        const cached = sessionStorage.getItem(cacheKey);
         if (cached) {
             const { data, timestamp } = JSON.parse(cached);
             if (Date.now() - timestamp < CACHE_TTL) {
@@ -44,19 +44,16 @@ async function fetchWithCache(url) {
     const data = await response.json();
 
     try {
-        localStorage.setItem(cacheKey, JSON.stringify({ data, timestamp: Date.now() }));
+        sessionStorage.setItem(cacheKey, JSON.stringify({ data, timestamp: Date.now() }));
     } catch (_) {
-        // localStorage may be full or unavailable (private browsing) — ignore
+        // sessionStorage may be unavailable — ignore
     }
 
     return data;
 }
 
-// Subcategory mappings
-const subcategoryMappings = {
-    'movie-tv': ['Movies', 'TV Shows'],
-    'f1': ['2025 Season', 'General','2026 Season']
-};
+// Subcategory mappings — built dynamically from JSON after load
+let subcategoryMappings = {};
 
 // DOM elements
 const homelink = document.querySelector('#home');
@@ -117,6 +114,11 @@ async function loadAllData() {
         const categoryPromises = Object.entries(categoryJsonFiles).map(async ([categoryKey, jsonFile]) => {
             try {
                 const categoryData = await fetchWithCache(jsonFile);
+
+                // Build subcategoryMappings dynamically from JSON
+                if (categoryData.subcategories && Array.isArray(categoryData.subcategories) && categoryData.subcategories.length > 0) {
+                    subcategoryMappings[categoryKey] = categoryData.subcategories;
+                }
 
                 if (categoryData.posts && Array.isArray(categoryData.posts)) {
                     // Add category info to each post
