@@ -36,7 +36,12 @@
       "link": "https://medium.com/@beyondmebtw/f1-the-movie-review-fast-fun-and-entertaining-68be7e150f6d"
     }
   ],
-  "featuredProjects": [1, 2, 3, 4],
+  "featuredProjects": [
+    1,
+    2,
+    9,
+    10
+  ],
   "categories": {
     "f1arti": {
       "subcategories": {
