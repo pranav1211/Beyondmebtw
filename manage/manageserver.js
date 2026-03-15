@@ -486,13 +486,53 @@ const server = http.createServer((request, response) => {
       });
     }
 
-    // ── Blog data POST (create) ───────────────────────────────────────────────
+    // ── Blog data POST (create or addSubcategory) ────────────────────────────
     else if (pathname === "/blogdata" && request.method === "POST") {
       return getJSONBody(request, (err, body) => {
         if (err) return sendError(response, "Bad JSON");
-        const { category, uid, title, date, excerpt, thumbnail, link, subcategory, secondaryCategory, secondarySubcategory, key } = body;
+        const { action, category, uid, title, date, excerpt, thumbnail, link, subcategory, secondaryCategory, secondarySubcategory, key, subcategoryName } = body;
         if (!validateKey(key, response)) return;
         if (!category) return sendError(response, "Missing category");
+
+        // Handle addCategory action — creates a new blog JSON file
+        if (action === "addCategory") {
+          const { categoryName } = body;
+          if (!categoryName) return sendError(response, "Missing categoryName");
+          const key = category.toLowerCase().replace(/\s+/g, '');
+          if (blogData[key]) return sendError(response, "Category already exists");
+          blogData[key] = { subcategories: [], posts: [] };
+          const newFilePath = nodePath.join(BLOG_BASE_PATH, `${key}.json`);
+          try {
+            fs.writeFileSync(newFilePath, JSON.stringify({ subcategories: [], posts: [] }, null, 2), "utf8");
+          } catch (e) {
+            console.error("Could not create category file:", e.message);
+          }
+          runScriptIgnoreError(() => {
+            sendJSON(response, { success: true, categoryKey: key, message: `Category '${categoryName}' created` });
+          });
+          return;
+        }
+
+        // Handle addSubcategory action — writes directly to the blog JSON file
+        if (action === "addSubcategory") {
+          if (!subcategoryName) return sendError(response, "Missing subcategoryName");
+          if (!blogData[category]) blogData[category] = { subcategories: [], posts: [] };
+          loadBlogJSON(category, () => {
+            if (!blogData[category].subcategories) blogData[category].subcategories = [];
+            if (blogData[category].subcategories.includes(subcategoryName)) {
+              return sendError(response, "Subcategory already exists");
+            }
+            blogData[category].subcategories.push(subcategoryName);
+            writeBlogJSONFile(category, err2 => {
+              if (err2) return sendError(response, "Error writing blog file", 500);
+              runScriptIgnoreError(() => {
+                sendJSON(response, { success: true, message: `Subcategory '${subcategoryName}' added to '${category}'` });
+              });
+            });
+          });
+          return;
+        }
+
         if (!title || !date || !excerpt || !thumbnail || !link) return sendError(response, "Missing required fields");
 
         if (!blogData[category]) blogData[category] = { subcategories: [], posts: [] };

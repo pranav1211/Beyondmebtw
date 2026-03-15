@@ -332,14 +332,9 @@ async function loadBlogTab() {
     if (!state.latestData) {
       state.latestData = await fetch('https://beyondmebtw.com/manage/latest.json').then(r => r.json());
     }
-    // Deep-copy so mutations to state.categories don't affect the constant
-    if (!state.categories || Object.keys(state.categories).length === 0) {
-      state.categories = JSON.parse(JSON.stringify(KNOWN_BLOG_CATEGORIES));
-    }
-
     // Only fetch blog JSONs if not already cached
     if (!state.blogData) {
-      const catKeys = Object.keys(state.categories);
+      const catKeys = Object.keys(KNOWN_BLOG_CATEGORIES);
       const fetched = await Promise.allSettled(
         catKeys.map(key => fetch(`${BLOG_BASE_URL}/${key}.json`).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }))
       );
@@ -351,6 +346,18 @@ async function loadBlogTab() {
           console.warn(`Could not load ${key}.json:`, fetched[i].reason);
           state.blogData[key] = { subcategories: [], posts: [] };
         }
+      });
+    }
+
+    // Build state.categories from KNOWN_BLOG_CATEGORIES + actual subcategories from the JSON files
+    if (!state.categories || Object.keys(state.categories).length === 0) {
+      state.categories = {};
+      Object.keys(KNOWN_BLOG_CATEGORIES).forEach(key => {
+        const subcatsFromJson = (state.blogData[key] && state.blogData[key].subcategories) || [];
+        state.categories[key] = {
+          name: KNOWN_BLOG_CATEGORIES[key].name,
+          subcategories: subcatsFromJson.length > 0 ? subcatsFromJson : KNOWN_BLOG_CATEGORIES[key].subcategories
+        };
       });
     }
 
@@ -452,7 +459,7 @@ function renderPostsList() {
 
     const catConfig = state.categories[catKey] || {};
     const posts = catData.posts || [];
-    const preview = posts.slice(0, 4);
+    const preview = posts.slice(-4).reverse(); // last 4 = most recent
 
     html += `
       <div class="category-section-header">
@@ -892,9 +899,9 @@ function initCategoryModal() {
         const categoryName = document.getElementById('new-cat-name').value.trim();
         if (!categoryKey || !categoryName) { toast('Fill all fields', 'warning'); return; }
 
-        await apiCall('POST', '/categories', { action: 'addCategory', categoryKey, categoryName });
+        // category key goes in `category` field; server creates the JSON file
+        await apiCall('POST', '/blogdata', { action: 'addCategory', category: categoryKey, categoryName });
         state.categories[categoryKey] = { name: categoryName, subcategories: [] };
-        // Also seed blogData for the new category so posts list works immediately
         state.blogData = state.blogData || {};
         state.blogData[categoryKey] = { subcategories: [], posts: [] };
         toast(`Category "${categoryName}" created`);
@@ -903,8 +910,10 @@ function initCategoryModal() {
         const subcategoryName = document.getElementById('new-subcat-name').value.trim();
         if (!parentKey || !subcategoryName) { toast('Fill all fields', 'warning'); return; }
 
-        await apiCall('POST', '/categories', { action: 'addSubcategory', categoryKey: parentKey, subcategoryName });
+        // Write subcategory directly into the blog JSON via /blogdata
+        await apiCall('POST', '/blogdata', { action: 'addSubcategory', category: parentKey, subcategoryName });
         if (state.categories[parentKey]) state.categories[parentKey].subcategories.push(subcategoryName);
+        if (state.blogData[parentKey]) state.blogData[parentKey].subcategories.push(subcategoryName);
         toast(`Subcategory "${subcategoryName}" added`);
       }
       closeModal('category-modal');
