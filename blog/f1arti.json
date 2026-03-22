@@ -2,7 +2,7 @@
   "subcategories": [
     "2026 Season",
     "2025 Season",
-    "General"    
+    "General"
   ],
   "posts": [
     {
@@ -291,6 +291,15 @@
       "excerpt": "It's finally time to race, the stage is set and the start of the new era has begun! This race we saw...",
       "thumbnail": "https://content.beyondmebtw.com/thumbnails/f1/2026/aus26.webp",
       "link": "https://medium.com/@beyondmebtw/the-2026-australian-grand-prix-recap-a-new-era-begins-7f36bf830037",
+      "subcategory": "2026 Season"
+    },
+    {
+      "uid": "f12026re_2.1",
+      "title": "The 2026 Chinese Sprint Race Recap",
+      "date": "2026-03-22",
+      "excerpt": "The first sprint delivered a thrilling race in a short amount of time, with serious battles and harsh moments, we saw...",
+      "thumbnail": "https://content.beyondmebtw.com/thumbnails/f1/2026/2.1.webp",
+      "link": "https://medium.com/@beyondmebtw/the-2026-chinese-sprint-race-recap-c466017c8a4d",
       "subcategory": "2026 Season"
     }
   ]
