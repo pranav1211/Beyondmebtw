@@ -17,39 +17,12 @@ const categoryJsonFiles = {
     'tech': 'https://beyondmebtw.com/blog/techart.json'
 };
 
-// Cache TTL: 1 hour in milliseconds
-const CACHE_TTL = 60 * 60 * 1000;
-
-// Fetch with localStorage cache. Returns parsed JSON.
-// On cache hit: instant, no network request.
-// On cache miss or expired: fetches, stores result, returns data.
 async function fetchWithCache(url) {
-    const cacheKey = 'blog_cache_' + url;
-    try {
-        const cached = sessionStorage.getItem(cacheKey);
-        if (cached) {
-            const { data, timestamp } = JSON.parse(cached);
-            if (Date.now() - timestamp < CACHE_TTL) {
-                return data;
-            }
-        }
-    } catch (_) {
-        // Corrupt cache entry — fall through to network fetch
-    }
-
     const response = await fetch(url);
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const data = await response.json();
-
-    try {
-        sessionStorage.setItem(cacheKey, JSON.stringify({ data, timestamp: Date.now() }));
-    } catch (_) {
-        // sessionStorage may be unavailable — ignore
-    }
-
-    return data;
+    return response.json();
 }
 
 // Subcategory mappings — built dynamically from JSON after load
@@ -432,11 +405,9 @@ function renderPosts() {
     displayedPosts.push(...postsToAdd);
 
     // Add new posts to grid
-    postsToAdd.forEach((post, index) => {
-        setTimeout(() => {
-            const postCard = createPostCard(post);
-            postsGrid.appendChild(postCard);
-        }, index * 100);
+    postsToAdd.forEach((post) => {
+        const postCard = createPostCard(post);
+        postsGrid.appendChild(postCard);
     });
 
     // Update load more button
@@ -516,12 +487,8 @@ function loadMorePosts() {
 
     showLoadingSpinner();
     currentPage++;
-
-    // Simulate loading delay for better UX
-    setTimeout(() => {
-        renderPosts();
-        hideLoadingSpinner();
-    }, 500);
+    renderPosts();
+    hideLoadingSpinner();
 }
 
 // Update load more button
