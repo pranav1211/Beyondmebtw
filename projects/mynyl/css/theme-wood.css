@@ -1,0 +1,48 @@
+/* ── Wood Theme ─────────────────────────────────────────────
+   Warm amber / dark mahogany palette.
+   To create a new theme: duplicate this file, rename it,
+   and swap in your own colour variables below.
+   ──────────────────────────────────────────────────────── */
+
+html, body { background: #100800 }
+
+/* upload zone */
+.upload-label { color: rgba(245,220,170,0.3) }
+.upload-btn {
+  background: rgba(0,0,0,0.5);
+  border-color: rgba(200,140,60,0.2);
+  color: rgba(245,220,170,0.6);
+}
+.upload-btn:hover {
+  border-color: rgba(200,140,60,0.55);
+  color: rgba(245,220,170,1);
+  background: rgba(200,100,30,0.15);
+}
+
+/* control buttons */
+.ctrl-btn {
+  background: rgba(0,0,0,0.4);
+  border-color: rgba(200,140,60,0.2);
+  color: rgba(245,220,170,0.8);
+}
+.ctrl-btn:hover {
+  background: rgba(200,100,30,0.2);
+  border-color: rgba(200,140,60,0.5);
+  color: #f5dcaa;
+}
+.ctrl-btn.active {
+  background: rgba(200,100,30,0.3);
+  border-color: rgba(200,140,60,0.7);
+  color: #f0a060;
+}
+
+/* volume */
+.vol-icon     { color: rgba(245,220,170,0.3) }
+.slider-track { background: rgba(255,255,255,0.08) }
+.slider-fill  { background: rgba(200,120,40,0.7) }
+.slider-thumb { background: #d4b080 }
+
+/* misc text */
+.kbd-hint     { color: rgba(245,220,170,0.15) }
+.track-title  { color: rgba(245,220,170,0.7) }
+.track-artist { color: rgba(245,220,170,0.35) }

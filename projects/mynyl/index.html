@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Vinyl</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/theme-wood.css">
+  </head>
+  <body>
+    <canvas id="bg-canvas"></canvas>
+    <canvas id="record-canvas"></canvas>
+    <canvas id="arm-canvas"></canvas>
+
+    <div class="bottom-bar">
+      <div class="upload-zone">
+        <span class="upload-label">Load record</span>
+        <button class="upload-btn"
+          onclick="document.getElementById('file-input').click()">Drop file or browse</button>
+        <input type="file" id="file-input" accept="audio/*,.flac,.m4a,.opus,.wma">
+      </div>
+
+      <div class="controls">
+        <div class="ctrl-row">
+          <button class="ctrl-btn sm" id="btn-prev" title="Restart">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+              <rect x="2" y="2" width="2" height="10" rx="1"/>
+              <path d="M11 2L5 7l6 5V2z"/>
+            </svg>
+          </button>
+          <button class="ctrl-btn sm" id="btn-stop" title="Stop">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+              <rect x="2" y="2" width="8" height="8" rx="1"/>
+            </svg>
+          </button>
+          <button class="ctrl-btn lg" id="btn-play" title="Play/Pause (Space)">
+            <svg id="play-icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M5 3l13 7-13 7V3z"/>
+            </svg>
+          </button>
+          <button class="ctrl-btn sm" id="btn-fwd" title="Forward 10s (→)">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+              <rect x="10" y="2" width="2" height="10" rx="1"/>
+              <path d="M3 2l6 5-6 5V2z"/>
+            </svg>
+          </button>
+        </div>
+        <div class="vol-row">
+          <svg class="vol-icon" width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+            <path d="M1 4h2l3-2.5v9L3 8H1V4z"/>
+            <path d="M8 3.5c1 .7 1.5 1.5 1.5 2.5S9 8.8 8 9.5" fill="none" stroke="currentColor" stroke-width="1.2"/>
+          </svg>
+          <div class="slider-track vol-track" id="vol-track">
+            <div class="slider-fill" id="vol-fill" style="width:70%"></div>
+            <div class="slider-thumb" id="vol-thumb" style="left:70%"></div>
+          </div>
+        </div>
+        <div class="kbd-hint">space · ← → seek · ↑ ↓ vol</div>
+      </div>
+
+      <div class="track-info">
+        <div class="track-title" id="track-title">—</div>
+        <div class="track-artist" id="track-artist"></div>
+      </div>
+    </div>
+
+    <audio id="audio-el"></audio>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/render.js"></script>
+    <script src="js/player.js"></script>
+  </body>
+</html>

@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0 }
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  font-family: 'Space Mono', monospace;
+  user-select: none;
+}
+body { position: relative }
+
+#bg-canvas     { position: absolute; inset: 0; z-index: 0; pointer-events: none }
+#record-canvas { position: absolute; z-index: 1; border-radius: 50%; pointer-events: none }
+#arm-canvas    { position: absolute; z-index: 2; pointer-events: all; cursor: grab }
+#arm-canvas.dragging { cursor: grabbing }
+
+.bottom-bar {
+  position: absolute; bottom: 32px; left: 0; right: 0;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  padding: 0 48px; z-index: 10;
+}
+
+.upload-zone { display: flex; flex-direction: column; align-items: flex-start; gap: 6px }
+.upload-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase }
+.upload-btn {
+  border: 1px solid transparent; border-radius: 4px; padding: 8px 16px;
+  font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
+  cursor: pointer; transition: all 0.2s;
+}
+#file-input { display: none }
+
+.controls { display: flex; flex-direction: column; align-items: center; gap: 10px }
+.ctrl-row  { display: flex; align-items: center; gap: 12px }
+.ctrl-btn {
+  border: 1px solid transparent; border-radius: 50%;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s; flex-shrink: 0;
+}
+.ctrl-btn:hover  { transform: translateY(-1px) }
+.ctrl-btn:active { transform: scale(0.95) }
+.ctrl-btn.sm { width: 36px; height: 36px }
+.ctrl-btn.lg { width: 50px; height: 50px }
+
+.vol-row   { display: flex; align-items: center; gap: 8px }
+.vol-icon  { flex-shrink: 0 }
+.slider-track  { height: 2px; border-radius: 2px; cursor: pointer; position: relative }
+.vol-track     { width: 100px }
+.slider-fill   { height: 100%; border-radius: 2px; pointer-events: none }
+.slider-thumb  {
+  width: 10px; height: 10px; border-radius: 50%;
+  position: absolute; top: 50%; transform: translate(-50%, -50%); pointer-events: none;
+}
+
+.kbd-hint    { font-size: 8px; letter-spacing: 0.08em; text-transform: uppercase; text-align: center }
+
+.track-info   { display: flex; flex-direction: column; align-items: flex-end; gap: 3px }
+.track-title  {
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: right;
+}
+.track-artist { font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; text-align: right }
