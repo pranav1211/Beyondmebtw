@@ -230,5 +230,17 @@
       "Levenshtein Distance",
       "Client-side Processing"
     ]
+  },
+  {
+    "id": 12,
+    "title": "Mynyl",
+    "category": "Web Development",
+    "shortDescription": "An audio player in the style of a vinyl on the web",
+    "fullDescription": "",
+    "logo": "https://content.beyondmebtw.com/assets/bmb_logos/bmblogo.png",
+    "link": "https://mynyl.beyondmebtw.com",
+    "githubLink": "https://github.com/pranav1211/mynyl",
+    "tags": [],
+    "images": []
   }
 ]
