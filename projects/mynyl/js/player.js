@@ -9,14 +9,127 @@ const SPIN_UP_MS = 2000;
 let armAngle, targetArmAngle;
 let isDragging = false;
 let pendingTimer = null;
-let songIsOver = false;       // true between song-end and next play
-let loadedFile  = null;       // keep reference for metadata / album art re-read
+let songIsOver = false;
+let loadedFile  = null;
 
 function initArmAngles() {
   armAngle = GEO.aParked;
   targetArmAngle = GEO.aParked;
 }
 initArmAngles();
+
+// ─── disk speed (visual only — does not affect arm/seek) ───
+let spinRPM = 33;
+
+function setSpinRPM(val) {
+  spinRPM = Math.max(1, Math.min(200, Math.round(val) || 33));
+  document.getElementById('speed-val').value = spinRPM;
+}
+
+document.getElementById('speed-dec').addEventListener('click', () => setSpinRPM(spinRPM - 1));
+document.getElementById('speed-inc').addEventListener('click', () => setSpinRPM(spinRPM + 1));
+document.getElementById('speed-val').addEventListener('change', e => {
+  setSpinRPM(parseInt(e.target.value, 10));
+});
+
+// ─── queue ──────────────────────────────────────────────────
+const queueFiles = [];
+let   queueIdx   = -1;  // index of currently loaded track (-1 = none)
+
+function isAudioFile(f) {
+  return f.type.startsWith('audio/') ||
+    /\.(mp3|flac|m4a|ogg|wav|aac|opus|wma)$/i.test(f.name);
+}
+
+function queueRender() {
+  const list  = document.getElementById('queue-list');
+  const count = document.getElementById('queue-count');
+  const n = queueFiles.length;
+  count.textContent = n + (n === 1 ? ' track' : ' tracks');
+  list.innerHTML = '';
+  queueFiles.forEach((f, i) => {
+    const div = document.createElement('div');
+    div.className = 'queue-item' + (i === queueIdx ? ' active' : '');
+
+    const num = document.createElement('span');
+    num.className = 'queue-num';
+    num.textContent = i + 1;
+
+    const nm = document.createElement('span');
+    nm.className = 'queue-name';
+    nm.textContent = f.name.replace(/\.[^.]+$/, '');
+
+    const rm = document.createElement('button');
+    rm.className = 'queue-remove';
+    rm.title = 'Remove';
+    rm.textContent = '×';
+    rm.addEventListener('click', e => { e.stopPropagation(); queueRemove(i); });
+
+    div.append(num, nm, rm);
+    div.addEventListener('click', () => queuePlay(i));
+    list.appendChild(div);
+  });
+}
+
+function queueAdd(file) {
+  if (!isAudioFile(file)) return;
+  queueFiles.push(file);
+  if (queueIdx === -1) {
+    queueIdx = 0;
+    loadFile(queueFiles[0]);
+  }
+  queueRender();
+}
+
+function queuePlay(idx) {
+  if (!queueFiles[idx]) return;
+  queueIdx = idx;
+  queueRender();
+  loadFile(queueFiles[idx], () => {
+    armAngle = GEO.aOuter;
+    targetArmAngle = GEO.aOuter;
+    setupAudio();
+    startSpinUp();
+  });
+}
+
+function queueRemove(idx) {
+  queueFiles.splice(idx, 1);
+  if (queueIdx === idx) {
+    stopAndReset();
+    if (queueFiles.length > 0) {
+      const next = Math.min(idx, queueFiles.length - 1);
+      queueIdx = next;
+      loadFile(queueFiles[next]);
+    } else {
+      queueIdx = -1;
+      hasFile = false;
+      audio.src = '';
+      window._trackTitle = '';
+      window._trackArtist = '';
+      window._labelImage = null;
+      window._artworkUrl = null;
+      document.getElementById('track-title').textContent = '—';
+      document.getElementById('track-artist').textContent = '';
+    }
+  } else if (queueIdx > idx) {
+    queueIdx--;
+  }
+  queueRender();
+}
+
+function queueAdvance() {
+  if (queueIdx < 0 || queueIdx >= queueFiles.length - 1) return;
+  const next = queueIdx + 1;
+  queueIdx = next;
+  queueRender();
+  loadFile(queueFiles[next], () => {
+    armAngle = GEO.aOuter;
+    targetArmAngle = GEO.aOuter;
+    setupAudio();
+    startSpinUp();
+  });
+}
 
 // ─── MediaSession ───────────────────────────────────────────
 function updateMediaSession(playing) {
@@ -39,25 +152,27 @@ if ('mediaSession' in navigator) {
   });
 }
 
-// ─── song-end handler (persistent, shared by ended event + manual skip) ────
+// ─── song-end handler ───────────────────────────────────────
 function handleSongEnd() {
-  if (songIsOver) return; // already handled
-  if (!isPlaying && !isSpinningUp) return; // nothing to stop
+  if (songIsOver) return;
+  if (!isPlaying && !isSpinningUp) return;
   songIsOver = true;
 
   if (pendingTimer) { clearTimeout(pendingTimer); pendingTimer = null; }
   isSpinningUp = false;
 
-  setPlayState(false, 500);   // music fades out
-  fadeCrackleIn(500);         // crackle fades in simultaneously
+  setPlayState(false, 500);
+  fadeCrackleIn(500);
 
-  // 2 s of crackle then fade out
-  setTimeout(() => fadeCrackleOut(600), 2500);
+  // 2s crackle, then fade out and advance queue
+  setTimeout(() => {
+    fadeCrackleOut(600);
+    setTimeout(queueAdvance, 700);
+  }, 2500);
 
   targetArmAngle = GEO.aParked;
 }
 
-// register once on the audio element (not {once: true} so replay works)
 audio.addEventListener('ended', handleSongEnd);
 
 // ─── play / pause ──────────────────────────────────────────
@@ -88,7 +203,6 @@ function stopAndReset() {
 
   if (isPlaying) setPlayState(false, 200);
 
-  // kill crackle immediately
   if (audioCtx && crackleGain) {
     const t = audioCtx.currentTime;
     crackleGain.gain.cancelScheduledValues(t);
@@ -105,7 +219,6 @@ document.getElementById('btn-play').addEventListener('click', () => {
   setupAudio();
 
   if (isSpinningUp) {
-    // skip the 2-s wait and play immediately
     clearTimeout(pendingTimer); pendingTimer = null; isSpinningUp = false;
     fadeCrackleOut(400);
     setPlayState(true, 400);
@@ -117,7 +230,6 @@ document.getElementById('btn-play').addEventListener('click', () => {
     return;
   }
 
-  // starting play — if song is over or at end, rewind first
   if (songIsOver || (duration > 0 && audio.currentTime >= duration - 0.1)) {
     audio.currentTime = 0;
     currentTime = 0;
@@ -138,7 +250,6 @@ document.getElementById('btn-prev').addEventListener('click', () => {
   currentTime = 0;
   targetArmAngle = GEO.aOuter;
   songIsOver = false;
-  // if playing, keep playing from the start
 });
 
 document.getElementById('btn-fwd').addEventListener('click', () => {
@@ -168,21 +279,19 @@ volTrack.addEventListener('mousedown', e => {
 });
 setVol(0.7);
 
-// ─── spin-up (2 s crackle → music starts) ──────────────────
+// ─── spin-up (2s crackle → music starts) ───────────────────
 function startSpinUp() {
   songIsOver   = false;
   isSpinningUp = true;
   spinUpStart  = performance.now();
   if (pendingTimer) clearTimeout(pendingTimer);
 
-  // crackle on immediately
   if (audioCtx && crackleGain) {
     const t = audioCtx.currentTime;
     crackleGain.gain.cancelScheduledValues(t);
     crackleGain.gain.setValueAtTime(0.16, t);
   }
 
-  // after 2 s: crackle fades out, music fades in
   pendingTimer = setTimeout(() => {
     isSpinningUp = false;
     pendingTimer = null;
@@ -212,16 +321,13 @@ function loadAlbumArt(file) {
 }
 
 // ─── file loading ──────────────────────────────────────────
-function loadFile(file) {
+function loadFile(file, onReady) {
   if (!file) return;
-  const isAudio = file.type.startsWith('audio/') ||
-    /\.(mp3|flac|m4a|ogg|wav|aac|opus|wma)$/i.test(file.name);
-  if (!isAudio) return;
 
   setupAudio();
-  stopAndReset(); // clean slate
+  stopAndReset();
 
-  loadedFile = file; // store for replay / re-read
+  loadedFile = file;
 
   const url = URL.createObjectURL(file);
   audio.src = url;
@@ -242,18 +348,21 @@ function loadFile(file) {
     armAngle       = GEO.aParked;
     targetArmAngle = GEO.aParked;
     updateMediaSession(false);
+    if (onReady) onReady();
   }, { once: true });
 
   audio.addEventListener('timeupdate', () => { currentTime = audio.currentTime; });
 }
 
+// ─── file input / drag-drop ────────────────────────────────
 document.getElementById('file-input').addEventListener('change', e => {
-  if (e.target.files[0]) loadFile(e.target.files[0]);
+  [...e.target.files].forEach(queueAdd);
+  e.target.value = '';
 });
 document.addEventListener('dragover', e => e.preventDefault());
 document.addEventListener('drop', e => {
   e.preventDefault();
-  if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
+  [...e.dataTransfer.files].forEach(queueAdd);
 });
 
 // ─── arm drag — drop onto record to start ──────────────────
@@ -333,20 +442,19 @@ function animate(ts) {
   const dt = lastRaf ? Math.min((ts - lastRaf) / 1000, 0.05) : 0;
   lastRaf = ts;
 
-  // record spin — only while spinning up or actually playing
+  // record spin — speed driven by spinRPM (visual only, arm uses currentTime)
   let spinFactor = 0;
   if (isSpinningUp && spinUpStart) {
     spinFactor = Math.min(1, (ts - spinUpStart) / SPIN_UP_MS);
     spinFactor = spinFactor * spinFactor; // ease-in quad
   }
   if (isPlaying) spinFactor = 1;
-  if (spinFactor > 0) rotAngle = (rotAngle + 200 * spinFactor * dt) % 360;
+  if (spinFactor > 0) rotAngle = (rotAngle + spinRPM * 6 * spinFactor * dt) % 360;
 
   // arm tracking
   if (!isDragging) {
     if (hasFile && duration > 0) {
       if (isPlaying) {
-        // clamp so arm never goes past aInner
         const p = Math.max(0, Math.min(1, currentTime / duration));
         targetArmAngle = progressToAngle(p);
       }
@@ -364,3 +472,25 @@ function animate(ts) {
 }
 
 requestAnimationFrame(animate);
+
+// ─── cursor auto-hide (5s idle) ────────────────────────────
+let cursorTimer = null;
+function showCursor() {
+  document.body.style.cursor = '';
+  aCv.style.cursor = isDragging ? 'grabbing' : 'grab';
+  clearTimeout(cursorTimer);
+  cursorTimer = setTimeout(() => {
+    document.body.style.cursor = 'none';
+    aCv.style.cursor = 'none';
+  }, 5000);
+}
+document.addEventListener('mousemove', showCursor, { passive: true });
+showCursor();
+
+// ─── eye toggle ────────────────────────────────────────────
+document.getElementById('eye-btn').addEventListener('click', () => {
+  document.body.classList.toggle('ui-hidden');
+});
+
+// ─── init ──────────────────────────────────────────────────
+queueRender();

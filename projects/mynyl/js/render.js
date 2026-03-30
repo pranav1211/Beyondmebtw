@@ -71,9 +71,51 @@ function computeArmAngles() {
 }
 
 let GEO;
+
+// ─── theme (reads CSS custom properties set in the theme file) ──
+let THEME = {};
+function readTheme() {
+  const s = getComputedStyle(document.documentElement);
+  const v = n => s.getPropertyValue(n).trim();
+  THEME = {
+    // background
+    bgCenterRgb:    v('--bg-center-rgb')    || '72,30,6',
+    bgMidRgb:       v('--bg-mid-rgb')       || '35,12,3',
+    // vinyl disc
+    vinylDisc:      v('--vinyl-disc')       || '#0f0f0f',
+    vinylEdge:      v('--vinyl-edge')       || 'rgba(255,255,255,0.06)',
+    vinylGrooveRgb: v('--vinyl-groove-rgb') || '255,255,255',
+    vinylSheen:     parseFloat(v('--vinyl-sheen') || '0.055'),
+    // vinyl label
+    labelStop0:     v('--vinyl-label-0')    || '#f8df90',
+    labelStop55:    v('--vinyl-label-55')   || '#e8c87a',
+    labelStop100:   v('--vinyl-label-100')  || '#c09040',
+    labelRing:      v('--vinyl-label-ring') || 'rgba(150,100,30,0.3)',
+    // tonearm tube
+    armColor0:      v('--arm-0')            || '#1c1008',
+    armColor25:     v('--arm-25')           || '#6a5030',
+    armColor60:     v('--arm-60')           || '#a88050',
+    armColor100:    v('--arm-100')          || '#584020',
+    // headshell
+    headshell:      v('--arm-headshell')    || '#a08050',
+    // needle
+    needle:         v('--arm-needle')       || 'rgba(220,210,180,0.7)',
+    needleTip:      v('--arm-needle-tip')   || '#ddd0a8',
+    // counterweight
+    cwColor0:       v('--arm-cw-0')         || '#706050',
+    cwColor55:      v('--arm-cw-55')        || '#302818',
+    cwColor100:     v('--arm-cw-100')       || '#140e06',
+    // pivot bearing
+    pivotColor0:    v('--arm-pivot-0')      || '#c0b080',
+    pivotColor50:   v('--arm-pivot-50')     || '#504030',
+    pivotColor100:  v('--arm-pivot-100')    || '#141008',
+  };
+}
+
 layout();
 GEO = computeArmAngles();
-window.addEventListener('resize', () => { layout(); GEO = computeArmAngles(); });
+readTheme();
+window.addEventListener('resize', () => { layout(); GEO = computeArmAngles(); readTheme(); });
 
 // ─── geometry helpers ──────────────────────────────────────
 function toRad(a) { return a * Math.PI / 180; }
@@ -102,15 +144,17 @@ function tipOnGroove(angle) {
 function drawBg(ts) {
   const bw = bgCv.width, bh = bgCv.height;
   bgCtx.clearRect(0, 0, bw, bh);
-  const t = ts * 0.00025;
+  const t  = ts * 0.00025;
+  const c1 = THEME.bgCenterRgb;
+  const c2 = THEME.bgMidRgb;
   const g = bgCtx.createRadialGradient(
     bw * (0.5 + 0.07 * Math.sin(t)),       bh * (0.5 + 0.05 * Math.cos(t * 0.7)), 0,
     bw * 0.5, bh * 0.5, bw * 0.9
   );
-  g.addColorStop(0,    `rgba(72,30,6,${0.7 + 0.07 * Math.sin(t * 1.2)})`);
-  g.addColorStop(0.4,  `rgba(35,12,3,${0.8 + 0.05 * Math.cos(t)})`);
-  g.addColorStop(0.75, '#0e0600');
-  g.addColorStop(1,    '#080400');
+  g.addColorStop(0,    `rgba(${c1},${0.7 + 0.07 * Math.sin(t * 1.2)})`);
+  g.addColorStop(0.4,  `rgba(${c2},${0.8 + 0.05 * Math.cos(t)})`);
+  g.addColorStop(0.75, '#090400');
+  g.addColorStop(1,    '#060300');
   bgCtx.fillStyle = g;
   bgCtx.fillRect(0, 0, bw, bh);
 
@@ -118,8 +162,8 @@ function drawBg(ts) {
     bw * (0.25 + 0.10 * Math.sin(t * 0.5 + 1)), bh * (0.72 + 0.07 * Math.cos(t * 0.4)), 0,
     bw * 0.25, bh * 0.72, bw * 0.45
   );
-  g2.addColorStop(0, `rgba(90,35,8,${0.22 + 0.06 * Math.sin(t * 0.9)})`);
-  g2.addColorStop(1, 'rgba(90,35,8,0)');
+  g2.addColorStop(0, `rgba(${c1},${0.20 + 0.06 * Math.sin(t * 0.9)})`);
+  g2.addColorStop(1, `rgba(${c1},0)`);
   bgCtx.fillStyle = g2;
   bgCtx.fillRect(0, 0, bw, bh);
 }
@@ -134,13 +178,13 @@ function drawRecord(angle) {
   // disc
   rCtx.beginPath();
   rCtx.arc(CX, CY, R - 1, 0, Math.PI * 2);
-  rCtx.fillStyle = '#0f0f0f';
+  rCtx.fillStyle = THEME.vinylDisc;
   rCtx.fill();
 
   // edge ring
   rCtx.beginPath();
   rCtx.arc(CX, CY, R - 1, 0, Math.PI * 2);
-  rCtx.strokeStyle = 'rgba(255,255,255,0.06)';
+  rCtx.strokeStyle = THEME.vinylEdge;
   rCtx.lineWidth = 2;
   rCtx.stroke();
 
@@ -151,7 +195,7 @@ function drawRecord(angle) {
     const base  = 0.04 + 0.035 * Math.sin(gr * 0.35 + angle * 0.07);
     rCtx.beginPath();
     rCtx.arc(CX, CY, gr, 0, Math.PI * 2);
-    rCtx.strokeStyle = `rgba(255,255,255,${Math.max(0, base + pulse)})`;
+    rCtx.strokeStyle = `rgba(${THEME.vinylGrooveRgb},${Math.max(0, base + pulse)})`;
     rCtx.lineWidth = 0.75;
     rCtx.stroke();
   }
@@ -163,7 +207,7 @@ function drawRecord(angle) {
   const sg = rCtx.createLinearGradient(-R, 0, R, 0);
   sg.addColorStop(0,    'rgba(255,255,255,0)');
   sg.addColorStop(0.44, 'rgba(255,255,255,0)');
-  sg.addColorStop(0.5,  'rgba(255,255,255,0.055)');
+  sg.addColorStop(0.5,  `rgba(255,255,255,${THEME.vinylSheen})`);
   sg.addColorStop(0.56, 'rgba(255,255,255,0)');
   sg.addColorStop(1,    'rgba(255,255,255,0)');
   rCtx.beginPath(); rCtx.arc(0, 0, R - 1, 0, Math.PI * 2);
@@ -176,42 +220,29 @@ function drawRecord(angle) {
   rCtx.translate(CX, CY);
   rCtx.rotate(angle);
 
-  // background: gradient unless album art is loaded
+  // label: gradient always shown; album art overlaid when available
   const lg = rCtx.createRadialGradient(-lR * 0.15, -lR * 0.15, 0, 0, 0, lR);
-  lg.addColorStop(0,    '#f8df90');
-  lg.addColorStop(0.55, '#e8c87a');
-  lg.addColorStop(1,    '#c09040');
+  lg.addColorStop(0,    THEME.labelStop0);
+  lg.addColorStop(0.55, THEME.labelStop55);
+  lg.addColorStop(1,    THEME.labelStop100);
   rCtx.beginPath(); rCtx.arc(0, 0, lR, 0, Math.PI * 2);
   rCtx.fillStyle = window._labelImage ? '#1a0a04' : lg;
   rCtx.fill();
-  rCtx.strokeStyle = 'rgba(0,0,0,0.25)'; rCtx.lineWidth = 0.8; rCtx.stroke();
+  rCtx.strokeStyle = 'rgba(0,0,0,0.28)'; rCtx.lineWidth = 0.8; rCtx.stroke();
 
   for (const fr of [0.36, 0.56, 0.78]) {
     rCtx.beginPath(); rCtx.arc(0, 0, lR * fr, 0, Math.PI * 2);
-    rCtx.strokeStyle = 'rgba(150,100,30,0.3)'; rCtx.lineWidth = 0.5; rCtx.stroke();
+    rCtx.strokeStyle = THEME.labelRing; rCtx.lineWidth = 0.5; rCtx.stroke();
   }
 
   // counter-rotate so content stays upright
   rCtx.rotate(-angle);
 
   if (window._labelImage) {
-    // album art clipped to label circle
     rCtx.save();
     rCtx.beginPath(); rCtx.arc(0, 0, lR, 0, Math.PI * 2); rCtx.clip();
     rCtx.drawImage(window._labelImage, -lR, -lR, lR * 2, lR * 2);
     rCtx.restore();
-  } else if (hasFile && window._trackTitle) {
-    const fs1 = Math.max(8, Math.round(lR * 0.27));
-    const fs2 = Math.max(7, Math.round(lR * 0.19));
-    rCtx.fillStyle = '#2a1a08';
-    rCtx.font = `700 ${fs1}px Space Mono,monospace`;
-    rCtx.textAlign = 'center'; rCtx.textBaseline = 'middle';
-    rCtx.fillText((window._trackTitle || '').substring(0, 11), 0, -lR * 0.13);
-    if (window._trackArtist) {
-      rCtx.font = `${fs2}px Space Mono,monospace`;
-      rCtx.fillStyle = '#6a3a10';
-      rCtx.fillText((window._trackArtist).substring(0, 13), 0, lR * 0.27);
-    }
   }
   rCtx.restore();
 
@@ -270,10 +301,10 @@ function drawArm(angle) {
   // arm tube
   aCtx.beginPath(); aCtx.moveTo(cwX, cwY); aCtx.lineTo(tipX, tipY);
   const ag = aCtx.createLinearGradient(cwX, cwY, tipX, tipY);
-  ag.addColorStop(0,    '#1c1008');
-  ag.addColorStop(0.25, '#6a5030');
-  ag.addColorStop(0.6,  '#a88050');
-  ag.addColorStop(1,    '#584020');
+  ag.addColorStop(0,    THEME.armColor0);
+  ag.addColorStop(0.25, THEME.armColor25);
+  ag.addColorStop(0.6,  THEME.armColor60);
+  ag.addColorStop(1,    THEME.armColor100);
   aCtx.strokeStyle = ag;
   aCtx.lineWidth   = Math.max(5, ARM_LEN * 0.022);
   aCtx.lineCap     = 'round';
@@ -281,7 +312,7 @@ function drawArm(angle) {
 
   // highlight stripe
   aCtx.beginPath(); aCtx.moveTo(cwX, cwY); aCtx.lineTo(tipX, tipY);
-  aCtx.strokeStyle = 'rgba(255,255,255,0.1)';
+  aCtx.strokeStyle = 'rgba(255,255,255,0.08)';
   aCtx.lineWidth   = Math.max(1.5, ARM_LEN * 0.005);
   aCtx.stroke();
 
@@ -289,16 +320,16 @@ function drawArm(angle) {
   aCtx.shadowBlur = 6;
   const cwR = Math.max(7, ARM_LEN * 0.038);
   const cg  = aCtx.createRadialGradient(cwX - 2, cwY - 2, 1, cwX, cwY, cwR);
-  cg.addColorStop(0,    '#706050');
-  cg.addColorStop(0.55, '#302818');
-  cg.addColorStop(1,    '#140e06');
+  cg.addColorStop(0,    THEME.cwColor0);
+  cg.addColorStop(0.55, THEME.cwColor55);
+  cg.addColorStop(1,    THEME.cwColor100);
   aCtx.beginPath(); aCtx.arc(cwX, cwY, cwR, 0, Math.PI * 2);
   aCtx.fillStyle = cg; aCtx.fill();
-  aCtx.strokeStyle = 'rgba(255,255,255,0.08)'; aCtx.lineWidth = 0.8; aCtx.stroke();
+  aCtx.strokeStyle = 'rgba(255,255,255,0.07)'; aCtx.lineWidth = 0.8; aCtx.stroke();
 
   // headshell
   aCtx.beginPath(); aCtx.moveTo(tipX, tipY); aCtx.lineTo(shX, shY);
-  aCtx.strokeStyle = '#a08050';
+  aCtx.strokeStyle = THEME.headshell;
   aCtx.lineWidth   = Math.max(4, ARM_LEN * 0.016);
   aCtx.lineCap     = 'round';
   aCtx.stroke();
@@ -308,25 +339,25 @@ function drawArm(angle) {
   const nx = shX + Math.cos(sr + Math.PI / 2) * needleLen;
   const ny = shY + Math.sin(sr + Math.PI / 2) * needleLen;
   aCtx.beginPath(); aCtx.moveTo(shX, shY); aCtx.lineTo(nx, ny);
-  aCtx.strokeStyle = 'rgba(220,210,180,0.7)'; aCtx.lineWidth = 1.5; aCtx.stroke();
+  aCtx.strokeStyle = THEME.needle; aCtx.lineWidth = 1.5; aCtx.stroke();
 
   // stylus tip dot
   aCtx.beginPath(); aCtx.arc(nx, ny, Math.max(2.5, ARM_LEN * 0.007), 0, Math.PI * 2);
-  aCtx.fillStyle = '#ddd0a8'; aCtx.fill();
+  aCtx.fillStyle = THEME.needleTip; aCtx.fill();
 
   // pivot bearing
   const pivR = Math.max(7, ARM_LEN * 0.03);
   const pg   = aCtx.createRadialGradient(PIV_X - 3, PIV_Y - 3, 1, PIV_X, PIV_Y, pivR);
-  pg.addColorStop(0,   '#c0b080');
-  pg.addColorStop(0.5, '#504030');
-  pg.addColorStop(1,   '#141008');
+  pg.addColorStop(0,   THEME.pivotColor0);
+  pg.addColorStop(0.5, THEME.pivotColor50);
+  pg.addColorStop(1,   THEME.pivotColor100);
   aCtx.beginPath(); aCtx.arc(PIV_X, PIV_Y, pivR, 0, Math.PI * 2);
   aCtx.fillStyle = pg; aCtx.fill();
-  aCtx.strokeStyle = 'rgba(255,255,255,0.18)'; aCtx.lineWidth = 1; aCtx.stroke();
+  aCtx.strokeStyle = 'rgba(255,255,255,0.15)'; aCtx.lineWidth = 1; aCtx.stroke();
 
   // inner pivot dot
   aCtx.beginPath(); aCtx.arc(PIV_X, PIV_Y, pivR * 0.3, 0, Math.PI * 2);
-  aCtx.fillStyle = 'rgba(0,0,0,0.6)'; aCtx.fill();
+  aCtx.fillStyle = 'rgba(0,0,0,0.65)'; aCtx.fill();
 
   aCtx.restore();
 }
