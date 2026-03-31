@@ -1,0 +1,39 @@
+:root {
+  /* Record style: classic | etched | minimal | splatter */
+  --vinyl-style: classic;
+  --vinyl-disc: #0f0f0f;
+  --vinyl-edge: rgba(255,255,255,0.06);
+  --vinyl-rim-light: rgba(255,255,255,0.04);
+  --vinyl-rim-shadow: rgba(0,0,0,0.3);
+  --vinyl-shadow-ring: rgba(255,255,255,0.06);
+  --vinyl-drop-shadow: rgba(0,0,0,0.2);
+  --vinyl-drop-shadow-blur: 18;
+  --vinyl-drop-shadow-offset-y: 10;
+  --vinyl-groove-rgb: 255,255,255;
+  --vinyl-groove-alpha: 0.05;
+  --vinyl-groove-pulse: 0.05;
+  --vinyl-groove-spacing: 1.5;
+  --vinyl-groove-width: 0.75;
+  --vinyl-groove-start: 0.19;
+  --vinyl-groove-end: 0.91;
+  --vinyl-groove-warp: 0.035;
+  --vinyl-sheen: 0.06;
+  --vinyl-sheen-width: 0.07;
+
+  /* Only used when --vinyl-style: splatter */
+  --vinyl-splatter-color: rgba(255,255,255,0.12);
+  --vinyl-splatter-secondary: rgba(255,255,255,0.07);
+  --vinyl-splatter-count: 24;
+  --vinyl-splatter-size: 0.016;
+
+  /* Center label */
+  --vinyl-label-radius: 0.175;
+  --vinyl-hole-radius: 0.02;
+  --vinyl-label-0: #d4b36f;
+  --vinyl-label-55: #b48b42;
+  --vinyl-label-100: #6d4d1d;
+  --vinyl-label-ring: rgba(0,0,0,0.18);
+  --vinyl-label-stroke: rgba(0,0,0,0.22);
+  --vinyl-label-art-base: #111;
+  --vinyl-hole-fill: #000;
+}

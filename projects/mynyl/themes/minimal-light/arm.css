@@ -1,0 +1,29 @@
+:root {
+  --arm-style: straight;
+  --arm-tube-width: 0.012;
+  --arm-shadow-blur: 18;
+  --arm-shadow-offset-y: 6;
+  --arm-highlight-alpha: 0.38;
+  --arm-0: #fefefe;
+  --arm-25: #edf1f4;
+  --arm-60: #dbe2e8;
+  --arm-100: #c6d0d9;
+  --arm-headshell: #eef3f7;
+  --arm-headshell-length: 0.13;
+  --arm-headshell-width: 0.011;
+  --arm-headshell-bend-deg: -6;
+  --arm-needle: rgba(123,138,153,0.68);
+  --arm-needle-tip: #8a98a6;
+  --arm-needle-width: 1.15;
+  --arm-needle-length: 0.46;
+  --arm-counterweight-radius: 0.028;
+  --arm-counterweight-offset: 0.12;
+  --arm-cw-0: #f3f6f8;
+  --arm-cw-55: #dbe2e9;
+  --arm-cw-100: #bcc7d1;
+  --arm-pivot-radius: 0.026;
+  --arm-pivot-inner-radius: 0.22;
+  --arm-pivot-0: #ffffff;
+  --arm-pivot-50: #dde4eb;
+  --arm-pivot-100: #b9c4cf;
+}

@@ -134,3 +134,58 @@ body.ui-hidden .ui-panel {
 }
 .queue-item:hover .queue-remove { opacity: 0.6 }
 .queue-remove:hover { opacity: 1 !important }
+
+/* ── Theme switcher ─────────────────────────────────────── */
+.theme-switcher {
+  position: absolute;
+  right: 32px;
+  bottom: 28px;
+  z-index: 11;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  transition: opacity 0.3s, transform 0.25s;
+}
+
+body.ui-hidden .theme-switcher {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+}
+
+.theme-switcher-label {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.theme-select {
+  min-width: 146px;
+  padding: 8px 30px 8px 12px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 10px;
+}
+
+@media (max-width: 900px) {
+  .ui-panel {
+    top: 18px;
+    right: 18px;
+    gap: 10px;
+  }
+
+  .theme-switcher {
+    right: 18px;
+    bottom: 18px;
+  }
+}

@@ -1,0 +1,35 @@
+:root {
+  --page-bg: #111;
+  --glass-bg: rgba(8,8,8,0.6);
+  --glass-border: rgba(255,255,255,0.1);
+  --glass-inset: rgba(255,255,255,0.04);
+  --text-main: rgba(255,255,255,0.82);
+  --text-soft: rgba(255,255,255,0.5);
+  --text-faint: rgba(255,255,255,0.24);
+  --accent: #d8b15d;
+  --accent-strong: #f2d28d;
+  --accent-dim: rgba(216,177,93,0.4);
+  --accent-glow: rgba(216,177,93,0.14);
+  --surface-1: rgba(45,45,45,0.92);
+  --surface-2: rgba(18,18,18,0.96);
+  --surface-3: rgba(58,58,58,0.94);
+  --surface-4: rgba(24,24,24,0.98);
+  --border-soft: rgba(255,255,255,0.14);
+  --border-strong: rgba(255,255,255,0.26);
+}
+
+html,
+body { background: var(--page-bg) }
+
+/* Keep these selectors in sync with the app UI. */
+.eye-btn { color: var(--accent-dim) }
+.eye-btn:hover,
+.eye-zone:hover .eye-btn { color: var(--accent-strong) }
+
+.ui-panel {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    0 10px 36px rgba(0,0,0,0.32),
+    0 1px 0 var(--glass-inset) inset;
+}

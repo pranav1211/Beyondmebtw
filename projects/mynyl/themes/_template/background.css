@@ -1,0 +1,32 @@
+:root {
+  /* Core record/arm layout.
+     record scale = portion of min(viewport width, height)
+     pivot offsets = pivot position relative to record center in record radii
+     outer/inner radius = where playback starts/ends on the record
+     outer offsets = point on the outer groove where the arm snaps on drop
+     park offsets = resting point when idle */
+  --player-record-scale: 0.42;
+  --arm-pivot-offset-x: 1.05;
+  --arm-pivot-offset-y: -0.85;
+  --arm-outer-radius: 0.91;
+  --arm-inner-radius: 0.30;
+  --arm-outer-offset-x: -0.10;
+  --arm-outer-offset-y: -0.85;
+  --arm-park-offset-x: 1.20;
+  --arm-park-offset-y: 0.30;
+
+  /* Background canvas */
+  --bg-center-rgb: 72,72,72;
+  --bg-mid-rgb: 28,28,28;
+  --bg-edge-0: #111;
+  --bg-edge-1: #050505;
+  --bg-glow-strength: 1;
+  --bg-drift-x: 0.06;
+  --bg-drift-y: 0.04;
+
+  /* Drag/drop hint overlay */
+  --hint-ring: rgba(255,255,255,0.32);
+  --hint-dot: rgba(255,255,255,0.88);
+  --hint-glow: rgba(255,255,255,0.32);
+  --hint-text: rgba(255,255,255,0.78);
+}

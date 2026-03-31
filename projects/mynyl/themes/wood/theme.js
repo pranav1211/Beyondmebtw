@@ -1,0 +1,2 @@
+window.MYNYL_THEME_MODULES = window.MYNYL_THEME_MODULES || {};
+window.MYNYL_THEME_MODULES.wood = {};

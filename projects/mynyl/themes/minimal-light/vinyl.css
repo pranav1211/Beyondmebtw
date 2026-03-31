@@ -1,0 +1,35 @@
+:root {
+  --vinyl-style: splatter;
+  --vinyl-disc: #fbfbfa;
+  --vinyl-edge: rgba(255,255,255,0.98);
+  --vinyl-rim-light: rgba(255,255,255,0.94);
+  --vinyl-rim-shadow: rgba(74,86,98,0.18);
+  --vinyl-shadow-ring: rgba(202,210,220,0.95);
+  --vinyl-drop-shadow: rgba(112,126,141,0.26);
+  --vinyl-drop-shadow-blur: 28;
+  --vinyl-drop-shadow-offset-y: 16;
+  --vinyl-groove-rgb: 0,0,0;
+  --vinyl-groove-alpha: 0.18;
+  --vinyl-groove-pulse: 0.03;
+  --vinyl-groove-spacing: 1.7;
+  --vinyl-groove-width: 0.95;
+  --vinyl-groove-start: 0.20;
+  --vinyl-groove-end: 0.92;
+  --vinyl-groove-warp: 0.02;
+  --vinyl-sheen: 0.15;
+  --vinyl-sheen-width: 0.11;
+  --vinyl-splatter-color: rgba(214,220,228,0.86);
+  --vinyl-splatter-secondary: rgba(180,190,201,0.58);
+  --vinyl-splatter-count: 42;
+  --vinyl-splatter-size: 0.018;
+
+  --vinyl-label-radius: 0.16;
+  --vinyl-hole-radius: 0.018;
+  --vinyl-label-0: #20252b;
+  --vinyl-label-55: #111418;
+  --vinyl-label-100: #050608;
+  --vinyl-label-ring: rgba(255,255,255,0.08);
+  --vinyl-label-stroke: rgba(255,255,255,0.12);
+  --vinyl-label-art-base: #06080a;
+  --vinyl-hole-fill: #d6dde5;
+}

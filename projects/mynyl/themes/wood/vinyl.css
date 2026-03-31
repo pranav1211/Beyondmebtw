@@ -1,0 +1,29 @@
+:root {
+  /* Record renderer */
+  --vinyl-style: classic;
+  --vinyl-disc: #09090b;
+  --vinyl-edge: rgba(255,255,255,0.045);
+  --vinyl-rim-light: rgba(255,255,255,0.045);
+  --vinyl-rim-shadow: rgba(0,0,0,0.34);
+  --vinyl-groove-rgb: 255,255,255;
+  --vinyl-groove-alpha: 0.04;
+  --vinyl-groove-pulse: 0.06;
+  --vinyl-groove-spacing: 1.5;
+  --vinyl-groove-width: 0.75;
+  --vinyl-groove-start: 0.19;
+  --vinyl-groove-end: 0.91;
+  --vinyl-groove-warp: 0.035;
+  --vinyl-sheen: 0.048;
+  --vinyl-sheen-width: 0.06;
+
+  /* Label */
+  --vinyl-label-radius: 0.175;
+  --vinyl-hole-radius: 0.02;
+  --vinyl-label-0: #f0cf68;
+  --vinyl-label-55: #d4a44a;
+  --vinyl-label-100: #9e6e22;
+  --vinyl-label-ring: rgba(132,82,16,0.40);
+  --vinyl-label-stroke: rgba(0,0,0,0.28);
+  --vinyl-label-art-base: #1a0a04;
+  --vinyl-hole-fill: #0c0805;
+}

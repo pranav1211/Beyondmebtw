@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Vinyl</title>
     <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/theme-wood.css">
+    <link rel="stylesheet" href="themes/wood/theme.css" id="theme-link" data-mynyl-theme>
   </head>
   <body>
     <canvas id="bg-canvas"></canvas>
@@ -98,6 +98,14 @@
           onclick="document.getElementById('file-input').click()">Drop file or browse</button>
         <input type="file" id="file-input" accept="audio/*,.flac,.m4a,.opus,.wma" multiple>
       </div>
+    </div>
+
+    <div class="theme-switcher">
+      <label class="theme-switcher-label" for="theme-select">Theme</label>
+      <select class="theme-select" id="theme-select" aria-label="Choose theme">
+        <option value="wood">Wood</option>
+        <option value="minimal-light">Minimal Light</option>
+      </select>
     </div>
 
     <audio id="audio-el"></audio>

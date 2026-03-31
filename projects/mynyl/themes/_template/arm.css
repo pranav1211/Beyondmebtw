@@ -1,0 +1,31 @@
+:root {
+  /* Built-in arm styles: classic | straight | chunky
+     Use theme.js when you want a fully custom arm shape. */
+  --arm-style: classic;
+  --arm-tube-width: 0.022;
+  --arm-shadow-blur: 14;
+  --arm-shadow-offset-y: 5;
+  --arm-highlight-alpha: 0.08;
+  --arm-0: #161616;
+  --arm-25: #454545;
+  --arm-60: #8b8b8b;
+  --arm-100: #2f2f2f;
+  --arm-headshell: #999;
+  --arm-headshell-length: 0.10;
+  --arm-headshell-width: 0.016;
+  --arm-headshell-bend-deg: -18;
+  --arm-needle: rgba(220,220,220,0.7);
+  --arm-needle-tip: #eee;
+  --arm-needle-width: 1.5;
+  --arm-needle-length: 0.55;
+  --arm-counterweight-radius: 0.038;
+  --arm-counterweight-offset: 0.15;
+  --arm-cw-0: #737373;
+  --arm-cw-55: #2e2e2e;
+  --arm-cw-100: #111;
+  --arm-pivot-radius: 0.03;
+  --arm-pivot-inner-radius: 0.30;
+  --arm-pivot-0: #d0d0d0;
+  --arm-pivot-50: #5b5b5b;
+  --arm-pivot-100: #111;
+}

@@ -1,0 +1,8 @@
+/* Theme entrypoint.
+   Keep the active theme link pointed at this file shape.
+   Split CSS so an AI can edit one concern at a time. */
+
+@import url('./background.css');
+@import url('./vinyl.css');
+@import url('./arm.css');
+@import url('./ui.css');
