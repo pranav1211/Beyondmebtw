@@ -242,5 +242,17 @@
     "githubLink": "https://github.com/pranav1211/mynyl",
     "tags": [],
     "images": []
+  },
+  {
+    "id": 13,
+    "title": "Beyond Money",
+    "category": "Web Development",
+    "shortDescription": "",
+    "fullDescription": "",
+    "logo": "https://content.beyondmebtw.com/assets/bmb_logos/bmbmoney.png",
+    "link": "",
+    "githubLink": "",
+    "tags": [],
+    "images": []
   }
 ]
