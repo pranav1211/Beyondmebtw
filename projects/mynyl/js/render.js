@@ -17,6 +17,7 @@ let ACTIVE_THEME_NAME = 'wood';
 let ACTIVE_THEME_MODULE = {};
 const themeModules = window.MYNYL_THEME_MODULES || (window.MYNYL_THEME_MODULES = {});
 let themeModuleLoader = null;
+const RECORD_CANVAS_PAD_RATIO = 0.26;
 
 function readTheme() {
   const s = getComputedStyle(document.documentElement);
@@ -121,11 +122,13 @@ function layout() {
   REC_R = Math.min(VW, VH) * THEME.recordScale;
   REC_CX = VW / 2;
   REC_CY = VH / 2;
+  const recordPad = REC_R * RECORD_CANVAS_PAD_RATIO;
+  const recordCanvasSize = REC_R * 2 + recordPad * 2;
 
-  rCv.width = REC_R * 2;
-  rCv.height = REC_R * 2;
-  rCv.style.left = REC_CX - REC_R + 'px';
-  rCv.style.top = REC_CY - REC_R + 'px';
+  rCv.width = recordCanvasSize;
+  rCv.height = recordCanvasSize;
+  rCv.style.left = REC_CX - REC_R - recordPad + 'px';
+  rCv.style.top = REC_CY - REC_R - recordPad + 'px';
 
   PIV_X = REC_CX + REC_R * THEME.pivotOffsetX;
   PIV_Y = REC_CY + REC_R * THEME.pivotOffsetY;
@@ -374,9 +377,9 @@ function loadThemeModule(themeName, scriptHref) {
 // ─── draw: record ──────────────────────────────────────────
 function drawDefaultRecord(angle) {
   const R = REC_R;
-  const CX = R;
-  const CY = R;
-  rCtx.clearRect(0, 0, R * 2, R * 2);
+  const CX = rCv.width / 2;
+  const CY = rCv.height / 2;
+  rCtx.clearRect(0, 0, rCv.width, rCv.height);
   rCtx.save();
 
   rCtx.beginPath();
@@ -650,14 +653,20 @@ function drawDefaultArm(angle) {
 
 function drawRecord(angle) {
   if (ACTIVE_THEME_MODULE && typeof ACTIVE_THEME_MODULE.drawRecord === 'function') {
+    const playbackState = window.MYNYL_PLAYBACK_STATE || {};
     ACTIVE_THEME_MODULE.drawRecord({
       angle,
       theme: THEME,
       geo: GEO,
-      record: { radius: REC_R, cx: REC_CX, cy: REC_CY },
+      record: { radius: REC_R, cx: rCv.width / 2, cy: rCv.height / 2, pageCx: REC_CX, pageCy: REC_CY },
       ctx: rCtx,
       canvas: rCv,
-      state: { hasFile, groovePulse, labelImage: window._labelImage },
+      state: {
+        hasFile,
+        groovePulse,
+        playing: !!playbackState.playing,
+        labelImage: window._labelImage
+      },
       defaults: { drawRecord: drawDefaultRecord },
       helpers: { toRad }
     });

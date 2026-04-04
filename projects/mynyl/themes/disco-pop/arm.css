@@ -1,0 +1,40 @@
+:root {
+  /* Straight chrome arm — modern deck look */
+  --arm-style: straight;
+  --arm-tube-width: 0.020;
+  --arm-shadow-blur: 18;
+  --arm-shadow-offset-y: 6;
+  --arm-highlight-alpha: 0.14;
+
+  /* Chrome tube gradient */
+  --arm-0: #1a1a2e;
+  --arm-25: #6a6aaa;
+  --arm-60: #d0d0ff;
+  --arm-100: #3a3a6a;
+
+  /* Headshell with a cyan tint */
+  --arm-headshell: #b0e0ff;
+  --arm-headshell-length: 0.10;
+  --arm-headshell-width: 0.015;
+  --arm-headshell-bend-deg: -16;
+
+  /* Bright needle tip */
+  --arm-needle: rgba(200,240,255,0.85);
+  --arm-needle-tip: #ffffff;
+  --arm-needle-width: 1.5;
+  --arm-needle-length: 0.55;
+
+  /* Counterweight: dark chrome with purple tint */
+  --arm-counterweight-radius: 0.038;
+  --arm-counterweight-offset: 0.15;
+  --arm-cw-0: #9090cc;
+  --arm-cw-55: #303060;
+  --arm-cw-100: #0d0d1f;
+
+  /* Pivot: bright chrome ring */
+  --arm-pivot-radius: 0.030;
+  --arm-pivot-inner-radius: 0.30;
+  --arm-pivot-0: #e0e0ff;
+  --arm-pivot-50: #6060aa;
+  --arm-pivot-100: #0d0d1f;
+}

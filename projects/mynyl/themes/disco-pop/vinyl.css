@@ -1,0 +1,43 @@
+:root {
+  /* Deep translucent violet disc with iridescent grooves */
+  --vinyl-style: classic;
+  --vinyl-disc: #0a0416;
+  --vinyl-edge: rgba(180,80,255,0.10);
+  --vinyl-rim-light: rgba(255,80,220,0.07);
+  --vinyl-rim-shadow: rgba(0,0,0,0.5);
+  --vinyl-shadow-ring: rgba(200,60,255,0.08);
+  --vinyl-drop-shadow: rgba(180,0,255,0.25);
+  --vinyl-drop-shadow-blur: 28;
+  --vinyl-drop-shadow-offset-y: 12;
+
+  /* Grooves shimmer cyan-to-magenta (uses rgb channel) */
+  --vinyl-groove-rgb: 190,80,255;
+  --vinyl-groove-alpha: 0.07;
+  --vinyl-groove-pulse: 0.10;
+  --vinyl-groove-spacing: 1.4;
+  --vinyl-groove-width: 0.80;
+  --vinyl-groove-start: 0.19;
+  --vinyl-groove-end: 0.91;
+  --vinyl-groove-warp: 0.04;
+
+  /* Bold glossy sheen */
+  --vinyl-sheen: 0.12;
+  --vinyl-sheen-width: 0.09;
+
+  /* Splatter (unused in classic, kept for switching) */
+  --vinyl-splatter-color: rgba(255,80,200,0.18);
+  --vinyl-splatter-secondary: rgba(80,200,255,0.10);
+  --vinyl-splatter-count: 28;
+  --vinyl-splatter-size: 0.018;
+
+  /* Label: electric coral → hot pink → deep magenta */
+  --vinyl-label-radius: 0.175;
+  --vinyl-hole-radius: 0.02;
+  --vinyl-label-0: #ff4ecd;
+  --vinyl-label-55: #c8186e;
+  --vinyl-label-100: #5c0033;
+  --vinyl-label-ring: rgba(255,80,180,0.22);
+  --vinyl-label-stroke: rgba(0,0,0,0.30);
+  --vinyl-label-art-base: #1a0020;
+  --vinyl-hole-fill: #000;
+}

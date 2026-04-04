@@ -1,0 +1,26 @@
+:root {
+  --player-record-scale: 0.42;
+  --arm-pivot-offset-x: 1.05;
+  --arm-pivot-offset-y: -0.85;
+  --arm-outer-radius: 0.91;
+  --arm-inner-radius: 0.30;
+  --arm-outer-offset-x: -0.10;
+  --arm-outer-offset-y: -0.85;
+  --arm-park-offset-x: 1.20;
+  --arm-park-offset-y: 0.30;
+
+  /* Deep club-black with magenta spotlight at center */
+  --bg-center-rgb: 80,18,80;
+  --bg-mid-rgb: 14,8,28;
+  --bg-edge-0: #050008;
+  --bg-edge-1: #020005;
+  --bg-glow-strength: 1.4;
+  --bg-drift-x: 0.07;
+  --bg-drift-y: 0.05;
+
+  /* Drag/drop hint — hot pink */
+  --hint-ring: rgba(255,60,180,0.36);
+  --hint-dot: rgba(255,60,180,0.92);
+  --hint-glow: rgba(255,60,180,0.28);
+  --hint-text: rgba(255,200,255,0.82);
+}

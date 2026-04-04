@@ -5,6 +5,7 @@ let groovePulse = 0;
 let lastRaf = null;
 let isSpinningUp = false, spinUpStart = null;
 const SPIN_UP_MS = 2000;
+const playbackState = window.MYNYL_PLAYBACK_STATE || (window.MYNYL_PLAYBACK_STATE = { playing: false });
 
 let armAngle, targetArmAngle;
 let isDragging = false;
@@ -22,6 +23,11 @@ const THEMES = {
     cssHref: 'themes/minimal-light/theme.css',
     scriptHref: 'themes/minimal-light/theme.js',
     themeName: 'minimal-light',
+  },
+  'disco-pop': {
+    cssHref: 'themes/disco-pop/theme.css',
+    scriptHref: 'themes/disco-pop/theme.js',
+    themeName: 'disco-pop',
   },
 };
 
@@ -230,6 +236,7 @@ audio.addEventListener('ended', handleSongEnd);
 // ─── play / pause ──────────────────────────────────────────
 function setPlayState(playing, fadeMs) {
   isPlaying = playing;
+  playbackState.playing = playing;
   const pi = document.getElementById('play-icon');
   const pb = document.getElementById('btn-play');
   if (playing) {
@@ -313,6 +320,25 @@ document.getElementById('btn-fwd').addEventListener('click', () => {
     audio.currentTime = Math.min(duration, next);
   }
 });
+
+function syncFullscreenButton() {
+  const button = document.getElementById('btn-fullscreen');
+  if (!button) return;
+  const active = !!document.fullscreenElement;
+  button.classList.toggle('active', active);
+  button.title = active ? 'Exit Fullscreen' : 'Fullscreen';
+}
+
+document.getElementById('btn-fullscreen').addEventListener('click', async () => {
+  if (!document.fullscreenElement) {
+    await document.documentElement.requestFullscreen();
+  } else {
+    await document.exitFullscreen();
+  }
+});
+
+document.addEventListener('fullscreenchange', syncFullscreenButton);
+syncFullscreenButton();
 
 // ─── volume ─────────────────────────────────────────────────
 let volDrag = false;
