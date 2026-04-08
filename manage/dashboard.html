@@ -226,6 +226,20 @@
     .link-icon { font-size: 1.2rem; }
     .link-desc { font-size: 0.7rem; color: #999; margin-top: 2px; }
 
+    /* Live dot */
+    .live-dot {
+      display: inline-block;
+      width: 9px; height: 9px;
+      background: #22c55e;
+      border-radius: 50%;
+      animation: live-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes live-pulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+      50% { opacity: 0.6; box-shadow: 0 0 6px 2px rgba(34, 197, 94, 0.2); }
+    }
+
     /* Responsive */
     @media (max-width: 600px) {
       .dashboard { padding: 16px 12px 30px; }
@@ -279,6 +293,14 @@
         <div class="metric-label">GoatCounter Status</div>
         <div class="metric-value loading" id="gcStatus">Checking...</div>
         <div class="metric-sub" id="gcStatusSub"></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Live on Dashboard</div>
+        <div class="metric-value" style="display:flex;align-items:center;gap:8px;">
+          <span class="live-dot"></span>
+          <span id="liveCount">1</span>
+        </div>
+        <div class="metric-sub">Active dashboard sessions</div>
       </div>
     </div>
 
@@ -391,6 +413,62 @@
   document.getElementById('refresh-btn').addEventListener('click', function () {
     init();
   });
+
+  // ============================================================
+  // LIVE VIEWERS (cross-tab via localStorage)
+  // ============================================================
+  (function () {
+    var KEY = 'dashboard_live_viewers';
+    var HEARTBEAT_MS = 3000;
+    var TIMEOUT_MS = 8000;
+    var viewerId = Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+
+    function heartbeat() {
+      try {
+        var viewers = JSON.parse(localStorage.getItem(KEY) || '{}');
+        var now = Date.now();
+        viewers[viewerId] = now;
+        for (var id in viewers) {
+          if (now - viewers[id] > TIMEOUT_MS) delete viewers[id];
+        }
+        localStorage.setItem(KEY, JSON.stringify(viewers));
+        var el = document.getElementById('liveCount');
+        if (el) el.textContent = Object.keys(viewers).length;
+      } catch (e) {}
+    }
+
+    function cleanup() {
+      try {
+        var viewers = JSON.parse(localStorage.getItem(KEY) || '{}');
+        delete viewers[viewerId];
+        localStorage.setItem(KEY, JSON.stringify(viewers));
+      } catch (e) {}
+    }
+
+    heartbeat();
+    setInterval(heartbeat, HEARTBEAT_MS);
+
+    window.addEventListener('storage', function (e) {
+      if (e.key === KEY) {
+        try {
+          var viewers = JSON.parse(e.newValue || '{}');
+          var now = Date.now();
+          var count = 0;
+          for (var id in viewers) {
+            if (now - viewers[id] <= TIMEOUT_MS) count++;
+          }
+          var el = document.getElementById('liveCount');
+          if (el) el.textContent = count;
+        } catch (e) {}
+      }
+    });
+
+    window.addEventListener('beforeunload', cleanup);
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) cleanup();
+      else heartbeat();
+    });
+  })();
 
   // ============================================================
   // INIT
