@@ -438,7 +438,7 @@
   }
 
   // ============================================================
-  // PAGE VIEWS (GoatCounter)
+  // PAGE VIEWS (GoatCounter native - no CORS issues)
   // ============================================================
   function loadPageViews() {
     var body = document.getElementById('pagesBody');
@@ -450,61 +450,48 @@
 
     body.innerHTML = '';
 
+    // Build table rows with goatcounter-count class (auto-filled by count.js)
     TRACKED_PAGES.forEach(function (page) {
       var tr = document.createElement('tr');
       tr.innerHTML =
         '<td class="page-name">' + page.name + '</td>' +
         '<td class="page-path">' + page.path + '</td>' +
-        '<td class="page-views loading" id="pv-' + encodeURIComponent(page.path) + '">...</td>';
+        '<td class="page-views goatcounter-count" data-goatcounter-page="' + page.path + '">0</td>';
       body.appendChild(tr);
     });
 
-    // Fetch counts from GoatCounter
-    var loaded = 0;
-    var failed = 0;
+    // Load GoatCounter count.js which auto-populates .goatcounter-count elements
+    var existing = document.getElementById('gc-count-script');
+    if (existing) existing.remove();
 
-    TRACKED_PAGES.forEach(function (page) {
-      var encoded = encodeURIComponent(page.path);
-      var cellId = 'pv-' + encoded;
-
-      fetch('https://' + GC_SITE + '.goatcounter.com/counter/' + encoded + '.json')
-        .then(function (r) {
-          if (!r.ok) throw new Error(r.status);
-          return r.json();
-        })
-        .then(function (data) {
-          var cell = document.getElementById(cellId);
-          if (cell) {
-            cell.textContent = data.count || '0';
-            cell.classList.remove('loading');
-          }
-          loaded++;
-          updateGCStatus(loaded, failed);
-        })
-        .catch(function () {
-          var cell = document.getElementById(cellId);
-          if (cell) {
-            cell.textContent = '--';
-            cell.classList.remove('loading');
-          }
-          failed++;
-          updateGCStatus(loaded, failed);
-        });
-    });
-
-    function updateGCStatus(ok, err) {
-      if (ok + err < TRACKED_PAGES.length) return;
+    var gcScript = document.createElement('script');
+    gcScript.id = 'gc-count-script';
+    gcScript.async = true;
+    gcScript.dataset.goatcounter = 'https://' + GC_SITE + '.goatcounter.com/count';
+    gcScript.src = '//gc.zgo.at/count.js';
+    gcScript.onload = function () {
+      gcStatusEl.textContent = 'Active';
+      gcStatusEl.style.color = '#4ade80';
       gcStatusEl.classList.remove('loading');
-      if (err === TRACKED_PAGES.length) {
-        gcStatusEl.textContent = 'Not connected';
-        gcStatusEl.style.color = '#f87171';
-        gcSubEl.textContent = 'Create account at goatcounter.com';
-      } else {
-        gcStatusEl.textContent = 'Active';
-        gcStatusEl.style.color = '#4ade80';
-        gcSubEl.textContent = ok + '/' + TRACKED_PAGES.length + ' pages reporting';
-      }
-    }
+      gcSubEl.textContent = TRACKED_PAGES.length + ' pages tracked';
+
+      // Check after a delay if counts populated
+      setTimeout(function () {
+        var cells = body.querySelectorAll('.goatcounter-count');
+        var filled = 0;
+        cells.forEach(function (c) {
+          if (c.textContent.trim() && c.textContent.trim() !== '...') filled++;
+        });
+        gcSubEl.textContent = filled + '/' + TRACKED_PAGES.length + ' pages reporting';
+      }, 4000);
+    };
+    gcScript.onerror = function () {
+      gcStatusEl.textContent = 'Not connected';
+      gcStatusEl.style.color = '#f87171';
+      gcStatusEl.classList.remove('loading');
+      gcSubEl.textContent = 'Could not load GoatCounter';
+    };
+    document.body.appendChild(gcScript);
   }
 </script>
 </body>
