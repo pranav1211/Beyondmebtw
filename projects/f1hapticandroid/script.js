@@ -2,7 +2,7 @@
 // CONFIG - Replace with your GoatCounter site code
 // Sign up free at https://www.goatcounter.com (30 seconds)
 // ============================================================
-const GC_SITE = 'YOUR_SITE_CODE';
+const GC_SITE = 'beyondmebtw';
 
 // ============================================================
 // Bot Detection
