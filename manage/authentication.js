@@ -60,6 +60,7 @@ class AuthenticationSystem {
         // Define protected pages and their redirect targets
         const protectedPages = {
             'manage.html': 'https://manage.beyondmebtw.com/index.html',
+            'dashboard.html': 'https://manage.beyondmebtw.com/index.html',
             'minis.html': 'https://manage.beyondmebtw.com/index.html'
         };
         
@@ -157,7 +158,7 @@ class AuthenticationSystem {
         }
         
         // For protected pages, check authentication
-        if (currentPage === 'manage.html' || currentPage === 'minis.html') {
+        if (currentPage === 'manage.html' || currentPage === 'dashboard.html' || currentPage === 'minis.html') {
             return this.checkAuthentication();
         }
         

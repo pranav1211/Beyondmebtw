@@ -1,45 +1,17 @@
 // ============================================================
-// CONFIG - Replace with your GoatCounter site code
-// Sign up free at https://www.goatcounter.com (30 seconds)
+// Visitor Counter Badge (populated by /analytics.js via GoatCounter)
 // ============================================================
-const GC_SITE = 'beyondmebtw';
-
-// ============================================================
-// Bot Detection
-// ============================================================
-function isBot() {
-  if (navigator.webdriver) return true;
-  const ua = navigator.userAgent || '';
-  if (ua.length < 10) return true;
-  const botPattern = /bot|crawler|spider|crawling|headless|phantom|selenium|puppeteer|lighthouse|pagespeed|pingdom|uptimerobot/i;
-  return botPattern.test(ua);
-}
-
-// ============================================================
-// GoatCounter - Analytics & Counter Badge
-// ============================================================
-function initGoatCounter() {
-  if (isBot()) return;
-  if (!GC_SITE || GC_SITE === 'YOUR_SITE_CODE') return;
-
-  // Load GoatCounter tracking script (also auto-fills .goatcounter-count elements)
-  const gcScript = document.createElement('script');
-  gcScript.async = true;
-  gcScript.dataset.goatcounter = `https://${GC_SITE}.goatcounter.com/count`;
-  gcScript.src = '//gc.zgo.at/count.js';
-  gcScript.onload = () => {
-    // GoatCounter auto-populates elements with class "goatcounter-count"
-    // Show the badge once the count appears
-    setTimeout(() => {
-      const badge = document.getElementById('visitorCounter');
-      const countEl = badge && badge.querySelector('.goatcounter-count');
-      if (countEl && countEl.textContent.trim()) {
-        badge.classList.add('loaded');
-      }
-    }, 3000);
-  };
-  document.body.appendChild(gcScript);
-}
+(function () {
+  var check = setInterval(function () {
+    var badge = document.getElementById('visitorCounter');
+    var countEl = badge && badge.querySelector('.goatcounter-count');
+    if (countEl && countEl.textContent.trim()) {
+      badge.classList.add('loaded');
+      clearInterval(check);
+    }
+  }, 1000);
+  setTimeout(function () { clearInterval(check); }, 15000);
+})();
 
 // ============================================================
 // YouTube Player
@@ -229,7 +201,3 @@ function onPlayerStateChange(event) {
   }
 }
 
-// ============================================================
-// Init
-// ============================================================
-initGoatCounter();
