@@ -22,46 +22,23 @@ function initGoatCounter() {
   if (isBot()) return;
   if (!GC_SITE || GC_SITE === 'YOUR_SITE_CODE') return;
 
-  // Load GoatCounter tracking script
+  // Load GoatCounter tracking script (also auto-fills .goatcounter-count elements)
   const gcScript = document.createElement('script');
   gcScript.async = true;
   gcScript.dataset.goatcounter = `https://${GC_SITE}.goatcounter.com/count`;
   gcScript.src = '//gc.zgo.at/count.js';
+  gcScript.onload = () => {
+    // GoatCounter auto-populates elements with class "goatcounter-count"
+    // Show the badge once the count appears
+    setTimeout(() => {
+      const badge = document.getElementById('visitorCounter');
+      const countEl = badge && badge.querySelector('.goatcounter-count');
+      if (countEl && countEl.textContent.trim()) {
+        badge.classList.add('loaded');
+      }
+    }, 3000);
+  };
   document.body.appendChild(gcScript);
-
-  // Fetch and display visitor count badge
-  updateCounterBadge();
-}
-
-function updateCounterBadge() {
-  const badge = document.getElementById('visitorCounter');
-  if (!badge) return;
-
-  // Check sessionStorage cache (refresh every 5 min)
-  const cached = sessionStorage.getItem('gc_count');
-  const cachedTime = sessionStorage.getItem('gc_count_time');
-  if (cached && cachedTime && (Date.now() - Number(cachedTime)) < 300000) {
-    showBadge(badge, JSON.parse(cached));
-    return;
-  }
-
-  const pagePath = encodeURIComponent(location.pathname);
-  fetch(`https://${GC_SITE}.goatcounter.com/counter/${pagePath}.json`)
-    .then(r => r.json())
-    .then(data => {
-      sessionStorage.setItem('gc_count', JSON.stringify(data));
-      sessionStorage.setItem('gc_count_time', String(Date.now()));
-      showBadge(badge, data);
-    })
-    .catch(() => {});
-}
-
-function showBadge(badge, data) {
-  const uniqueEl = badge.querySelector('.count');
-  if (uniqueEl && data.count_unique) {
-    uniqueEl.textContent = data.count_unique;
-    badge.classList.add('loaded');
-  }
 }
 
 // ============================================================

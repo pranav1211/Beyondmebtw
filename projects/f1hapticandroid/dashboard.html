@@ -234,13 +234,8 @@
     <div class="metrics-grid">
       <div class="metric-card">
         <div class="label">Total Page Views</div>
-        <div class="value loading" id="totalViews">--</div>
+        <div class="value goatcounter-count" id="totalViews" data-goatcounter-page="/projects/f1hapticandroid/">--</div>
         <div class="sub">All tracked visits</div>
-      </div>
-      <div class="metric-card">
-        <div class="label">Unique Visitors</div>
-        <div class="value loading" id="uniqueVisitors">--</div>
-        <div class="sub">Bot-filtered uniques</div>
       </div>
       <div class="metric-card">
         <div class="label">Tracking Status</div>
@@ -329,8 +324,8 @@
       document.getElementById('infoBot').textContent = isBot() ? 'Yes (this visit not tracked)' : 'No';
     }
 
-    // ---- Fetch GoatCounter metrics ----
-    function fetchMetrics() {
+    // ---- Load GoatCounter (native approach, no CORS issues) ----
+    function initGoatCounter() {
       const statusEl = document.getElementById('trackingStatus');
       const statusSub = document.getElementById('trackingSub');
 
@@ -339,48 +334,34 @@
         statusEl.innerHTML = '<span class="status-dot yellow"></span>';
         statusEl.classList.remove('loading');
         statusSub.textContent = 'Not configured';
-        document.getElementById('totalViews').textContent = '--';
-        document.getElementById('uniqueVisitors').textContent = '--';
         return;
       }
 
       // Show GoatCounter dashboard link
-      const gcSection = document.getElementById('gcDashSection');
-      gcSection.style.display = 'block';
+      document.getElementById('gcDashSection').style.display = 'block';
       document.getElementById('gcDashLink').href = `https://${GC_SITE}.goatcounter.com`;
 
-      const encoded = encodeURIComponent(PAGE_PATH);
-      fetch(`https://${GC_SITE}.goatcounter.com/counter/${encoded}.json`)
-        .then(r => {
-          if (!r.ok) throw new Error(r.status);
-          return r.json();
-        })
-        .then(data => {
-          document.getElementById('totalViews').textContent = data.count || '0';
-          document.getElementById('totalViews').classList.remove('loading');
-
-          document.getElementById('uniqueVisitors').textContent = data.count_unique || '0';
-          document.getElementById('uniqueVisitors').classList.remove('loading');
-
-          statusEl.innerHTML = '<span class="status-dot green"></span>';
-          statusEl.classList.remove('loading');
-          statusSub.textContent = 'GoatCounter active';
-        })
-        .catch(() => {
-          statusEl.innerHTML = '<span class="status-dot red"></span>';
-          statusEl.classList.remove('loading');
-          statusSub.textContent = 'Could not reach GoatCounter';
-
-          document.getElementById('totalViews').textContent = '--';
-          document.getElementById('totalViews').classList.remove('loading');
-          document.getElementById('uniqueVisitors').textContent = '--';
-          document.getElementById('uniqueVisitors').classList.remove('loading');
-        });
+      // Load GoatCounter script (auto-fills .goatcounter-count elements)
+      const gcScript = document.createElement('script');
+      gcScript.async = true;
+      gcScript.dataset.goatcounter = `https://${GC_SITE}.goatcounter.com/count`;
+      gcScript.src = '//gc.zgo.at/count.js';
+      gcScript.onload = () => {
+        statusEl.innerHTML = '<span class="status-dot green"></span>';
+        statusEl.classList.remove('loading');
+        statusSub.textContent = 'GoatCounter active';
+      };
+      gcScript.onerror = () => {
+        statusEl.innerHTML = '<span class="status-dot red"></span>';
+        statusEl.classList.remove('loading');
+        statusSub.textContent = 'Could not load GoatCounter';
+      };
+      document.body.appendChild(gcScript);
     }
 
     // ---- Init ----
     fillSessionInfo();
-    fetchMetrics();
+    initGoatCounter();
   </script>
 </body>
 
