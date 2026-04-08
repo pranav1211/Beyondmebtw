@@ -4,472 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="https://content.beyondmebtw.com/assets/bmb_logos/favicon-1.ico">
   <title>F1 Haptic Trailer (Android Recreation)</title>
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #000;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      min-height: 100vh;
-    }
-
-    header {
-      padding: 25px 20px;
-      background: #111;
-      width: 100%;
-      box-sizing: border-box;
-      max-width: 1200px;
-    }
-
-    h1 {
-      font-size: 2.2rem;
-      margin: 10px 0 20px 0;
-      color: #ff3c3c;
-      font-weight: bold;
-      text-shadow: 0 2px 10px rgba(255, 60, 60, 0.3);
-    }
-
-    .separator {
-      height: 2px;
-      background: linear-gradient(90deg, transparent, #ff3c3c, transparent);
-      margin: 20px 0;
-      width: 100%;
-    }
-
-    .description {
-      font-size: 1rem;
-      margin-bottom: 15px;
-      line-height: 1.5;
-      color: #ffffff;
-      max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .combined-info {
-      font-size: 0.9rem;
-      margin-bottom: 15px;
-      line-height: 1.5;
-      color: #ffcc00;
-      padding: 15px;
-      background: rgba(255, 204, 0, 0.1);
-      border-radius: 8px;
-      border-left: 4px solid #ffcc00;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .pc-warning {
-      font-size: 1rem;
-      color: #ffa500;
-      padding: 10px;
-      background: rgba(255, 165, 0, 0.1);
-      border-radius: 6px;
-      border-left: 3px solid #ffa500;
-      margin-bottom: 15px;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-      display: none;
-    }
-
-    .info-text {
-      margin: 0;
-    }
-
-    .vibration-test {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .test-btn {
-      background: #ff3c3c;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-      font-size: 0.85rem;
-    }
-
-    .test-btn:hover {
-      transform: scale(1.05);
-    }
-
-    main {
-      width: 100%;
-      max-width: 1200px;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-
-    .video-container {
-      width: 100%;
-      max-width: 900px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    video {
-      width: 100%;
-      height: auto;
-      max-height: 70vh;
-      background: #000;
-      border-radius: 8px;
-      box-shadow: 0 4px 20px rgba(255, 60, 60, 0.2);
-    }
-
-    .fullscreen-btn {
-      background: linear-gradient(135deg, #ff3c3c, #ff6b6b);
-      border: none;
-      padding: 15px 30px;
-      border-radius: 8px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-size: 1rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      box-shadow: 0 4px 15px rgba(255, 60, 60, 0.3);
-      max-width: 300px;
-      margin: 0 auto;
-    }
-
-    .fullscreen-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(255, 60, 60, 0.4);
-    }
-
-    .fullscreen-btn:active {
-      transform: translateY(0);
-    }
-
-    #vibeStatus {
-      font-size: 0.8rem;
-      color: #90EE90;
-      margin-top: 5px;
-    }
-
-    .thank-you {
-      font-size: 1.1rem;
-      padding: 20px;
-      color: #ffffff;
-      font-style: italic;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    footer {
-      font-size: 0.8rem;
-      padding: 15px 20px;
-      background: #111;
-      width: 100%;
-      margin-top: 10px;
-      box-sizing: border-box;
-      color: #888;
-      border-top: 1px solid #333;
-      max-width: 1200px;
-    }
-
-    footer p {
-      max-width: 800px;
-      margin: 10px auto;
-      line-height: 1.4;
-    }
-
-    /* Desktop specific adjustments */
-    @media (min-width: 1024px) {
-      .pc-warning {
-        display: block;
-      }
-
-      header {
-        padding: 40px 40px;
-      }
-
-      h1 {
-        font-size: 2.8rem;
-        margin: 15px 0 25px 0;
-      }
-
-      .description {
-        font-size: 1.1rem;
-        margin-bottom: 20px;
-      }
-
-      .combined-info {
-        font-size: 1rem;
-        padding: 20px;
-        max-width: 500px;
-      }
-
-      .pc-warning {
-        max-width: 500px;
-        font-size: 1rem;
-      }
-
-      .video-container {
-        gap: 20px;
-      }
-
-      video {
-        max-height: 60vh;
-      }
-
-      .fullscreen-btn {
-        padding: 18px 35px;
-        font-size: 1.1rem;
-      }
-
-      .thank-you {
-        font-size: 1.2rem;
-        padding: 30px;
-      }
-
-      footer {
-        padding: 20px 40px;
-        font-size: 0.85rem;
-      }
-    }
-
-    /* Large desktop screens */
-    @media (min-width: 1400px) {
-      h1 {
-        font-size: 3.2rem;
-      }
-
-      .description {
-        font-size: 1.2rem;
-      }
-
-      .combined-info {
-        font-size: 1.05rem;
-      }
-
-      .fullscreen-btn {
-        font-size: 1.15rem;
-        padding: 20px 40px;
-      }
-
-      .thank-you {
-        font-size: 1.3rem;
-      }
-    }
-
-    /* Mobile specific adjustments */
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 1.8rem;
-      }
-
-      .description,
-      .combined-info {
-        font-size: 0.9rem;
-      }
-
-      .vibration-test {
-        flex-direction: column;
-        align-items: stretch;
-        text-align: center;
-      }
-
-      .fullscreen-btn {
-        padding: 12px 25px;
-        font-size: 0.9rem;
-        margin: 0 15px;
-        width: auto;
-        max-width: calc(100% - 30px);
-      }
-
-      .video-container {
-        max-width: 100%;
-      }
-
-      main {
-        padding: 0 15px;
-      }
-
-      footer {
-        padding: 15px;
-      }
-    }
-
-    /* Ultra-wide screens */
-    @media (min-width: 1800px) {
-      body {
-        background: radial-gradient(ellipse at center, #7c2e2e 0%, #000 70%);
-      }
-
-      header,
-      main,
-      footer {
-        max-width: 1400px;
-      }
-    }
-
-    #video {
-      width: 100%;
-      aspect-ratio: 16/9;
-      max-height: 70vh;
-      background: #000;
-      border-radius: 8px;
-      box-shadow: 0 4px 20px rgba(255, 60, 60, 0.2);
-    }
-
-    @media (min-width: 1024px) {
-      #video {
-        max-height: 60vh;
-      }
-    }
-
-    .blog-cta-container {
-      margin: 25px auto 0;
-      padding: 25px 20px;
-      max-width: 500px;
-      background: linear-gradient(135deg, rgba(255, 60, 60, 0.05), rgba(255, 107, 107, 0.08));
-      border-radius: 12px;
-      border: 1px solid rgba(255, 60, 60, 0.2);
-      text-align: center;
-    }
-
-    .cta-text {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #fff;
-      margin: 0 0 15px 0;
-      letter-spacing: 0.3px;
-    }
-
-    .blog-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 28px;
-      background: linear-gradient(135deg, #ff3c3c, #ff6b6b);
-      border: none;
-      border-radius: 8px;
-      color: white;
-      text-decoration: none;
-      font-size: 1rem;
-      font-weight: bold;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(255, 60, 60, 0.3);
-      letter-spacing: 0.5px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .blog-link::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: left 0.5s ease;
-    }
-
-    .blog-link:hover::before {
-      left: 100%;
-    }
-
-    .blog-link:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 25px rgba(255, 60, 60, 0.5);
-      background: linear-gradient(135deg, #ff4d4d, #ff7a7a);
-    }
-
-    .blog-link:active {
-      transform: translateY(-1px);
-    }
-
-    .blog-link .icon {
-      font-size: 1.2rem;
-    }
-
-    .blog-link .arrow {
-      font-size: 1.2rem;
-      transition: transform 0.3s ease;
-    }
-
-    .blog-link:hover .arrow {
-      transform: translateX(4px);
-    }
-
-    .cta-subtext {
-      font-size: 0.85rem;
-      color: #aaa;
-      margin: 12px 0 0 0;
-      line-height: 1.4;
-    }
-
-    @media (min-width: 1024px) {
-      .blog-cta-container {
-        padding: 30px 25px;
-        max-width: 550px;
-      }
-
-      .cta-text {
-        font-size: 1.2rem;
-        margin-bottom: 18px;
-      }
-
-      .blog-link {
-        padding: 16px 32px;
-        font-size: 1.05rem;
-      }
-
-      .cta-subtext {
-        font-size: 0.9rem;
-        margin-top: 15px;
-      }
-    }
-
-    @media (max-width: 768px) {
-      body {
-        background: radial-gradient(ellipse at center, #7c2e2e 0%, #000 70%);
-      }
-
-      .blog-cta-container {
-        margin: 20px 15px 0;
-        padding: 20px 15px;
-        max-width: calc(100% - 30px);
-      }
-
-      .cta-text {
-        font-size: 1rem;
-      }
-
-      .blog-link {
-        padding: 12px 24px;
-        font-size: 0.9rem;
-        gap: 8px;
-      }
-
-      .cta-subtext {
-        font-size: 0.8rem;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
   <meta name="description"
     content="Experience the F1 haptic trailer on Android with synchronized vibrations. Recreation of Apple's Formula 1 haptic feedback experience for mobile devices with immersive audio-visual effects.">
   <meta name="keywords"
@@ -484,11 +21,11 @@
   <meta property="og:title" content="F1 Haptic Trailer - Android Recreation | BeyondMeBtw">
   <meta property="og:description"
     content="Experience Formula 1 like never before with synchronized haptic feedback on Android devices. Interactive racing experience with vibrations.">
-  <meta property="og:image" content="https://content.beyondmebtw.com/experience/exp29.webp">
+  <meta property="og:image" content="https://content.beyondmebtw.com/assets/bmb_logos/favicon-1.ico">
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://yourdomain.com/f1-haptic-trailer">
+  <meta property="twitter:url" content="https://beyondmebtw.com/f1-haptic-trailer">
   <meta property="twitter:title" content="F1 Haptic Trailer - Android Recreation | BeyondMeBtw">
   <meta property="twitter:description"
     content="Experience Formula 1 like never before with synchronized haptic feedback on Android devices.">
@@ -496,24 +33,30 @@
 
   <!-- Schema.org structured data -->
   <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "F1 Haptic Trailer Android Recreation",
-  "description": "Interactive Formula 1 haptic feedback experience for Android devices with synchronized vibrations",
-  "applicationCategory": "Entertainment",
-  "operatingSystem": "Android",
-  "author": {
-    "@type": "Person",
-    "name": "Pranav Veeraghanta",
-    "url": "https://beyondmebtw.com/about"
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "F1 Haptic Trailer Android Recreation",
+    "description": "Interactive Formula 1 haptic feedback experience for Android devices with synchronized vibrations",
+    "applicationCategory": "Entertainment",
+    "operatingSystem": "Android",
+    "author": {
+      "@type": "Person",
+      "name": "Pranav Veeraghanta",
+      "url": "https://beyondmebtw.com/about"
+    }
   }
-</script>
+  </script>
 </head>
 
 <body>
 
   <header>
+    <div class="visitor-counter" id="visitorCounter">
+      <span>Unique visitors:</span>
+      <span class="count">--</span>
+    </div>
+
     <h1>F1 Haptic Trailer</h1>
 
     <div class="separator"></div>
@@ -548,25 +91,22 @@
   <main>
     <div class="video-container">
       <div id="video"></div>
-      <button id="fullscreenBtn" class="fullscreen-btn">🎬 Play & Go Fullscreen</button>
+      <button id="fullscreenBtn" class="fullscreen-btn">Play & Go Fullscreen</button>
     </div>
 
     <div class="blog-cta-container">
       <p class="cta-text">Want to know how I built this?</p>
       <a href="https://medium.com/@beyondmebtw/f1-haptic-trailer-doing-it-on-android-e31cbec434a7" target="_blank"
         rel="noopener noreferrer" class="blog-link">
-        <span class="icon">📖</span>
-        <span class="text">Read My Story on Medium</span>
-        <span class="arrow">→</span>
+        <span class="icon">Read My Story on Medium</span>
+        <span class="arrow">&rarr;</span>
       </a>
       <p class="cta-subtext">Learn about the challenges, solutions, and technical details behind this project</p>
     </div>
 
-    <div class="thank-you">
-      <!-- Thank you for experiencing this recreation. -->
-    </div>
+    <div class="thank-you"></div>
   </main>
-  <br><br><br><br><br><br><br>
+
   <footer>
     <p>
       This project is a non-commercial, educational recreation of the Formula 1 haptic trailer designed for Apple
@@ -574,211 +114,11 @@
       No copyright infringement is intended. This project is not affiliated with, endorsed by, or connected to Apple
       Inc., Formula 1, or any of their subsidiaries or partners.
     </p>
-    <p>© 2025 BeyondMeBtw created by <a href="https://beyondmebtw.com/about"
-        style="color: gray; text-decoration: none; font-weight: bold;" target="_blank">Pranav Veeraghanta.</a> All
+    <p>&copy; 2025 BeyondMeBtw created by <a href="https://beyondmebtw.com/about" target="_blank">Pranav Veeraghanta.</a> All
       rights reserved for the code and implementation.</p>
   </footer>
 
-  <script>
-    // Load YouTube IFrame API
-    const tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    const firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-    const testBtn = document.getElementById("testVibration");
-    const vibeStatus = document.getElementById("vibeStatus");
-    const fullscreenBtn = document.getElementById("fullscreenBtn");
-
-    let player;
-    let isPlaying = false;
-
-    // Vibration capability check
-    if (!("vibrate" in navigator)) {
-      vibeStatus.textContent = "⚠️ Your device/browser does not support vibration.";
-    }
-
-    testBtn.addEventListener("click", () => {
-      if ("vibrate" in navigator) {
-        navigator.vibrate([200, 100, 200]);
-      }
-    });
-
-    // YouTube API callback
-    window.onYouTubeIframeAPIReady = function () {
-      player = new YT.Player('video', {
-        videoId: 'v5x-3tQcSrY',
-        playerVars: {
-          'playsinline': 1,
-          'controls': 1,
-          'rel': 0,
-          'modestbranding': 1,
-          'vq': 'hd720' // Set minimum quality to 720p
-        },
-        events: {
-          'onStateChange': onPlayerStateChange,
-          'onReady': onPlayerReady
-        }
-      });
-    };
-
-    // Player ready callback - attempt to set quality and enable rotation
-    function onPlayerReady(event) {
-      // Try to set quality to 720p or higher
-      const availableQualities = player.getAvailableQualityLevels();
-      if (availableQualities.includes('hd720')) {
-        player.setPlaybackQuality('hd720');
-      } else if (availableQualities.includes('hd1080')) {
-        player.setPlaybackQuality('hd1080');
-      }
-
-      // Request screen orientation to landscape when available
-      if (screen.orientation && screen.orientation.lock) {
-        screen.orientation.lock('landscape').catch(err => {
-          console.log('Orientation lock not supported or failed:', err);
-        });
-      }
-    }
-
-    // Fullscreen functionality with play and landscape orientation
-    fullscreenBtn.addEventListener("click", async () => {
-      if (!player) return;
-
-      try {
-        player.playVideo();
-
-        // Request landscape orientation for mobile
-        if (screen.orientation && screen.orientation.lock) {
-          try {
-            await screen.orientation.lock('landscape');
-          } catch (err) {
-            console.log('Orientation lock failed:', err);
-          }
-        }
-
-        setTimeout(() => {
-          const iframe = document.getElementById('video');
-          if (iframe.requestFullscreen) {
-            iframe.requestFullscreen();
-          } else if (iframe.webkitRequestFullscreen) {
-            iframe.webkitRequestFullscreen();
-          } else if (iframe.msRequestFullscreen) {
-            iframe.msRequestFullscreen();
-          }
-        }, 200);
-      } catch (error) {
-        console.log("Play failed:", error);
-      }
-    });
-
-    // Define vibration events (time in seconds)
-    const vibrationEvents = [
-      { time: 6.8, duration: 100 },   // SEATBELT
-      { time: 8.0, duration: 100 },   // wheel
-      { time: 12.8, duration: 1900 }, // startup
-      { time: 16.7, duration: 100 },  // clutch
-      { time: 17.9, duration: 100 },  // gear
-      { time: 18.7, duration: 1300 }, // rollout
-      { time: 21.9, duration: 3700 }, // tv cam
-      { time: 34.6, pattern: [200, 200, 200, 200, 200, 200, 200, 300, 200, 100, 200] }, // pitstop
-      { time: 48.1, pattern: [100, 100, 200] },
-      { time: 75.3, pattern: [100, 100, 2200] }, // chase
-      { time: 81.3, pattern: [300, 200, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100] }, // crash & gravel
-      { time: 89.0, pattern: [100, 100, 100] }, // jump crash
-      { time: 91.8, duration: 500 }, // vegas
-      { time: 96.5, duration: 2700 }, // monza
-      { time: 105.2, pattern: [2900, 50, 2350] }, // finale part 1
-      { time: 110.7, pattern: [100, 300, 100, 100, 100, 50, 5450] }, // finale part 2
-      { time: 117.0, pattern: [100, 300, 100, 0, 3600] } // backfire
-    ];
-
-    // Precompute event end times
-    vibrationEvents.forEach(event => {
-      if (event.pattern) {
-        event.total = event.pattern.reduce((a, b) => a + b, 0);
-      } else {
-        event.total = event.duration;
-      }
-      event.end = event.time + event.total / 1000; // seconds
-    });
-
-    let currentVibe = null;
-    let rafId = null;
-
-    function stopVibration() {
-      navigator.vibrate(0);
-      currentVibe = null;
-    }
-
-    function checkVibrations() {
-      if (!player || !isPlaying) {
-        return;
-      }
-
-      const t = player.getCurrentTime();
-
-      // Cancel if video passed current event
-      if (currentVibe && t > currentVibe.end) {
-        stopVibration();
-      }
-
-      // See if new event should trigger
-      if (!currentVibe) {
-        const event = vibrationEvents.find(e => t >= e.time && t < e.end);
-        if (event) {
-          const elapsed = (t - event.time) * 1000; // ms into event
-          let remainingPattern;
-
-          if (event.pattern) {
-            // Skip parts of the pattern already elapsed
-            let acc = 0;
-            let idx = 0;
-            while (idx < event.pattern.length && acc + event.pattern[idx] <= elapsed) {
-              acc += event.pattern[idx];
-              idx++;
-            }
-            if (idx < event.pattern.length) {
-              remainingPattern = [...event.pattern.slice(idx)];
-              remainingPattern[0] = Math.max(0, remainingPattern[0] - (elapsed - acc));
-            }
-          } else {
-            // Simple duration
-            const remaining = Math.max(0, event.duration - elapsed);
-            remainingPattern = remaining;
-          }
-
-          if ((Array.isArray(remainingPattern) && remainingPattern.length > 0) || (typeof remainingPattern === "number" && remainingPattern > 0)) {
-            navigator.vibrate(remainingPattern);
-            currentVibe = event;
-          }
-        }
-      }
-
-      rafId = requestAnimationFrame(checkVibrations);
-    }
-
-    function startChecking() {
-      cancelAnimationFrame(rafId);
-      isPlaying = true;
-      rafId = requestAnimationFrame(checkVibrations);
-    }
-
-    function stopChecking() {
-      isPlaying = false;
-      stopVibration();
-      cancelAnimationFrame(rafId);
-    }
-
-    function onPlayerStateChange(event) {
-      if (event.data === YT.PlayerState.PLAYING) {
-        startChecking();
-      } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
-        stopChecking();
-      }
-    }
-  </script>
-
-
+  <script src="script.js"></script>
 </body>
 
 </html>
