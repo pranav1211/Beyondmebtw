@@ -482,11 +482,36 @@ function renderPostsList() {
 }
 
 function attachPostRowHandlers(container) {
+  container.querySelectorAll('[data-action="make-latest"]').forEach(btn => {
+    btn.addEventListener('click', () => makeLatestPost(btn));
+  });
   container.querySelectorAll('[data-action="edit-post"]').forEach(btn => {
     btn.addEventListener('click', () => openEditBlogPost(btn.dataset.category, btn.dataset.uid));
   });
   container.querySelectorAll('[data-action="delete-post"]').forEach(btn => {
     btn.addEventListener('click', () => promptDeleteBlogPost(btn.dataset.category, btn.dataset.uid, btn.dataset.title));
+  });
+}
+
+async function makeLatestPost(btn) {
+  const title = btn.dataset.title;
+  confirm(`Set "${title}" as the latest post?`, async () => {
+    try {
+      await apiCall('POST', '/latestdata', {
+        formid: 'latest',
+        name: btn.dataset.title,
+        date: btn.dataset.date,
+        excerpt: btn.dataset.excerpt,
+        thumbnail: btn.dataset.thumbnail,
+        link: btn.dataset.link
+      });
+      // Refresh homepage data cache
+      state.latestData = null;
+      loadHomepageTab();
+      toast('Latest post updated');
+    } catch (e) {
+      toast(`Error: ${e.message}`, 'error');
+    }
   });
 }
 
@@ -517,6 +542,7 @@ function renderPostRow(post, catKey, displayLabel) {
       <div class="post-subcat">${esc(label)}</div>
       <div class="post-date">${esc(date)}</div>
       <div class="post-actions">
+        <button class="btn-icon latest" data-action="make-latest" data-category="${esc(catKey)}" data-uid="${esc(post.uid)}" data-title="${esc(post.title)}" data-date="${esc(post.date||'')}" data-excerpt="${esc(post.excerpt||'')}" data-thumbnail="${esc(post.thumbnail||'')}" data-link="${esc(post.link||'')}" title="Make Latest Post">Latest</button>
         <button class="btn-icon edit" data-action="edit-post" data-category="${esc(catKey)}" data-uid="${esc(post.uid)}" title="Edit">Edit</button>
         <button class="btn-icon danger" data-action="delete-post" data-category="${esc(catKey)}" data-uid="${esc(post.uid)}" data-title="${esc(post.title)}" title="Delete">Del</button>
       </div>

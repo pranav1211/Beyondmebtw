@@ -284,6 +284,7 @@ button { font-family: inherit; cursor: pointer; }
 .btn-icon:hover { border-color: var(--border2); color: var(--text); }
 .btn-icon.danger:hover { border-color: var(--danger); color: var(--danger); }
 .btn-icon.edit:hover { border-color: var(--accent); color: var(--accent); }
+.btn-icon.latest:hover { border-color: #e6a817; color: #e6a817; }
 
 /* ── Forms ───────────────────────────────────────────────────────────── */
 .form-row {
