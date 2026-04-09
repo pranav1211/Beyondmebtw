@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html><head><meta name="robots" content="noindex, nofollow"></head>
+<body>
+<script>
+// Bridge: reads live presence from localStorage and posts to parent (dashboard)
+function send() {
+  try {
+    var d = JSON.parse(localStorage.getItem('bmb_live') || '{}');
+    var now = Date.now();
+    var counts = {};
+    for (var id in d) {
+      if (now - d[id].t <= 8000) {
+        counts[d[id].p] = (counts[d[id].p] || 0) + 1;
+      }
+    }
+    parent.postMessage({ type: 'bmb_live', counts: counts }, '*');
+  } catch (e) {}
+}
+send();
+setInterval(send, 3000);
+</script>
+</body>
+</html>

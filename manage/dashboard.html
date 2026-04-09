@@ -304,12 +304,12 @@
         <div class="metric-sub" id="gcStatusSub"></div>
       </div>
       <div class="metric-card">
-        <div class="metric-label">Live on Dashboard</div>
+        <div class="metric-label">Live Now</div>
         <div class="metric-value" style="display:flex;align-items:center;gap:8px;">
           <span class="live-dot"></span>
-          <span id="liveCount">1</span>
+          <span id="liveTotal">0</span>
         </div>
-        <div class="metric-sub">Active dashboard sessions</div>
+        <div class="metric-sub">Across all pages</div>
       </div>
     </div>
 
@@ -320,6 +320,7 @@
         <tr>
           <th>Page</th>
           <th>Path</th>
+          <th style="text-align:center">Live</th>
           <th style="text-align:right">Views</th>
         </tr>
       </thead>
@@ -424,58 +425,34 @@
   });
 
   // ============================================================
-  // LIVE VIEWERS (cross-tab via localStorage)
+  // LIVE VIEWERS (via bridge iframe to beyondmebtw.com)
   // ============================================================
   (function () {
-    var KEY = 'dashboard_live_viewers';
-    var HEARTBEAT_MS = 3000;
-    var TIMEOUT_MS = 8000;
-    var viewerId = Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+    var iframe = document.createElement('iframe');
+    iframe.src = 'https://beyondmebtw.com/live-bridge.html';
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
 
-    function heartbeat() {
-      try {
-        var viewers = JSON.parse(localStorage.getItem(KEY) || '{}');
-        var now = Date.now();
-        viewers[viewerId] = now;
-        for (var id in viewers) {
-          if (now - viewers[id] > TIMEOUT_MS) delete viewers[id];
+    window.addEventListener('message', function (e) {
+      if (!e.data || e.data.type !== 'bmb_live') return;
+      var counts = e.data.counts || {};
+
+      // Update total
+      var total = 0;
+      for (var p in counts) total += counts[p];
+      var totalEl = document.getElementById('liveTotal');
+      if (totalEl) totalEl.textContent = total;
+
+      // Update per-page cells
+      TRACKED_PAGES.forEach(function (page) {
+        var cell = document.getElementById('live-' + page.path);
+        if (cell) {
+          var c = counts[page.path] || 0;
+          cell.textContent = c || '-';
+          cell.style.color = c > 0 ? '#22c55e' : '#ccc';
+          cell.style.fontWeight = c > 0 ? 'bold' : 'normal';
         }
-        localStorage.setItem(KEY, JSON.stringify(viewers));
-        var el = document.getElementById('liveCount');
-        if (el) el.textContent = Object.keys(viewers).length;
-      } catch (e) {}
-    }
-
-    function cleanup() {
-      try {
-        var viewers = JSON.parse(localStorage.getItem(KEY) || '{}');
-        delete viewers[viewerId];
-        localStorage.setItem(KEY, JSON.stringify(viewers));
-      } catch (e) {}
-    }
-
-    heartbeat();
-    setInterval(heartbeat, HEARTBEAT_MS);
-
-    window.addEventListener('storage', function (e) {
-      if (e.key === KEY) {
-        try {
-          var viewers = JSON.parse(e.newValue || '{}');
-          var now = Date.now();
-          var count = 0;
-          for (var id in viewers) {
-            if (now - viewers[id] <= TIMEOUT_MS) count++;
-          }
-          var el = document.getElementById('liveCount');
-          if (el) el.textContent = count;
-        } catch (e) {}
-      }
-    });
-
-    window.addEventListener('beforeunload', cleanup);
-    document.addEventListener('visibilitychange', function () {
-      if (document.hidden) cleanup();
-      else heartbeat();
+      });
     });
   })();
 
@@ -549,6 +526,7 @@
       tr.innerHTML =
         '<td class="page-name">' + page.name + '</td>' +
         '<td class="page-path">' + page.path + '</td>' +
+        '<td style="text-align:center;color:#ccc;" id="live-' + page.path + '">-</td>' +
         '<td class="page-views goatcounter-count" data-goatcounter-page="' + page.path + '">0</td>';
       body.appendChild(tr);
     });
