@@ -17,7 +17,8 @@ let state = {
   editingBlogPost: null,     // { category, uid } when editing
   editingProjectId: null,    // id when editing
   catModalAction: 'addCategory',
-  confirmCallback: null
+  confirmCallback: null,
+  latestConfirmCallback: null
 };
 
 // ─── Utility ──────────────────────────────────────────────────────────────────
@@ -123,6 +124,18 @@ function initConfirmModal() {
   document.getElementById('confirm-cancel').addEventListener('click', () => {
     closeModal('confirm-modal');
     state.confirmCallback = null;
+  });
+}
+
+function initLatestConfirmModal() {
+  document.getElementById('latest-confirm-ok').addEventListener('click', () => {
+    closeModal('latest-confirm-modal');
+    if (state.latestConfirmCallback) state.latestConfirmCallback();
+    state.latestConfirmCallback = null;
+  });
+  document.getElementById('latest-confirm-cancel').addEventListener('click', () => {
+    closeModal('latest-confirm-modal');
+    state.latestConfirmCallback = null;
   });
 }
 
@@ -494,25 +507,33 @@ function attachPostRowHandlers(container) {
 }
 
 async function makeLatestPost(btn) {
-  const title = btn.dataset.title;
-  confirm(`Set "${title}" as the latest post?`, async () => {
+  const category = btn.dataset.category;
+  const uid = btn.dataset.uid;
+  const catData = state.blogData[category];
+  if (!catData) return;
+  const post = catData.posts.find(p => p.uid === uid);
+  if (!post) return;
+
+  // Use the dedicated latest confirm modal
+  document.getElementById('latest-confirm-title').textContent = post.title;
+  state.latestConfirmCallback = async () => {
     try {
       await apiCall('POST', '/latestdata', {
         formid: 'latest',
-        name: btn.dataset.title,
-        date: btn.dataset.date,
-        excerpt: btn.dataset.excerpt,
-        thumbnail: btn.dataset.thumbnail,
-        link: btn.dataset.link
+        name: post.title,
+        date: post.date || '',
+        excerpt: post.excerpt || '',
+        thumbnail: post.thumbnail || '',
+        link: post.link || ''
       });
-      // Refresh homepage data cache
       state.latestData = null;
       loadHomepageTab();
       toast('Latest post updated');
     } catch (e) {
       toast(`Error: ${e.message}`, 'error');
     }
-  });
+  };
+  openModal('latest-confirm-modal');
 }
 
 function initBlogSearch() {
@@ -542,7 +563,7 @@ function renderPostRow(post, catKey, displayLabel) {
       <div class="post-subcat">${esc(label)}</div>
       <div class="post-date">${esc(date)}</div>
       <div class="post-actions">
-        <button class="btn-icon latest" data-action="make-latest" data-category="${esc(catKey)}" data-uid="${esc(post.uid)}" data-title="${esc(post.title)}" data-date="${esc(post.date||'')}" data-excerpt="${esc(post.excerpt||'')}" data-thumbnail="${esc(post.thumbnail||'')}" data-link="${esc(post.link||'')}" title="Make Latest Post">Latest</button>
+        <button class="btn-icon latest" data-action="make-latest" data-category="${esc(catKey)}" data-uid="${esc(post.uid)}" title="Make Latest Post">Latest</button>
         <button class="btn-icon edit" data-action="edit-post" data-category="${esc(catKey)}" data-uid="${esc(post.uid)}" title="Edit">Edit</button>
         <button class="btn-icon danger" data-action="delete-post" data-category="${esc(catKey)}" data-uid="${esc(post.uid)}" data-title="${esc(post.title)}" title="Delete">Del</button>
       </div>
@@ -1142,6 +1163,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initModalClose();
   initToggleForms();
   initConfirmModal();
+  initLatestConfirmModal();
   initLatestForm();
   initFeaturedProjectsForm();
   initBlogForm();
