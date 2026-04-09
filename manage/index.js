@@ -438,7 +438,7 @@ function renderPostsList() {
 
   // Search mode: find matching posts across all shown categories
   if (isSearching) {
-    let html = '<div class="posts-list-header"><span>Thumb</span><span>Title / UID</span><span>Category</span><span>Date</span><span>Actions</span></div>';
+    let html = '<div class="posts-list-header"><span>Thumb</span><span>Title / UID</span><span></span><span>Category</span><span>Date</span><span>Actions</span></div>';
     let totalMatches = 0;
 
     categoriesToShow.forEach(catKey => {
@@ -464,7 +464,7 @@ function renderPostsList() {
   }
 
   // Default mode: first 4 per category
-  let html = '<div class="posts-list-header"><span>Thumb</span><span>Title / UID</span><span>Subcategory</span><span>Date</span><span>Actions</span></div>';
+  let html = '<div class="posts-list-header"><span>Thumb</span><span>Title / UID</span><span></span><span>Subcategory</span><span>Date</span><span>Actions</span></div>';
 
   categoriesToShow.forEach(catKey => {
     const catData = state.blogData[catKey];
@@ -560,10 +560,10 @@ function renderPostRow(post, catKey, displayLabel) {
         <div class="post-title">${esc(post.title)}</div>
         <div class="post-uid">${esc(post.uid)}</div>
       </div>
+      <button class="btn-icon latest" data-action="make-latest" data-category="${esc(catKey)}" data-uid="${esc(post.uid)}" title="Make Latest Post">Latest</button>
       <div class="post-subcat">${esc(label)}</div>
       <div class="post-date">${esc(date)}</div>
       <div class="post-actions">
-        <button class="btn-icon latest" data-action="make-latest" data-category="${esc(catKey)}" data-uid="${esc(post.uid)}" title="Make Latest Post">Latest</button>
         <button class="btn-icon edit" data-action="edit-post" data-category="${esc(catKey)}" data-uid="${esc(post.uid)}" title="Edit">Edit</button>
         <button class="btn-icon danger" data-action="delete-post" data-category="${esc(catKey)}" data-uid="${esc(post.uid)}" data-title="${esc(post.title)}" title="Delete">Del</button>
       </div>

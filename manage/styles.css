@@ -525,7 +525,7 @@ select option { background: var(--surface2); }
 
 .posts-list-header {
   display: grid;
-  grid-template-columns: 60px 1fr 120px 100px 90px;
+  grid-template-columns: 60px 1fr 52px 120px 100px 90px;
   gap: 12px;
   padding: 10px 16px;
   background: var(--surface2);
@@ -539,7 +539,7 @@ select option { background: var(--surface2); }
 
 .post-row {
   display: grid;
-  grid-template-columns: 60px 1fr 120px 100px 90px;
+  grid-template-columns: 60px 1fr 52px 120px 100px 90px;
   gap: 12px;
   padding: 10px 16px;
   border-bottom: 1px solid var(--border);
@@ -586,6 +586,11 @@ select option { background: var(--surface2); }
 .post-row .post-subcat {
   font-size: 11px;
   color: var(--text-dim);
+}
+
+.post-row > .btn-icon.latest {
+  align-self: center;
+  justify-self: center;
 }
 
 .post-row .post-actions {
@@ -821,8 +826,10 @@ select option { background: var(--surface2); }
 
 .modal-wide { max-width: 760px; }
 .modal-small { max-width: 440px; }
-.modal-confirm { padding: 8px; }
-.modal-confirm p { padding: 0 4px 16px; color: var(--text-muted); font-size: 14px; }
+.modal-confirm { padding: 20px 22px; padding-top: 0; }
+.modal-confirm .modal-header { padding-left: 0; padding-right: 0; }
+.modal-confirm p { padding: 16px 0 20px; color: var(--text-muted); font-size: 14px; line-height: 1.5; }
+.modal-confirm .modal-footer { padding-bottom: 0; }
 
 .modal-header {
   display: flex;
@@ -989,5 +996,6 @@ select option { background: var(--surface2); }
   .post-row { grid-template-columns: 48px 1fr auto; gap: 8px; }
   .post-row .post-uid,
   .post-row .post-date,
-  .post-row .post-subcat { display: none; }
+  .post-row .post-subcat,
+  .post-row > .btn-icon.latest { display: none; }
 }
