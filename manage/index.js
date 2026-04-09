@@ -59,8 +59,23 @@ async function apiCall(method, endpoint, body = null) {
   return res.text();
 }
 
+// ─── Sidebar hamburger toggle ─────────────────────────────────────────────────
+function initSidebarToggle() {
+  const toggle = document.getElementById('sidebar-toggle');
+  const nav = document.getElementById('sidebar-nav');
+  if (!toggle || !nav) return;
+
+  toggle.addEventListener('click', () => {
+    const isOpen = nav.classList.toggle('open');
+    toggle.innerHTML = isOpen ? '&times;' : '&#9776;';
+  });
+}
+
 // ─── Tab navigation ───────────────────────────────────────────────────────────
 function initTabs() {
+  const nav = document.getElementById('sidebar-nav');
+  const toggle = document.getElementById('sidebar-toggle');
+
   document.querySelectorAll('.nav-tab').forEach(btn => {
     btn.addEventListener('click', () => {
       const tab = btn.dataset.tab;
@@ -68,6 +83,10 @@ function initTabs() {
       document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
       btn.classList.add('active');
       document.getElementById(`tab-${tab}`).classList.add('active');
+
+      // Close mobile menu on tab switch
+      if (nav) nav.classList.remove('open');
+      if (toggle) toggle.innerHTML = '&#9776;';
 
       // Lazy-load tab data on first visit; reuse cache if available
       if (tab === 'blog') {
@@ -1159,6 +1178,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (contentContainer) contentContainer.style.display = 'flex';
 
   // Wire up everything
+  initSidebarToggle();
   initTabs();
   initModalClose();
   initToggleForms();
