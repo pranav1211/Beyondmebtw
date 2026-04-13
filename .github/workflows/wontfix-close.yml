@@ -1,0 +1,26 @@
+name: Close Wontfix Issues
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  issues: write
+
+jobs:
+  close-wontfix:
+    name: Close issue labeled wontfix
+    if: github.event.label.name == 'wontfix'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close issue with comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue comment "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --body "Rejected during triage. Closing as wontfix."
+
+          gh issue close "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --reason "not planned"
