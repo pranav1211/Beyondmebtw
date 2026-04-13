@@ -1,9 +1,14 @@
 const express = require('express');
-const { exec } = require('child_process');
+const { execFile } = require('child_process');
 const crypto = require('crypto');
 
 const scriptPath = '/shellfiles/beyond.sh';
 const app = express();
+
+// Validate critical environment variable at startup
+if (!process.env.beyondmegitkey) {
+  console.error('CRITICAL: beyondmegitkey environment variable is not set. Webhook signature verification will reject all requests.');
+}
 
 // Middleware to capture raw body for webhook signature verification
 app.use('/bmbg', express.raw({ type: 'application/json' }));
@@ -12,7 +17,7 @@ app.use('/bmbg', express.raw({ type: 'application/json' }));
 function verifyGitHubSignature(payload, signature) {
   const secret = process.env.beyondmegitkey;
   if (!secret) {
-    console.error('GitHub webhook secret not found in environment variables');
+    console.error('GitHub webhook secret not found in environment variables — rejecting request');
     return false;
   }
 
@@ -22,23 +27,28 @@ function verifyGitHubSignature(payload, signature) {
     .digest('hex');
 
   const actualSignature = signature.replace('sha256=', '');
-  
+
   return crypto.timingSafeEqual(
     Buffer.from(expectedSignature, 'hex'),
     Buffer.from(actualSignature, 'hex')
   );
 }
 
+// Helper to run the deploy script safely using execFile instead of exec
+function runDeployScript(callback) {
+  execFile('sh', [scriptPath], { timeout: 30000 }, callback);
+}
+
 // Handle GET requests (when visiting in browser)
 app.get('/bmbg', (req, res) => {
-  exec(`sh ${scriptPath}`, (error, stdout, stderr) => {
+  runDeployScript((error, stdout, stderr) => {
     if (error) {
       console.error(`Error executing script: ${error}`);
       return res.status(500).send(`
         <html>
         <body>
           <h1>Error executing script</h1>
-          <p>${error.message}</p>
+          <p>An error occurred while running the deploy script.</p>
           <a href="javascript:history.back()">Go Back</a>
         </body>
         </html>
@@ -66,7 +76,7 @@ app.get('/bmbg', (req, res) => {
 // Handle POST requests with GitHub webhook signature verification
 app.post('/bmbg', (req, res) => {
   const signature = req.get('X-Hub-Signature-256');
-  
+
   if (!signature) {
     console.error('No signature provided');
     return res.status(401).json({ message: 'Unauthorized: No signature provided' });
@@ -79,7 +89,7 @@ app.post('/bmbg', (req, res) => {
 
   console.log('GitHub webhook signature verified successfully');
 
-  exec(`sh ${scriptPath}`, (error, stdout, stderr) => {
+  runDeployScript((error, stdout, stderr) => {
     if (error) {
       console.error(`Error executing script: ${error}`);
       return res.status(500).json({
