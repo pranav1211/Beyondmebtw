@@ -36,8 +36,14 @@ const BLOG_BASE_PATH = "/bmbsifi/Beyondmebtw/blog";
 function loadCategoriesConfig() {
   try {
     if (fs.existsSync(CATEGORIES_CONFIG_PATH)) {
-      CATEGORY_CONFIG = JSON.parse(fs.readFileSync(CATEGORIES_CONFIG_PATH, "utf8"));
-      console.log("Categories config loaded from file");
+      const raw = fs.readFileSync(CATEGORIES_CONFIG_PATH, "utf8");
+      const parsed = safeJSONParse(raw, null);
+      if (parsed !== null && typeof parsed === 'object') {
+        CATEGORY_CONFIG = parsed;
+        console.log("Categories config loaded from file");
+      } else {
+        console.error("categories-config.json contains invalid data, using defaults");
+      }
     }
   } catch (e) {
     console.error("Error loading categories config:", e);
@@ -71,12 +77,28 @@ function rebuildBlogUrls() {
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
+
+// Safe JSON parse wrapper that returns a default value on failure
+function safeJSONParse(str, defaultValue = null) {
+  try {
+    const parsed = JSON.parse(str);
+    return parsed;
+  } catch (e) {
+    console.error("JSON parse error:", e.message);
+    return defaultValue;
+  }
+}
+
 function getJSONBody(request, callback) {
   let body = "";
   request.on("data", chunk => { body += chunk.toString(); });
   request.on("end", () => {
-    try { callback(null, JSON.parse(body)); }
-    catch (e) { callback(e, null); }
+    const parsed = safeJSONParse(body);
+    if (parsed === null) {
+      callback(new Error("Invalid JSON in request body"), null);
+    } else {
+      callback(null, parsed);
+    }
   });
   request.on("error", e => callback(e, null));
 }
@@ -102,7 +124,12 @@ function loadExistingData() {
   const jsonPath = nodePath.join(__dirname, "latest.json");
   try {
     if (fs.existsSync(jsonPath)) {
-      const existing = JSON.parse(fs.readFileSync(jsonPath, "utf8"));
+      const raw = fs.readFileSync(jsonPath, "utf8");
+      const existing = safeJSONParse(raw, null);
+      if (existing === null || typeof existing !== 'object') {
+        console.error("latest.json contains invalid data, skipping load");
+        return;
+      }
       jsdata.mainPost = existing.mainPost || {};
       jsdata.featured = existing.featured || Array(4).fill(null).map(() => ({}));
       jsdata.featuredProjects = existing.featuredProjects || [1, 2, 3, 4];
@@ -120,8 +147,8 @@ function loadJSON(callback) {
     let data = "";
     res.on("data", chunk => { data += chunk; });
     res.on("end", () => {
-      try {
-        const parsed = JSON.parse(data);
+      const parsed = safeJSONParse(data, null);
+      if (parsed !== null && typeof parsed === 'object') {
         jsdata.mainPost = { ...jsdata.mainPost, ...parsed.mainPost } || jsdata.mainPost;
         if (Array.isArray(parsed.featured)) {
           for (let i = 0; i < Math.min(parsed.featured.length, 4); i++) {
@@ -134,8 +161,8 @@ function loadJSON(callback) {
         if (parsed.featuredProjects) {
           jsdata.featuredProjects = parsed.featuredProjects;
         }
-      } catch (e) {
-        console.error("Error parsing remote latest.json:", e);
+      } else {
+        console.error("Remote latest.json returned invalid data, skipping merge");
       }
       callback();
     });
@@ -152,15 +179,15 @@ function loadBlogJSON(category, callback) {
     let data = "";
     res.on("data", chunk => { data += chunk; });
     res.on("end", () => {
-      try {
-        const parsed = JSON.parse(data);
+      const parsed = safeJSONParse(data, null);
+      if (parsed !== null && typeof parsed === 'object') {
         blogData[category] = {
           subcategories: parsed.subcategories || [],
           posts: parsed.posts || []
         };
         console.log(`Blog data loaded for ${category}`);
-      } catch (e) {
-        console.error(`Parse error for ${category}:`, e);
+      } else {
+        console.error(`Parse error for ${category}: invalid JSON data`);
         blogData[category] = { subcategories: [], posts: [] };
       }
       callback();
@@ -213,12 +240,18 @@ function writeProjectsJSON(projects, callback) {
 function readProjectsJSON() {
   try {
     if (fs.existsSync(PROJECTS_JSON_PATH)) {
-      return JSON.parse(fs.readFileSync(PROJECTS_JSON_PATH, "utf8"));
+      const raw = fs.readFileSync(PROJECTS_JSON_PATH, "utf8");
+      const parsed = safeJSONParse(raw, null);
+      if (Array.isArray(parsed)) return parsed;
+      console.error("project-data.json does not contain a valid array, trying fallback");
     }
     // Fallback to local dev path
     const localPath = nodePath.join(__dirname, "../projects/project-data.json");
     if (fs.existsSync(localPath)) {
-      return JSON.parse(fs.readFileSync(localPath, "utf8"));
+      const raw = fs.readFileSync(localPath, "utf8");
+      const parsed = safeJSONParse(raw, null);
+      if (Array.isArray(parsed)) return parsed;
+      console.error("Local project-data.json does not contain a valid array");
     }
     return [];
   } catch (e) {
