@@ -1,4 +1,5 @@
-name: Close Wontfix Issues
+# Companion to codex-review.yml — auto-closes issues labeled "wontfix" or "no-issues"
+name: Close Wontfix / No-Issues
 
 on:
   issues:
@@ -24,3 +25,20 @@ jobs:
           gh issue close "${{ github.event.issue.number }}" \
             --repo "${{ github.repository }}" \
             --reason "not planned"
+
+  close-no-issues:
+    name: Close clean review report
+    if: github.event.label.name == 'no-issues'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close issue with comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue comment "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --body "Clean review acknowledged. Closing."
+
+          gh issue close "${{ github.event.issue.number }}" \
+            --repo "${{ github.repository }}" \
+            --reason "completed"

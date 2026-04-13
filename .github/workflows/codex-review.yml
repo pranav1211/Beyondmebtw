@@ -1,3 +1,13 @@
+# ╔══════════════════════════════════════════════════════════════════════════════╗
+# ║  Codex Code Review — BeyondMeBtw                                           ║
+# ║  Personal blog & portfolio platform                                        ║
+# ║                                                                            ║
+# ║  REQUIRES:                                                                 ║
+# ║  - Repository secret: OPENAI_API_KEY                                       ║
+# ║  - Companion file: AGENTS.md at repo root (review rulesets)                ║
+# ║  - Optional: .github/workflows/wontfix-close.yml (auto-close rejected)    ║
+# ╚══════════════════════════════════════════════════════════════════════════════╝
+
 name: Codex Code Review
 
 on:
@@ -48,6 +58,10 @@ permissions:
   contents: read
   issues: write
 
+env:
+  PROJECT_DESCRIPTION: "BeyondMeBtw — personal blog and portfolio platform with vanilla JS frontend, Express.js backend, and GitHub webhook deployments"
+  MODEL: "gpt-4.1-mini"
+
 jobs:
   codex-review:
     name: Run Codex Review
@@ -64,6 +78,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh label create "codex-review" --color "7057ff" --description "Codex review finding" --repo "${{ github.repository }}" 2>/dev/null || true
+          gh label create "no-issues" --color "2ea44f" --description "Clean review — no issues found" --repo "${{ github.repository }}" 2>/dev/null || true
           gh label create "P0" --color "d73a4a" --description "Critical" --repo "${{ github.repository }}" 2>/dev/null || true
           gh label create "P1" --color "e4e669" --description "High" --repo "${{ github.repository }}" 2>/dev/null || true
           gh label create "P2" --color "0075ca" --description "Medium" --repo "${{ github.repository }}" 2>/dev/null || true
@@ -91,19 +106,17 @@ jobs:
           fi
 
           if [ "$LINES" -gt 3000 ] && [ "${{ inputs.override_size_limit }}" != "true" ]; then
-            echo "::error::Diff is ${LINES} lines — exceeds hard limit of 3000."
-            echo "::error::Split into smaller commits or re-trigger with override_size_limit=true."
+            echo "::error::Diff is ${LINES} lines — exceeds 3000 line limit. Use override_size_limit=true for large commits."
             exit 1
           fi
 
           if [ "$LINES" -gt 1000 ]; then
-            echo "::warning::Diff is ${LINES} lines — exceeds soft limit of 1000. Review quality may degrade."
+            echo "::warning::Diff is ${LINES} lines — review quality may degrade above 1000."
           fi
 
           git diff ${BASE}..${HEAD} > full.diff
           DIFF_STAT=$(git diff ${BASE}..${HEAD} --stat)
 
-          # Sanitize commit messages (strip metacharacters, cap at 30 lines)
           COMMIT_MSGS=$(git log --format="- %h %s" ${BASE}..${HEAD} \
             | sed 's/[<>\`$\\]//g' \
             | head -30)
@@ -128,7 +141,6 @@ jobs:
           HEAD=$(git rev-parse HEAD)
           echo "head_sha=${HEAD}" >> $GITHUB_OUTPUT
 
-          # Collect all relevant source files
           # Excludes: project subfolders (independent mini-apps), build artifacts,
           # config dirs, V1 legacy site
           find . -type f \( \
@@ -192,6 +204,15 @@ jobs:
 
           PROMPT_HEADER
 
+          # ── Inject AGENTS.md if present ──
+          if [ -f "AGENTS.md" ]; then
+            echo "Review guidelines:" >> codex-prompt.md
+            cat AGENTS.md >> codex-prompt.md
+            echo "" >> codex-prompt.md
+            echo "---" >> codex-prompt.md
+            echo "" >> codex-prompt.md
+          fi
+
           if [ "$MODE" = "recent" ]; then
             cat >> codex-prompt.md << RECENT_EOF
 
@@ -223,12 +244,10 @@ jobs:
 
           AUDIT_EOF
 
-            # Append file listing
             echo "Files to review:" >> codex-prompt.md
             cat audit-files.txt >> codex-prompt.md
             echo "" >> codex-prompt.md
 
-            # Add sub-mode instructions
             if [ "$AUDIT_TYPE" = "performance" ]; then
               cat >> codex-prompt.md << 'PERF_EOF'
 
@@ -283,12 +302,29 @@ jobs:
           - Populate commit_sha with the HEAD commit SHA
           - Populate file_paths with every unique file path referenced in findings
 
+          IMPORTANT — The "report" object is ALWAYS required, whether or not you find issues.
+          The report is a sanity-check summary of the review. Fill it out thoroughly:
+
+          - "areas_reviewed": List every logical area/module you examined (e.g. "auth middleware",
+            "API routes", "database queries", "frontend components"). Be specific, not generic.
+          - "health_notes": Observations about code quality, patterns, and overall health.
+            Note both strengths and areas that are fine now but worth watching. This is NOT
+            a place for findings — it's for context that doesn't rise to a flagged issue.
+          - "recommendations": Forward-looking suggestions — things to consider for future work,
+            not bugs. E.g. "consider adding rate limiting", "test coverage for edge cases in X".
+            Leave empty array if nothing comes to mind.
+
           Output a JSON object with this exact structure:
           {
             "summary": "One paragraph summary of the review",
             "finding_count": <number>,
             "commit_sha": "<full HEAD commit sha>",
             "file_paths": ["path/to/file.js", "path/to/other.js"],
+            "report": {
+              "areas_reviewed": ["area1", "area2"],
+              "health_notes": "Paragraph describing code health observations",
+              "recommendations": ["recommendation1", "recommendation2"]
+            },
             "findings": [
               {
                 "priority": "P0|P1|P2|P3",
@@ -310,7 +346,7 @@ jobs:
           cat > codex-output-schema.json << 'SCHEMA'
           {
             "type": "object",
-            "required": ["summary", "finding_count", "commit_sha", "file_paths", "findings"],
+            "required": ["summary", "finding_count", "commit_sha", "file_paths", "report", "findings"],
             "additionalProperties": false,
             "properties": {
               "summary": { "type": "string" },
@@ -319,6 +355,22 @@ jobs:
               "file_paths": {
                 "type": "array",
                 "items": { "type": "string" }
+              },
+              "report": {
+                "type": "object",
+                "required": ["areas_reviewed", "health_notes", "recommendations"],
+                "additionalProperties": false,
+                "properties": {
+                  "areas_reviewed": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  },
+                  "health_notes": { "type": "string" },
+                  "recommendations": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  }
+                }
               },
               "findings": {
                 "type": "array",
@@ -351,7 +403,7 @@ jobs:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           prompt-file: codex-prompt.md
           sandbox: read-only
-          model: gpt-4.1-mini
+          model: ${{ env.MODEL }}
           output-schema-file: codex-output-schema.json
           output-file: codex-output.json
 
@@ -362,138 +414,168 @@ jobs:
           path: codex-output.json
           retention-days: 30
 
-      # ── Create one GitHub Issue per finding ──────────────────────────────────
+      # ── Create GitHub Issues from findings ──────────────────────────────────
       - name: Create GitHub Issues from findings
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python3 << 'PYTHON'
-          import json, subprocess, os
+          set -euo pipefail
 
-          with open("codex-output.json") as f:
-              review = json.load(f)
+          FINDING_COUNT=$(jq -r '.finding_count' codex-output.json)
+          COMMIT_SHA=$(jq -r '.commit_sha' codex-output.json)
+          SUMMARY=$(jq -r '.summary' codex-output.json)
 
-          mode = "${{ inputs.mode }}"
-          audit_type = "${{ inputs.audit_type }}"
-          depth = "${{ inputs.review_depth }}"
-          actor = "${{ github.actor }}"
-          run_url = "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          MODE="${{ inputs.mode }}"
+          AUDIT_TYPE="${{ inputs.audit_type }}"
+          DEPTH="${{ inputs.review_depth }}"
+          ACTOR="${{ github.actor }}"
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          REPO="${{ github.repository }}"
 
-          if mode == "recent":
-              head = "${{ steps.diff-context.outputs.head_sha }}"[:8]
-              base = "${{ steps.diff-context.outputs.base_sha }}"[:8]
-              diff_lines = os.environ.get("DIFF_LINES", "?")
-              mode_label = f"Recent Changes ({base}..{head}, {diff_lines} lines)"
-          else:
-              head = "${{ steps.audit-context.outputs.head_sha }}"[:8]
-              file_count = os.environ.get("FILE_COUNT", "?")
-              mode_label = f"Full Audit — {audit_type} ({file_count} files)"
+          if [ "$MODE" = "recent" ]; then
+            HEAD_SHORT=$(echo "${{ steps.diff-context.outputs.head_sha }}" | cut -c1-8)
+            BASE_SHORT=$(echo "${{ steps.diff-context.outputs.base_sha }}" | cut -c1-8)
+            MODE_LABEL="Recent Changes (${BASE_SHORT}..${HEAD_SHORT}, ${{ env.DIFF_LINES }} lines)"
+          else
+            HEAD_SHORT=$(echo "${{ steps.audit-context.outputs.head_sha }}" | cut -c1-8)
+            MODE_LABEL="Full Audit — ${AUDIT_TYPE} (${{ env.FILE_COUNT }} files)"
+          fi
 
-          commit_sha_full = review.get("commit_sha", "")
+          # ── Extract report fields ──
+          HEALTH_NOTES=$(jq -r '.report.health_notes // "No health notes provided."' codex-output.json)
+          AREAS_LIST=$(jq -r '.report.areas_reviewed // [] | map("- " + .) | join("\n")' codex-output.json)
+          RECS_LIST=$(jq -r '.report.recommendations // [] | map("- " + .) | join("\n")' codex-output.json)
 
-          # Post summary issue if there are findings
-          if not review["findings"]:
-              print("No findings — skipping issue creation.")
+          if [ "$FINDING_COUNT" -eq 0 ] || [ "$(jq '.findings | length' codex-output.json)" -eq 0 ]; then
+            echo "No findings — creating sanity check report issue."
 
-              # Create a single summary issue noting clean review
-              body_lines = [
-                  f"## Codex Review — `{head}`",
-                  f"",
-                  f"**Mode:** {mode_label}",
-                  f"**Depth:** `{depth}`",
-                  f"**Triggered by:** @{actor}",
-                  f"**Workflow run:** [View logs]({run_url})",
-                  f"",
-                  f"### Result",
-                  f"",
-                  f"No issues found at the requested review depth.",
-                  f"",
-                  f"---",
-                  f"*Generated by Codex via GitHub Actions.*",
-              ]
-              body = "\n".join(body_lines)
-              with open("clean-issue.txt", "w") as f:
-                  f.write(body)
+            BODY="## Codex Review — \`${HEAD_SHORT}\` — Sanity Check Report
 
-              subprocess.run([
-                  "gh", "issue", "create",
-                  "--title", f"Codex Review: {head} ({depth}) — Clean",
-                  "--body-file", "clean-issue.txt",
-                  "--label", "codex-review",
-                  "--repo", os.environ.get("GITHUB_REPOSITORY", "")
-              ], check=True)
-              print("Clean review issue created.")
-          else:
-              print(f"Creating {len(review['findings'])} issues...")
+          **Mode:** ${MODE_LABEL}
+          **Depth:** \`${DEPTH}\`
+          **Triggered by:** @${ACTOR}
+          **Workflow run:** [View logs](${RUN_URL})
 
-              for i, finding in enumerate(review["findings"]):
-                  priority = finding["priority"]
-                  title = finding["title"]
-                  file_ = finding.get("file", "")
-                  linenos = finding.get("lines", "")
-                  explanation = finding["explanation"]
-                  suggestion = finding["suggestion"]
-                  group = finding.get("group", "General")
+          ---
 
-                  loc = f"`{file_}`" if file_ else ""
-                  if linenos:
-                      loc += f" — Line(s): {linenos}"
+          ### Summary
+          ${SUMMARY}
 
-                  body_lines = [
-                      f"## Codex Review Finding",
-                      f"",
-                      f"**Review:** `{head}` | **Mode:** {mode_label} | **Depth:** `{depth}`",
-                      f"**Triggered by:** @{actor} | **Run:** [View logs]({run_url})",
-                      f"**Group:** {group}",
-                      f"",
-                      f"---",
-                      f"",
-                      f"### {title}",
-                      f"",
-                  ]
-                  if loc:
-                      body_lines.append(f"**Location:** {loc}")
-                      body_lines.append(f"")
-                  body_lines.extend([
-                      f"**Explanation:**",
-                      f"{explanation}",
-                      f"",
-                      f"**Suggested fix:**",
-                      f"{suggestion}",
-                      f"",
-                      f"---",
-                      f"*Generated by Codex via GitHub Actions.*",
-                      f"*Apply the `fix` label to have Claude Code implement this fix.*",
-                      f"*Apply the `wontfix` label to reject and close.*",
-                      f"",
-                      f"<!-- codex-meta: {{\"commit_sha\": \"{commit_sha_full}\", \"priority\": \"{priority}\", \"group\": \"{group}\", \"file\": \"{file_}\"}} -->",
-                  ])
+          ### Areas Reviewed
+          ${AREAS_LIST}
 
-                  body = "\n".join(body_lines)
-                  issue_file = f"issue-{i}.txt"
-                  with open(issue_file, "w") as f:
-                      f.write(body)
+          ### Code Health
+          ${HEALTH_NOTES}
 
-                  issue_title = f"[Codex/{priority}] {title}"
-                  # Truncate title to 256 chars (GitHub limit)
-                  if len(issue_title) > 256:
-                      issue_title = issue_title[:253] + "..."
+          ### Recommendations
+          ${RECS_LIST:-_None — looking good._}
 
-                  # Determine labels
-                  labels = f"codex-review,{priority}"
+          ---
 
-                  result = subprocess.run([
-                      "gh", "issue", "create",
-                      "--title", issue_title,
-                      "--body-file", issue_file,
-                      "--label", labels,
-                      "--repo", os.environ.get("GITHUB_REPOSITORY", "")
-                  ], capture_output=True, text=True)
+          **Result:** No issues found at the \`${DEPTH}\` review depth.
 
-                  if result.returncode == 0:
-                      print(f"  Created: {issue_title} -> {result.stdout.strip()}")
-                  else:
-                      print(f"  FAILED: {issue_title} -> {result.stderr}")
+          ---
+          *Generated by Codex via GitHub Actions.*
+          *Apply \`wontfix\` to dismiss and close.*"
 
-              print(f"Done. {len(review['findings'])} issues created.")
-          PYTHON
+            echo "$BODY" | gh issue create \
+              --title "Codex Review: ${HEAD_SHORT} (${DEPTH}) — Clean" \
+              --body-file - \
+              --label "codex-review,no-issues" \
+              --repo "$REPO"
+            exit 0
+          fi
+
+          echo "Creating ${FINDING_COUNT} issues..."
+
+          jq -c '.findings[]' codex-output.json | while IFS= read -r finding; do
+            PRIORITY=$(echo "$finding" | jq -r '.priority')
+            TITLE=$(echo "$finding" | jq -r '.title')
+            FILE=$(echo "$finding" | jq -r '.file')
+            LINES=$(echo "$finding" | jq -r '.lines')
+            EXPLANATION=$(echo "$finding" | jq -r '.explanation')
+            SUGGESTION=$(echo "$finding" | jq -r '.suggestion')
+            GROUP=$(echo "$finding" | jq -r '.group // "General"')
+
+            LOC=""
+            if [ -n "$FILE" ] && [ "$FILE" != "null" ]; then
+              LOC="\`${FILE}\`"
+              if [ -n "$LINES" ] && [ "$LINES" != "null" ]; then
+                LOC="${LOC} — Line(s): ${LINES}"
+              fi
+            fi
+
+            BODY="## Codex Review Finding
+
+          **Review:** \`${HEAD_SHORT}\` | **Mode:** ${MODE_LABEL} | **Depth:** \`${DEPTH}\`
+          **Triggered by:** @${ACTOR} | **Run:** [View logs](${RUN_URL})
+          **Group:** ${GROUP}
+
+          ---
+
+          ### ${TITLE}
+          "
+            if [ -n "$LOC" ]; then
+              BODY="${BODY}
+          **Location:** ${LOC}
+          "
+            fi
+
+            BODY="${BODY}
+          **Explanation:**
+          ${EXPLANATION}
+
+          **Suggested fix:**
+          ${SUGGESTION}
+
+          ---
+          *Generated by Codex via GitHub Actions.*
+          *Apply \`fix\` label to have Claude Code implement. Apply \`wontfix\` to reject and close.*
+
+          <!-- codex-meta: {\"commit_sha\": \"${COMMIT_SHA}\", \"priority\": \"${PRIORITY}\", \"group\": \"${GROUP}\", \"file\": \"${FILE}\"} -->"
+
+            ISSUE_TITLE="[Codex/${PRIORITY}] ${TITLE}"
+            ISSUE_TITLE=$(echo "$ISSUE_TITLE" | cut -c1-256)
+
+            echo "$BODY" | gh issue create \
+              --title "$ISSUE_TITLE" \
+              --body-file - \
+              --label "codex-review,${PRIORITY}" \
+              --repo "$REPO" \
+              && echo "  Created: $ISSUE_TITLE" \
+              || echo "  FAILED: $ISSUE_TITLE"
+          done
+
+          # ── Summary issue with report when there ARE findings ──
+          BODY="## Codex Review Summary — \`${HEAD_SHORT}\`
+
+          **Mode:** ${MODE_LABEL}
+          **Depth:** \`${DEPTH}\`
+          **Findings:** ${FINDING_COUNT}
+          **Triggered by:** @${ACTOR}
+          **Workflow run:** [View logs](${RUN_URL})
+
+          ---
+
+          ### Summary
+          ${SUMMARY}
+
+          ### Areas Reviewed
+          ${AREAS_LIST}
+
+          ### Code Health
+          ${HEALTH_NOTES}
+
+          ### Recommendations
+          ${RECS_LIST:-_None._}
+
+          ---
+          *Generated by Codex via GitHub Actions.*"
+
+          echo "$BODY" | gh issue create \
+            --title "Codex Review Summary: ${HEAD_SHORT} (${DEPTH}) — ${FINDING_COUNT} findings" \
+            --body-file - \
+            --label "codex-review" \
+            --repo "$REPO"
+
+          echo "Done."
