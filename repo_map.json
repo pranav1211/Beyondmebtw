@@ -1,0 +1,325 @@
+{
+  "metadata": {
+    "repo_name": "Beyondmebtw",
+    "primary_language": "javascript",
+    "entrypoints": [
+      "index.html",
+      "beyondgitman.js",
+      "manage/manageserver.js"
+    ],
+    "map_generated_at": "2026-04-13T10:00:00Z",
+    "based_on_commit": "167799f"
+  },
+  "structure": [
+    {
+      "path": "about/about.js",
+      "type": "file",
+      "summary": "About page with image slider, renders skills and experience from imported data modules",
+      "symbols": [
+        { "name": "renderExperience", "summary": "Builds experience timeline HTML from experienceData array" },
+        { "name": "renderSkills", "summary": "Renders categorized skill tags with subcategory support" }
+      ]
+    },
+    {
+      "path": "about/data/experience-data.js",
+      "type": "file",
+      "summary": "Exports structured experience data for organizations and roles",
+      "symbols": [
+        { "name": "experienceData", "summary": "Array of organizations with nested roles and descriptions" }
+      ]
+    },
+    {
+      "path": "about/data/skills-data.js",
+      "type": "file",
+      "summary": "Exports categorized skills data with icons and colors",
+      "symbols": [
+        { "name": "skillsData", "summary": "Object mapping skill categories to subcategories and skill arrays" }
+      ]
+    },
+    {
+      "path": "analytics.js",
+      "type": "file",
+      "summary": "Site-wide GoatCounter analytics with bot filtering and live presence heartbeat via localStorage",
+      "symbols": [
+        { "name": "beat", "summary": "Writes visitor heartbeat to localStorage for live presence tracking" },
+        { "name": "leave", "summary": "Removes visitor from localStorage presence data on page exit" }
+      ]
+    },
+    {
+      "path": "beyondgitman.js",
+      "type": "file",
+      "summary": "Express server handling GitHub webhook-triggered deployments with HMAC signature verification",
+      "symbols": [
+        { "name": "verifyGitHubSignature", "summary": "Validates GitHub webhook payload using HMAC SHA-256 signature" }
+      ]
+    },
+    {
+      "path": "blog/blog.js",
+      "type": "file",
+      "summary": "Blog listing page with category/subcategory filtering, search, pagination, and lazy image loading",
+      "symbols": [
+        { "name": "applyFilters", "summary": "Filters posts by category, subcategory, and search term then renders" },
+        { "name": "applyUrlFilters", "summary": "Reads URL query params to pre-select category and subcategory" },
+        { "name": "createPostCard", "summary": "Creates DOM element for a blog post card with lazy-loaded thumbnail" },
+        { "name": "fetchWithCache", "summary": "Fetches JSON from URL with HTTP error handling" },
+        { "name": "formatDate", "summary": "Formats date string to localized long-form US English" },
+        { "name": "getCategoryTitle", "summary": "Maps category key to human-readable display title" },
+        { "name": "initializePage", "summary": "Entry point that loads data, applies URL filters, and renders posts" },
+        { "name": "lazyLoadImage", "summary": "Uses IntersectionObserver to defer image loading until visible" },
+        { "name": "loadAllData", "summary": "Fetches all category JSON files and merges posts sorted by date" },
+        { "name": "renderPosts", "summary": "Appends paginated post cards to the grid and updates load-more state" },
+        { "name": "selectSubcategory", "summary": "Sets active subcategory filter and re-renders posts" },
+        { "name": "setupFilters", "summary": "Attaches click handlers to category filter buttons" },
+        { "name": "setupSearch", "summary": "Debounced search input handler that triggers filter re-application" },
+        { "name": "updateSubcategoryFilters", "summary": "Dynamically builds subcategory buttons from loaded mappings" }
+      ]
+    },
+    {
+      "path": "manage/authentication.js",
+      "type": "file",
+      "summary": "Cookie-based authentication system for protected manage pages with login and redirect logic",
+      "symbols": [
+        { "name": "AuthenticationSystem", "summary": "Class managing auth cookies, login flow, and page access protection" }
+      ]
+    },
+    {
+      "path": "manage/index.js",
+      "type": "file",
+      "summary": "Admin dashboard client logic for managing homepage posts, blog entries, and projects via API",
+      "symbols": [
+        { "name": "apiCall", "summary": "Generic fetch wrapper that injects auth key and handles responses" },
+        { "name": "getKey", "summary": "Returns stored auth key from the authentication system" },
+        { "name": "initSidebarToggle", "summary": "Sets up hamburger menu toggle for mobile sidebar navigation" },
+        { "name": "initTabs", "summary": "Initializes tab switching between Homepage, Blog, and Projects views" },
+        { "name": "toast", "summary": "Displays a temporary notification message with success or error styling" }
+      ]
+    },
+    {
+      "path": "manage/manageserver.js",
+      "type": "file",
+      "summary": "Node.js HTTP server providing REST API for blog posts, projects, categories, and authentication",
+      "symbols": [
+        { "name": "addNewBlogPost", "summary": "Appends a new post to in-memory blog data for a given category" },
+        { "name": "deleteBlogPost", "summary": "Removes a blog post by UID from the specified category" },
+        { "name": "executeScript", "summary": "Runs a shell script to sync JSON changes to the live site" },
+        { "name": "getJSONBody", "summary": "Parses incoming request body as JSON with error handling" },
+        { "name": "loadAllBlogData", "summary": "Fetches all category blog JSON files on server startup" },
+        { "name": "loadBlogJSON", "summary": "Fetches blog data for a single category from the live site" },
+        { "name": "loadCategoriesConfig", "summary": "Reads category configuration from JSON file on disk" },
+        { "name": "loadExistingData", "summary": "Loads latest.json from disk into in-memory state" },
+        { "name": "loadJSON", "summary": "Fetches latest.json from live site and merges with local state" },
+        { "name": "readProjectsJSON", "summary": "Reads project-data.json from server or local fallback path" },
+        { "name": "sendJSON", "summary": "Sends a JSON response with proper content-type header" },
+        { "name": "updateBlogPost", "summary": "Updates allowed fields of an existing blog post by UID" },
+        { "name": "updateLatestJSONCategories", "summary": "Updates latest.json category entries with newest post metadata" },
+        { "name": "updateLatestPost", "summary": "Updates homepage main post or featured slots by form ID" },
+        { "name": "validateKey", "summary": "Checks request auth key against server passkey" },
+        { "name": "writeBlogJSONFile", "summary": "Persists in-memory blog data to category JSON file on disk" },
+        { "name": "writeJSONFile", "summary": "Writes latest.json to disk from in-memory state" },
+        { "name": "writeProjectsJSONSafe", "summary": "Writes project-data.json with server path and local fallback" }
+      ]
+    },
+    {
+      "path": "music/audio-monitor.js",
+      "type": "file",
+      "summary": "Real-time audio monitoring tool using Web Audio API with waveform visualization and latency display",
+      "symbols": [
+        { "name": "AudioMonitor", "summary": "Class providing microphone passthrough with volume control and canvas visualization" }
+      ]
+    },
+    {
+      "path": "projects/beyondpages/js/app.js",
+      "type": "file",
+      "summary": "Kindle-style PDF reader app coordinating file upload, drag-and-drop, and reader initialization",
+      "symbols": [
+        { "name": "KindlePDFReader", "summary": "Main application class handling PDF upload and reader lifecycle" }
+      ]
+    },
+    {
+      "path": "projects/beyondpages/js/pdf-handler.js",
+      "type": "file",
+      "summary": "PDF loading and text extraction using PDF.js with page caching and preloading",
+      "symbols": [
+        { "name": "PDFHandler", "summary": "Manages PDF document loading, page text extraction, and caching" }
+      ]
+    },
+    {
+      "path": "projects/beyondpages/js/reader.js",
+      "type": "file",
+      "summary": "Reading interface with page navigation, progress tracking, and keyboard shortcuts",
+      "symbols": [
+        { "name": "Reader", "summary": "Manages reading UI, page display, navigation, and progress bar" }
+      ]
+    },
+    {
+      "path": "projects/f1hapticandroid/script.js",
+      "type": "file",
+      "summary": "F1 haptic feedback experience syncing vibration patterns to YouTube video playback timestamps",
+      "symbols": [
+        { "name": "checkVibrations", "summary": "Matches current video time to vibration events and triggers patterns" },
+        { "name": "onPlayerReady", "summary": "Sets video quality and locks screen to landscape orientation" },
+        { "name": "onPlayerStateChange", "summary": "Starts or stops vibration checking based on video play state" }
+      ]
+    },
+    {
+      "path": "projects/mynyl/js/audio.js",
+      "type": "file",
+      "summary": "Web Audio API chain with vinyl crackle synthesis, fade helpers, and audio level metering",
+      "symbols": [
+        { "name": "fadeCrackleIn", "summary": "Ramps vinyl crackle noise gain up over specified milliseconds" },
+        { "name": "fadeMusicIn", "summary": "Ramps music gain from zero to full over specified milliseconds" },
+        { "name": "getLevel", "summary": "Returns RMS audio level from analyser for visual groove pulsing" },
+        { "name": "setupAudio", "summary": "Creates AudioContext, gain nodes, analyser, and crackle processor" }
+      ]
+    },
+    {
+      "path": "projects/mynyl/js/player.js",
+      "type": "file",
+      "summary": "Vinyl player state machine handling playback, tonearm drag, queue, themes, and keyboard controls",
+      "symbols": [
+        { "name": "animate", "summary": "Main requestAnimationFrame loop driving record spin and arm tracking" },
+        { "name": "applyThemeSelection", "summary": "Swaps active theme CSS and JS and persists choice to localStorage" },
+        { "name": "handleSongEnd", "summary": "Fades to crackle on song end then advances the play queue" },
+        { "name": "loadAlbumArt", "summary": "Extracts album art from audio file metadata using jsmediatags" },
+        { "name": "loadFile", "summary": "Loads audio file, parses title/artist from filename, sets up playback" },
+        { "name": "queueAdd", "summary": "Adds audio file to play queue and auto-loads if first track" },
+        { "name": "setPlayState", "summary": "Toggles play/pause with audio fading and UI icon updates" },
+        { "name": "setVol", "summary": "Sets master volume and updates volume slider UI" },
+        { "name": "startSpinUp", "summary": "Begins 2-second crackle spin-up before music playback starts" },
+        { "name": "stopAndReset", "summary": "Stops playback, resets time to zero, parks tonearm" }
+      ]
+    },
+    {
+      "path": "projects/mynyl/js/render.js",
+      "type": "file",
+      "summary": "Canvas rendering for vinyl record, tonearm, and background with theme-driven geometry",
+      "symbols": []
+    },
+    {
+      "path": "projects/pairgame/index.js",
+      "type": "file",
+      "summary": "Landing page animations for pair game project with responsive layout adjustments",
+      "symbols": []
+    },
+    {
+      "path": "projects/pairgame/pairgame.py",
+      "type": "file",
+      "summary": "Python-based pair matching game (only non-JS source file in the repo)",
+      "symbols": []
+    },
+    {
+      "path": "projects/projects.js",
+      "type": "file",
+      "summary": "Vue.js app rendering project cards with expanded detail view and image gallery viewer",
+      "symbols": [
+        { "name": "categoryColors", "summary": "Maps project categories to hex color codes for badge styling" }
+      ]
+    },
+    {
+      "path": "projects/uceedanswer/js/config.js",
+      "type": "file",
+      "summary": "Configuration constants for UCEED answer checker including paths and thresholds",
+      "symbols": [
+        { "name": "CONFIG", "summary": "App constants: answer key path, PDF worker URL, similarity threshold, max file size" }
+      ]
+    },
+    {
+      "path": "projects/uceedanswer/js/main.js",
+      "type": "file",
+      "summary": "UCEED score calculator entry point handling file upload, score calculation, and result display",
+      "symbols": [
+        { "name": "handleCalculate", "summary": "Extracts PDF text, parses questions, calculates scores, and displays results" },
+        { "name": "init", "summary": "Loads answer key JSON and sets up all event listeners on DOM ready" },
+        { "name": "processFile", "summary": "Validates uploaded PDF file type and size before storing" }
+      ]
+    },
+    {
+      "path": "projects/uceedanswer/js/pdfGenerator.js",
+      "type": "file",
+      "summary": "Generates downloadable PDF score report using jsPDF with section breakdowns",
+      "symbols": [
+        { "name": "generateResultsPDF", "summary": "Creates multi-page PDF report from calculated score results" }
+      ]
+    },
+    {
+      "path": "projects/uceedanswer/js/pdfParser.js",
+      "type": "file",
+      "summary": "Extracts text from uploaded PDF and parses UCEED question paper into structured sections",
+      "symbols": [
+        { "name": "extractTextFromPDF", "summary": "Uses PDF.js to extract all text content from a PDF file" },
+        { "name": "parseQuestion", "summary": "Parses a single question block into structured fields and answer type" },
+        { "name": "parseQuestionPaper", "summary": "Splits extracted text into NAT, MSQ, and MCQ question sections" }
+      ]
+    },
+    {
+      "path": "projects/uceedanswer/js/questionMatcher.js",
+      "type": "file",
+      "summary": "Fuzzy question matching using Levenshtein distance for answer key lookup",
+      "symbols": [
+        { "name": "calculateSimilarity", "summary": "Computes normalized Levenshtein similarity between two strings" },
+        { "name": "findMatchingQuestion", "summary": "Finds best matching answer key question above similarity threshold" }
+      ]
+    },
+    {
+      "path": "projects/uceedanswer/js/scoreCalculator.js",
+      "type": "file",
+      "summary": "Calculates UCEED scores across NAT, MSQ, and MCQ sections with partial credit support",
+      "symbols": [
+        { "name": "calculateScore", "summary": "Processes all sections and aggregates total score and statistics" },
+        { "name": "processMCQSection", "summary": "Scores MCQ questions with negative marking for wrong answers" },
+        { "name": "processMSQSection", "summary": "Scores MSQ questions with partial credit for subset-correct answers" },
+        { "name": "processNATSection", "summary": "Scores NAT questions with range-based and exact numeric matching" }
+      ]
+    },
+    {
+      "path": "projects/uceedanswer/js/uiRenderer.js",
+      "type": "file",
+      "summary": "Renders score results into the DOM with section breakdowns and question cards",
+      "symbols": [
+        { "name": "displayResults", "summary": "Updates score summary and renders all section results in the UI" },
+        { "name": "generateQuestionCardHTML", "summary": "Builds HTML for individual question result card with status badge" },
+        { "name": "generateSectionHTML", "summary": "Generates section wrapper HTML containing all question cards" },
+        { "name": "renderSectionBreakdown", "summary": "Creates breakdown cards showing per-section score statistics" }
+      ]
+    },
+    {
+      "path": "projects/uceedanswer/js/utils.js",
+      "type": "file",
+      "summary": "Shared utility functions for error display, loading states, JSON fetching, and validation",
+      "symbols": [
+        { "name": "formatAnswer", "summary": "Converts answer value to display string handling arrays and nulls" },
+        { "name": "loadJSON", "summary": "Fetches and parses JSON from a given path with error handling" },
+        { "name": "validateFileSize", "summary": "Throws error if file exceeds configured maximum size limit" }
+      ]
+    },
+    {
+      "path": "script.js",
+      "type": "file",
+      "summary": "Homepage script rendering featured posts, projects grid, and navigation with email link",
+      "symbols": [
+        { "name": "createFeaturedPost", "summary": "Builds DOM element for a featured blog post with formatted date" },
+        { "name": "renderFeaturedPosts", "summary": "Clears and re-renders the featured posts container" },
+        { "name": "renderFeaturedProjects", "summary": "Renders project cards grid from featured project IDs" },
+        { "name": "showToast", "summary": "Displays a temporary toast notification message for 3 seconds" }
+      ]
+    }
+  ],
+  "relationships": {
+    "edges": [
+      { "from": "about/about.js", "to": "about/data/experience-data.js", "type": "es_module_import" },
+      { "from": "about/about.js", "to": "about/data/skills-data.js", "type": "es_module_import" },
+      { "from": "manage/index.js", "to": "manage/authentication.js", "type": "global_reference" },
+      { "from": "manage/manageserver.js", "to": "manage/latest.json", "type": "file_read" },
+      { "from": "projects/beyondpages/js/app.js", "to": "projects/beyondpages/js/pdf-handler.js", "type": "global_reference" },
+      { "from": "projects/beyondpages/js/app.js", "to": "projects/beyondpages/js/reader.js", "type": "global_reference" },
+      { "from": "projects/mynyl/js/player.js", "to": "projects/mynyl/js/audio.js", "type": "global_reference" },
+      { "from": "projects/mynyl/js/player.js", "to": "projects/mynyl/js/render.js", "type": "global_reference" },
+      { "from": "projects/uceedanswer/js/main.js", "to": "projects/uceedanswer/js/config.js", "type": "global_reference" },
+      { "from": "projects/uceedanswer/js/main.js", "to": "projects/uceedanswer/js/pdfParser.js", "type": "global_reference" },
+      { "from": "projects/uceedanswer/js/main.js", "to": "projects/uceedanswer/js/scoreCalculator.js", "type": "global_reference" },
+      { "from": "projects/uceedanswer/js/scoreCalculator.js", "to": "projects/uceedanswer/js/questionMatcher.js", "type": "global_reference" },
+      { "from": "script.js", "to": "manage/latest.json", "type": "fetch" },
+      { "from": "script.js", "to": "projects/project-data.json", "type": "fetch" }
+    ]
+  }
+}
