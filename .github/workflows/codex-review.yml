@@ -331,6 +331,9 @@ jobs:
           }
           SCHEMA
 
+      - name: Install bubblewrap
+        run: sudo apt-get update && sudo apt-get install -y bubblewrap
+
       - name: Run Codex review
         id: run-codex
         uses: openai/codex-action@v1
@@ -339,6 +342,7 @@ jobs:
           prompt-file: codex-prompt.md
           sandbox: read-only
           model: o3-mini
+          codex_args: "--no-web-search"
           output-schema-file: codex-output-schema.json
           output-file: codex-output.json
 
