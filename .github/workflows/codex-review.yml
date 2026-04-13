@@ -278,6 +278,7 @@ jobs:
           {
             "type": "object",
             "required": ["summary", "finding_count", "commit_sha", "file_paths", "findings"],
+            "additionalProperties": false,
             "properties": {
               "summary": { "type": "string" },
               "finding_count": { "type": "integer" },
@@ -290,7 +291,8 @@ jobs:
                 "type": "array",
                 "items": {
                   "type": "object",
-                  "required": ["priority", "title", "file", "explanation", "suggestion"],
+                  "required": ["priority", "title", "file", "lines", "explanation", "suggestion", "group"],
+                  "additionalProperties": false,
                   "properties": {
                     "priority": { "type": "string", "enum": ["P0", "P1", "P2", "P3"] },
                     "title": { "type": "string" },
