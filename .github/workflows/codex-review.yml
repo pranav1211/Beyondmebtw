@@ -59,6 +59,16 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Ensure labels exist
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create "codex-review" --color "7057ff" --description "Codex review finding" --repo "${{ github.repository }}" 2>/dev/null || true
+          gh label create "P0" --color "d73a4a" --description "Critical" --repo "${{ github.repository }}" 2>/dev/null || true
+          gh label create "P1" --color "e4e669" --description "High" --repo "${{ github.repository }}" 2>/dev/null || true
+          gh label create "P2" --color "0075ca" --description "Medium" --repo "${{ github.repository }}" 2>/dev/null || true
+          gh label create "fix" --color "0e8a16" --description "Accepted for fix" --repo "${{ github.repository }}" 2>/dev/null || true
+
       # ── RECENT MODE: Build diff context ──────────────────────────────────────
       - name: Build diff context (recent mode)
         if: inputs.mode == 'recent'
