@@ -12,7 +12,11 @@ class AuthenticationSystem {
     setCookie(name, value, days = 7) {
         const expires = new Date();
         expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
-        document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;domain=${this.cookieDomain};SameSite=Lax`;
+        // Note: HttpOnly cannot be set from client-side JavaScript; it requires
+        // server-side Set-Cookie headers. Secure flag is added to ensure cookies
+        // are only transmitted over HTTPS in production.
+        const secure = window.location.protocol === 'https:' ? ';Secure' : '';
+        document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;domain=${this.cookieDomain};SameSite=Lax${secure}`;
     }
 
     getCookie(name) {
@@ -27,7 +31,8 @@ class AuthenticationSystem {
     }
 
     deleteCookie(name) {
-        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=${this.cookieDomain}`;
+        const secure = window.location.protocol === 'https:' ? ';Secure' : '';
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=${this.cookieDomain};SameSite=Lax${secure}`;
     }
 
     // Check if user is authenticated
