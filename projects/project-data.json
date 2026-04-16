@@ -56,7 +56,8 @@
     "fullDescription": "Minis is a live blogging platform created for me to share quick thoughts, updates, and ideas that don't require a full-length blog post.\n• Conceived, designed, and developed as a way to publish more frequent, short-form content alongside long-form blogs.\n• Built a custom backend with authentication and post management, separated from the main blog system for cleaner architecture.\n• Designed a lightweight yet engaging frontend with an emphasis on readability and performance.\n• Implemented posting functionality as the first feature, with plans for more interactive tools and integrations.\n• Added prominent CTA buttons across Home, Blog, Projects, and About pages to increase visibility and engagement.",
     "logo": "https://beyondmebtw.com/assets/images/minis.png",
     "images": [
-      "https://content.beyondmebtw.com/thumbnails/experience/exp30.webp"
+      "https://content.beyondmebtw.com/thumbnails/experience/exp30.webp",
+      "https://content.beyondmebtw.com/assets/projects/minis/minissm.png"
     ],
     "link": "https://minis.beyondmebtw.com",
     "githubLink": "https://github.com/pranav1211/beyondmebtw",
