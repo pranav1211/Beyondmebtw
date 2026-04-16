@@ -34,7 +34,7 @@
     "fullDescription": "• Independently designed and developed the official website for the Gradient AI/ML club at BMSCE from scratch.\n• Built using React, Next.js, and Tailwind CSS with a strong emphasis on performance, responsiveness, and modern design.\n• Created a dynamic content server and multiple custom pages to showcase events, team members, and club updates.\n• Managed hosting and deployment on Vercel to ensure reliability, scalability, and ease of maintenance.\n• Helped improve the club's digital presence and engagement with the student and tech community.",
     "logo": "https://gradient-content-server.vercel.app/content/logo.png",
     "images": [
-      "/assets/images/projects/grd/Gradient.webp",
+      "https://content.beyondmebtw.com/assets/projects/gradient/Gradient.webp",
       "https://gradient-content-server.vercel.app/content/gallery/home.png"
     ],
     "link": "https://gradient-website-liart.vercel.app",
