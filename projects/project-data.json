@@ -99,7 +99,7 @@
     "fullDescription": "An AI-powered solution that monitors driver alertness and behavior in real-time, detecting signs of fatigue and distraction to prevent accidents and improve road safety.",
     "logo": "https://beyondmebtw.com/assets/images/favicon.ico",
     "images": [
-      "/assets/images/projects/rtdms.webp"
+      "https://content.beyondmebtw.com/assets/projects/rtdms.webp"
     ],
     "link": "https://github.com/pranav1211/RTDMS",
     "githubLink": "https://github.com/pranav1211/RTDMS",
