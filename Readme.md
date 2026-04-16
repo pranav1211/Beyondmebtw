@@ -19,14 +19,23 @@ Also check out other showcases
   - Tech → https://blog.beyondmebtw.com/tech
 
 - **Minis:** [Minis.BeyondMeBtw.com](https://minis.beyondmebtw.com)
-- Projects: 
-
+  
+- **Projects:** [Projects.BeyondMeBtw.com](https://projects.beyondmebtw.com)
+  - **F1 Haptic Trailer:** [beyondmebtw.com/projects/f1hapticandroid](https://beyondmebtw.com/projects/f1hapticandroid)
+  - **Mynyl:** [mynyl.beyondmebtw.com](https://mynyl.beyondmebtw.com)
+  - **Beyond Money:** [beyondmoney.beyondmebtw.com](https://beyondmoney.beyondmebtw.com)
 
 <img src="https://content.beyondmebtw.com/assets/projects/bmb/home.webp" alt="Home page">
 The Current Home Page
 
 
 ## Changelog:
+
+## 5.0 (16/04/2026)
+- since the last update have created 2 new projects, mynyl and beyondmoney.
+- updated content page for better CRUD operations and stylish usability.
+- made changes to the manage page for easier usage for me
+- minor style and performance improvements here and there
 
 ## 4.3 (15/03/26)
 - enhanced manage page, added better operations of CRUD for the posts and added management of projects via the application.
