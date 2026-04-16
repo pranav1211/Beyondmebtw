@@ -136,7 +136,7 @@
     "fullDescription": "• An interactive memory card game where players need to match pairs of identical cards.\n• Features multiple difficulty levels, score tracking, and engaging animations.\n• Based on the classic memory game concept, This was built as a project for an interview as a tech member of the Gradient AI/ML club at BMSCE.",
     "logo": "https://beyondmebtw.com/assets/images/favicon.ico",
     "images": [
-      "/assets/images/projects/pair.webp"
+      "https://content.beyondmebtw.com/assets/projects/pair.webp"
     ],
     "link": "https://beyondmebtw.com/projects/pairgame",
     "githubLink": "https://github.com/pranav1211/Pair-Game",
