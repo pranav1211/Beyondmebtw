@@ -251,8 +251,10 @@
     "fullDescription": "",
     "logo": "https://content.beyondmebtw.com/assets/bmb_logos/bmbmoney.png",
     "link": "https://beyondmoney.beyondmebtw.com",
-    "githubLink": "",
+    "githubLink": "github.com/pranav1211/beyond-money-public",
     "tags": [],
-    "images": []
+    "images": [
+      "https://content.beyondmebtw.com/assets/projects/bmoney/bmoneyt.webp"
+    ]
   }
 ]
