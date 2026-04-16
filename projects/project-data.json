@@ -117,7 +117,7 @@
     "fullDescription": "• A digital library management system allowing users to catalog, search, and organize their book collections.\n• Features include reading progress tracking and book recommendations.\n• The book information is fetched from the Google Books API.",
     "logo": "https://beyondmebtw.com/assets/images/favicon.ico",
     "images": [
-      "/assets/images/projects/mylib.webp"
+      "https://content.beyondmebtw.com/assets/projects/my-library/mylib.webp"
     ],
     "link": "https://library.beyondmebtw.com",
     "githubLink": "https://github.com/pranav1211/My-Library",
