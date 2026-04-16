@@ -19,9 +19,10 @@ Also check out other showcases
   - Tech → https://blog.beyondmebtw.com/tech
 
 - **Minis:** [Minis.BeyondMeBtw.com](https://minis.beyondmebtw.com)
+- Projects: 
 
 
-<img src="https://beyondmebtw.com/assets/images/homer.png" alt="Home page">
+<img src="https://content.beyondmebtw.com/assets/projects/bmb/home.webp" alt="Home page">
 The Current Home Page
 
 
