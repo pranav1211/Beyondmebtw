@@ -1,185 +1,242 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-MPMGLTV79J"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <head>
+        <!-- Google tag (gtag.js) -->
+        <script async
+            src="https://www.googletagmanager.com/gtag/js?id=G-MPMGLTV79J"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-MPMGLTV79J');
+        </script>
 
-  gtag('config', 'G-MPMGLTV79J');
-</script>
-    <meta name="description"
-        content="Explore projects by Pranav Veeraghanta - A showcase of innovation and creativity across various domains.">
+        <meta name="description"
+            content="Explore projects by Pranav Veeraghanta - A showcase of innovation and creativity across various domains.">
 
-    <title>Projects | BeyondMeBtw</title>
+        <title>Projects | BeyondMeBtw</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1"
+            charset="utf-8">
 
-    <link rel="icon" type="image/x-icon" href="https://beyondmebtw.com/assets/images/favicon.ico">
-    <meta property="og:image" content="https://beyondmebtw.com/assets/images/favicon.ico">
-    <style>
+        <link rel="icon" type="image/x-icon"
+            href="https://beyondmebtw.com/assets/images/favicon.ico">
+        <style>
         @import url('https://fonts.googleapis.com/css2?family=Delius&family=Kavoon&family=Kreon:wght@300..700&family=Permanent+Marker&display=swap');
     </style>
 
-    <!-- Shared CSS Files -->
-    <link rel="stylesheet" href="https://beyondmebtw.com/css/base.css">
-    <link rel="stylesheet" href="https://beyondmebtw.com/css/header.css">
-    <link rel="stylesheet" href="https://beyondmebtw.com/css/buttons.css">
+        <!-- Shared CSS Files -->
+        <link rel="stylesheet" href="https://beyondmebtw.com/css/base.css">
+        <link rel="stylesheet" href="https://beyondmebtw.com/css/header.css">
+        <link rel="stylesheet" href="https://beyondmebtw.com/css/buttons.css">
 
-    <!-- Page-Specific CSS Files -->
-    <link rel="stylesheet" href="projects.css">
-    <link rel="stylesheet" href="projgrid-normal.css">
-    <link rel="stylesheet" href="projgrid-sidebar.css">
+        <!-- Page-Specific CSS Files -->
+        <link rel="stylesheet" href="projects.css">
+        <link rel="stylesheet" href="projgrid-normal.css">
+        <link rel="stylesheet" href="projgrid-sidebar.css">
 
-    <!-- Responsive and Special CSS -->
-    <link rel="stylesheet" href="https://beyondmebtw.com/css/responsive-unified.css">
-    <link rel="stylesheet" href="https://beyondmebtw.com/css/specials.css">
+        <!-- Responsive and Special CSS -->
+        <link rel="stylesheet"
+            href="https://beyondmebtw.com/css/responsive-unified.css">
+        <link rel="stylesheet" href="https://beyondmebtw.com/css/specials.css">
 
-    <!-- Vue.js -->
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
-</head>
+        <!-- Vue.js -->
+        <script
+            src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
 
-<body>
-    <header>
-        <div id="name"><a href="https://beyondmebtw.com" style="color: rgb(59, 52, 45); text-decoration: none;">Beyond Me Btw</a></div>
-        <div id="links">
-            <div id="home" class="link">Home</div>
-            <div id="blog" class="link">Blog</div>
-            <div id="projects" class="link">Projects</div>
-            <div id="about" class="link">About</div>
-        </div>
-        <button class="minis-button" onclick="window.open('https://minis.beyondmebtw.com')">
-            <img src="https://beyondmebtw.com/assets/images/minis.png" alt="3D Book Icon" class="minis-button-icon">
-            <span class="minis-button-text">Minis</span>
-        </button>
-    </header>
+        <!-- Open Graph -->
+        <meta property="og:title" content="Home | BeyondMeBtw">
+        <meta property="og:description"
+            content="Explore insightful articles by Pranav Veeraghanta, diving into personal experiences, and in-depth reviews of movies, TV shows, technology and Formula 1.">
+        <meta property="og:image"
+            content="https://content.beyondmebtw.com/assets/projects/bmb/bmb.webp">
+        <meta property="og:url" content="https://beyondmebtw.com">
+        <meta property="og:type" content="website">
 
-    <div id="app">
-        <div class="section-title">My Projects</div>
+        <!-- Twitter/X Card -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="Home | BeyondMeBtw">
+        <meta name="twitter:description"
+            content="Explore insightful articles by Pranav Veeraghanta, diving into personal experiences, and in-depth reviews of movies, TV shows, technology and Formula 1.">
+        <meta name="twitter:image"
+            content="https://content.beyondmebtw.com/assets/projects/bmb/bmb.webp">
+        <meta name="twitter:site" content="@Pranavisda1">
+    </head>
 
-        <div class="projects-container">
-            <!-- Regular grid view (default) -->
-            <div v-if="!isExpandedView" class="projects-grid">
-                <div v-for="project in projects" :key="project.id" class="project-card"
-                    @click="selectProject(project.id)">
-
-                    <div class="project-category-badge"
-                        :style="{ backgroundColor: getCategoryColor(project.category) }">
-                        {{ project.category }}
-                    </div>
-
-                    <div class="project-image">
-                        <img :src="project.images[0]" alt="Project thumbnail">
-                    </div>
-                    <div class="project-info">
-                        <h3>{{ project.title }}</h3>
-                        <p>{{ project.shortDescription }}</p>
-                        <div class="project-tags">
-                            <span v-for="tag in project.tags" :key="tag" class="tag">{{ tag }}</span>
-                        </div>
-                        <button class="click-me-btn">View Details</button>
-                    </div>
-                </div>
+    <body>
+        <header>
+            <div id="name"><a href="https://beyondmebtw.com"
+                    style="color: rgb(59, 52, 45); text-decoration: none;">Beyond
+                    Me Btw</a></div>
+            <div id="links">
+                <div id="home" class="link">Home</div>
+                <div id="blog" class="link">Blog</div>
+                <div id="projects" class="link">Projects</div>
+                <div id="about" class="link">About</div>
             </div>
+            <button class="minis-button"
+                onclick="window.open('https://minis.beyondmebtw.com')">
+                <img src="https://beyondmebtw.com/assets/images/minis.png"
+                    alt="3D Book Icon" class="minis-button-icon">
+                <span class="minis-button-text">Minis</span>
+            </button>
+        </header>
 
-            <!-- Expanded view with sidebar -->
-            <div v-else class="projects-grid expanded-view">
-                <!-- Sidebar with minimized project cards -->
+        <div id="app">
+            <div class="section-title">My Projects</div>
 
-                <div class="sidebar-container">
-                    <div v-for="project in projects" :key="project.id" class="project-card sidebar-card"
-                        :class="{'active': selectedProject === project.id}" @click="selectProject(project.id)">
-                        <div class="project-image">
-                            <img :src="project.logo" alt="Project thumbnail">
+            <div class="projects-container">
+                <!-- Regular grid view (default) -->
+                <div v-if="!isExpandedView" class="projects-grid">
+                    <div v-for="project in projects" :key="project.id"
+                        class="project-card"
+                        @click="selectProject(project.id)">
+
+                        <div class="project-category-badge"
+                            :style="{ backgroundColor: getCategoryColor(project.category) }">
+                            {{ project.category }}
                         </div>
-                        <div class="card-header">
-                            <div class="project-info">
-                                <h3>{{ project.title }}</h3>
+
+                        <div class="project-image">
+                            <img :src="project.images[0]"
+                                alt="Project thumbnail">
+                        </div>
+                        <div class="project-info">
+                            <h3>{{ project.title }}</h3>
+                            <p>{{ project.shortDescription }}</p>
+                            <div class="project-tags">
+                                <span v-for="tag in project.tags" :key="tag"
+                                    class="tag">{{ tag }}</span>
                             </div>
+                            <button class="click-me-btn">View Details</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Expanded project details -->
-                <div class="expanded-project" v-if="selectedProjectData">
-                    <!-- Close button -->
-                    <button class="close-expanded" @click="closeExpandedView">&times;</button>
+                <!-- Expanded view with sidebar -->
+                <div v-else class="projects-grid expanded-view">
+                    <!-- Sidebar with minimized project cards -->
 
-                    <!-- Header with logo and title -->
-                    <div class="expanded-header">
-                        <div class="project-logo">
-                            <img :src="selectedProjectData.logo" alt="Project logo">
-                        </div>
-                        <div class="header-content">
-                            <div class="project-category-badge large"
-                                :style="{ backgroundColor: getCategoryColor(selectedProjectData.category) }">
-                                {{ selectedProjectData.category }}
+                    <div class="sidebar-container">
+                        <div v-for="project in projects" :key="project.id"
+                            class="project-card sidebar-card"
+                            :class="{'active': selectedProject === project.id}"
+                            @click="selectProject(project.id)">
+                            <div class="project-image">
+                                <img :src="project.logo"
+                                    alt="Project thumbnail">
                             </div>
-                            <h2>{{ selectedProjectData.title }}</h2>
-                            <div class="header-tags">
-                                <span v-for="tag in selectedProjectData.tags" :key="tag" class="tag">{{ tag }}</span>
+                            <div class="card-header">
+                                <div class="project-info">
+                                    <h3>{{ project.title }}</h3>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Body with description and links -->
-                    <div class="expanded-body">
-                        <div class="expanded-description">{{ selectedProjectData.fullDescription }}</div>
+                    <!-- Expanded project details -->
+                    <div class="expanded-project" v-if="selectedProjectData">
+                        <!-- Close button -->
+                        <button class="close-expanded"
+                            @click="closeExpandedView">&times;</button>
 
-                        <div class="project-links">
-                            <a :href="selectedProjectData.link" class="project-link" target="_blank">Visit Project</a>
-                            <a v-if="selectedProjectData.githubLink" :href="selectedProjectData.githubLink"
-                                class="project-link" target="_blank">GitHub Repo</a>
-                            <a v-if="selectedProjectData.demoLink" :href="selectedProjectData.demoLink"
-                                class="project-link" target="_blank">Live Demo</a>
-                            <a v-if="selectedProjectData.playLink" :href="selectedProjectData.playLink"
-                                class="project-link" target="_blank">Play Now</a>
+                        <!-- Header with logo and title -->
+                        <div class="expanded-header">
+                            <div class="project-logo">
+                                <img :src="selectedProjectData.logo"
+                                    alt="Project logo">
+                            </div>
+                            <div class="header-content">
+                                <div class="project-category-badge large"
+                                    :style="{ backgroundColor: getCategoryColor(selectedProjectData.category) }">
+                                    {{ selectedProjectData.category }}
+                                </div>
+                                <h2>{{ selectedProjectData.title }}</h2>
+                                <div class="header-tags">
+                                    <span
+                                        v-for="tag in selectedProjectData.tags"
+                                        :key="tag" class="tag">{{ tag }}</span>
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Image gallery -->
-                        <div class="project-gallery">
-                            <h3 class="gallery-title">Project Gallery</h3>
-                            <div class="gallery-grid">
-                                <div v-for="(image, index) in selectedProjectData.images" :key="index"
-                                    class="gallery-item" @click="openImageViewer(index)">
-                                    <img :src="image" alt="Project screenshot">
+                        <!-- Body with description and links -->
+                        <div class="expanded-body">
+                            <div class="expanded-description">{{
+                                selectedProjectData.fullDescription }}</div>
+
+                            <div class="project-links">
+                                <a :href="selectedProjectData.link"
+                                    class="project-link" target="_blank">Visit
+                                    Project</a>
+                                <a v-if="selectedProjectData.githubLink"
+                                    :href="selectedProjectData.githubLink"
+                                    class="project-link" target="_blank">GitHub
+                                    Repo</a>
+                                <a v-if="selectedProjectData.demoLink"
+                                    :href="selectedProjectData.demoLink"
+                                    class="project-link" target="_blank">Live
+                                    Demo</a>
+                                <a v-if="selectedProjectData.playLink"
+                                    :href="selectedProjectData.playLink"
+                                    class="project-link" target="_blank">Play
+                                    Now</a>
+                            </div>
+
+                            <!-- Image gallery -->
+                            <div class="project-gallery">
+                                <h3 class="gallery-title">Project Gallery</h3>
+                                <div class="gallery-grid">
+                                    <div
+                                        v-for="(image, index) in selectedProjectData.images"
+                                        :key="index"
+                                        class="gallery-item"
+                                        @click="openImageViewer(index)">
+                                        <img :src="image"
+                                            alt="Project screenshot">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Image Viewer Modal -->
-        <div class="image-viewer" :class="{ active: isImageViewerActive }" @click="handleViewerBackgroundClick">
-            <div class="viewer-content">
-                <button class="close-viewer" @click="closeImageViewer">&times;</button>
+            <!-- Image Viewer Modal -->
+            <div class="image-viewer" :class="{ active: isImageViewerActive }"
+                @click="handleViewerBackgroundClick">
+                <div class="viewer-content">
+                    <button class="close-viewer"
+                        @click="closeImageViewer">&times;</button>
 
-                <img v-if="selectedProjectData && selectedProjectData.images[currentImageIndex]"
-                    :src="selectedProjectData.images[currentImageIndex]" alt="Project image full view"
-                    class="viewer-image">
+                    <img
+                        v-if="selectedProjectData && selectedProjectData.images[currentImageIndex]"
+                        :src="selectedProjectData.images[currentImageIndex]"
+                        alt="Project image full view"
+                        class="viewer-image">
 
-                <div class="image-nav">
-                    <button class="nav-btn prev-btn" @click.stop="prevImage">&lt;</button>
-                    <button class="nav-btn next-btn" @click.stop="nextImage">&gt;</button>
+                    <div class="image-nav">
+                        <button class="nav-btn prev-btn"
+                            @click.stop="prevImage">&lt;</button>
+                        <button class="nav-btn next-btn"
+                            @click.stop="nextImage">&gt;</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div id="footer">
-        <div>
-            © 2022-Present. Beyond Me Btw created by <a href="https://beyondmebtw.com/about"
-                style="color: black; text-decoration: none; font-weight: bold;" target="_blank">Pranav Veeraghanta.</a>
+        <div id="footer">
+            <div>
+                © 2022-Present. Beyond Me Btw created by <a
+                    href="https://beyondmebtw.com/about"
+                    style="color: black; text-decoration: none; font-weight: bold;"
+                    target="_blank">Pranav Veeraghanta.</a>
+            </div>
         </div>
-    </div>
 
-    <script type="module" src="projects.js"></script>
-    <script src="/analytics.js"></script>
-</body>
+        <script type="module" src="projects.js"></script>
+        <script src="/analytics.js"></script>
+    </body>
 
 </html>
