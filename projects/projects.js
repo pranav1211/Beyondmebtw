@@ -12,9 +12,48 @@ const categoryColors = {
   'Other': '#607D8B'
 };
 
+function loadProjectsData() {
+  const storageKey = 'beyondmebtw.projects.cache.v1';
+
+  try {
+    const cached = sessionStorage.getItem(storageKey);
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (Array.isArray(parsed)) {
+        fetch('./project-data.json', { cache: 'force-cache' })
+          .then(res => res.ok ? res.json() : null)
+          .then(freshData => {
+            if (!Array.isArray(freshData)) return;
+            try {
+              sessionStorage.setItem(storageKey, JSON.stringify(freshData));
+            } catch (error) {
+              console.warn('Failed to refresh projects cache:', error);
+            }
+          })
+          .catch(error => {
+            console.warn('Background refresh for projects failed:', error);
+          });
+        return Promise.resolve(parsed);
+      }
+    }
+  } catch (error) {
+    console.warn('Failed to read projects cache:', error);
+  }
+
+  return fetch('./project-data.json', { cache: 'force-cache' })
+    .then(res => res.json())
+    .then(data => {
+      try {
+        sessionStorage.setItem(storageKey, JSON.stringify(data));
+      } catch (error) {
+        console.warn('Failed to save projects cache:', error);
+      }
+      return data;
+    });
+}
+
 // Fetch projects data from JSON then initialize Vue app
-fetch('./project-data.json')
-  .then(res => res.json())
+loadProjectsData()
   .then(projectsData => {
     const normalizeProjectImages = images => {
       if (!Array.isArray(images)) return [];
@@ -32,30 +71,62 @@ fetch('./project-data.json')
     new Vue({
       el: '#app',
       data: {
-        projects: projectsData.map(project => ({
-          ...project,
-          images: normalizeProjectImages(project.images)
-        })),
+        projects: projectsData.map(project => {
+          const images = normalizeProjectImages(project.images);
+          return {
+            ...project,
+            images,
+            coverImage: images[0]?.url || project.logo || ''
+          };
+        }),
+        projectMap: {},
         selectedProject: null,
         isExpandedView: false,
         isImageViewerActive: false,
         currentImageIndex: 0,
         imageZoom: 1,
-        categoryColors: categoryColors
+        categoryColors: categoryColors,
+        preloadedImages: new Set()
       },
       computed: {
         selectedProjectData() {
           if (!this.selectedProject) return null;
-          return this.projects.find(p => p.id === this.selectedProject);
+          return this.projectMap[this.selectedProject] || null;
         }
       },
       methods: {
+        preloadImage(url) {
+          if (!url || this.preloadedImages.has(url)) return;
+          this.preloadedImages.add(url);
+          const image = new Image();
+          image.decoding = 'async';
+          image.src = url;
+        },
+        preloadProjectAssets(project) {
+          if (!project) return;
+          this.preloadImage(project.logo);
+          this.preloadImage(project.coverImage);
+          project.images.slice(0, 3).forEach(image => this.preloadImage(image.url));
+        },
+        preloadViewerNeighbors() {
+          if (!this.selectedProjectData || !this.selectedProjectData.images.length) return;
+          const images = this.selectedProjectData.images;
+          const current = images[this.currentImageIndex];
+          const next = images[(this.currentImageIndex + 1) % images.length];
+          const prev = images[(this.currentImageIndex - 1 + images.length) % images.length];
+          [current, next, prev].forEach(image => {
+            if (image && image.url) this.preloadImage(image.url);
+          });
+        },
         selectProject(projectId) {
           if (!this.isExpandedView) {
             this.isExpandedView = true;
           }
 
           this.selectedProject = projectId;
+          this.currentImageIndex = 0;
+          this.imageZoom = 1;
+          this.preloadProjectAssets(this.projectMap[projectId]);
 
           this.$nextTick(() => {
             if (window.innerWidth <= 768) {
@@ -74,6 +145,7 @@ fetch('./project-data.json')
           this.currentImageIndex = index;
           this.imageZoom = 1;
           this.isImageViewerActive = true;
+          this.preloadViewerNeighbors();
         },
         closeImageViewer() {
           this.imageZoom = 1;
@@ -114,12 +186,14 @@ fetch('./project-data.json')
           if (!this.selectedProjectData) return;
           this.imageZoom = 1;
           this.currentImageIndex = (this.currentImageIndex + 1) % this.selectedProjectData.images.length;
+          this.preloadViewerNeighbors();
         },
         prevImage(event) {
           if (event) event.stopPropagation();
           if (!this.selectedProjectData) return;
           this.imageZoom = 1;
           this.currentImageIndex = (this.currentImageIndex - 1 + this.selectedProjectData.images.length) % this.selectedProjectData.images.length;
+          this.preloadViewerNeighbors();
         },
         handleViewerBackgroundClick(event) {
           if (event.target.classList.contains('image-viewer')) {
@@ -130,7 +204,7 @@ fetch('./project-data.json')
           return this.categoryColors[category] || this.categoryColors['Other'];
         },
         getProjectCover(project) {
-          return project.images && project.images.length ? project.images[0].url : project.logo;
+          return project.coverImage || project.logo;
         },
         getViewerImage() {
           if (!this.selectedProjectData || !this.selectedProjectData.images[this.currentImageIndex]) return null;
@@ -138,6 +212,21 @@ fetch('./project-data.json')
         }
       },
       mounted() {
+        this.projectMap = this.projects.reduce((acc, project) => {
+          acc[project.id] = project;
+          return acc;
+        }, {});
+
+        const warmInitialImages = () => {
+          this.projects.slice(0, 6).forEach(project => this.preloadImage(project.coverImage || project.logo));
+        };
+
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(warmInitialImages, { timeout: 1200 });
+        } else {
+          window.setTimeout(warmInitialImages, 250);
+        }
+
         window.addEventListener('keydown', this.handleKeydown);
         const homeLink = document.querySelector('#home');
         const blogLink = document.querySelector('#blog');

@@ -100,6 +100,8 @@
 
                         <div class="project-image">
                             <img :src="getProjectCover(project)"
+                                loading="lazy"
+                                decoding="async"
                                 alt="Project thumbnail">
                         </div>
                         <div class="project-info">
@@ -125,6 +127,8 @@
                             @click="selectProject(project.id)">
                             <div class="project-image">
                                 <img :src="project.logo"
+                                    loading="lazy"
+                                    decoding="async"
                                     alt="Project thumbnail">
                             </div>
                             <div class="card-header">
@@ -195,6 +199,8 @@
                                         @click="openImageViewer(index)">
                                         <div class="gallery-media">
                                             <img :src="image.url"
+                                                loading="lazy"
+                                                decoding="async"
                                                 :alt="image.description || 'Project screenshot'">
                                         </div>
                                     </div>
@@ -221,6 +227,7 @@
                             <img
                                 v-if="getViewerImage()"
                                 :src="getViewerImage().url"
+                                decoding="async"
                                 :alt="getViewerImage().description || 'Project image full view'"
                                 class="viewer-image"
                                 :class="{ zoomed: imageZoom > 1 }"
