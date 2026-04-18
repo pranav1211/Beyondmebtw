@@ -242,7 +242,12 @@
     "link": "https://mynyl.beyondmebtw.com",
     "githubLink": "https://github.com/pranav1211/mynyl",
     "tags": [],
-    "images": []
+    "images": [
+      {
+        "url": "https://content.beyondmebtw.com/assets/projects/mynyl/mynyl.webp",
+        "description": ""
+      }
+    ]
   },
   {
     "id": 13,
