@@ -99,7 +99,7 @@
                         </div>
 
                         <div class="project-image">
-                            <img :src="project.images[0]"
+                            <img :src="getProjectCover(project)"
                                 alt="Project thumbnail">
                         </div>
                         <div class="project-info">
@@ -193,8 +193,8 @@
                                         :key="index"
                                         class="gallery-item"
                                         @click="openImageViewer(index)">
-                                        <img :src="image"
-                                            alt="Project screenshot">
+                                        <img :src="image.url"
+                                            :alt="image.description || 'Project screenshot'">
                                     </div>
                                 </div>
                             </div>
@@ -211,10 +211,12 @@
                         @click="closeImageViewer">&times;</button>
 
                     <img
-                        v-if="selectedProjectData && selectedProjectData.images[currentImageIndex]"
-                        :src="selectedProjectData.images[currentImageIndex]"
+                        v-if="getViewerImage()"
+                        :src="getViewerImage().url"
                         alt="Project image full view"
                         class="viewer-image">
+                    <p v-if="getViewerImage() && getViewerImage().description"
+                        class="viewer-caption">{{ getViewerImage().description }}</p>
 
                     <div class="image-nav">
                         <button class="nav-btn prev-btn"

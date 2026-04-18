@@ -113,6 +113,36 @@ function sendError(response, msg, status = 400) {
   response.end(msg);
 }
 
+function normalizeProjectImages(images) {
+  if (typeof images === 'string') {
+    return images
+      .split(',')
+      .map(url => url.trim())
+      .filter(Boolean)
+      .map(url => ({ url, description: '' }));
+  }
+
+  if (!Array.isArray(images)) return [];
+
+  return images.map(image => {
+    if (typeof image === 'string') {
+      const url = image.trim();
+      return url ? { url, description: '' } : null;
+    }
+
+    if (image && typeof image === 'object') {
+      const url = String(image.url || image.src || '').trim();
+      if (!url) return null;
+      return {
+        url,
+        description: String(image.description || '').trim()
+      };
+    }
+
+    return null;
+  }).filter(Boolean);
+}
+
 function validateKey(key, response) {
   if (!key) { sendError(response, "Missing key", 400); return false; }
   if (key !== thepasskey) { sendError(response, "Unauthorized - Invalid key", 403); return false; }
@@ -535,7 +565,7 @@ const server = http.createServer((request, response) => {
           const fields = ['title','category','shortDescription','fullDescription','logo','link','githubLink','tags','images'];
           fields.forEach(f => { if (body[f] !== undefined) newProject[f] = body[f]; });
           if (typeof newProject.tags === 'string') newProject.tags = newProject.tags.split(',').map(t => t.trim()).filter(Boolean);
-          if (typeof newProject.images === 'string') newProject.images = newProject.images.split(',').map(u => u.trim()).filter(Boolean);
+          if (body.images !== undefined) newProject.images = normalizeProjectImages(body.images);
           projects.push(newProject);
           writeProjectsJSONSafe(projects, err2 => {
             if (err2) return sendError(response, "Error writing projects file", 500);
@@ -555,7 +585,7 @@ const server = http.createServer((request, response) => {
           const fields = ['title','category','shortDescription','fullDescription','logo','link','githubLink','tags','images'];
           fields.forEach(f => { if (body[f] !== undefined) projects[idx][f] = body[f]; });
           if (typeof projects[idx].tags === 'string') projects[idx].tags = projects[idx].tags.split(',').map(t => t.trim()).filter(Boolean);
-          if (typeof projects[idx].images === 'string') projects[idx].images = projects[idx].images.split(',').map(u => u.trim()).filter(Boolean);
+          if (body.images !== undefined) projects[idx].images = normalizeProjectImages(body.images);
           writeProjectsJSONSafe(projects, err2 => {
             if (err2) return sendError(response, "Error writing projects file", 500);
             runScriptIgnoreError(() => {
@@ -720,7 +750,7 @@ const server = http.createServer((request, response) => {
         const maxId = projects.reduce((max, p) => Math.max(max, p.id || 0), 0);
         const newProject = { id: maxId + 1, ...projectData };
         if (typeof newProject.tags === 'string') newProject.tags = newProject.tags.split(',').map(t => t.trim()).filter(Boolean);
-        if (typeof newProject.images === 'string') newProject.images = newProject.images.split(',').map(u => u.trim()).filter(Boolean);
+        if (projectData.images !== undefined) newProject.images = normalizeProjectImages(projectData.images);
 
         projects.push(newProject);
         writeProjectsJSONSafe(projects, err2 => {
@@ -745,7 +775,7 @@ const server = http.createServer((request, response) => {
         if (idx === -1) return sendError(response, "Project not found");
 
         if (typeof updates.tags === 'string') updates.tags = updates.tags.split(',').map(t => t.trim()).filter(Boolean);
-        if (typeof updates.images === 'string') updates.images = updates.images.split(',').map(u => u.trim()).filter(Boolean);
+        if (updates.images !== undefined) updates.images = normalizeProjectImages(updates.images);
 
         projects[idx] = { ...projects[idx], ...updates };
         writeProjectsJSONSafe(projects, err2 => {

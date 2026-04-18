@@ -468,6 +468,15 @@
   border-radius: 5px;
 }
 
+.viewer-caption {
+  margin-top: 12px;
+  max-width: 80vw;
+  text-align: center;
+  color: #f3ede4;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
 .close-viewer {
   position: absolute;
   top: -50px; right: 0;

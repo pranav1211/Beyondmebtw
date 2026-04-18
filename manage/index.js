@@ -16,6 +16,8 @@ let state = {
   blogSearch: '',
   editingBlogPost: null,     // { category, uid } when editing
   editingProjectId: null,    // id when editing
+  projectImagesDraft: [],
+  editingProjectImageIndex: null,
   catModalAction: 'addCategory',
   confirmCallback: null,
   latestConfirmCallback: null
@@ -38,6 +40,86 @@ function toast(msg, type = 'success') {
 function esc(str) {
   if (!str) return '';
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function normalizeProjectImages(images) {
+  if (typeof images === 'string') {
+    return images.split(',').map(url => url.trim()).filter(Boolean).map(url => ({ url, description: '' }));
+  }
+  if (!Array.isArray(images)) return [];
+
+  return images.map(image => {
+    if (typeof image === 'string') {
+      return { url: image.trim(), description: '' };
+    }
+    if (image && typeof image === 'object') {
+      return {
+        url: String(image.url || image.src || '').trim(),
+        description: String(image.description || '').trim()
+      };
+    }
+    return { url: '', description: '' };
+  }).filter(image => image.url);
+}
+
+function resetProjectImageEditor() {
+  state.editingProjectImageIndex = null;
+  const urlInput = document.getElementById('proj-image-url');
+  const descInput = document.getElementById('proj-image-description');
+  const button = document.getElementById('proj-image-add-btn');
+  if (urlInput) urlInput.value = '';
+  if (descInput) descInput.value = '';
+  if (button) button.textContent = 'Add Image';
+}
+
+function renderProjectImagesList() {
+  const container = document.getElementById('project-images-list');
+  if (!container) return;
+
+  if (state.projectImagesDraft.length === 0) {
+    container.innerHTML = '<p class="empty-msg project-images-empty">No images added yet.</p>';
+    return;
+  }
+
+  container.innerHTML = state.projectImagesDraft.map((image, index) => `
+    <div class="project-image-item">
+      <img class="project-image-thumb" src="${esc(image.url)}" alt="" onerror="this.src='https://beyondmebtw.com/assets/images/favicon.ico'">
+      <div class="project-image-meta">
+        <div class="project-image-url">${esc(image.url)}</div>
+        <div class="project-image-description">${esc(image.description || 'No description')}</div>
+      </div>
+      <div class="project-image-actions">
+        <button type="button" class="btn-icon edit" data-action="edit-project-image" data-index="${index}">Edit</button>
+        <button type="button" class="btn-icon danger" data-action="delete-project-image" data-index="${index}">Remove</button>
+      </div>
+    </div>
+  `).join('');
+
+  container.querySelectorAll('[data-action="edit-project-image"]').forEach(btn => {
+    btn.addEventListener('click', () => startEditProjectImage(parseInt(btn.dataset.index, 10)));
+  });
+  container.querySelectorAll('[data-action="delete-project-image"]').forEach(btn => {
+    btn.addEventListener('click', () => removeProjectImage(parseInt(btn.dataset.index, 10)));
+  });
+}
+
+function startEditProjectImage(index) {
+  const image = state.projectImagesDraft[index];
+  if (!image) return;
+  state.editingProjectImageIndex = index;
+  document.getElementById('proj-image-url').value = image.url || '';
+  document.getElementById('proj-image-description').value = image.description || '';
+  document.getElementById('proj-image-add-btn').textContent = 'Update Image';
+}
+
+function removeProjectImage(index) {
+  if (Number.isNaN(index) || index < 0) return;
+  state.projectImagesDraft.splice(index, 1);
+  if (state.editingProjectImageIndex === index) resetProjectImageEditor();
+  if (state.editingProjectImageIndex !== null && state.editingProjectImageIndex > index) {
+    state.editingProjectImageIndex -= 1;
+  }
+  renderProjectImagesList();
 }
 
 function openModal(id) { document.getElementById(id).style.display = 'flex'; }
@@ -1093,7 +1175,9 @@ function openEditProject(id) {
   document.getElementById('proj-link').value = proj.link || '';
   document.getElementById('proj-github').value = proj.githubLink || '';
   document.getElementById('proj-tags').value = (proj.tags || []).join(', ');
-  document.getElementById('proj-images').value = (proj.images || []).join(', ');
+  state.projectImagesDraft = normalizeProjectImages(proj.images);
+  resetProjectImageEditor();
+  renderProjectImagesList();
 
   openModal('project-modal');
 }
@@ -1115,6 +1199,9 @@ function initProjectForm() {
   const newBtn = document.getElementById('new-project-btn');
   const clearBtn = document.getElementById('clear-project-form');
   const form = document.getElementById('project-form');
+  const addImageBtn = document.getElementById('proj-image-add-btn');
+  const imageUrlInput = document.getElementById('proj-image-url');
+  const imageDescInput = document.getElementById('proj-image-description');
 
   if (newBtn) {
     newBtn.addEventListener('click', () => {
@@ -1125,6 +1212,36 @@ function initProjectForm() {
 
   if (clearBtn) {
     clearBtn.addEventListener('click', resetProjectForm);
+  }
+
+  if (addImageBtn) {
+    addImageBtn.addEventListener('click', () => {
+      const url = imageUrlInput.value.trim();
+      const description = imageDescInput.value.trim();
+      if (!url) {
+        toast('Image URL is required', 'warning');
+        return;
+      }
+
+      const imageData = { url, description };
+      if (state.editingProjectImageIndex !== null) {
+        state.projectImagesDraft[state.editingProjectImageIndex] = imageData;
+      } else {
+        state.projectImagesDraft.push(imageData);
+      }
+
+      resetProjectImageEditor();
+      renderProjectImagesList();
+    });
+  }
+
+  if (imageDescInput && addImageBtn) {
+    imageDescInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addImageBtn.click();
+      }
+    });
   }
 
   if (!form) return;
@@ -1145,7 +1262,7 @@ function initProjectForm() {
       link: document.getElementById('proj-link').value.trim(),
       githubLink: document.getElementById('proj-github').value.trim(),
       tags: document.getElementById('proj-tags').value,
-      images: document.getElementById('proj-images').value
+      images: state.projectImagesDraft
     };
 
     const btn = document.getElementById('project-submit-btn');
@@ -1175,10 +1292,13 @@ function initProjectForm() {
 
 function resetProjectForm() {
   state.editingProjectId = null;
+  state.projectImagesDraft = [];
   document.getElementById('project-modal-title').textContent = 'New Project';
   document.getElementById('project-submit-btn').textContent = 'Add Project';
   document.getElementById('proj-edit-id').value = '';
   document.getElementById('project-form').reset();
+  resetProjectImageEditor();
+  renderProjectImagesList();
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════

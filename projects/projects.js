@@ -16,10 +16,26 @@ const categoryColors = {
 fetch('./project-data.json')
   .then(res => res.json())
   .then(projectsData => {
+    const normalizeProjectImages = images => {
+      if (!Array.isArray(images)) return [];
+      return images.map(image => {
+        if (typeof image === 'string') {
+          return { url: image, description: '' };
+        }
+        return {
+          url: image && image.url ? image.url : '',
+          description: image && image.description ? image.description : ''
+        };
+      }).filter(image => image.url);
+    };
+
     new Vue({
       el: '#app',
       data: {
-        projects: projectsData,
+        projects: projectsData.map(project => ({
+          ...project,
+          images: normalizeProjectImages(project.images)
+        })),
         selectedProject: null,
         isExpandedView: false,
         isImageViewerActive: false,
@@ -77,6 +93,13 @@ fetch('./project-data.json')
         },
         getCategoryColor(category) {
           return this.categoryColors[category] || this.categoryColors['Other'];
+        },
+        getProjectCover(project) {
+          return project.images && project.images.length ? project.images[0].url : project.logo;
+        },
+        getViewerImage() {
+          if (!this.selectedProjectData || !this.selectedProjectData.images[this.currentImageIndex]) return null;
+          return this.selectedProjectData.images[this.currentImageIndex];
         }
       },
       mounted() {

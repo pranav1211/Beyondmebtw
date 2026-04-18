@@ -356,8 +356,17 @@
       </div>
 
       <div class="form-group">
-        <label>Images <span class="hint-inline">(comma-separated URLs)</span></label>
-        <textarea id="proj-images" name="images" rows="2" placeholder="https://..., https://..."></textarea>
+        <label>Project Images</label>
+        <div class="project-image-editor">
+          <div class="project-image-inputs">
+            <input type="text" id="proj-image-url" placeholder="https://...">
+            <input type="text" id="proj-image-description" placeholder="Optional image description">
+            <button type="button" class="btn-secondary" id="proj-image-add-btn">Add Image</button>
+          </div>
+          <div id="project-images-list" class="project-images-list">
+            <p class="empty-msg project-images-empty">No images added yet.</p>
+          </div>
+        </div>
       </div>
 
       <input type="hidden" id="proj-edit-id" value="">
