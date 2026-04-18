@@ -407,9 +407,13 @@
 .viewer-main {
   width: min(90vw, 1200px);
   display: grid;
-  grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 24px;
   align-items: center;
+}
+
+.viewer-main.viewer-main--with-caption {
+  grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
 }
 
 .viewer-caption-panel {
@@ -522,6 +526,9 @@
   .viewer-main {
     grid-template-columns: 1fr;
     gap: 16px;
+  }
+  .viewer-main.viewer-main--with-caption {
+    grid-template-columns: 1fr;
   }
   .viewer-caption-panel {
     justify-content: center;

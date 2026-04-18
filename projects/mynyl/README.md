@@ -2,7 +2,7 @@
 
 A browser-based vinyl record player. Drop an audio file, drag the tonearm onto the record, and listen.
 
-**Demo:** [mynyl.beyondembtw.com](https://mynyl.beyondembtw.com)
+**Site:** [mynyl.beyondembtw.com](https://mynyl.beyondembtw.com)
 
 ---
 

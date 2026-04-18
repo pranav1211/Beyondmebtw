@@ -218,7 +218,8 @@
                     <button class="close-viewer"
                         @click="closeImageViewer">&times;</button>
 
-                    <div class="viewer-main">
+                    <div class="viewer-main"
+                        :class="{ 'viewer-main--with-caption': getViewerImage() && getViewerImage().description }">
                         <div v-if="getViewerImage() && getViewerImage().description"
                             class="viewer-caption-panel">
                             <p class="viewer-caption">{{ getViewerImage().description }}</p>

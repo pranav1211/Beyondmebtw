@@ -236,12 +236,19 @@
     "id": 12,
     "title": "Mynyl",
     "category": "Web Development",
-    "shortDescription": "An audio player in the style of a vinyl on the web",
-    "fullDescription": "",
+    "shortDescription": "A browser-based vinyl record player that turns local audio files into a tactile, themeable listening experience.",
+    "fullDescription": "• A browser-based vinyl record player where you load a local track and start playback by dragging the tonearm onto the record.\n• Recreates the feel of a turntable with spin-up animation, vinyl crackle, real-time tonearm movement, and embedded album-art rendering.\n• Supports common audio formats including MP3, FLAC, WAV, AAC, OGG, OPUS, M4A, and WMA, with OS media controls integration.\n• Built with vanilla HTML, CSS, Canvas, and JavaScript, with a modular theming system for swapping full visual packs instead of simple color changes.",
     "logo": "https://content.beyondmebtw.com/assets/bmb_logos/bmblogo.png",
     "link": "https://mynyl.beyondmebtw.com",
     "githubLink": "https://github.com/pranav1211/mynyl",
-    "tags": [],
+    "tags": [
+      "Vanilla JavaScript",
+      "Web Audio API",
+      "Canvas",
+      "Audio Player",
+      "Theming",
+      "Media Controls"
+    ],
     "images": [
       {
         "url": "https://content.beyondmebtw.com/assets/projects/mynyl/mynyl.webp",
@@ -265,12 +272,21 @@
     "id": 13,
     "title": "Beyond Money",
     "category": "Web Development",
-    "shortDescription": "A personal money management app designed by and for myself",
-    "fullDescription": "",
+    "shortDescription": "An offline-first personal finance app for tracking transactions, cards, assets, subscriptions, and net worth in one place.",
+    "fullDescription": "• A personal finance tracker built around a central dashboard that brings accounts, transactions, credit cards, assets, subscriptions, and net worth into one workflow.\n• Supports income, expenses, transfers, categories, labels, and detailed filtering so it stays practical for everyday tracking instead of just summary reporting.\n• Built as a responsive PWA with offline support using IndexedDB and sync flows, so core finance data stays usable even when you are not connected.\n• Powered by Vue 3, Pinia, Vue Router, and Supabase with Postgres, Auth, and row-level security, plus live multi-currency support through Open Exchange Rates.",
     "logo": "https://content.beyondmebtw.com/assets/bmb_logos/bmbmoney.png",
     "link": "https://beyondmoney.beyondmebtw.com",
     "githubLink": "https://github.com/pranav1211/beyond-money-public",
-    "tags": [],
+    "tags": [
+      "Vue 3",
+      "Pinia",
+      "Supabase",
+      "PostgreSQL",
+      "PWA",
+      "Offline First",
+      "IndexedDB",
+      "Personal Finance"
+    ],
     "images": [
       {
         "url": "https://content.beyondmebtw.com/assets/projects/bmoney/bmoneyt.webp",
