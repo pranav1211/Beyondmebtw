@@ -1,0 +1,22 @@
+:root {
+  --player-record-scale: 0.43;
+  --arm-pivot-offset-x:  1.03;
+  --arm-pivot-offset-y: -0.79;
+  --arm-outer-radius:    0.90;
+  --arm-inner-radius:    0.30;
+  --arm-outer-offset-x: -0.08;
+  --arm-outer-offset-y: -0.83;
+  --arm-park-offset-x:  1.19;
+  --arm-park-offset-y:  0.33;
+  --bg-center-rgb: 220,214,202;
+  --bg-mid-rgb:    210,204,192;
+  --bg-edge-0: #e8e2d6;
+  --bg-edge-1: #ddd6c8;
+  --bg-glow-strength: 1.0;
+  --bg-drift-x: 0.02;
+  --bg-drift-y: 0.015;
+  --hint-ring:  rgba(26,42,142,0.38);
+  --hint-dot:   rgba(26,42,142,0.92);
+  --hint-glow:  rgba(240,78,18,0.22);
+  --hint-text:  rgba(14,20,42,0.72);
+}

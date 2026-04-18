@@ -910,8 +910,14 @@ function resetUiHideTimer() {
     document.body.classList.add('ui-auto-hidden');
   }, 5000);
 }
-document.addEventListener('mousemove', resetUiHideTimer);
-document.addEventListener('mousedown', resetUiHideTimer);
+const uiRegions = document.querySelectorAll('.ui-panel-main, .music-dock');
+
+uiRegions.forEach(el => {
+  el.addEventListener('mouseenter', resetUiHideTimer);
+  el.addEventListener('mousemove', resetUiHideTimer);
+  el.addEventListener('mousedown', resetUiHideTimer);
+});
+
 document.addEventListener('keydown', resetUiHideTimer);
 resetUiHideTimer();
 

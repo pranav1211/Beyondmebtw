@@ -68,10 +68,15 @@ body.ui-auto-hidden .ui-panel-body {
   max-height: 0;
   overflow: hidden;
 }
+body.ui-auto-hidden .ui-panel-main,
 body.ui-auto-hidden .music-dock {
   opacity: 0;
   pointer-events: none;
-  transform: translateY(8px);
+  transform: translateY(-8px);  
+}
+.ui-panel,
+.music-dock {
+  transition: opacity 0.3s, transform 0.25s;
 }
 
 .panel-icon-btn {
