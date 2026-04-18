@@ -14,34 +14,25 @@ const categoryColors = {
 
 function loadProjectsData() {
   const storageKey = 'beyondmebtw.projects.cache.v1';
+  let cachedProjects = null;
 
   try {
     const cached = sessionStorage.getItem(storageKey);
     if (cached) {
       const parsed = JSON.parse(cached);
       if (Array.isArray(parsed)) {
-        fetch('./project-data.json', { cache: 'force-cache' })
-          .then(res => res.ok ? res.json() : null)
-          .then(freshData => {
-            if (!Array.isArray(freshData)) return;
-            try {
-              sessionStorage.setItem(storageKey, JSON.stringify(freshData));
-            } catch (error) {
-              console.warn('Failed to refresh projects cache:', error);
-            }
-          })
-          .catch(error => {
-            console.warn('Background refresh for projects failed:', error);
-          });
-        return Promise.resolve(parsed);
+        cachedProjects = parsed;
       }
     }
   } catch (error) {
     console.warn('Failed to read projects cache:', error);
   }
 
-  return fetch('./project-data.json', { cache: 'force-cache' })
-    .then(res => res.json())
+  return fetch('./project-data.json', { cache: 'no-cache' })
+    .then(res => {
+      if (!res.ok) throw new Error(`Failed to load project data: ${res.status}`);
+      return res.json();
+    })
     .then(data => {
       try {
         sessionStorage.setItem(storageKey, JSON.stringify(data));
@@ -49,6 +40,13 @@ function loadProjectsData() {
         console.warn('Failed to save projects cache:', error);
       }
       return data;
+    })
+    .catch(error => {
+      if (cachedProjects) {
+        console.warn('Using cached projects data after fetch failure:', error);
+        return cachedProjects;
+      }
+      throw error;
     });
 }
 
@@ -131,11 +129,9 @@ loadProjectsData()
           this.preloadProjectAssets(this.projectMap[projectId]);
 
           this.$nextTick(() => {
-            if (window.innerWidth <= 768) {
-              const container = this.$el.querySelector('.projects-container');
-              if (container) {
-                container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }
+            const container = this.$el.querySelector('.projects-container');
+            if (container) {
+              container.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
           });
         },
