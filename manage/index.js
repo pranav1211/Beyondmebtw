@@ -65,9 +65,33 @@ function initSidebarToggle() {
   const nav = document.getElementById('sidebar-nav');
   if (!toggle || !nav) return;
 
-  toggle.addEventListener('click', () => {
-    const isOpen = nav.classList.toggle('open');
+  const syncSidebarState = isOpen => {
+    nav.classList.toggle('open', isOpen);
     toggle.innerHTML = isOpen ? '&times;' : '&#9776;';
+    toggle.setAttribute('aria-expanded', String(isOpen));
+  };
+
+  syncSidebarState(false);
+
+  toggle.addEventListener('click', e => {
+    e.stopPropagation();
+    syncSidebarState(!nav.classList.contains('open'));
+  });
+
+  nav.addEventListener('click', e => {
+    e.stopPropagation();
+  });
+
+  document.addEventListener('click', () => {
+    if (window.innerWidth <= 700 && nav.classList.contains('open')) {
+      syncSidebarState(false);
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 700) {
+      syncSidebarState(false);
+    }
   });
 }
 
@@ -86,7 +110,10 @@ function initTabs() {
 
       // Close mobile menu on tab switch
       if (nav) nav.classList.remove('open');
-      if (toggle) toggle.innerHTML = '&#9776;';
+      if (toggle) {
+        toggle.innerHTML = '&#9776;';
+        toggle.setAttribute('aria-expanded', 'false');
+      }
 
       // Lazy-load tab data on first visit; reuse cache if available
       if (tab === 'blog') {

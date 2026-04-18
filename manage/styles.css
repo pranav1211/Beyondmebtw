@@ -95,7 +95,6 @@ body {
   font-weight: 500;
   cursor: pointer;
   text-align: left;
-  transition: all 0.18s ease;
 }
 
 .nav-tab:hover {
@@ -128,7 +127,6 @@ body {
   color: var(--text-muted);
   font-size: 13px;
   cursor: pointer;
-  transition: all 0.18s ease;
   width: calc(100% - 20px);
 }
 
@@ -227,7 +225,6 @@ button { font-family: inherit; cursor: pointer; }
   border-radius: var(--radius-sm);
   font-size: 13px;
   font-weight: 600;
-  transition: opacity 0.18s;
 }
 
 .btn-primary:hover { opacity: 0.88; }
@@ -241,7 +238,6 @@ button { font-family: inherit; cursor: pointer; }
   border-radius: var(--radius-sm);
   font-size: 13px;
   font-weight: 500;
-  transition: all 0.18s;
 }
 
 .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
@@ -253,7 +249,6 @@ button { font-family: inherit; cursor: pointer; }
   padding: 7px 14px;
   border-radius: var(--radius-sm);
   font-size: 13px;
-  transition: all 0.18s;
 }
 
 .btn-ghost:hover { border-color: var(--border2); color: var(--text); }
@@ -266,7 +261,6 @@ button { font-family: inherit; cursor: pointer; }
   border-radius: var(--radius-sm);
   font-size: 13px;
   font-weight: 600;
-  transition: background 0.18s;
 }
 
 .btn-danger:hover { background: var(--danger-hover); }
@@ -278,7 +272,6 @@ button { font-family: inherit; cursor: pointer; }
   padding: 5px 10px;
   border-radius: var(--radius-sm);
   font-size: 12px;
-  transition: all 0.15s;
 }
 
 .btn-icon:hover { border-color: var(--border2); color: var(--text); }
@@ -321,7 +314,6 @@ input, select, textarea {
   font-size: 13px;
   font-family: inherit;
   width: 100%;
-  transition: border-color 0.18s;
   resize: vertical;
 }
 
@@ -337,7 +329,7 @@ select option { background: var(--surface2); }
 
 .inline-form { padding-top: 4px; }
 
-.form-body { overflow: hidden; transition: max-height 0.3s ease; }
+.form-body { overflow: hidden; }
 .form-body.collapsed { max-height: 0; }
 .form-body.expanded { max-height: 800px; }
 
@@ -503,7 +495,6 @@ select option { background: var(--surface2); }
   border-radius: 20px;
   font-size: 13px;
   cursor: pointer;
-  transition: all 0.15s;
 }
 
 .cat-tab-btn:hover { border-color: var(--border2); color: var(--text); }
@@ -544,7 +535,6 @@ select option { background: var(--surface2); }
   padding: 10px 16px;
   border-bottom: 1px solid var(--border);
   align-items: center;
-  transition: background 0.12s;
 }
 
 .post-row:last-child { border-bottom: none; }
@@ -706,7 +696,6 @@ select option { background: var(--surface2); }
   display: flex;
   flex-direction: column;
   gap: 10px;
-  transition: border-color 0.18s;
 }
 
 .project-card:hover { border-color: var(--border2); }
@@ -792,7 +781,6 @@ select option { background: var(--surface2); }
   border-radius: 20px;
   font-size: 12px;
   cursor: pointer;
-  transition: all 0.15s;
 }
 
 .chip:hover { border-color: var(--accent); color: var(--text); }
@@ -810,7 +798,6 @@ select option { background: var(--surface2); }
   align-items: center;
   justify-content: center;
   padding: 20px;
-  backdrop-filter: blur(4px);
 }
 
 .modal-box {
@@ -849,7 +836,6 @@ select option { background: var(--surface2); }
   line-height: 1;
   padding: 0 4px;
   cursor: pointer;
-  transition: color 0.15s;
 }
 
 .modal-close:hover { color: var(--text); }
@@ -884,7 +870,6 @@ select option { background: var(--surface2); }
   color: var(--text-muted);
   font-size: 13px;
   cursor: pointer;
-  transition: all 0.15s;
   font-family: inherit;
 }
 
@@ -933,17 +918,11 @@ select option { background: var(--surface2); }
   min-width: 260px;
   max-width: 520px;
   text-align: center;
-  animation: slideDown 0.22s ease;
 }
 
 .toast.success { background: var(--success); }
 .toast.error   { background: var(--danger); }
 .toast.warning { background: var(--warning); color: #fff; }
-
-@keyframes slideDown {
-  from { transform: translateX(-50%) translateY(-16px); opacity: 0; }
-  to   { transform: translateX(-50%) translateY(0);    opacity: 1; }
-}
 
 /* ── Misc ────────────────────────────────────────────────────────────── */
 .loading-msg {
