@@ -1,8 +1,83 @@
-/* Theme entrypoint.
+/* Theme manifest / handoff entrypoint.
    Keep the active theme link pointed at this file shape.
-   Split CSS so an AI can edit one concern at a time. */
+
+   This file should be the first place another AI reads when generating or editing a theme.
+   It is meant to describe:
+   - the visual direction
+   - the shared palette
+   - the control-panel text and input contract
+   - where to find geometry / vinyl / arm / UI details
+
+   Recommended workflow for theme generation:
+   1. Adjust the shared tokens here first.
+   2. Edit `background.css` for layout and scene mood.
+   3. Edit `vinyl.css` for record, grooves, and label treatment.
+   4. Edit `arm.css` for built-in tonearm styling.
+   5. Edit `ui.css` only for component styling that consumes these tokens.
+*/
 
 @import url('./background.css');
 @import url('./vinyl.css');
 @import url('./arm.css');
 @import url('./ui.css');
+
+:root {
+  /* Core page + panel shell */
+  --page-bg: #111111;
+  --glass-bg: rgba(8,8,8,0.6);
+  --glass-border: rgba(255,255,255,0.1);
+  --glass-inset: rgba(255,255,255,0.04);
+
+  /* Shared typography / palette */
+  --text-main: rgba(255,255,255,0.82);
+  --text-soft: rgba(255,255,255,0.5);
+  --text-faint: rgba(255,255,255,0.24);
+  --accent: #d8b15d;
+  --accent-strong: #f2d28d;
+  --accent-dim: rgba(216,177,93,0.4);
+  --accent-glow: rgba(216,177,93,0.14);
+  --surface-1: rgba(45,45,45,0.92);
+  --surface-2: rgba(18,18,18,0.96);
+  --surface-3: rgba(58,58,58,0.94);
+  --surface-4: rgba(24,24,24,0.98);
+  --border-soft: rgba(255,255,255,0.14);
+  --border-strong: rgba(255,255,255,0.26);
+
+  /* Player/control panel text contract
+     Keep panel text colors theme-owned here instead of hardcoding them in ui.css. */
+  --ui-label-text: rgba(255,255,255,0.6);
+  --ui-title-text: var(--text-main);
+  --ui-title-shadow: none;
+  --ui-body-text: rgba(255,255,255,0.82);
+  --ui-muted-text: var(--text-soft);
+  --ui-subtle-text: rgba(255,255,255,0.42);
+  --ui-faint-text: var(--text-faint);
+  --ui-icon-text: rgba(255,255,255,0.58);
+  --ui-active-text: var(--accent);
+
+  /* Buttons + controls */
+  --ui-button-text: rgba(255,255,255,0.82);
+  --ui-button-text-hover: var(--accent-strong);
+  --ui-button-text-active: var(--accent);
+  --ui-input-text: rgba(255,255,255,0.82);
+  --ui-input-text-focus: var(--accent-strong);
+  --ui-input-surface: rgba(12,12,12,0.72);
+  --ui-input-border: rgba(255,255,255,0.16);
+  --ui-input-border-focus: rgba(255,255,255,0.36);
+  --ui-input-focus-ring: rgba(255,255,255,0.14);
+
+  /* Sliders, queue, misc */
+  --ui-slider-track: rgba(255,255,255,0.08);
+  --ui-slider-fill: linear-gradient(90deg, rgba(216,177,93,0.72), rgba(242,210,141,0.9));
+  --ui-slider-thumb: #f3e1b5;
+  --ui-slider-thumb-ring: rgba(242,210,141,0.2);
+  --ui-scroll-track: rgba(255,255,255,0.04);
+  --ui-scroll-thumb: rgba(255,255,255,0.2);
+  --ui-queue-divider: rgba(255,255,255,0.06);
+  --ui-queue-hover: rgba(255,255,255,0.04);
+  --ui-button-border: var(--border-soft);
+  --ui-button-border-strong: var(--border-strong);
+
+  /* Theme switcher icon */
+  --theme-select-caret: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath fill='rgba(255,255,255,0.72)' d='M5 6 .4.8 1.6 0 5 3.5 8.4 0 9.6.8z'/%3E%3C/svg%3E");
+}

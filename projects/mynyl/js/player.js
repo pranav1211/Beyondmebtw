@@ -11,33 +11,96 @@ let armAngle, targetArmAngle;
 let isDragging = false;
 let pendingTimer = null;
 let songIsOver = false;
-let loadedFile  = null;
+let loadedFile = null;
+let loadedObjectUrl = null;
+let artworkObjectUrl = null;
 
-const THEMES = {
-  wood: {
-    cssHref: 'themes/wood/theme.css',
-    scriptHref: 'themes/wood/theme.js',
-    themeName: 'wood',
-  },
-  'minimal-light': {
-    cssHref: 'themes/minimal-light/theme.css',
-    scriptHref: 'themes/minimal-light/theme.js',
-    themeName: 'minimal-light',
-  },
-  'disco-pop': {
-    cssHref: 'themes/disco-pop/theme.css',
-    scriptHref: 'themes/disco-pop/theme.js',
-    themeName: 'disco-pop',
-  },
-};
+const fileInput = document.getElementById('file-input');
+const themeSelect = document.getElementById('theme-select');
+const queueListEl = document.getElementById('queue-list');
+const queueCountDock = document.getElementById('queue-count-dock');
+const queueCountModal = document.getElementById('queue-count-modal');
+const queueModal = document.getElementById('queue-modal');
+const queueModalClose = document.getElementById('queue-modal-close');
+const queueDropzone = document.getElementById('queue-dropzone');
+const queueAddBtn = document.getElementById('queue-add-btn');
+const musicLaunchBtn = document.getElementById('music-launch-btn');
+const trackTitleEl = document.getElementById('track-title');
+const trackArtistEl = document.getElementById('track-artist');
+
+// ─── themes ────────────────────────────────────────────────
+function normalizeThemePath(path) {
+  return String(path || '')
+    .replace(/\\/g, '/')
+    .replace(/\/+$/, '');
+}
+
+function themeIdFromPath(path) {
+  const clean = normalizeThemePath(path);
+  const parts = clean.split('/');
+  return parts[parts.length - 1] || 'theme';
+}
+
+function readThemeRegistry() {
+  const raw = Array.isArray(window.MYNYL_THEME_REGISTRY) ? window.MYNYL_THEME_REGISTRY : [];
+  const normalized = raw
+    .map((entry, index) => {
+      const folder = normalizeThemePath(entry.path || entry.folder);
+      if (!folder) return null;
+      const id = String(entry.id || themeIdFromPath(folder));
+      return {
+        id,
+        displayName: String(entry.name || entry.label || id),
+        themeName: id,
+        cssHref: `${folder}/theme.css`,
+        scriptHref: `${folder}/theme.js`,
+        default: !!entry.default,
+        index,
+      };
+    })
+    .filter(Boolean);
+
+  if (normalized.length === 0) {
+    normalized.push({
+      id: 'wood',
+      displayName: 'Wood',
+      themeName: 'wood',
+      cssHref: 'themes/wood/theme.css',
+      scriptHref: 'themes/wood/theme.js',
+      default: true,
+      index: 0,
+    });
+  }
+
+  return normalized;
+}
+
+const themeRegistry = readThemeRegistry();
+const THEMES = Object.fromEntries(themeRegistry.map(theme => [theme.id, theme]));
+const DEFAULT_THEME = (themeRegistry.find(theme => theme.default) || themeRegistry[0]).id;
+
+function populateThemeSelect() {
+  themeSelect.innerHTML = '';
+  themeRegistry.forEach(theme => {
+    const option = document.createElement('option');
+    option.value = theme.id;
+    option.textContent = theme.displayName;
+    themeSelect.appendChild(option);
+  });
+}
 
 function applyThemeSelection(themeName) {
-  const themeConfig = THEMES[themeName] || THEMES.wood;
-  const select = document.getElementById('theme-select');
-  if (select && select.value !== themeName) select.value = themeName;
+  const themeConfig = THEMES[themeName] || THEMES[DEFAULT_THEME];
+  if (!themeConfig) return;
+  if (themeSelect.value !== themeConfig.themeName) themeSelect.value = themeConfig.themeName;
   if (window.setMynylTheme) window.setMynylTheme(themeConfig);
-  try { localStorage.setItem('mynyl-theme', themeName); } catch {}
+  try { localStorage.setItem('mynyl-theme', themeConfig.themeName); } catch { }
 }
+
+populateThemeSelect();
+themeSelect.addEventListener('change', e => {
+  applyThemeSelection(e.target.value);
+});
 
 function initArmAngles() {
   armAngle = GEO.aParked;
@@ -86,53 +149,154 @@ document.getElementById('speed-val').addEventListener('change', e => {
   setSpinRPM(parseInt(e.target.value, 10));
 });
 
-document.getElementById('theme-select').addEventListener('change', e => {
-  applyThemeSelection(e.target.value);
-});
-
 // ─── queue ──────────────────────────────────────────────────
 const queueFiles = [];
-let   queueIdx   = -1;  // index of currently loaded track (-1 = none)
+let queueIdx = -1;
+let queueDragIndex = -1;
 
 function isAudioFile(f) {
-  return f.type.startsWith('audio/') ||
-    /\.(mp3|flac|m4a|ogg|wav|aac|opus|wma)$/i.test(f.name);
+  return f && (f.type.startsWith('audio/') ||
+    /\.(mp3|flac|m4a|ogg|wav|aac|opus|wma)$/i.test(f.name));
 }
 
-function queueRender() {
-  const list  = document.getElementById('queue-list');
-  const count = document.getElementById('queue-count');
+function queueCountText() {
   const n = queueFiles.length;
-  count.textContent = n + (n === 1 ? ' track' : ' tracks');
-  list.innerHTML = '';
-  queueFiles.forEach((f, i) => {
-    const div = document.createElement('div');
-    div.className = 'queue-item' + (i === queueIdx ? ' active' : '');
+  return n + (n === 1 ? ' track' : ' tracks');
+}
 
-    const num = document.createElement('span');
-    num.className = 'queue-num';
-    num.textContent = i + 1;
-
-    const nm = document.createElement('span');
-    nm.className = 'queue-name';
-    nm.textContent = f.name.replace(/\.[^.]+$/, '');
-
-    const rm = document.createElement('button');
-    rm.className = 'queue-remove';
-    rm.title = 'Remove';
-    rm.textContent = '×';
-    rm.addEventListener('click', e => { e.stopPropagation(); queueRemove(i); });
-
-    div.append(num, nm, rm);
-    div.addEventListener('click', () => queuePlay(i));
-    list.appendChild(div);
+function clearQueueDropMarkers() {
+  queueListEl.querySelectorAll('.queue-item').forEach(item => {
+    item.classList.remove('drop-before', 'drop-after', 'dragging');
   });
 }
 
-function queueAdd(file) {
-  if (!isAudioFile(file)) return;
-  queueFiles.push(file);
-  if (queueIdx === -1) {
+function syncQueueIndexAfterMove(from, to) {
+  if (queueIdx === from) {
+    queueIdx = to;
+    return;
+  }
+  if (from < queueIdx && to >= queueIdx) {
+    queueIdx--;
+    return;
+  }
+  if (from > queueIdx && to <= queueIdx) {
+    queueIdx++;
+  }
+}
+
+function queueMove(from, anchorIdx, placement) {
+  if (from < 0 || from >= queueFiles.length || anchorIdx < 0 || anchorIdx >= queueFiles.length) return;
+
+  let insertAt = placement === 'after' ? anchorIdx + 1 : anchorIdx;
+  if (from < insertAt) insertAt--;
+  if (insertAt === from) return;
+
+  const [item] = queueFiles.splice(from, 1);
+  queueFiles.splice(insertAt, 0, item);
+  syncQueueIndexAfterMove(from, insertAt);
+  queueRender();
+}
+
+function queuePrev() {
+  if (queueIdx > 0) queuePlay(queueIdx - 1);
+  else if (hasFile) {
+    audio.currentTime = 0;
+    currentTime = 0;
+    targetArmAngle = GEO.aOuter;
+    updatePositionState();
+  }
+}
+
+function queueRender() {
+  const countText = queueCountText();
+  queueCountDock.textContent = countText;
+  queueCountModal.textContent = countText;
+  queueListEl.innerHTML = '';
+
+  if (queueFiles.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'queue-empty';
+    empty.textContent = 'No music queued yet';
+    queueListEl.appendChild(empty);
+    return;
+  }
+
+  queueFiles.forEach((file, index) => {
+    const item = document.createElement('div');
+    item.className = 'queue-item' + (index === queueIdx ? ' active' : '');
+    item.draggable = true;
+    item.dataset.index = index;
+
+    const grip = document.createElement('span');
+    grip.className = 'queue-grip';
+    grip.textContent = '⋮⋮';
+    grip.title = 'Drag to reorder';
+
+    const num = document.createElement('span');
+    num.className = 'queue-num';
+    num.textContent = index + 1;
+
+    const name = document.createElement('span');
+    name.className = 'queue-name';
+    name.textContent = file.name.replace(/\.[^.]+$/, '');
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'queue-remove';
+    removeBtn.title = 'Remove';
+    removeBtn.textContent = '×';
+    removeBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      queueRemove(index);
+    });
+
+    item.append(grip, num, name, removeBtn);
+    item.addEventListener('click', () => queuePlay(index));
+    item.addEventListener('dragstart', e => {
+      queueDragIndex = index;
+      item.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', String(index));
+    });
+    item.addEventListener('dragend', () => {
+      queueDragIndex = -1;
+      clearQueueDropMarkers();
+    });
+    item.addEventListener('dragover', e => {
+      e.preventDefault();
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) return;
+      if (queueDragIndex === -1 || queueDragIndex === index) return;
+
+      const rect = item.getBoundingClientRect();
+      const placement = e.clientY < rect.top + rect.height / 2 ? 'before' : 'after';
+      clearQueueDropMarkers();
+      item.classList.add(placement === 'before' ? 'drop-before' : 'drop-after');
+    });
+    item.addEventListener('drop', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      clearQueueDropMarkers();
+
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        queueAddFiles([...e.dataTransfer.files]);
+        return;
+      }
+
+      if (queueDragIndex === -1 || queueDragIndex === index) return;
+      const rect = item.getBoundingClientRect();
+      const placement = e.clientY < rect.top + rect.height / 2 ? 'before' : 'after';
+      queueMove(queueDragIndex, index, placement);
+    });
+
+    queueListEl.appendChild(item);
+  });
+}
+
+function queueAddFiles(files) {
+  const additions = files.filter(isAudioFile);
+  if (additions.length === 0) return;
+
+  queueFiles.push(...additions);
+  if (queueIdx === -1 && queueFiles.length > 0) {
     queueIdx = 0;
     loadFile(queueFiles[0]);
   }
@@ -151,7 +315,27 @@ function queuePlay(idx) {
   });
 }
 
+function clearTrackInfo() {
+  if (loadedObjectUrl) URL.revokeObjectURL(loadedObjectUrl);
+  loadedObjectUrl = null;
+  resetArtworkUrl();
+  loadedFile = null;
+  hasFile = false;
+  duration = 0;
+  currentTime = 0;
+  audio.src = '';
+  window._trackTitle = '';
+  window._trackArtist = '';
+  window._labelImage = null;
+  window._artworkUrl = null;
+  trackTitleEl.textContent = '—';
+  trackArtistEl.textContent = '';
+  updateMediaSession(false);
+}
+
 function queueRemove(idx) {
+  if (!queueFiles[idx]) return;
+
   queueFiles.splice(idx, 1);
   if (queueIdx === idx) {
     stopAndReset();
@@ -161,54 +345,164 @@ function queueRemove(idx) {
       loadFile(queueFiles[next]);
     } else {
       queueIdx = -1;
-      hasFile = false;
-      audio.src = '';
-      window._trackTitle = '';
-      window._trackArtist = '';
-      window._labelImage = null;
-      window._artworkUrl = null;
-      document.getElementById('track-title').textContent = '—';
-      document.getElementById('track-artist').textContent = '';
+      clearTrackInfo();
     }
   } else if (queueIdx > idx) {
     queueIdx--;
   }
+
   queueRender();
 }
 
 function queueAdvance() {
-  if (queueIdx < 0 || queueIdx >= queueFiles.length - 1) return;
-  const next = queueIdx + 1;
-  queueIdx = next;
-  queueRender();
-  loadFile(queueFiles[next], () => {
-    armAngle = GEO.aOuter;
-    targetArmAngle = GEO.aOuter;
-    setupAudio();
-    startSpinUp();
-  });
+  if (queueIdx < 0 || queueIdx >= queueFiles.length - 1) return false;
+  queuePlay(queueIdx + 1);
+  return true;
 }
+
+function openQueueModal() {
+  queueModal.hidden = false;
+  document.body.classList.add('queue-modal-open');
+  queueRender();
+}
+
+function closeQueueModal() {
+  queueModal.hidden = true;
+  document.body.classList.remove('queue-modal-open');
+  clearQueueDropMarkers();
+}
+
+musicLaunchBtn.addEventListener('click', openQueueModal);
+queueModalClose.addEventListener('click', closeQueueModal);
+queueModal.addEventListener('click', e => {
+  if (e.target === queueModal) closeQueueModal();
+});
+queueAddBtn.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', e => {
+  queueAddFiles([...e.target.files]);
+  e.target.value = '';
+  openQueueModal();
+});
+
+function highlightQueueDropzone(active) {
+  queueDropzone.classList.toggle('is-over', active);
+}
+
+['dragenter', 'dragover'].forEach(type => {
+  queueDropzone.addEventListener(type, e => {
+    e.preventDefault();
+    highlightQueueDropzone(true);
+  });
+});
+
+['dragleave', 'dragend', 'drop'].forEach(type => {
+  queueDropzone.addEventListener(type, e => {
+    e.preventDefault();
+    if (type !== 'drop') highlightQueueDropzone(false);
+  });
+});
+
+queueDropzone.addEventListener('drop', e => {
+  e.stopPropagation();
+  highlightQueueDropzone(false);
+  queueAddFiles([...e.dataTransfer.files]);
+});
+
+queueListEl.addEventListener('dragover', e => {
+  if (!(e.dataTransfer.files && e.dataTransfer.files.length > 0)) return;
+  e.preventDefault();
+});
+
+queueListEl.addEventListener('drop', e => {
+  if (!(e.dataTransfer.files && e.dataTransfer.files.length > 0)) return;
+  e.preventDefault();
+  queueAddFiles([...e.dataTransfer.files]);
+});
 
 // ─── MediaSession ───────────────────────────────────────────
-function updateMediaSession(playing) {
-  if (!('mediaSession' in navigator)) return;
-  navigator.mediaSession.playbackState = playing ? 'playing' : 'paused';
-  if (!hasFile) return;
-  navigator.mediaSession.metadata = new MediaMetadata({
-    title:   window._trackTitle  || 'Unknown Track',
-    artist:  window._trackArtist || '',
-    artwork: window._artworkUrl ? [{ src: window._artworkUrl, sizes: '512x512', type: 'image/jpeg' }] : [],
-  });
+const hasMediaSession = 'mediaSession' in navigator;
+if (!window.isSecureContext) {
+  console.info('Media Session integration works best on HTTPS or localhost.');
 }
 
-if ('mediaSession' in navigator) {
-  navigator.mediaSession.setActionHandler('play',  () => { if (hasFile && !isPlaying) { setupAudio(); setPlayState(true); } });
-  navigator.mediaSession.setActionHandler('pause', () => { if (isPlaying) setPlayState(false); });
-  navigator.mediaSession.setActionHandler('previoustrack', () => {
-    if (!hasFile) return;
-    audio.currentTime = 0; currentTime = 0; targetArmAngle = GEO.aOuter;
-  });
+function updatePositionState() {
+  if (!hasMediaSession || typeof navigator.mediaSession.setPositionState !== 'function') return;
+
+  try {
+    if (!hasFile || !Number.isFinite(audio.duration) || audio.duration <= 0) {
+      navigator.mediaSession.setPositionState(null);
+      return;
+    }
+
+    navigator.mediaSession.setPositionState({
+      duration: audio.duration,
+      playbackRate: audio.playbackRate || 1,
+      position: Math.min(audio.currentTime || 0, audio.duration),
+    });
+  } catch { }
 }
+
+function updateMediaSession(playing) {
+  if (!hasMediaSession) return;
+
+  navigator.mediaSession.playbackState = hasFile ? (playing ? 'playing' : 'paused') : 'none';
+  navigator.mediaSession.metadata = hasFile
+    ? new MediaMetadata({
+      title: window._trackTitle || 'Unknown Track',
+      artist: window._trackArtist || '',
+      artwork: window._artworkUrl ? [{ src: window._artworkUrl, sizes: '512x512', type: 'image/jpeg' }] : [],
+    })
+    : null;
+
+  updatePositionState();
+}
+
+function setMediaActionHandler(action, handler) {
+  if (!hasMediaSession) return;
+  try {
+    navigator.mediaSession.setActionHandler(action, handler);
+  } catch { }
+}
+
+setMediaActionHandler('play', () => {
+  if (hasFile && !isPlaying) {
+    setupAudio();
+    setPlayState(true);
+  }
+});
+setMediaActionHandler('pause', () => {
+  if (isPlaying) setPlayState(false);
+});
+setMediaActionHandler('stop', () => {
+  stopAndReset();
+});
+setMediaActionHandler('previoustrack', () => {
+  queuePrev();
+});
+setMediaActionHandler('nexttrack', () => {
+  queueAdvance();
+});
+setMediaActionHandler('seekbackward', details => {
+  if (!hasFile) return;
+  const offset = details && details.seekOffset ? details.seekOffset : 10;
+  audio.currentTime = Math.max(0, audio.currentTime - offset);
+  currentTime = audio.currentTime;
+  updatePositionState();
+});
+setMediaActionHandler('seekforward', details => {
+  if (!hasFile) return;
+  const offset = details && details.seekOffset ? details.seekOffset : 10;
+  const next = Math.min(duration || audio.duration || 0, audio.currentTime + offset);
+  audio.currentTime = next;
+  currentTime = audio.currentTime;
+  updatePositionState();
+});
+setMediaActionHandler('seekto', details => {
+  if (!hasFile || typeof details.seekTime !== 'number') return;
+  audio.currentTime = Math.min(details.seekTime, duration || audio.duration || details.seekTime);
+  currentTime = audio.currentTime;
+  updatePositionState();
+});
 
 // ─── song-end handler ───────────────────────────────────────
 function handleSongEnd() {
@@ -222,10 +516,11 @@ function handleSongEnd() {
   setPlayState(false, 500);
   fadeCrackleIn(500);
 
-  // 2s crackle, then fade out and advance queue
   setTimeout(() => {
     fadeCrackleOut(600);
-    setTimeout(queueAdvance, 700);
+    setTimeout(() => {
+      if (!queueAdvance()) targetArmAngle = GEO.aParked;
+    }, 700);
   }, 2500);
 
   targetArmAngle = GEO.aParked;
@@ -258,9 +553,10 @@ function setPlayState(playing, fadeMs) {
 function stopAndReset() {
   if (pendingTimer) { clearTimeout(pendingTimer); pendingTimer = null; }
   isSpinningUp = false;
-  songIsOver   = false;
+  songIsOver = false;
 
   if (isPlaying) setPlayState(false, 200);
+  else updateMediaSession(false);
 
   if (audioCtx && crackleGain) {
     const t = audioCtx.currentTime;
@@ -268,8 +564,12 @@ function stopAndReset() {
     crackleGain.gain.setValueAtTime(0, t);
   }
 
-  if (hasFile) { audio.currentTime = 0; currentTime = 0; }
+  if (hasFile) {
+    audio.currentTime = 0;
+    currentTime = 0;
+  }
   targetArmAngle = GEO.aParked;
+  updatePositionState();
 }
 
 // ─── controls ──────────────────────────────────────────────
@@ -278,7 +578,9 @@ document.getElementById('btn-play').addEventListener('click', () => {
   setupAudio();
 
   if (isSpinningUp) {
-    clearTimeout(pendingTimer); pendingTimer = null; isSpinningUp = false;
+    clearTimeout(pendingTimer);
+    pendingTimer = null;
+    isSpinningUp = false;
     fadeCrackleOut(400);
     setPlayState(true, 400);
     return;
@@ -304,11 +606,7 @@ document.getElementById('btn-stop').addEventListener('click', () => {
 });
 
 document.getElementById('btn-prev').addEventListener('click', () => {
-  if (!hasFile) return;
-  audio.currentTime = 0;
-  currentTime = 0;
-  targetArmAngle = GEO.aOuter;
-  songIsOver = false;
+  queuePrev();
 });
 
 document.getElementById('btn-fwd').addEventListener('click', () => {
@@ -318,6 +616,8 @@ document.getElementById('btn-fwd').addEventListener('click', () => {
     handleSongEnd();
   } else {
     audio.currentTime = Math.min(duration, next);
+    currentTime = audio.currentTime;
+    updatePositionState();
   }
 });
 
@@ -346,7 +646,7 @@ function setVol(p) {
   p = Math.max(0, Math.min(1, p));
   volLevel = p;
   document.getElementById('vol-fill').style.width = (p * 100) + '%';
-  document.getElementById('vol-thumb').style.left  = (p * 100) + '%';
+  document.getElementById('vol-thumb').style.left = (p * 100) + '%';
   if (masterGain) masterGain.gain.value = p;
 }
 const volTrack = document.getElementById('vol-track');
@@ -359,9 +659,9 @@ setVol(0.7);
 
 // ─── spin-up (2s crackle → music starts) ───────────────────
 function startSpinUp() {
-  songIsOver   = false;
+  songIsOver = false;
   isSpinningUp = true;
-  spinUpStart  = performance.now();
+  spinUpStart = performance.now();
   if (pendingTimer) clearTimeout(pendingTimer);
 
   if (audioCtx && crackleGain) {
@@ -379,7 +679,13 @@ function startSpinUp() {
 }
 
 // ─── album art ─────────────────────────────────────────────
+function resetArtworkUrl() {
+  if (artworkObjectUrl) URL.revokeObjectURL(artworkObjectUrl);
+  artworkObjectUrl = null;
+}
+
 function loadAlbumArt(file) {
+  resetArtworkUrl();
   window._artworkUrl = null;
   window._labelImage = null;
   if (typeof jsmediatags === 'undefined') return;
@@ -388,13 +694,17 @@ function loadAlbumArt(file) {
       const pic = tag.tags.picture;
       if (!pic) return;
       const blob = new Blob([new Uint8Array(pic.data)], { type: pic.format || 'image/jpeg' });
-      const url  = URL.createObjectURL(blob);
+      const url = URL.createObjectURL(blob);
+      artworkObjectUrl = url;
       window._artworkUrl = url;
       const img = new Image();
-      img.onload = () => { window._labelImage = img; updateMediaSession(isPlaying); };
+      img.onload = () => {
+        window._labelImage = img;
+        updateMediaSession(isPlaying);
+      };
       img.src = url;
     },
-    onError() {},
+    onError() { },
   });
 }
 
@@ -406,42 +716,30 @@ function loadFile(file, onReady) {
   stopAndReset();
 
   loadedFile = file;
+  if (loadedObjectUrl) URL.revokeObjectURL(loadedObjectUrl);
+  loadedObjectUrl = URL.createObjectURL(file);
 
-  const url = URL.createObjectURL(file);
-  audio.src = url;
+  audio.src = loadedObjectUrl;
   audio.load();
   hasFile = true;
 
-  const name  = file.name.replace(/\.[^.]+$/, '');
+  const name = file.name.replace(/\.[^.]+$/, '');
   const parts = name.split(/\s*[-–]\s*/);
-  window._trackTitle  = parts[0].trim();
+  window._trackTitle = parts[0].trim();
   window._trackArtist = parts.slice(1).join(' – ').trim();
-  document.getElementById('track-title').textContent  = window._trackTitle || name;
-  document.getElementById('track-artist').textContent = window._trackArtist || '';
+  trackTitleEl.textContent = window._trackTitle || name;
+  trackArtistEl.textContent = window._trackArtist || '';
 
   loadAlbumArt(file);
 
   audio.addEventListener('loadedmetadata', () => {
-    duration       = audio.duration;
-    armAngle       = GEO.aParked;
+    duration = audio.duration;
+    armAngle = GEO.aParked;
     targetArmAngle = GEO.aParked;
     updateMediaSession(false);
     if (onReady) onReady();
   }, { once: true });
-
-  audio.addEventListener('timeupdate', () => { currentTime = audio.currentTime; });
 }
-
-// ─── file input / drag-drop ────────────────────────────────
-document.getElementById('file-input').addEventListener('change', e => {
-  [...e.target.files].forEach(queueAdd);
-  e.target.value = '';
-});
-document.addEventListener('dragover', e => e.preventDefault());
-document.addEventListener('drop', e => {
-  e.preventDefault();
-  [...e.dataTransfer.files].forEach(queueAdd);
-});
 
 // ─── arm drag — drop onto record to start ──────────────────
 aCv.addEventListener('mousedown', e => {
@@ -480,6 +778,11 @@ window.addEventListener('mouseup', () => {
 
 // ─── keyboard ──────────────────────────────────────────────
 document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !queueModal.hidden) {
+    closeQueueModal();
+    return;
+  }
+
   if (e.target.tagName === 'INPUT') return;
   switch (e.code) {
     case 'Space':
@@ -493,6 +796,7 @@ document.addEventListener('keydown', e => {
       if (!hasFile) break;
       audio.currentTime = Math.max(0, audio.currentTime - 5);
       currentTime = audio.currentTime;
+      updatePositionState();
       break;
     case 'ArrowRight': {
       e.preventDefault();
@@ -503,15 +807,18 @@ document.addEventListener('keydown', e => {
       } else {
         audio.currentTime = Math.min(duration, next);
         currentTime = audio.currentTime;
+        updatePositionState();
       }
       break;
     }
     case 'ArrowUp':
       e.preventDefault();
-      setVol(volLevel + 0.05); break;
+      setVol(volLevel + 0.05);
+      break;
     case 'ArrowDown':
       e.preventDefault();
-      setVol(volLevel - 0.05); break;
+      setVol(volLevel - 0.05);
+      break;
   }
 });
 
@@ -521,16 +828,14 @@ function animate(ts) {
   const dt = lastRaf ? Math.min((ts - lastRaf) / 1000, 0.05) : 0;
   lastRaf = ts;
 
-  // record spin — speed driven by spinRPM (visual only, arm uses currentTime)
   let spinFactor = 0;
   if (isSpinningUp && spinUpStart) {
     spinFactor = Math.min(1, (ts - spinUpStart) / SPIN_UP_MS);
-    spinFactor = spinFactor * spinFactor; // ease-in quad
+    spinFactor = spinFactor * spinFactor;
   }
   if (isPlaying) spinFactor = 1;
   if (spinFactor > 0) rotAngle = (rotAngle + spinRPM * 6 * spinFactor * dt) % 360;
 
-  // arm tracking
   if (!isDragging) {
     if (hasFile && duration > 0) {
       if (isPlaying) {
@@ -552,8 +857,10 @@ function animate(ts) {
 
 requestAnimationFrame(animate);
 
-// ─── cursor auto-hide (5s idle) ────────────────────────────
+// ─── cursor + UI auto-hide (5s idle) ───────────────────────
 let cursorTimer = null;
+let uiTimer = null;
+
 function showCursor() {
   document.body.style.cursor = '';
   aCv.style.cursor = isDragging ? 'grabbing' : 'grab';
@@ -563,22 +870,57 @@ function showCursor() {
     aCv.style.cursor = 'none';
   }, 5000);
 }
-document.addEventListener('mousemove', showCursor, { passive: true });
-showCursor();
 
-// ─── eye toggle ────────────────────────────────────────────
+function showUI() {
+  // Don't fight a manual hide (eye-btn was used to hide).
+  if (document.body.classList.contains('ui-hidden')) return;
+
+  document.body.classList.remove('ui-auto-hidden');
+  clearTimeout(uiTimer);
+  uiTimer = setTimeout(() => document.body.classList.add('ui-auto-hidden'), 5000);
+}
+
+document.addEventListener('mousemove', showCursor, { passive: true });
+document.addEventListener('mousemove', showUI, { passive: true });
+showCursor();
+showUI();
+
+// ── eye toggle ──────────────────────────────────────────────────────────────
 document.getElementById('eye-btn').addEventListener('click', () => {
-  document.body.classList.toggle('ui-hidden');
+  const isNowHidden = document.body.classList.toggle('ui-hidden');
+  // Only restart the auto-hide countdown when the user has just revealed the UI.
+  // If they just manually hid it, do nothing — don't fight their choice.
+  if (!isNowHidden) {
+    resetUiHideTimer();
+  }
 });
+
+audio.addEventListener('timeupdate', () => {
+  currentTime = audio.currentTime;
+  updatePositionState();
+});
+
+let uiHideTimer = null;
+function resetUiHideTimer() {
+  document.body.classList.remove('ui-auto-hidden');
+  clearTimeout(uiHideTimer);
+  // Don't auto-hide if the user has manually hidden via eye btn
+  if (document.body.classList.contains('ui-hidden')) return;
+  uiHideTimer = setTimeout(() => {
+    document.body.classList.add('ui-auto-hidden');
+  }, 5000);
+}
+document.addEventListener('mousemove', resetUiHideTimer);
+document.addEventListener('mousedown', resetUiHideTimer);
+document.addEventListener('keydown', resetUiHideTimer);
+resetUiHideTimer();
 
 // ─── init ──────────────────────────────────────────────────
 try {
   const savedTheme = localStorage.getItem('mynyl-theme');
-  if (savedTheme && THEMES[savedTheme]) {
-    applyThemeSelection(savedTheme);
-  } else {
-    applyThemeSelection('wood');
-  }
-} catch {}
+  applyThemeSelection(savedTheme && THEMES[savedTheme] ? savedTheme : DEFAULT_THEME);
+} catch {
+  applyThemeSelection(DEFAULT_THEME);
+}
 
 queueRender();
