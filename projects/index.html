@@ -212,26 +212,21 @@
                     <button class="close-viewer"
                         @click="closeImageViewer">&times;</button>
 
-                    <div class="viewer-stage">
-                        <img
-                            v-if="getViewerImage()"
-                            :src="getViewerImage().url"
-                            :alt="getViewerImage().description || 'Project image full view'"
-                            class="viewer-image"
-                            :class="{ zoomed: imageZoom > 1 }"
-                            :style="{ transform: `scale(${imageZoom})` }"
-                            @click.stop="toggleImageZoom">
-                    </div>
-                    <p v-if="getViewerImage() && getViewerImage().description"
-                        class="viewer-caption">{{ getViewerImage().description }}</p>
-
-                    <div class="viewer-controls">
-                        <button class="nav-btn"
-                            @click.stop="zoomOut"
-                            :disabled="imageZoom <= 1">-</button>
-                        <button class="nav-btn"
-                            @click.stop="zoomIn"
-                            :disabled="imageZoom >= 3">+</button>
+                    <div class="viewer-main">
+                        <div v-if="getViewerImage() && getViewerImage().description"
+                            class="viewer-caption-panel">
+                            <p class="viewer-caption">{{ getViewerImage().description }}</p>
+                        </div>
+                        <div class="viewer-stage">
+                            <img
+                                v-if="getViewerImage()"
+                                :src="getViewerImage().url"
+                                :alt="getViewerImage().description || 'Project image full view'"
+                                class="viewer-image"
+                                :class="{ zoomed: imageZoom > 1 }"
+                                :style="{ transform: `scale(${imageZoom})` }"
+                                @click.stop="toggleImageZoom">
+                        </div>
                     </div>
 
                     <div class="image-nav">
