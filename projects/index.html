@@ -197,10 +197,6 @@
                                             <img :src="image.url"
                                                 :alt="image.description || 'Project screenshot'">
                                         </div>
-                                        <div v-if="image.description"
-                                            class="gallery-item-description">
-                                            {{ image.description }}
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -216,13 +212,27 @@
                     <button class="close-viewer"
                         @click="closeImageViewer">&times;</button>
 
-                    <img
-                        v-if="getViewerImage()"
-                        :src="getViewerImage().url"
-                        :alt="getViewerImage().description || 'Project image full view'"
-                        class="viewer-image">
+                    <div class="viewer-stage">
+                        <img
+                            v-if="getViewerImage()"
+                            :src="getViewerImage().url"
+                            :alt="getViewerImage().description || 'Project image full view'"
+                            class="viewer-image"
+                            :class="{ zoomed: imageZoom > 1 }"
+                            :style="{ transform: `scale(${imageZoom})` }"
+                            @click.stop="toggleImageZoom">
+                    </div>
                     <p v-if="getViewerImage() && getViewerImage().description"
                         class="viewer-caption">{{ getViewerImage().description }}</p>
+
+                    <div class="viewer-controls">
+                        <button class="nav-btn"
+                            @click.stop="zoomOut"
+                            :disabled="imageZoom <= 1">-</button>
+                        <button class="nav-btn"
+                            @click.stop="zoomIn"
+                            :disabled="imageZoom >= 3">+</button>
+                    </div>
 
                     <div class="image-nav">
                         <button class="nav-btn prev-btn"

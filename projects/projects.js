@@ -40,6 +40,7 @@ fetch('./project-data.json')
         isExpandedView: false,
         isImageViewerActive: false,
         currentImageIndex: 0,
+        imageZoom: 1,
         categoryColors: categoryColors
       },
       computed: {
@@ -71,10 +72,23 @@ fetch('./project-data.json')
         },
         openImageViewer(index) {
           this.currentImageIndex = index;
+          this.imageZoom = 1;
           this.isImageViewerActive = true;
         },
         closeImageViewer() {
+          this.imageZoom = 1;
           this.isImageViewerActive = false;
+        },
+        toggleImageZoom() {
+          this.imageZoom = this.imageZoom > 1 ? 1 : 2;
+        },
+        zoomIn(event) {
+          if (event) event.stopPropagation();
+          this.imageZoom = Math.min(this.imageZoom + 0.5, 3);
+        },
+        zoomOut(event) {
+          if (event) event.stopPropagation();
+          this.imageZoom = Math.max(this.imageZoom - 0.5, 1);
         },
         handleKeydown(event) {
           if (!this.isImageViewerActive) return;
@@ -84,6 +98,12 @@ fetch('./project-data.json')
           } else if (event.key === 'ArrowLeft') {
             event.preventDefault();
             this.prevImage();
+          } else if (event.key === '+' || event.key === '=') {
+            event.preventDefault();
+            this.zoomIn();
+          } else if (event.key === '-') {
+            event.preventDefault();
+            this.zoomOut();
           } else if (event.key === 'Escape') {
             event.preventDefault();
             this.closeImageViewer();
@@ -92,11 +112,13 @@ fetch('./project-data.json')
         nextImage(event) {
           if (event) event.stopPropagation();
           if (!this.selectedProjectData) return;
+          this.imageZoom = 1;
           this.currentImageIndex = (this.currentImageIndex + 1) % this.selectedProjectData.images.length;
         },
         prevImage(event) {
           if (event) event.stopPropagation();
           if (!this.selectedProjectData) return;
+          this.imageZoom = 1;
           this.currentImageIndex = (this.currentImageIndex - 1 + this.selectedProjectData.images.length) % this.selectedProjectData.images.length;
         },
         handleViewerBackgroundClick(event) {
