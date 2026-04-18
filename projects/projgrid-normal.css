@@ -60,6 +60,7 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
+  display: block;
 }
 
 .project-card:not(.sidebar-card):hover .project-image img {
@@ -133,4 +134,23 @@
   z-index: 10;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+@media screen and (max-width: 768px) {
+  .projects-container {
+    padding: 0 18px;
+  }
+
+  .project-card:not(.sidebar-card) .project-image {
+    width: 100%;
+    height: 210px;
+  }
+
+  .project-card:not(.sidebar-card) .project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
 }

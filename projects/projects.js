@@ -85,6 +85,8 @@ loadProjectsData()
         isImageViewerActive: false,
         currentImageIndex: 0,
         imageZoom: 1,
+        touchStartX: 0,
+        touchStartY: 0,
         categoryColors: categoryColors,
         preloadedImages: new Set()
       },
@@ -198,6 +200,26 @@ loadProjectsData()
         handleViewerBackgroundClick(event) {
           if (event.target.classList.contains('image-viewer')) {
             this.closeImageViewer();
+          }
+        },
+        handleViewerTouchStart(event) {
+          if (!event.touches || !event.touches.length) return;
+          this.touchStartX = event.touches[0].clientX;
+          this.touchStartY = event.touches[0].clientY;
+        },
+        handleViewerTouchEnd(event) {
+          if (this.imageZoom > 1 || !event.changedTouches || !event.changedTouches.length) return;
+
+          const touch = event.changedTouches[0];
+          const deltaX = touch.clientX - this.touchStartX;
+          const deltaY = touch.clientY - this.touchStartY;
+
+          if (Math.abs(deltaX) < 40 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+
+          if (deltaX < 0) {
+            this.nextImage();
+          } else {
+            this.prevImage();
           }
         },
         getCategoryColor(category) {

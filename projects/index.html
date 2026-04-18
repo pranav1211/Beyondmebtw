@@ -223,7 +223,9 @@
                             class="viewer-caption-panel">
                             <p class="viewer-caption">{{ getViewerImage().description }}</p>
                         </div>
-                        <div class="viewer-stage">
+                        <div class="viewer-stage"
+                            @touchstart.passive="handleViewerTouchStart"
+                            @touchend.passive="handleViewerTouchEnd">
                             <img
                                 v-if="getViewerImage()"
                                 :src="getViewerImage().url"
