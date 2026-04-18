@@ -81,25 +81,54 @@ function renderProjectImagesList() {
     return;
   }
 
-  container.innerHTML = state.projectImagesDraft.map((image, index) => `
-    <div class="project-image-item">
-      <img class="project-image-thumb" src="${esc(image.url)}" alt="" onerror="this.src='https://beyondmebtw.com/assets/images/favicon.ico'">
-      <div class="project-image-meta">
-        <div class="project-image-url">${esc(image.url)}</div>
-        <div class="project-image-description">${esc(image.description || 'No description')}</div>
+  container.innerHTML = state.projectImagesDraft.map((image, index) => {
+    const isEditing = state.editingProjectImageIndex === index;
+    return `
+      <div class="project-image-item ${isEditing ? 'editing' : ''}">
+        <img class="project-image-thumb" src="${esc(image.url)}" alt="" onerror="this.src='https://beyondmebtw.com/assets/images/favicon.ico'">
+        <div class="project-image-meta">
+          ${isEditing ? `
+            <div class="project-image-edit-fields">
+              <input type="text" class="project-image-inline-url" data-role="inline-image-url" data-index="${index}" value="${esc(image.url)}" placeholder="https://...">
+              <input type="text" class="project-image-inline-description" data-role="inline-image-description" data-index="${index}" value="${esc(image.description || '')}" placeholder="Optional image description">
+            </div>
+          ` : `
+            <div class="project-image-url">${esc(image.url)}</div>
+            <div class="project-image-description">${esc(image.description || 'No description')}</div>
+          `}
+        </div>
+        <div class="project-image-actions">
+          ${isEditing ? `
+            <button type="button" class="btn-icon edit" data-action="save-project-image" data-index="${index}">Save</button>
+            <button type="button" class="btn-icon" data-action="cancel-project-image-edit" data-index="${index}">Cancel</button>
+          ` : `
+            <button type="button" class="btn-icon edit" data-action="edit-project-image" data-index="${index}">Edit</button>
+          `}
+          <button type="button" class="btn-icon danger" data-action="delete-project-image" data-index="${index}">Remove</button>
+        </div>
       </div>
-      <div class="project-image-actions">
-        <button type="button" class="btn-icon edit" data-action="edit-project-image" data-index="${index}">Edit</button>
-        <button type="button" class="btn-icon danger" data-action="delete-project-image" data-index="${index}">Remove</button>
-      </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 
   container.querySelectorAll('[data-action="edit-project-image"]').forEach(btn => {
     btn.addEventListener('click', () => startEditProjectImage(parseInt(btn.dataset.index, 10)));
   });
+  container.querySelectorAll('[data-action="save-project-image"]').forEach(btn => {
+    btn.addEventListener('click', () => saveProjectImageEdit(parseInt(btn.dataset.index, 10)));
+  });
+  container.querySelectorAll('[data-action="cancel-project-image-edit"]').forEach(btn => {
+    btn.addEventListener('click', resetProjectImageEditor);
+  });
   container.querySelectorAll('[data-action="delete-project-image"]').forEach(btn => {
     btn.addEventListener('click', () => removeProjectImage(parseInt(btn.dataset.index, 10)));
+  });
+  container.querySelectorAll('.project-image-inline-description').forEach(input => {
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        saveProjectImageEdit(parseInt(input.dataset.index, 10));
+      }
+    });
   });
 }
 
@@ -107,9 +136,23 @@ function startEditProjectImage(index) {
   const image = state.projectImagesDraft[index];
   if (!image) return;
   state.editingProjectImageIndex = index;
-  document.getElementById('proj-image-url').value = image.url || '';
-  document.getElementById('proj-image-description').value = image.description || '';
-  document.getElementById('proj-image-add-btn').textContent = 'Update Image';
+  renderProjectImagesList();
+}
+
+function saveProjectImageEdit(index) {
+  const urlInput = document.querySelector(`[data-role="inline-image-url"][data-index="${index}"]`);
+  const descInput = document.querySelector(`[data-role="inline-image-description"][data-index="${index}"]`);
+  const url = urlInput ? urlInput.value.trim() : '';
+  const description = descInput ? descInput.value.trim() : '';
+
+  if (!url) {
+    toast('Image URL is required', 'warning');
+    return;
+  }
+
+  state.projectImagesDraft[index] = { url, description };
+  resetProjectImageEditor();
+  renderProjectImagesList();
 }
 
 function removeProjectImage(index) {

@@ -76,6 +76,19 @@ fetch('./project-data.json')
         closeImageViewer() {
           this.isImageViewerActive = false;
         },
+        handleKeydown(event) {
+          if (!this.isImageViewerActive) return;
+          if (event.key === 'ArrowRight') {
+            event.preventDefault();
+            this.nextImage();
+          } else if (event.key === 'ArrowLeft') {
+            event.preventDefault();
+            this.prevImage();
+          } else if (event.key === 'Escape') {
+            event.preventDefault();
+            this.closeImageViewer();
+          }
+        },
         nextImage(event) {
           if (event) event.stopPropagation();
           if (!this.selectedProjectData) return;
@@ -103,6 +116,7 @@ fetch('./project-data.json')
         }
       },
       mounted() {
+        window.addEventListener('keydown', this.handleKeydown);
         const homeLink = document.querySelector('#home');
         const blogLink = document.querySelector('#blog');
         const projLink = document.querySelector('#projects');
@@ -125,6 +139,9 @@ fetch('./project-data.json')
         aboutLink.addEventListener('click', () => {
           window.location = "https://beyondmebtw.com/about";
         });
+      },
+      beforeDestroy() {
+        window.removeEventListener('keydown', this.handleKeydown);
       }
     });
   })

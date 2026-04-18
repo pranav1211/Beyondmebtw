@@ -810,6 +810,11 @@ select option { background: var(--surface2); }
   min-width: 0;
 }
 
+.project-image-edit-fields {
+  display: grid;
+  gap: 8px;
+}
+
 .project-image-url {
   font-size: 12px;
   font-weight: 600;
@@ -829,6 +834,11 @@ select option { background: var(--surface2); }
   gap: 6px;
   flex-wrap: wrap;
   justify-content: flex-end;
+}
+
+.project-image-item.editing {
+  border-color: var(--accent);
+  background: rgba(139, 82, 224, 0.08);
 }
 
 /* ── Chip group (subcategory selectors) ──────────────────────────────── */

@@ -193,8 +193,14 @@
                                         :key="index"
                                         class="gallery-item"
                                         @click="openImageViewer(index)">
-                                        <img :src="image.url"
-                                            :alt="image.description || 'Project screenshot'">
+                                        <div class="gallery-media">
+                                            <img :src="image.url"
+                                                :alt="image.description || 'Project screenshot'">
+                                        </div>
+                                        <div v-if="image.description"
+                                            class="gallery-item-description">
+                                            {{ image.description }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -213,7 +219,7 @@
                     <img
                         v-if="getViewerImage()"
                         :src="getViewerImage().url"
-                        alt="Project image full view"
+                        :alt="getViewerImage().description || 'Project image full view'"
                         class="viewer-image">
                     <p v-if="getViewerImage() && getViewerImage().description"
                         class="viewer-caption">{{ getViewerImage().description }}</p>
