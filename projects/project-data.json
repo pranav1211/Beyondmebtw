@@ -255,21 +255,66 @@
     "githubLink": "https://github.com/pranav1211/beyond-money-public",
     "tags": [],
     "images": [
-      "https://content.beyondmebtw.com/assets/projects/bmoney/bmoneyt.webp",
-      "https://content.beyondmebtw.com/assets/projects/bmoney/1dashboarddesk.webp",
-      "https://content.beyondmebtw.com/assets/projects/bmoney/2transactionsdesk.webp",
-      "https://content.beyondmebtw.com/assets/projects/bmoney/2transactionsadddesk.png",
-      "https://content.beyondmebtw.com/assets/projects/bmoney/3accountsdesk.webp",
-      "https://content.beyondmebtw.com/assets/projects/bmoney/4creditcardsdesk.webp",
-      "https://content.beyondmebtw.com/assets/projects/bmoney/4cchistorydesk.webp",
-      "https://content.beyondmebtw.com/assets/projects/bmoney/5assetsdesk.webp",
-      "https://content.beyondmebtw.com/assets/projects/bmoney/6subscriptionsdesk.webp",
-      "https://content.beyondmebtw.com/assets/projects/bmoney/7networthdesk.webp",
-      "https://content.beyondmebtw.com/assets/projects/bmoney/8categoriesdesk.webp",
-      "https://content.beyondmebtw.com/assets/projects/bmoney/8labelsdesk.webp",
-      "https://content.beyondmebtw.com/assets/projects/bmoney/9converterdesk.webp",
-      "https://content.beyondmebtw.com/assets/projects/bmoney/10syncdesk.webp",
-      "https://content.beyondmebtw.com/assets/projects/bmoney/11settingsdesk.webp"
+      {
+        "url": "https://content.beyondmebtw.com/assets/projects/bmoney/bmoneyt.webp",
+        "description": ""
+      },
+      {
+        "url": "https://content.beyondmebtw.com/assets/projects/bmoney/1dashboarddesk.webp",
+        "description": "The home base. At a glance, you can see your latest transactions, your current net worth, and a month-based breakdown of income vs. expenses — everything you need to understand where you stand financially, right now."
+      },
+      {
+        "url": "https://content.beyondmebtw.com/assets/projects/bmoney/2transactionsdesk.webp",
+        "description": "A full history of your financial activity. Browse through all past transactions and filter by date, type, category, account, label, or any combination of parameters to find exactly what you're looking for."
+      },
+      {
+        "url": "https://content.beyondmebtw.com/assets/projects/bmoney/2transactionsadddesk.png",
+        "description": "Log any financial event — incoming money, expenses, or transfers between accounts. Transfers allow for seamless management across multiple accounts without double-counting. Each entry supports custom labels and descriptions so you can record context that matters to you."
+      },
+      {
+        "url": "https://content.beyondmebtw.com/assets/projects/bmoney/3accountsdesk.webp",
+        "description": "Add and manage your cash and bank accounts, each displayed as a distinct card. View current balances, edit account details, and add new accounts as needed — keeping all your money in one organized view."
+      },
+      {
+        "url": "https://content.beyondmebtw.com/assets/projects/bmoney/4creditcardsdesk.webp",
+        "description": "Track your credit cards and their usage by logging transactions against them. Set due dates for each card to stay on top of billing cycles. The Pay Bill feature is transaction-based — it records the payment as a financial entry rather than functioning as an actual payment processor."
+      },
+      {
+        "url": "https://content.beyondmebtw.com/assets/projects/bmoney/4cchistorydesk.webp",
+        "description": "Review a complete history of previously recorded card payments, giving you a clear picture of past billing and repayment patterns."
+      },
+      {
+        "url": "https://content.beyondmebtw.com/assets/projects/bmoney/5assetsdesk.webp",
+        "description": "Monitor financial assets such as stocks, fixed deposits (FDs), loans, and other holdings in a structured, easy-to-read view. Keep tabs on what you own and what you owe, all in one place."
+      },
+      {
+        "url": "https://content.beyondmebtw.com/assets/projects/bmoney/6subscriptionsdesk.webp",
+        "description": "Stay on top of recurring expenses by managing all your active subscriptions in one dedicated space. Track costs, renewal cycles, and avoid surprise charges."
+      },
+      {
+        "url": "https://content.beyondmebtw.com/assets/projects/bmoney/7networthdesk.webp",
+        "description": "A consolidated view of your total net worth, factoring in all assets and liabilities. Understand the full picture of your financial health beyond just day-to-day cash flow."
+      },
+      {
+        "url": "https://content.beyondmebtw.com/assets/projects/bmoney/8categoriesdesk.webp",
+        "description": "Create and manage custom categories and labels tailored to how you think about your money. Organize transactions your way, with as much or as little granularity as you prefer."
+      },
+      {
+        "url": "https://content.beyondmebtw.com/assets/projects/bmoney/8labelsdesk.webp",
+        "description": "Create and manage custom categories and labels tailored to how you think about your money. Organize transactions your way, with as much or as little granularity as you prefer."
+      },
+      {
+        "url": "https://content.beyondmebtw.com/assets/projects/bmoney/9converterdesk.webp",
+        "description": "A built-in currency monitoring and conversion tool to support international usability. Quickly reference exchange rates without leaving the app."
+      },
+      {
+        "url": "https://content.beyondmebtw.com/assets/projects/bmoney/10syncdesk.webp",
+        "description": "A dedicated sync page to ensure your data is always up to date and that the local cache reflects the latest version. Manual sync control gives you direct accessibility and confidence that nothing is out of date."
+      },
+      {
+        "url": "https://content.beyondmebtw.com/assets/projects/bmoney/11settingsdesk.webp",
+        "description": "Configure the app to your preferences:  App Lock — secure access to your financial data Currency Preference — set your default display currency Data Export — export everything as a CSV or JSON file for external use or backup"
+      }
     ]
   }
 ]
