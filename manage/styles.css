@@ -895,6 +895,9 @@ select option { background: var(--surface2); }
 .modal-confirm p { padding: 16px 0 20px; color: var(--text-muted); font-size: 14px; line-height: 1.5; }
 .modal-confirm .modal-footer { padding-bottom: 0; }
 
+.set-slot-options { display: flex; flex-direction: column; gap: 8px; padding-bottom: 18px; }
+.set-slot-options button { width: 100%; }
+
 .modal-header {
   display: flex;
   align-items: center;

@@ -299,10 +299,13 @@ function initConfirmModal() {
 }
 
 function initLatestConfirmModal() {
-  document.getElementById('latest-confirm-ok').addEventListener('click', () => {
-    closeModal('latest-confirm-modal');
-    if (state.latestConfirmCallback) state.latestConfirmCallback();
-    state.latestConfirmCallback = null;
+  document.querySelectorAll('#latest-confirm-modal .set-slot-options button[data-slot]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const slot = btn.dataset.slot;
+      closeModal('latest-confirm-modal');
+      if (state.latestConfirmCallback) state.latestConfirmCallback(slot);
+      state.latestConfirmCallback = null;
+    });
   });
   document.getElementById('latest-confirm-cancel').addEventListener('click', () => {
     closeModal('latest-confirm-modal');
@@ -666,8 +669,8 @@ function renderPostsList() {
 }
 
 function attachPostRowHandlers(container) {
-  container.querySelectorAll('[data-action="make-latest"]').forEach(btn => {
-    btn.addEventListener('click', () => makeLatestPost(btn));
+  container.querySelectorAll('[data-action="set-post"]').forEach(btn => {
+    btn.addEventListener('click', () => openSetPostModal(btn));
   });
   container.querySelectorAll('[data-action="edit-post"]').forEach(btn => {
     btn.addEventListener('click', () => openEditBlogPost(btn.dataset.category, btn.dataset.uid));
@@ -677,7 +680,7 @@ function attachPostRowHandlers(container) {
   });
 }
 
-async function makeLatestPost(btn) {
+async function openSetPostModal(btn) {
   const category = btn.dataset.category;
   const uid = btn.dataset.uid;
   const catData = state.blogData[category];
@@ -685,12 +688,11 @@ async function makeLatestPost(btn) {
   const post = catData.posts.find(p => p.uid === uid);
   if (!post) return;
 
-  // Use the dedicated latest confirm modal
   document.getElementById('latest-confirm-title').textContent = post.title;
-  state.latestConfirmCallback = async () => {
+  state.latestConfirmCallback = async (slot) => {
     try {
       await apiCall('POST', '/latestdata', {
-        formid: 'latest',
+        formid: slot,
         name: post.title,
         date: post.date || '',
         excerpt: post.excerpt || '',
@@ -699,7 +701,8 @@ async function makeLatestPost(btn) {
       });
       state.latestData = null;
       loadHomepageTab();
-      toast('Latest post updated');
+      const label = slot === 'latest' ? 'Latest post' : `Featured ${slot.slice(-1)}`;
+      toast(`${label} updated`);
     } catch (e) {
       toast(`Error: ${e.message}`, 'error');
     }
@@ -731,7 +734,7 @@ function renderPostRow(post, catKey, displayLabel) {
         <div class="post-title">${esc(post.title)}</div>
         <div class="post-uid">${esc(post.uid)}</div>
       </div>
-      <button class="btn-icon latest" data-action="make-latest" data-category="${esc(catKey)}" data-uid="${esc(post.uid)}" title="Make Latest Post">Latest</button>
+      <button class="btn-icon latest" data-action="set-post" data-category="${esc(catKey)}" data-uid="${esc(post.uid)}" title="Set post placement">Set</button>
       <div class="post-subcat">${esc(label)}</div>
       <div class="post-date">${esc(date)}</div>
       <div class="post-actions">
