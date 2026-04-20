@@ -272,7 +272,7 @@
     "id": 13,
     "title": "Beyond Money",
     "category": "Web Development",
-    "shortDescription": "An offline-first personal finance app for tracking transactions, cards, assets, subscriptions, and net worth in one place.",
+    "shortDescription": "An personal finance app for tracking transactions, cards, assets, subscriptions, and net worth in one place built for me, by me.",
     "fullDescription": "• A personal finance tracker built around a central dashboard that brings accounts, transactions, credit cards, assets, subscriptions, and net worth into one workflow.\n• Supports income, expenses, transfers, categories, labels, and detailed filtering so it stays practical for everyday tracking instead of just summary reporting.\n• Built as a responsive PWA with offline support using IndexedDB and sync flows, so core finance data stays usable even when you are not connected.\n• Powered by Vue 3, Pinia, Vue Router, and Supabase with Postgres, Auth, and row-level security, plus live multi-currency support through Open Exchange Rates.",
     "logo": "https://content.beyondmebtw.com/assets/bmb_logos/bmbmoney.png",
     "link": "https://beyondmoney.beyondmebtw.com",
