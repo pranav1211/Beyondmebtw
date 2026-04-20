@@ -898,6 +898,139 @@ select option { background: var(--surface2); }
 .set-slot-options { display: flex; flex-direction: column; gap: 8px; padding-bottom: 18px; }
 .set-slot-options button { width: 100%; }
 
+/* ── Categories tab ──────────────────────────────────────────────────── */
+.categories-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 14px;
+}
+
+.category-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.category-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.category-card-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface2);
+  border-radius: var(--radius-sm);
+  color: var(--accent);
+  font-size: 18px;
+}
+
+.category-card-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.category-card-meta h3 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.category-card-sub {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.cat-key-tag,
+.post-count-tag {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--surface2);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.category-card-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.category-card-subs {
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+
+.subcat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.subcat-heading {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-small { font-size: 11px; padding: 3px 8px; }
+
+.subcat-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.subcat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.subcat-name {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.subcat-actions {
+  display: flex;
+  gap: 4px;
+}
+
+/* ── Category delete 3-step modal ─────────────────────────────────────── */
+.cat-delete-step p { padding: 12px 0 8px; }
+.cat-delete-step .modal-footer { padding-top: 14px; }
+#cat-delete-key-display {
+  background: var(--surface2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 13px;
+}
+#cat-delete-key-input {
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: monospace;
+}
+
 .modal-header {
   display: flex;
   align-items: center;

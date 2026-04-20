@@ -7,8 +7,8 @@
       "beyondgitman.js",
       "manage/manageserver.js"
     ],
-    "map_generated_at": "2026-04-13T10:00:00Z",
-    "based_on_commit": "167799f"
+    "map_generated_at": "2026-04-20T00:00:00Z",
+    "based_on_commit": "875e80f"
   },
   "structure": [
     {
@@ -56,23 +56,32 @@
     {
       "path": "blog/blog.js",
       "type": "file",
-      "summary": "Blog listing page with category/subcategory filtering, search, pagination, and lazy image loading",
+      "summary": "Blog listing page that loads categories manifest then filters, searches, paginates, and lazy-loads posts",
       "symbols": [
         { "name": "applyFilters", "summary": "Filters posts by category, subcategory, and search term then renders" },
         { "name": "applyUrlFilters", "summary": "Reads URL query params to pre-select category and subcategory" },
         { "name": "createPostCard", "summary": "Creates DOM element for a blog post card with lazy-loaded thumbnail" },
         { "name": "fetchWithCache", "summary": "Fetches JSON from URL with HTTP error handling" },
         { "name": "formatDate", "summary": "Formats date string to localized long-form US English" },
-        { "name": "getCategoryTitle", "summary": "Maps category key to human-readable display title" },
-        { "name": "initializePage", "summary": "Entry point that loads data, applies URL filters, and renders posts" },
+        { "name": "getCategoryTitle", "summary": "Returns display title for a category key from the loaded manifest" },
+        { "name": "handleSubcategoryFromUrl", "summary": "Case-insensitively matches URL subcategory against manifest entries" },
+        { "name": "initializePage", "summary": "Awaits manifest load then fetches blog data, applies URL filters, and renders" },
         { "name": "lazyLoadImage", "summary": "Uses IntersectionObserver to defer image loading until visible" },
         { "name": "loadAllData", "summary": "Fetches all category JSON files and merges posts sorted by date" },
+        { "name": "loadManifest", "summary": "Fetches categories.json manifest and caches it for page-wide use" },
+        { "name": "renderCategoryFilters", "summary": "Builds category filter buttons dynamically from manifest with FA icons" },
         { "name": "renderPosts", "summary": "Appends paginated post cards to the grid and updates load-more state" },
         { "name": "selectSubcategory", "summary": "Sets active subcategory filter and re-renders posts" },
         { "name": "setupFilters", "summary": "Attaches click handlers to category filter buttons" },
         { "name": "setupSearch", "summary": "Debounced search input handler that triggers filter re-application" },
         { "name": "updateSubcategoryFilters", "summary": "Dynamically builds subcategory buttons from loaded mappings" }
       ]
+    },
+    {
+      "path": "blog/categories.json",
+      "type": "file",
+      "summary": "Public manifest keyed by category filename stem listing name, icon, and subcategories for blog",
+      "symbols": []
     },
     {
       "path": "manage/authentication.js",
@@ -85,35 +94,61 @@
     {
       "path": "manage/index.js",
       "type": "file",
-      "summary": "Admin dashboard client logic for managing homepage posts, blog entries, and projects via API",
+      "summary": "Admin dashboard client with Homepage, Blog, Projects, and Categories tabs wired to REST API",
       "symbols": [
         { "name": "apiCall", "summary": "Generic fetch wrapper that injects auth key and handles responses" },
+        { "name": "countOrphans", "summary": "Counts posts that will be orphaned if a category is deleted" },
+        { "name": "fetchCategoriesManifest", "summary": "Fetches categories.json manifest for client-side tab population" },
         { "name": "getKey", "summary": "Returns stored auth key from the authentication system" },
+        { "name": "initCategoryDeleteModal", "summary": "Wires up the 3-step destructive category deletion modal flow" },
+        { "name": "initCategoryModal", "summary": "Rewritten combined add/edit category modal initializer" },
         { "name": "initSidebarToggle", "summary": "Sets up hamburger menu toggle for mobile sidebar navigation" },
-        { "name": "initTabs", "summary": "Initializes tab switching between Homepage, Blog, and Projects views" },
+        { "name": "initSubcatModal", "summary": "Initializes modal for adding or renaming a subcategory" },
+        { "name": "initTabs", "summary": "Initializes tab switching between Homepage, Blog, Projects, and Categories" },
+        { "name": "loadBlogTab", "summary": "Fetches manifest from CATEGORIES_MANIFEST_URL and populates Blog tab UI" },
+        { "name": "loadCategoriesTab", "summary": "Loads manifest and renders category list cards in the Categories tab" },
+        { "name": "openCategoryDeleteModal", "summary": "Opens the 3-step destructive delete modal for a category" },
+        { "name": "openEditCategoryModal", "summary": "Opens the category modal prefilled for editing an existing category" },
+        { "name": "openNewCategoryModal", "summary": "Opens the category modal in add mode with empty fields" },
+        { "name": "openSubcatModal", "summary": "Opens modal for adding a new subcategory or renaming an existing one" },
+        { "name": "promptRemoveSubcategory", "summary": "Confirms and dispatches removal of a subcategory from a category" },
+        { "name": "renderCategoriesList", "summary": "Renders the list of category cards with edit, delete, and subcat actions" },
+        { "name": "resetBlogForm", "summary": "Rebuilds subcategory and secondary category chips when resetting blog form" },
+        { "name": "showDeleteStep", "summary": "Switches between warn, confirm-key, and destroy steps of delete modal" },
         { "name": "toast", "summary": "Displays a temporary notification message with success or error styling" }
       ]
     },
     {
       "path": "manage/manageserver.js",
       "type": "file",
-      "summary": "Node.js HTTP server providing REST API for blog posts, projects, categories, and authentication",
+      "summary": "Node.js HTTP server with REST API for blog posts, projects, and categories manifest management",
       "symbols": [
         { "name": "addNewBlogPost", "summary": "Appends a new post to in-memory blog data for a given category" },
+        { "name": "clearSecondaryRefsToCategory", "summary": "Clears secondaryCategory/secondarySubcategory refs to a deleted category across posts" },
         { "name": "deleteBlogPost", "summary": "Removes a blog post by UID from the specified category" },
         { "name": "executeScript", "summary": "Runs a shell script to sync JSON changes to the live site" },
         { "name": "getJSONBody", "summary": "Parses incoming request body as JSON with error handling" },
+        { "name": "handleAddCategory", "summary": "Creates a new category entry in the manifest and its blog JSON file" },
+        { "name": "handleAddSubcategory", "summary": "Appends a new subcategory under the specified category in the manifest" },
+        { "name": "handleDeleteCategory", "summary": "Cascading delete of a category: manifest, JSON file, post refs, and latest.json" },
+        { "name": "handleRemoveSubcategory", "summary": "Removes a subcategory from a category and clears related post fields" },
+        { "name": "handleRenameSubcategory", "summary": "Renames a subcategory in the manifest and across all affected posts" },
+        { "name": "handleUpdateCategory", "summary": "Updates name or icon fields on an existing category manifest entry" },
         { "name": "loadAllBlogData", "summary": "Fetches all category blog JSON files on server startup" },
         { "name": "loadBlogJSON", "summary": "Fetches blog data for a single category from the live site" },
-        { "name": "loadCategoriesConfig", "summary": "Reads category configuration from JSON file on disk" },
+        { "name": "loadCategoriesConfig", "summary": "Loads the categories manifest from blog/categories.json at startup" },
         { "name": "loadExistingData", "summary": "Loads latest.json from disk into in-memory state" },
         { "name": "loadJSON", "summary": "Fetches latest.json from live site and merges with local state" },
         { "name": "readProjectsJSON", "summary": "Reads project-data.json from server or local fallback path" },
+        { "name": "renameSubcategoryAcrossPosts", "summary": "Rewrites subcategory and secondarySubcategory values across every category's posts" },
+        { "name": "resolveCategoriesPath", "summary": "Resolves the absolute filesystem path for blog/categories.json" },
+        { "name": "sanitizeCategoryKey", "summary": "Validates and normalizes a category key to safe filename stem form" },
         { "name": "sendJSON", "summary": "Sends a JSON response with proper content-type header" },
         { "name": "updateBlogPost", "summary": "Updates allowed fields of an existing blog post by UID" },
         { "name": "updateLatestJSONCategories", "summary": "Updates latest.json category entries with newest post metadata" },
         { "name": "updateLatestPost", "summary": "Updates homepage main post or featured slots by form ID" },
         { "name": "validateKey", "summary": "Checks request auth key against server passkey" },
+        { "name": "writeAllBlogFiles", "summary": "Persists every category's in-memory blog data back to its JSON file" },
         { "name": "writeBlogJSONFile", "summary": "Persists in-memory blog data to category JSON file on disk" },
         { "name": "writeJSONFile", "summary": "Writes latest.json to disk from in-memory state" },
         { "name": "writeProjectsJSONSafe", "summary": "Writes project-data.json with server path and local fallback" }
@@ -308,7 +343,10 @@
     "edges": [
       { "from": "about/about.js", "to": "about/data/experience-data.js", "type": "es_module_import" },
       { "from": "about/about.js", "to": "about/data/skills-data.js", "type": "es_module_import" },
+      { "from": "blog/blog.js", "to": "blog/categories.json", "type": "fetch" },
+      { "from": "manage/index.js", "to": "blog/categories.json", "type": "fetch" },
       { "from": "manage/index.js", "to": "manage/authentication.js", "type": "global_reference" },
+      { "from": "manage/manageserver.js", "to": "blog/categories.json", "type": "file_read" },
       { "from": "manage/manageserver.js", "to": "manage/latest.json", "type": "file_read" },
       { "from": "projects/beyondpages/js/app.js", "to": "projects/beyondpages/js/pdf-handler.js", "type": "global_reference" },
       { "from": "projects/beyondpages/js/app.js", "to": "projects/beyondpages/js/reader.js", "type": "global_reference" },

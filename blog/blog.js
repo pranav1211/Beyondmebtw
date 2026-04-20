@@ -9,13 +9,9 @@ const postsPerPage = 8;
 let isLoading = false;
 let hasMorePosts = true;
 
-// JSON file mappings for each category
-const categoryJsonFiles = {
-    'movie-tv': 'https://beyondmebtw.com/blog/movietv.json',
-    'f1': 'https://beyondmebtw.com/blog/f1arti.json',
-    'experience': 'https://beyondmebtw.com/blog/experience.json',
-    'tech': 'https://beyondmebtw.com/blog/techart.json'
-};
+// Category manifest — fetched from blog/categories.json
+const CATEGORIES_MANIFEST_URL = 'https://beyondmebtw.com/blog/categories.json';
+let categoriesManifest = {};
 
 async function fetchWithCache(url) {
     const response = await fetch(url);
@@ -40,18 +36,16 @@ const loadingSpinner = document.getElementById('loadingSpinner');
 const noResults = document.getElementById('noResults');
 const scrollToTop = document.getElementById('scrollToTop');
 const subcategoryFilters = document.getElementById('subcategoryFilters');
+const categoryFiltersContainer = document.querySelector('.category-filters');
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', initializePage);
 
-// Navigation setup
 function setupNavigation() {
-    // Set active state for blog link
     if (bloglink) {
         bloglink.style.backgroundColor = '#F4F2EF';
     }
 
-    // Navigation event listeners
     if (homelink) {
         homelink.addEventListener('click', () => {
             window.location = "https://beyondmebtw.com";
@@ -77,24 +71,50 @@ function setupNavigation() {
     }
 }
 
-// Load all data
+async function loadManifest() {
+    try {
+        categoriesManifest = await fetchWithCache(CATEGORIES_MANIFEST_URL);
+        if (!categoriesManifest || typeof categoriesManifest !== 'object') {
+            categoriesManifest = {};
+        }
+    } catch (error) {
+        console.error('Error loading categories manifest:', error);
+        categoriesManifest = {};
+    }
+}
+
+function renderCategoryFilters() {
+    if (!categoryFiltersContainer) return;
+
+    const existing = categoryFiltersContainer.querySelectorAll('.category-filter[data-category]:not([data-category="all"])');
+    existing.forEach(btn => btn.remove());
+
+    Object.keys(categoriesManifest).forEach(key => {
+        const cat = categoriesManifest[key];
+        const btn = document.createElement('button');
+        btn.className = 'category-filter';
+        btn.setAttribute('data-category', key);
+        btn.innerHTML = `<i class="${cat.icon || 'fas fa-folder'}"></i> ${cat.name || key}`;
+        categoryFiltersContainer.appendChild(btn);
+    });
+}
+
 async function loadAllData() {
     try {
         showLoading();
         allPosts = [];
 
-        // Load all category-specific data (served from cache when available)
-        const categoryPromises = Object.entries(categoryJsonFiles).map(async ([categoryKey, jsonFile]) => {
+        const keys = Object.keys(categoriesManifest);
+        const categoryPromises = keys.map(async (categoryKey) => {
             try {
+                const jsonFile = `https://beyondmebtw.com/blog/${categoryKey}.json`;
                 const categoryData = await fetchWithCache(jsonFile);
 
-                // Build subcategoryMappings dynamically from JSON
                 if (categoryData.subcategories && Array.isArray(categoryData.subcategories) && categoryData.subcategories.length > 0) {
                     subcategoryMappings[categoryKey] = categoryData.subcategories;
                 }
 
                 if (categoryData.posts && Array.isArray(categoryData.posts)) {
-                    // Add category info to each post
                     const postsWithCategory = categoryData.posts.map(post => ({
                         ...post,
                         category: categoryKey,
@@ -111,7 +131,6 @@ async function loadAllData() {
 
         await Promise.all(categoryPromises);
 
-        // Sort all posts by date (newest first)
         allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
         console.log('All data loaded successfully', allPosts.length, 'posts');
@@ -124,40 +143,27 @@ async function loadAllData() {
     }
 }
 
-// Get display subcategory based on current filter context
 function getDisplaySubcategory(post) {
-    // If we're viewing the post in its secondary category context
     if (currentFilter === post.secondaryCategory && post.secondarySubcategory) {
         return post.secondarySubcategory;
     }
-    // Otherwise use primary subcategory
     return post.subcategory || '';
 }
 
-// Get category title from key
 function getCategoryTitle(categoryKey) {
-    const titles = {
-        'movie-tv': 'Movies & TV',
-        'f1': 'Formula 1',
-        'experience': 'Personal Experience',
-        'tech': 'Technology'
-    };
-    return titles[categoryKey] || categoryKey;
+    return (categoriesManifest[categoryKey] && categoriesManifest[categoryKey].name) || categoryKey;
 }
 
 function applyUrlFilters() {
     const params = new URLSearchParams(window.location.search);
 
-    Object.keys(categoryJsonFiles).forEach(categoryKey => {
+    Object.keys(categoriesManifest).forEach(categoryKey => {
         if (params.has(categoryKey)) {
-
             const value = params.get(categoryKey);
 
-            // Set category
             currentFilter = categoryKey;
             currentSubfilter = null;
 
-            // Activate category button
             const categoryBtn = document.querySelector(
                 `.category-filter[data-category="${categoryKey}"]`
             );
@@ -170,10 +176,8 @@ function applyUrlFilters() {
                 categoryBtn.classList.add('active');
             }
 
-            // If category has subcategories, render them
             updateSubcategoryFilters(categoryKey);
 
-            // Only handle subcategory if value exists
             if (value) {
                 handleSubcategoryFromUrl(categoryKey, value);
             }
@@ -182,17 +186,10 @@ function applyUrlFilters() {
 }
 
 function handleSubcategoryFromUrl(categoryKey, value) {
-
-    if (categoryKey === 'f1') {
-        if (value === '2025') activateSubcategory('2025 Season');
-        if (value === 'general') activateSubcategory('General');
-    }
-
-    if (categoryKey === 'movie-tv') {
-        if (value === 'movies') activateSubcategory('Movies');
-        if (value === 'tv') activateSubcategory('TV Shows');
-    }
-
+    const subs = subcategoryMappings[categoryKey] || [];
+    const target = value.toLowerCase();
+    const match = subs.find(s => s.toLowerCase() === target);
+    if (match) activateSubcategory(match);
 }
 
 function activateSubcategory(name) {
@@ -209,17 +206,17 @@ function activateSubcategory(name) {
     });
 }
 
-// Initialize the page
 async function initializePage() {
     try {
         console.log('Initializing page...');
         setupNavigation();
+        await loadManifest();
+        renderCategoryFilters();
         setupFilters();
         setupSearch();
         setupScrollToTop();
         setupLoadMore();
 
-        // Load all data first
         const dataLoaded = await loadAllData();
 
         if (dataLoaded) {
@@ -236,45 +233,35 @@ async function initializePage() {
     }
 }
 
-// Setup filters
 function setupFilters() {
-    // Category filters
     const categoryFilters = document.querySelectorAll('.category-filter');
     categoryFilters.forEach(filter => {
         filter.addEventListener('click', () => {
-            // Remove active class from all filters
-            categoryFilters.forEach(f => f.classList.remove('active'));
-            // Add active class to clicked filter
+            document.querySelectorAll('.category-filter').forEach(f => f.classList.remove('active'));
             filter.classList.add('active');
 
             const category = filter.getAttribute('data-category');
             currentFilter = category;
             currentSubfilter = null;
 
-            // Show/hide subcategory filters
             updateSubcategoryFilters(category);
-
-            // Reset pagination and apply filters
             resetPagination();
             applyFilters();
         });
     });
 }
 
-// Update subcategory filters
 function updateSubcategoryFilters(category) {
     const subcategoryContainer = subcategoryFilters;
     subcategoryContainer.innerHTML = '';
 
     if (category !== 'all' && subcategoryMappings[category]) {
-        // Add "All" subcategory
         const allSubBtn = document.createElement('button');
         allSubBtn.className = 'subcategory-filter active';
         allSubBtn.textContent = 'All';
         allSubBtn.addEventListener('click', () => selectSubcategory(null, allSubBtn));
         subcategoryContainer.appendChild(allSubBtn);
 
-        // Add specific subcategories
         subcategoryMappings[category].forEach(subcategory => {
             const subBtn = document.createElement('button');
             subBtn.className = 'subcategory-filter';
@@ -289,13 +276,10 @@ function updateSubcategoryFilters(category) {
     }
 }
 
-// Select subcategory
 function selectSubcategory(subcategory, button) {
-    // Remove active class from all subcategory filters
     const subFilters = document.querySelectorAll('.subcategory-filter');
     subFilters.forEach(f => f.classList.remove('active'));
 
-    // Add active class to clicked filter
     button.classList.add('active');
 
     currentSubfilter = subcategory;
@@ -303,12 +287,11 @@ function selectSubcategory(subcategory, button) {
     applyFilters();
 }
 
-// Setup search
 function setupSearch() {
     if (!searchInput) return;
 
     let searchTimeout;
-    searchInput.addEventListener('input', function (e) {
+    searchInput.addEventListener('input', function () {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
             resetPagination();
@@ -317,11 +300,9 @@ function setupSearch() {
     });
 }
 
-// Setup scroll to top
 function setupScrollToTop() {
     if (!scrollToTop) return;
 
-    // Show/hide scroll to top button
     window.addEventListener('scroll', () => {
         if (window.pageYOffset > 300) {
             scrollToTop.classList.add('visible');
@@ -330,7 +311,6 @@ function setupScrollToTop() {
         }
     });
 
-    // Scroll to top functionality
     scrollToTop.addEventListener('click', () => {
         window.scrollTo({
             top: 0,
@@ -339,7 +319,6 @@ function setupScrollToTop() {
     });
 }
 
-// Setup load more
 function setupLoadMore() {
     if (!loadMoreBtn) return;
 
@@ -348,32 +327,25 @@ function setupLoadMore() {
     });
 }
 
-// Apply filters
 function applyFilters() {
     let filtered = [...allPosts];
 
-    // Apply category filter
     if (currentFilter !== 'all') {
         filtered = filtered.filter(post => {
-            // Check if post's primary category matches OR secondary category matches
             return post.category === currentFilter ||
                 (post.secondaryCategory && post.secondaryCategory === currentFilter);
         });
     }
 
-    // Apply subcategory filter
     if (currentSubfilter) {
         filtered = filtered.filter(post => {
-            // If we're viewing in the post's secondary category context
             if (currentFilter === post.secondaryCategory && post.secondarySubcategory) {
                 return post.secondarySubcategory === currentSubfilter;
             }
-            // Otherwise use primary subcategory
             return post.subcategory === currentSubfilter;
         });
     }
 
-    // Apply search filter
     const searchTerm = searchInput.value.toLowerCase().trim();
     if (searchTerm) {
         filtered = filtered.filter(post =>
@@ -389,14 +361,12 @@ function applyFilters() {
     renderPosts();
 }
 
-// Reset pagination
 function resetPagination() {
     currentPage = 0;
     displayedPosts = [];
     postsGrid.innerHTML = '';
 }
 
-// Render posts
 function renderPosts() {
     const startIndex = currentPage * postsPerPage;
     const endIndex = startIndex + postsPerPage;
@@ -404,16 +374,13 @@ function renderPosts() {
 
     displayedPosts.push(...postsToAdd);
 
-    // Add new posts to grid
     postsToAdd.forEach((post) => {
         const postCard = createPostCard(post);
         postsGrid.appendChild(postCard);
     });
 
-    // Update load more button
     updateLoadMoreButton();
 
-    // Show no results if needed
     if (filteredPosts.length === 0) {
         showNoResults();
     } else {
@@ -421,13 +388,11 @@ function renderPosts() {
     }
 }
 
-// Create post card
 function createPostCard(post) {
     const postCard = document.createElement('div');
     postCard.className = 'post-card';
     postCard.style.cursor = 'pointer';
 
-    // Add click event listeners
     postCard.addEventListener('click', (e) => handlePostCardClick(e, post.link));
     postCard.addEventListener('mousedown', (e) => {
         if (e.button === 1) {
@@ -435,10 +400,8 @@ function createPostCard(post) {
         }
     });
 
-    // Create categories HTML
     let categoriesHTML = `<div class="post-category">${post.categoryTitle}</div>`;
 
-    // Add secondary category if it exists and isn't empty
     if (post.secondaryCategory && post.secondaryCategory.trim() !== '') {
         const secondaryCategoryTitle = getCategoryTitle(post.secondaryCategory);
         categoriesHTML += `<div class="secondary-category">${secondaryCategoryTitle}</div>`;
@@ -457,31 +420,26 @@ function createPostCard(post) {
                 <div class="read-more">Read More</div>
             `;
 
-    // Set up lazy loading for the image
     const img = postCard.querySelector('.post-thumbnail');
     lazyLoadImage(img);
 
     return postCard;
 }
 
-// Handle post card clicks
 function handlePostCardClick(event, postLink) {
     event.preventDefault();
 
-    // Middle mouse button (wheel button) - open in new tab
     if (event.button === 1) {
         window.open(postLink, '_blank');
         return;
     }
 
-    // Left click - open in new tab
     if (event.button === 0) {
         window.open(postLink, '_blank');
         return;
     }
 }
 
-// Load more posts
 function loadMorePosts() {
     if (isLoading || !hasMorePosts) return;
 
@@ -491,7 +449,6 @@ function loadMorePosts() {
     hideLoadingSpinner();
 }
 
-// Update load more button
 function updateLoadMoreButton() {
     const totalDisplayed = displayedPosts.length;
     const totalFiltered = filteredPosts.length;
@@ -506,7 +463,6 @@ function updateLoadMoreButton() {
     }
 }
 
-// Lazy load images
 function lazyLoadImage(img) {
     const imageObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
@@ -523,7 +479,6 @@ function lazyLoadImage(img) {
     imageObserver.observe(img);
 }
 
-// Format date
 function formatDate(dateString) {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -533,7 +488,6 @@ function formatDate(dateString) {
     });
 }
 
-// Show/hide loading states
 function showLoading() {
     if (loadingSpinner) loadingSpinner.style.display = 'block';
 }

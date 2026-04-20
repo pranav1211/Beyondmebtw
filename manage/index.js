@@ -5,23 +5,34 @@ const BASE_URL = "https://manage.beyondmebtw.com";
 
 const PROJECTS_URL = 'https://beyondmebtw.com/projects/project-data.json';
 const BLOG_BASE_URL = 'https://beyondmebtw.com/blog';
+const CATEGORIES_MANIFEST_URL = 'https://beyondmebtw.com/blog/categories.json';
 
 // ─── State ────────────────────────────────────────────────────────────────────
 let state = {
   latestData: null,          // from latest.json
   blogData: null,            // from direct blog JSON URLs
   projects: [],              // from project-data.json
-  categories: {},            // from /categories
+  categories: {},            // from blog/categories.json manifest
   currentBlogCategory: 'all',
   blogSearch: '',
   editingBlogPost: null,     // { category, uid } when editing
   editingProjectId: null,    // id when editing
   projectImagesDraft: [],
   editingProjectImageIndex: null,
-  catModalAction: 'addCategory',
   confirmCallback: null,
-  latestConfirmCallback: null
+  latestConfirmCallback: null,
+  catDeleteTarget: null,     // key of category being deleted
+  subcatEditTarget: null     // { key, from } when renaming
 };
+
+async function fetchCategoriesManifest() {
+  const url = `${CATEGORIES_MANIFEST_URL}?t=${Date.now()}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed to load categories manifest (${res.status})`);
+  const manifest = await res.json();
+  state.categories = manifest && typeof manifest === 'object' ? manifest : {};
+  return state.categories;
+}
 
 // ─── Utility ──────────────────────────────────────────────────────────────────
 function getKey() {
@@ -244,6 +255,9 @@ function initTabs() {
       if (tab === 'blog') {
         if (!state.blogData) loadBlogTab();
         else { buildCategoryTabs(); buildBlogCategorySelect(); renderPostsList(); }
+      }
+      if (tab === 'categories') {
+        loadCategoriesTab();
       }
       if (tab === 'projects') {
         if (state.projects.length === 0) loadProjectsTab();
@@ -504,24 +518,17 @@ function initLatestForm() {
 // BLOG TAB
 // ═══════════════════════════════════════════════════════════════════════════════
 
-// Known category keys — these map directly to blog JSON filenames
-const KNOWN_BLOG_CATEGORIES = {
-  f1arti:     { name: 'F1 Articles',    subcategories: ['2025 Season', 'General'] },
-  movietv:    { name: 'Movie/TV',       subcategories: ['Movies', 'TV Shows'] },
-  experience: { name: 'Experience',     subcategories: [] },
-  techart:    { name: 'Tech Articles',  subcategories: [] }
-};
-
 async function loadBlogTab() {
   try {
-    // Categories come from KNOWN_BLOG_CATEGORIES (no manage server read needed).
-    // latest.json is served directly from the public URL.
     if (!state.latestData) {
       state.latestData = await fetch('https://beyondmebtw.com/manage/latest.json').then(r => r.json());
     }
-    // Only fetch blog JSONs if not already cached
+    if (!state.categories || Object.keys(state.categories).length === 0) {
+      await fetchCategoriesManifest();
+    }
+
     if (!state.blogData) {
-      const catKeys = Object.keys(KNOWN_BLOG_CATEGORIES);
+      const catKeys = Object.keys(state.categories);
       const fetched = await Promise.allSettled(
         catKeys.map(key => fetch(`${BLOG_BASE_URL}/${key}.json`).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }))
       );
@@ -536,21 +543,10 @@ async function loadBlogTab() {
       });
     }
 
-    // Build state.categories from KNOWN_BLOG_CATEGORIES + actual subcategories from the JSON files
-    if (!state.categories || Object.keys(state.categories).length === 0) {
-      state.categories = {};
-      Object.keys(KNOWN_BLOG_CATEGORIES).forEach(key => {
-        const subcatsFromJson = (state.blogData[key] && state.blogData[key].subcategories) || [];
-        state.categories[key] = {
-          name: KNOWN_BLOG_CATEGORIES[key].name,
-          subcategories: subcatsFromJson.length > 0 ? subcatsFromJson : KNOWN_BLOG_CATEGORIES[key].subcategories
-        };
-      });
-    }
-
     buildCategoryTabs();
     buildBlogCategorySelect();
     buildSubcategoryChips();
+    buildSecondaryCategoryChips();
     renderPostsList();
     renderLatestByCategory(state.latestData.categories || {});
   } catch (e) {
@@ -1038,8 +1034,8 @@ function resetBlogForm() {
   document.getElementById('blog-secondary-category').value = '';
   document.getElementById('blog-secondary-subcategory').value = '';
 
-  document.querySelectorAll('#subcategory-buttons .chip, #secondary-category-buttons .chip, #secondary-subcategory-buttons .chip')
-    .forEach(c => c.classList.remove('selected'));
+  buildSubcategoryChips();
+  buildSecondaryCategoryChips();
 }
 
 // ─── Latest by category ───────────────────────────────────────────────────────
@@ -1081,70 +1077,303 @@ function renderLatestCatCard(catName, subcatName, post) {
   `;
 }
 
-// ─── New Category modal ───────────────────────────────────────────────────────
-function initCategoryModal() {
-  const newCatBtn = document.getElementById('new-category-btn');
-  const form = document.getElementById('category-form');
-  const toggleBtns = document.querySelectorAll('#cat-action-toggle .toggle-btn');
+// ═══════════════════════════════════════════════════════════════════════════════
+// CATEGORIES TAB
+// ═══════════════════════════════════════════════════════════════════════════════
 
-  if (newCatBtn) {
-    newCatBtn.addEventListener('click', () => {
-      form.reset();
-      // Populate parent select
-      const parentSelect = document.getElementById('subcat-parent');
-      if (parentSelect) {
-        parentSelect.innerHTML = Object.keys(state.categories).map(k =>
-          `<option value="${esc(k)}">${esc(state.categories[k].name || k)}</option>`
-        ).join('');
-      }
-      openModal('category-modal');
-    });
+async function loadCategoriesTab() {
+  try {
+    await fetchCategoriesManifest();
+    if (!state.blogData) {
+      const catKeys = Object.keys(state.categories);
+      const fetched = await Promise.allSettled(
+        catKeys.map(key => fetch(`${BLOG_BASE_URL}/${key}.json?t=${Date.now()}`).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }))
+      );
+      state.blogData = {};
+      catKeys.forEach((key, i) => {
+        state.blogData[key] = fetched[i].status === 'fulfilled' ? fetched[i].value : { subcategories: [], posts: [] };
+      });
+    }
+    renderCategoriesList();
+  } catch (e) {
+    console.error('Categories load error:', e);
+    document.getElementById('categories-list').innerHTML = '<div class="empty-msg">Failed to load categories.</div>';
+    toast('Failed to load categories', 'error');
+  }
+}
+
+function renderCategoriesList() {
+  const container = document.getElementById('categories-list');
+  if (!container) return;
+
+  const keys = Object.keys(state.categories);
+  if (keys.length === 0) {
+    container.innerHTML = '<div class="empty-msg">No categories yet. Click "+ New Category" to create one.</div>';
+    return;
   }
 
-  toggleBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      state.catModalAction = btn.dataset.action;
-      toggleBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('new-category-fields').style.display = state.catModalAction === 'addCategory' ? '' : 'none';
-      document.getElementById('new-subcat-fields').style.display = state.catModalAction === 'addSubcategory' ? '' : 'none';
-    });
-  });
+  container.innerHTML = keys.map(key => {
+    const cat = state.categories[key];
+    const postCount = (state.blogData && state.blogData[key] && Array.isArray(state.blogData[key].posts))
+      ? state.blogData[key].posts.length
+      : 0;
+    const iconClass = cat.icon || 'fas fa-folder';
+    const subs = Array.isArray(cat.subcategories) ? cat.subcategories : [];
 
+    const subsHtml = subs.length
+      ? subs.map(s => `
+          <li class="subcat-row">
+            <span class="subcat-name">${esc(s)}</span>
+            <span class="subcat-actions">
+              <button type="button" class="btn-icon edit" data-action="rename-subcat" data-cat="${esc(key)}" data-sub="${esc(s)}">Rename</button>
+              <button type="button" class="btn-icon danger" data-action="remove-subcat" data-cat="${esc(key)}" data-sub="${esc(s)}">Remove</button>
+            </span>
+          </li>`).join('')
+      : '<li class="empty-msg" style="padding:6px 0">No subcategories</li>';
+
+    return `
+      <div class="category-card">
+        <div class="category-card-head">
+          <div class="category-card-icon"><i class="${esc(iconClass)}"></i></div>
+          <div class="category-card-meta">
+            <h3>${esc(cat.name || key)}</h3>
+            <div class="category-card-sub">
+              <span class="cat-key-tag">${esc(key)}</span>
+              <span class="post-count-tag">${postCount} post${postCount !== 1 ? 's' : ''}</span>
+            </div>
+          </div>
+          <div class="category-card-actions">
+            <button type="button" class="btn-icon edit" data-action="edit-cat" data-cat="${esc(key)}">Edit</button>
+            <button type="button" class="btn-icon danger" data-action="delete-cat" data-cat="${esc(key)}">Delete</button>
+          </div>
+        </div>
+        <div class="category-card-subs">
+          <div class="subcat-header">
+            <span class="subcat-heading">Subcategories</span>
+            <button type="button" class="btn-ghost btn-small" data-action="add-subcat" data-cat="${esc(key)}">+ Add</button>
+          </div>
+          <ul class="subcat-list">${subsHtml}</ul>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  container.querySelectorAll('[data-action="edit-cat"]').forEach(btn => {
+    btn.addEventListener('click', () => openEditCategoryModal(btn.dataset.cat));
+  });
+  container.querySelectorAll('[data-action="delete-cat"]').forEach(btn => {
+    btn.addEventListener('click', () => openCategoryDeleteModal(btn.dataset.cat));
+  });
+  container.querySelectorAll('[data-action="add-subcat"]').forEach(btn => {
+    btn.addEventListener('click', () => openSubcatModal('add', btn.dataset.cat));
+  });
+  container.querySelectorAll('[data-action="rename-subcat"]').forEach(btn => {
+    btn.addEventListener('click', () => openSubcatModal('rename', btn.dataset.cat, btn.dataset.sub));
+  });
+  container.querySelectorAll('[data-action="remove-subcat"]').forEach(btn => {
+    btn.addEventListener('click', () => promptRemoveSubcategory(btn.dataset.cat, btn.dataset.sub));
+  });
+}
+
+function openNewCategoryModal() {
+  document.getElementById('category-modal-title').textContent = 'New Category';
+  document.getElementById('cat-submit-btn').textContent = 'Create';
+  document.getElementById('cat-edit-mode').value = 'create';
+  document.getElementById('cat-key').value = '';
+  document.getElementById('cat-key').readOnly = false;
+  document.getElementById('cat-name').value = '';
+  document.getElementById('cat-icon').value = '';
+  openModal('category-modal');
+}
+
+function openEditCategoryModal(key) {
+  const cat = state.categories[key];
+  if (!cat) return;
+  document.getElementById('category-modal-title').textContent = 'Edit Category';
+  document.getElementById('cat-submit-btn').textContent = 'Save';
+  document.getElementById('cat-edit-mode').value = 'edit';
+  document.getElementById('cat-key').value = key;
+  document.getElementById('cat-key').readOnly = true;
+  document.getElementById('cat-name').value = cat.name || '';
+  document.getElementById('cat-icon').value = cat.icon || '';
+  openModal('category-modal');
+}
+
+function initCategoryModal() {
+  const newBtn = document.getElementById('new-category-btn');
+  if (newBtn) newBtn.addEventListener('click', openNewCategoryModal);
+
+  const form = document.getElementById('category-form');
   if (!form) return;
   form.addEventListener('submit', async e => {
     e.preventDefault();
+    const mode = document.getElementById('cat-edit-mode').value;
+    const keyInput = document.getElementById('cat-key').value.trim().toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
+    const name = document.getElementById('cat-name').value.trim();
+    const icon = document.getElementById('cat-icon').value.trim();
+
+    if (!keyInput || !name) { toast('Key and name are required', 'warning'); return; }
+
     try {
-      if (state.catModalAction === 'addCategory') {
-        const categoryKey = document.getElementById('new-cat-key').value.trim().toLowerCase().replace(/\s+/g,'');
-        const categoryName = document.getElementById('new-cat-name').value.trim();
-        if (!categoryKey || !categoryName) { toast('Fill all fields', 'warning'); return; }
-
-        // category key goes in `category` field; server creates the JSON file
-        await apiCall('POST', '/blogdata', { action: 'addCategory', category: categoryKey, categoryName });
-        // Invalidate cache so blog tab re-fetches fresh data on next visit
-        state.blogData = null;
-        state.categories = {};
-        toast(`Category "${categoryName}" created`);
+      if (mode === 'create') {
+        await apiCall('POST', '/category', { action: 'addCategory', categoryKey: keyInput, name, icon });
+        toast(`Category "${name}" created`);
       } else {
-        const parentKey = document.getElementById('subcat-parent').value;
-        const subcategoryName = document.getElementById('new-subcat-name').value.trim();
-        if (!parentKey || !subcategoryName) { toast('Fill all fields', 'warning'); return; }
-
-        // Write subcategory directly into the blog JSON via /blogdata
-        await apiCall('POST', '/blogdata', { action: 'addSubcategory', category: parentKey, subcategoryName });
-        // Update in-memory cache immediately so subcategory is available for new posts in this session
-        if (state.categories[parentKey]) state.categories[parentKey].subcategories.push(subcategoryName);
-        if (state.blogData && state.blogData[parentKey]) state.blogData[parentKey].subcategories.push(subcategoryName);
-        toast(`Subcategory "${subcategoryName}" added`);
+        await apiCall('POST', '/category', { action: 'updateCategory', categoryKey: keyInput, name, icon });
+        toast(`Category "${name}" updated`);
       }
       closeModal('category-modal');
-      buildCategoryTabs();
-      buildBlogCategorySelect();
-      buildSubcategoryChips();
-      renderPostsList();
-    } catch (e) {
-      toast(`Error: ${e.message}`, 'error');
+      state.blogData = null;
+      state.categories = {};
+      await loadCategoriesTab();
+    } catch (err) {
+      toast(`Error: ${err.message}`, 'error');
+    }
+  });
+}
+
+// ─── Subcategory add/rename modal ─────────────────────────────────────────────
+function openSubcatModal(mode, categoryKey, fromName) {
+  const cat = state.categories[categoryKey];
+  if (!cat) return;
+  state.subcatEditTarget = { key: categoryKey, from: fromName || null };
+  document.getElementById('subcat-modal-title').textContent = mode === 'rename' ? 'Rename Subcategory' : 'Add Subcategory';
+  document.getElementById('subcat-submit-btn').textContent = mode === 'rename' ? 'Rename' : 'Add';
+  document.getElementById('subcat-mode').value = mode;
+  document.getElementById('subcat-parent-key').value = categoryKey;
+  document.getElementById('subcat-parent-display').value = `${cat.name || categoryKey} (${categoryKey})`;
+  document.getElementById('subcat-name-label').innerHTML = mode === 'rename'
+    ? 'Rename to <span class="req">*</span>'
+    : 'Subcategory name <span class="req">*</span>';
+
+  const fromGroup = document.getElementById('subcat-from-group');
+  if (mode === 'rename') {
+    fromGroup.style.display = '';
+    document.getElementById('subcat-from').value = fromName || '';
+    document.getElementById('subcat-name').value = fromName || '';
+  } else {
+    fromGroup.style.display = 'none';
+    document.getElementById('subcat-from').value = '';
+    document.getElementById('subcat-name').value = '';
+  }
+  openModal('subcat-modal');
+}
+
+function initSubcatModal() {
+  const form = document.getElementById('subcat-form');
+  if (!form) return;
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const mode = document.getElementById('subcat-mode').value;
+    const categoryKey = document.getElementById('subcat-parent-key').value;
+    const name = document.getElementById('subcat-name').value.trim();
+    if (!name) { toast('Name is required', 'warning'); return; }
+
+    try {
+      if (mode === 'rename') {
+        const from = document.getElementById('subcat-from').value;
+        if (from === name) { closeModal('subcat-modal'); return; }
+        await apiCall('POST', '/category', { action: 'renameSubcategory', categoryKey, from, to: name });
+        toast(`Renamed "${from}" to "${name}"`);
+      } else {
+        await apiCall('POST', '/category', { action: 'addSubcategory', categoryKey, subcategoryName: name });
+        toast(`Subcategory "${name}" added`);
+      }
+      closeModal('subcat-modal');
+      state.blogData = null;
+      state.categories = {};
+      await loadCategoriesTab();
+    } catch (err) {
+      toast(`Error: ${err.message}`, 'error');
+    }
+  });
+}
+
+function promptRemoveSubcategory(categoryKey, subName) {
+  confirm(`Remove subcategory "${subName}" from "${state.categories[categoryKey]?.name || categoryKey}"? Posts already tagged with this subcategory keep the value until edited manually.`, async () => {
+    try {
+      await apiCall('POST', '/category', { action: 'removeSubcategory', categoryKey, subcategoryName: subName });
+      toast(`Subcategory "${subName}" removed`);
+      state.blogData = null;
+      state.categories = {};
+      await loadCategoriesTab();
+    } catch (err) {
+      toast(`Error: ${err.message}`, 'error');
+    }
+  });
+}
+
+// ─── 3-step category delete ───────────────────────────────────────────────────
+function countOrphans(targetKey) {
+  if (!state.blogData) return 0;
+  let n = 0;
+  Object.keys(state.blogData).forEach(cat => {
+    if (cat === targetKey) return;
+    const posts = state.blogData[cat]?.posts || [];
+    posts.forEach(p => { if (p.secondaryCategory === targetKey) n++; });
+  });
+  return n;
+}
+
+function openCategoryDeleteModal(key) {
+  const cat = state.categories[key];
+  if (!cat) return;
+  state.catDeleteTarget = key;
+  const displayName = cat.name || key;
+  document.getElementById('cat-delete-title').textContent = `Delete ${displayName}`;
+  document.getElementById('cat-delete-name-1').textContent = displayName;
+  document.getElementById('cat-delete-name-3').textContent = displayName;
+  document.getElementById('cat-delete-key-display').textContent = key;
+  document.getElementById('cat-delete-key-input').value = '';
+  document.getElementById('cat-delete-step2-next').disabled = true;
+
+  const postCount = state.blogData?.[key]?.posts?.length || 0;
+  const orphans = countOrphans(key);
+  const note = document.getElementById('cat-delete-orphan-note');
+  if (postCount > 0 || orphans > 0) {
+    note.style.display = '';
+    note.innerHTML = `This will delete <strong>${postCount}</strong> post${postCount === 1 ? '' : 's'} in this category and clear the secondary-category reference on <strong>${orphans}</strong> other post${orphans === 1 ? '' : 's'}.`;
+  } else {
+    note.style.display = 'none';
+  }
+
+  showDeleteStep(1);
+  openModal('cat-delete-modal');
+}
+
+function showDeleteStep(n) {
+  document.querySelectorAll('#cat-delete-modal .cat-delete-step').forEach(el => {
+    el.style.display = parseInt(el.dataset.step, 10) === n ? '' : 'none';
+  });
+}
+
+function initCategoryDeleteModal() {
+  document.getElementById('cat-delete-step1-next').addEventListener('click', () => showDeleteStep(2));
+  document.getElementById('cat-delete-step2-back').addEventListener('click', () => showDeleteStep(1));
+  document.getElementById('cat-delete-step3-back').addEventListener('click', () => showDeleteStep(2));
+
+  const input = document.getElementById('cat-delete-key-input');
+  input.addEventListener('input', () => {
+    const expected = state.catDeleteTarget || '';
+    document.getElementById('cat-delete-step2-next').disabled = input.value.trim() !== expected;
+  });
+
+  document.getElementById('cat-delete-step2-next').addEventListener('click', () => showDeleteStep(3));
+
+  document.getElementById('cat-delete-destroy').addEventListener('click', async () => {
+    const key = state.catDeleteTarget;
+    if (!key) return;
+    try {
+      await apiCall('POST', '/category', { action: 'deleteCategory', categoryKey: key });
+      toast(`Category "${key}" destroyed`);
+      closeModal('cat-delete-modal');
+      state.catDeleteTarget = null;
+      state.blogData = null;
+      state.categories = {};
+      state.latestData = null;
+      await loadCategoriesTab();
+    } catch (err) {
+      toast(`Error: ${err.message}`, 'error');
     }
   });
 }
@@ -1382,6 +1611,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initBlogForm();
   initBlogSearch();
   initCategoryModal();
+  initSubcatModal();
+  initCategoryDeleteModal();
   initProjectForm();
   buildSecondaryCategoryChips();
 

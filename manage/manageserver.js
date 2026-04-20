@@ -21,40 +21,46 @@ try {
 }
 
 // ─── Category Config ──────────────────────────────────────────────────────────
-// Default config; loaded from categories-config.json at startup if it exists
-let CATEGORY_CONFIG = {
-  f1arti: { name: 'F1 Articles', subcategories: ['2025 Season', 'General'] },
-  movietv: { name: 'Movie/TV', subcategories: ['Movies', 'TV Shows'] },
-  experience: { name: 'Experience', subcategories: [] },
-  techart: { name: 'Tech Articles', subcategories: [] }
-};
+// Loaded from blog/categories.json at startup. Public manifest — clients fetch it too.
+let CATEGORY_CONFIG = {};
 
-const CATEGORIES_CONFIG_PATH = nodePath.join(__dirname, "categories-config.json");
 const PROJECTS_JSON_PATH = "/bmbsifi/Beyondmebtw/projects/project-data.json";
 const BLOG_BASE_PATH = "/bmbsifi/Beyondmebtw/blog";
+const CATEGORIES_CONFIG_PATH = nodePath.join(BLOG_BASE_PATH, "categories.json");
+const CATEGORIES_CONFIG_LOCAL = nodePath.join(__dirname, "..", "blog", "categories.json");
+
+function resolveCategoriesPath() {
+  if (fs.existsSync(CATEGORIES_CONFIG_PATH)) return CATEGORIES_CONFIG_PATH;
+  if (fs.existsSync(CATEGORIES_CONFIG_LOCAL)) return CATEGORIES_CONFIG_LOCAL;
+  return CATEGORIES_CONFIG_PATH;
+}
 
 function loadCategoriesConfig() {
   try {
-    if (fs.existsSync(CATEGORIES_CONFIG_PATH)) {
-      const raw = fs.readFileSync(CATEGORIES_CONFIG_PATH, "utf8");
+    const path = resolveCategoriesPath();
+    if (fs.existsSync(path)) {
+      const raw = fs.readFileSync(path, "utf8");
       const parsed = safeJSONParse(raw, null);
       if (parsed !== null && typeof parsed === 'object') {
         CATEGORY_CONFIG = parsed;
-        console.log("Categories config loaded from file");
+        console.log("Categories manifest loaded from", path);
       } else {
-        console.error("categories-config.json contains invalid data, using defaults");
+        console.error("categories.json contains invalid data; starting with empty manifest");
       }
+    } else {
+      console.warn("categories.json not found at", path, "— starting with empty manifest");
     }
   } catch (e) {
-    console.error("Error loading categories config:", e);
+    console.error("Error loading categories manifest:", e);
   }
 }
 
 function saveCategoriesConfig() {
   try {
-    fs.writeFileSync(CATEGORIES_CONFIG_PATH, JSON.stringify(CATEGORY_CONFIG, null, 2), "utf8");
+    const path = fs.existsSync(BLOG_BASE_PATH) ? CATEGORIES_CONFIG_PATH : CATEGORIES_CONFIG_LOCAL;
+    fs.writeFileSync(path, JSON.stringify(CATEGORY_CONFIG, null, 2), "utf8");
   } catch (e) {
-    console.error("Error saving categories config:", e);
+    console.error("Error saving categories manifest:", e);
   }
 }
 
@@ -404,6 +410,216 @@ function deleteBlogPost(category, uid) {
   console.log(`Deleted post ${uid} from ${category}`);
 }
 
+function writeAllBlogFiles(keys, callback) {
+  if (!keys || keys.length === 0) return callback(null);
+  let idx = 0;
+  let firstErr = null;
+  const next = () => {
+    if (idx >= keys.length) return callback(firstErr);
+    writeBlogJSONFile(keys[idx++], err => {
+      if (err && !firstErr) firstErr = err;
+      next();
+    });
+  };
+  next();
+}
+
+function clearSecondaryRefsToCategory(deletedKey) {
+  const affected = new Set();
+  Object.keys(blogData).forEach(cat => {
+    if (cat === deletedKey) return;
+    const posts = (blogData[cat] && blogData[cat].posts) || [];
+    posts.forEach(post => {
+      if (post.secondaryCategory === deletedKey) {
+        delete post.secondaryCategory;
+        delete post.secondarySubcategory;
+        affected.add(cat);
+      }
+    });
+  });
+  return Array.from(affected);
+}
+
+function renameSubcategoryAcrossPosts(categoryKey, from, to) {
+  const affected = new Set();
+  Object.keys(blogData).forEach(cat => {
+    const posts = (blogData[cat] && blogData[cat].posts) || [];
+    posts.forEach(post => {
+      if (cat === categoryKey && post.subcategory === from) {
+        post.subcategory = to;
+        affected.add(cat);
+      }
+      if (post.secondaryCategory === categoryKey && post.secondarySubcategory === from) {
+        post.secondarySubcategory = to;
+        affected.add(cat);
+      }
+    });
+  });
+  return Array.from(affected);
+}
+
+function sanitizeCategoryKey(raw) {
+  return String(raw || '').toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
+}
+
+// ─── Category endpoint handlers ───────────────────────────────────────────────
+function handleAddCategory(body, response) {
+  const name = String(body.name || '').trim();
+  const key = sanitizeCategoryKey(body.categoryKey);
+  const icon = String(body.icon || '').trim();
+  const subs = Array.isArray(body.subcategories)
+    ? body.subcategories.filter(s => typeof s === 'string' && s.trim()).map(s => s.trim())
+    : [];
+
+  if (!key || !name) return sendError(response, "Missing categoryKey or name");
+  if (CATEGORY_CONFIG[key]) return sendError(response, "Category already exists");
+
+  CATEGORY_CONFIG[key] = { name, icon, subcategories: subs };
+  blogData[key] = { subcategories: subs, posts: [] };
+  blogUrls[key] = `https://beyondmebtw.com/blog/${key}.json`;
+
+  const filePath = nodePath.join(BLOG_BASE_PATH, `${key}.json`);
+  try {
+    const dir = nodePath.dirname(filePath);
+    const writePath = fs.existsSync(dir) ? filePath : nodePath.join(__dirname, "..", "blog", `${key}.json`);
+    fs.writeFileSync(writePath, JSON.stringify({ subcategories: subs, posts: [] }, null, 2), "utf8");
+  } catch (e) {
+    console.error("Could not create category file:", e.message);
+  }
+
+  saveCategoriesConfig();
+  runScriptIgnoreError(() => {
+    sendJSON(response, { success: true, categoryKey: key, message: `Category '${name}' created` });
+  });
+}
+
+function handleUpdateCategory(body, response) {
+  const key = body.categoryKey;
+  if (!key) return sendError(response, "Missing categoryKey");
+  if (!CATEGORY_CONFIG[key]) return sendError(response, "Category not found");
+
+  if (body.name !== undefined) CATEGORY_CONFIG[key].name = String(body.name).trim();
+  if (body.icon !== undefined) CATEGORY_CONFIG[key].icon = String(body.icon).trim();
+
+  saveCategoriesConfig();
+  sendJSON(response, { success: true, message: "Category updated" });
+}
+
+function handleDeleteCategory(body, response) {
+  const key = body.categoryKey;
+  if (!key) return sendError(response, "Missing categoryKey");
+  if (!CATEGORY_CONFIG[key]) return sendError(response, "Category not found");
+
+  const affectedCats = clearSecondaryRefsToCategory(key);
+
+  writeAllBlogFiles(affectedCats, writeErr => {
+    if (writeErr) return sendError(response, "Error updating referencing posts", 500);
+
+    const filePath = nodePath.join(BLOG_BASE_PATH, `${key}.json`);
+    const localPath = nodePath.join(__dirname, "..", "blog", `${key}.json`);
+    try { if (fs.existsSync(filePath)) fs.unlinkSync(filePath); } catch (e) { console.error("Could not delete category file:", e.message); }
+    try { if (fs.existsSync(localPath)) fs.unlinkSync(localPath); } catch (e) { /* non-fatal */ }
+
+    delete CATEGORY_CONFIG[key];
+    delete blogData[key];
+    delete blogUrls[key];
+    saveCategoriesConfig();
+
+    if (jsdata.categories && jsdata.categories[key]) {
+      delete jsdata.categories[key];
+      writeJSONFile(() => {
+        runScriptIgnoreError(() => {
+          sendJSON(response, { success: true, message: `Category '${key}' deleted` });
+        });
+      });
+    } else {
+      runScriptIgnoreError(() => {
+        sendJSON(response, { success: true, message: `Category '${key}' deleted` });
+      });
+    }
+  });
+}
+
+function handleAddSubcategory(body, response) {
+  const key = body.categoryKey;
+  const name = String(body.subcategoryName || '').trim();
+  if (!key || !name) return sendError(response, "Missing categoryKey or subcategoryName");
+  if (!CATEGORY_CONFIG[key]) return sendError(response, "Category not found");
+  if (CATEGORY_CONFIG[key].subcategories.includes(name)) {
+    return sendError(response, "Subcategory already exists");
+  }
+
+  CATEGORY_CONFIG[key].subcategories.push(name);
+  if (!blogData[key]) blogData[key] = { subcategories: [], posts: [] };
+  if (!Array.isArray(blogData[key].subcategories)) blogData[key].subcategories = [];
+  if (!blogData[key].subcategories.includes(name)) blogData[key].subcategories.push(name);
+
+  writeBlogJSONFile(key, err => {
+    if (err) return sendError(response, "Error writing blog file", 500);
+    saveCategoriesConfig();
+    runScriptIgnoreError(() => {
+      sendJSON(response, { success: true, message: `Subcategory '${name}' added to '${key}'` });
+    });
+  });
+}
+
+function handleRenameSubcategory(body, response) {
+  const key = body.categoryKey;
+  const from = String(body.from || '').trim();
+  const to = String(body.to || '').trim();
+  if (!key || !from || !to) return sendError(response, "Missing categoryKey, from, or to");
+  if (!CATEGORY_CONFIG[key]) return sendError(response, "Category not found");
+
+  const subs = CATEGORY_CONFIG[key].subcategories;
+  const idx = subs.indexOf(from);
+  if (idx === -1) return sendError(response, "Subcategory not found");
+  if (from !== to && subs.includes(to)) return sendError(response, "Target subcategory already exists");
+
+  subs[idx] = to;
+  if (blogData[key] && Array.isArray(blogData[key].subcategories)) {
+    const i2 = blogData[key].subcategories.indexOf(from);
+    if (i2 !== -1) blogData[key].subcategories[i2] = to;
+  }
+
+  const affected = new Set(renameSubcategoryAcrossPosts(key, from, to));
+  affected.add(key);
+
+  writeAllBlogFiles(Array.from(affected), err => {
+    if (err) return sendError(response, "Error writing blog file", 500);
+    saveCategoriesConfig();
+    runScriptIgnoreError(() => {
+      sendJSON(response, { success: true, message: `Renamed '${from}' to '${to}'` });
+    });
+  });
+}
+
+function handleRemoveSubcategory(body, response) {
+  const key = body.categoryKey;
+  const name = String(body.subcategoryName || '').trim();
+  if (!key || !name) return sendError(response, "Missing categoryKey or subcategoryName");
+  if (!CATEGORY_CONFIG[key]) return sendError(response, "Category not found");
+
+  const subs = CATEGORY_CONFIG[key].subcategories;
+  const idx = subs.indexOf(name);
+  if (idx === -1) return sendError(response, "Subcategory not found");
+  subs.splice(idx, 1);
+
+  if (blogData[key] && Array.isArray(blogData[key].subcategories)) {
+    const i2 = blogData[key].subcategories.indexOf(name);
+    if (i2 !== -1) blogData[key].subcategories.splice(i2, 1);
+    writeBlogJSONFile(key, err => {
+      if (err) return sendError(response, "Error writing blog file", 500);
+      saveCategoriesConfig();
+      runScriptIgnoreError(() => {
+        sendJSON(response, { success: true, message: `Subcategory '${name}' removed from '${key}'` });
+      });
+    });
+  } else {
+    saveCategoriesConfig();
+    sendJSON(response, { success: true, message: `Subcategory '${name}' removed from '${key}'` });
+  }
+}
+
 function updateLatestJSONCategories(category, uid, title, thumbnail, subcategory) {
   const categoryKey = category.toLowerCase();
   const subcategoryMap = {
@@ -456,12 +672,16 @@ const server = http.createServer((request, response) => {
       });
     }
 
-    // ── Categories GET/POST ───────────────────────────────────────────────────
-    else if (pathname === "/categories") {
+    // ── Category manifest endpoint ────────────────────────────────────────────
+    else if (pathname === "/category") {
       if (request.method === "GET") {
         const data = {};
         Object.keys(CATEGORY_CONFIG).forEach(k => {
-          data[k] = { name: CATEGORY_CONFIG[k].name, subcategories: CATEGORY_CONFIG[k].subcategories };
+          data[k] = {
+            name: CATEGORY_CONFIG[k].name,
+            icon: CATEGORY_CONFIG[k].icon || '',
+            subcategories: CATEGORY_CONFIG[k].subcategories || []
+          };
         });
         return sendJSON(response, data);
       }
@@ -471,45 +691,15 @@ const server = http.createServer((request, response) => {
           if (err) return sendError(response, "Bad JSON");
           if (!validateKey(body.key, response)) return;
 
-          const { action, categoryKey, categoryName, subcategoryName } = body;
-
-          if (action === "addCategory") {
-            if (!categoryKey || !categoryName) return sendError(response, "Missing categoryKey or categoryName");
-            const key = categoryKey.toLowerCase().replace(/\s+/g, '');
-            if (CATEGORY_CONFIG[key]) return sendError(response, "Category already exists");
-
-            CATEGORY_CONFIG[key] = { name: categoryName, subcategories: [] };
-            blogData[key] = { subcategories: [], posts: [] };
-            blogUrls[key] = `https://beyondmebtw.com/blog/${key}.json`;
-
-            // Create new empty category JSON file
-            const newFilePath = nodePath.join(BLOG_BASE_PATH, `${key}.json`);
-            try {
-              fs.writeFileSync(newFilePath, JSON.stringify({ subcategories: [], posts: [] }, null, 2), "utf8");
-            } catch (e) {
-              console.error("Could not create category file:", e.message);
-            }
-
-            saveCategoriesConfig();
-            return sendJSON(response, { success: true, categoryKey: key, message: `Category '${categoryName}' created` });
+          switch (body.action) {
+            case 'addCategory':      return handleAddCategory(body, response);
+            case 'updateCategory':   return handleUpdateCategory(body, response);
+            case 'deleteCategory':   return handleDeleteCategory(body, response);
+            case 'addSubcategory':   return handleAddSubcategory(body, response);
+            case 'renameSubcategory':return handleRenameSubcategory(body, response);
+            case 'removeSubcategory':return handleRemoveSubcategory(body, response);
+            default: return sendError(response, `Unknown action: ${body.action}`);
           }
-
-          if (action === "addSubcategory") {
-            if (!categoryKey || !subcategoryName) return sendError(response, "Missing categoryKey or subcategoryName");
-            if (!CATEGORY_CONFIG[categoryKey]) return sendError(response, "Category not found");
-            if (CATEGORY_CONFIG[categoryKey].subcategories.includes(subcategoryName)) {
-              return sendError(response, "Subcategory already exists");
-            }
-
-            CATEGORY_CONFIG[categoryKey].subcategories.push(subcategoryName);
-            if (blogData[categoryKey] && !blogData[categoryKey].subcategories.includes(subcategoryName)) {
-              blogData[categoryKey].subcategories.push(subcategoryName);
-            }
-            saveCategoriesConfig();
-            return sendJSON(response, { success: true, message: `Subcategory '${subcategoryName}' added to '${categoryKey}'` });
-          }
-
-          return sendError(response, "Unknown action. Use addCategory or addSubcategory");
         });
       }
 
@@ -553,7 +743,7 @@ const server = http.createServer((request, response) => {
     else if (pathname === "/blogdata" && request.method === "POST") {
       return getJSONBody(request, (err, body) => {
         if (err) return sendError(response, "Bad JSON");
-        const { action, category, uid, title, date, excerpt, thumbnail, link, subcategory, secondaryCategory, secondarySubcategory, key, subcategoryName } = body;
+        const { action, category, uid, title, date, excerpt, thumbnail, link, subcategory, secondaryCategory, secondarySubcategory, key } = body;
         if (!validateKey(key, response)) return;
 
         // ── Project actions (no category needed) ──────────────────────────────
@@ -612,46 +802,6 @@ const server = http.createServer((request, response) => {
         }
 
         if (!category) return sendError(response, "Missing category");
-
-        // Handle addCategory action — creates a new blog JSON file
-        if (action === "addCategory") {
-          const { categoryName } = body;
-          if (!categoryName) return sendError(response, "Missing categoryName");
-          const key = category.toLowerCase().replace(/\s+/g, '');
-          if (blogData[key]) return sendError(response, "Category already exists");
-          blogData[key] = { subcategories: [], posts: [] };
-          const newFilePath = nodePath.join(BLOG_BASE_PATH, `${key}.json`);
-          try {
-            fs.writeFileSync(newFilePath, JSON.stringify({ subcategories: [], posts: [] }, null, 2), "utf8");
-          } catch (e) {
-            console.error("Could not create category file:", e.message);
-          }
-          runScriptIgnoreError(() => {
-            sendJSON(response, { success: true, categoryKey: key, message: `Category '${categoryName}' created` });
-          });
-          return;
-        }
-
-        // Handle addSubcategory action — writes directly to the blog JSON file
-        if (action === "addSubcategory") {
-          if (!subcategoryName) return sendError(response, "Missing subcategoryName");
-          if (!blogData[category]) blogData[category] = { subcategories: [], posts: [] };
-          loadBlogJSON(category, () => {
-            if (!blogData[category].subcategories) blogData[category].subcategories = [];
-            if (blogData[category].subcategories.includes(subcategoryName)) {
-              return sendError(response, "Subcategory already exists");
-            }
-            blogData[category].subcategories.push(subcategoryName);
-            writeBlogJSONFile(category, err2 => {
-              if (err2) return sendError(response, "Error writing blog file", 500);
-              runScriptIgnoreError(() => {
-                sendJSON(response, { success: true, message: `Subcategory '${subcategoryName}' added to '${category}'` });
-              });
-            });
-          });
-          return;
-        }
-
         if (!title || !date || !excerpt || !thumbnail || !link) return sendError(response, "Missing required fields");
 
         if (!blogData[category]) blogData[category] = { subcategories: [], posts: [] };

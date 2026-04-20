@@ -21,7 +21,14 @@
       "Bash(git checkout:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git rm *)",
+      "Bash(git mv *)",
+      "Bash(node --check /home/pranav/Desktop/Beyondmebtw/manage/manageserver.js)",
+      "Bash(node --check /home/pranav/Desktop/Beyondmebtw/manage/index.js)",
+      "Bash(node --check /home/pranav/Desktop/Beyondmebtw/blog/blog.js)",
+      "Bash(python3 -m json.tool)",
+      "Bash(git -C /home/pranav/Desktop/Beyondmebtw rev-parse --short HEAD)"
     ]
   }
 }

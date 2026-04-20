@@ -1,0 +1,22 @@
+{
+  "f1arti": {
+    "name": "Formula 1",
+    "icon": "fas fa-flag-checkered",
+    "subcategories": ["2025 Season", "General"]
+  },
+  "movietv": {
+    "name": "Movies & TV",
+    "icon": "fas fa-film",
+    "subcategories": ["Movies", "TV Shows"]
+  },
+  "experience": {
+    "name": "Personal Experience",
+    "icon": "fas fa-compass",
+    "subcategories": []
+  },
+  "techarti": {
+    "name": "Technology",
+    "icon": "fas fa-code",
+    "subcategories": []
+  }
+}
