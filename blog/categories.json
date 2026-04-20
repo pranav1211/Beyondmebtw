@@ -28,6 +28,8 @@
   "theretrospect": {
     "name": "The Retrospect",
     "icon": "fa-solid fa-pager",
-    "subcategories": []
+    "subcategories": [
+      "Arrowverse"
+    ]
   }
 }
