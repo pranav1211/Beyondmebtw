@@ -24,6 +24,35 @@ async function fetchWithCache(url) {
 // Subcategory mappings — built dynamically from JSON after load
 let subcategoryMappings = {};
 
+const urlCategoryAliases = {
+    f1: 'f1arti',
+    formula1: 'f1arti',
+    'formula-1': 'f1arti',
+    'movie-tv': 'movietv',
+    movies: 'movietv',
+    tv: 'movietv',
+    tech: 'techarti',
+    technology: 'techarti'
+};
+
+const urlSubcategoryAliases = {
+    f1arti: {
+        '2025': '2025 Season',
+        '2025-season': '2025 Season',
+        '2026': '2026 Season',
+        '2026-season': '2026 Season',
+        general: 'General'
+    },
+    movietv: {
+        movie: 'Movies',
+        movies: 'Movies',
+        tv: 'TV Shows',
+        show: 'TV Shows',
+        shows: 'TV Shows',
+        'tv-shows': 'TV Shows'
+    }
+};
+
 // DOM elements
 const homelink = document.querySelector('#home');
 const bloglink = document.querySelector('#blog');
@@ -156,40 +185,96 @@ function getCategoryTitle(categoryKey) {
 
 function applyUrlFilters() {
     const params = new URLSearchParams(window.location.search);
+    const urlFilter = getUrlFilter(params);
 
-    Object.keys(categoriesManifest).forEach(categoryKey => {
-        if (params.has(categoryKey)) {
-            const value = params.get(categoryKey);
+    if (!urlFilter) return;
 
-            currentFilter = categoryKey;
-            currentSubfilter = null;
+    const { categoryKey, value } = urlFilter;
 
-            const categoryBtn = document.querySelector(
-                `.category-filter[data-category="${categoryKey}"]`
-            );
+    currentFilter = categoryKey;
+    currentSubfilter = null;
 
-            if (categoryBtn) {
-                document
-                    .querySelectorAll('.category-filter')
-                    .forEach(btn => btn.classList.remove('active'));
+    const categoryBtn = document.querySelector(
+        `.category-filter[data-category="${categoryKey}"]`
+    );
 
-                categoryBtn.classList.add('active');
-            }
+    if (categoryBtn) {
+        document
+            .querySelectorAll('.category-filter')
+            .forEach(btn => btn.classList.remove('active'));
 
-            updateSubcategoryFilters(categoryKey);
+        categoryBtn.classList.add('active');
+    }
 
-            if (value) {
-                handleSubcategoryFromUrl(categoryKey, value);
-            }
+    updateSubcategoryFilters(categoryKey);
+
+    if (value) {
+        handleSubcategoryFromUrl(categoryKey, value);
+    }
+}
+
+function getUrlFilter(params) {
+    const categoryParam = params.get('category');
+    if (categoryParam) {
+        const categoryKey = resolveUrlCategory(categoryParam);
+        if (categoryKey) {
+            return {
+                categoryKey,
+                value: params.get('subcategory') || params.get('sub') || ''
+            };
         }
-    });
+    }
+
+    const urlKeys = [
+        ...Object.keys(categoriesManifest),
+        ...Object.keys(urlCategoryAliases)
+    ];
+
+    for (const paramName of urlKeys) {
+        if (!params.has(paramName)) continue;
+
+        const categoryKey = resolveUrlCategory(paramName);
+        if (!categoryKey) continue;
+
+        const value = params.get(paramName) || getDefaultSubcategoryForParam(paramName);
+        return { categoryKey, value };
+    }
+
+    return null;
+}
+
+function resolveUrlCategory(value) {
+    if (!value) return null;
+
+    const normalized = value.toLowerCase().trim();
+    const categoryKey = urlCategoryAliases[normalized] || normalized;
+
+    return categoriesManifest[categoryKey] ? categoryKey : null;
+}
+
+function getDefaultSubcategoryForParam(paramName) {
+    const normalized = paramName.toLowerCase().trim();
+    if (normalized === 'movies') return 'Movies';
+    if (normalized === 'tv') return 'TV Shows';
+    return '';
 }
 
 function handleSubcategoryFromUrl(categoryKey, value) {
     const subs = subcategoryMappings[categoryKey] || [];
-    const target = value.toLowerCase();
-    const match = subs.find(s => s.toLowerCase() === target);
+    const aliases = urlSubcategoryAliases[categoryKey] || {};
+    const normalizedValue = aliases[slugifyUrlValue(value)] || value;
+    const target = slugifyUrlValue(normalizedValue);
+    const match = subs.find(s => slugifyUrlValue(s) === target);
     if (match) activateSubcategory(match);
+}
+
+function slugifyUrlValue(value) {
+    return String(value || '')
+        .toLowerCase()
+        .trim()
+        .replace(/&/g, 'and')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
 }
 
 function activateSubcategory(name) {
