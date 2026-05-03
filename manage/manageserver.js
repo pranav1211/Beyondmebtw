@@ -674,6 +674,10 @@ const server = http.createServer((request, response) => {
 
     // ── Category manifest endpoint ────────────────────────────────────────────
     else if (pathname === "/category") {
+      // Reload from disk on every request so external edits to categories.json
+      // (manual edits, git pulls) aren't clobbered by stale in-memory state.
+      loadCategoriesConfig();
+
       if (request.method === "GET") {
         const data = {};
         Object.keys(CATEGORY_CONFIG).forEach(k => {
