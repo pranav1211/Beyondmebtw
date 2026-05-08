@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>EPM docs</title>
+    <style>
+        /* Reset margins to prevent scrollbars */
+        body {
+            margin: 0;
+            font-family: sans-serif; /* Added a slightly nicer default font */
+        }
+
+        #con {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #box {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            width: 80px;
+            height: 80px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+            border: none;           /* Removes the default ugly 3D border */
+            border-radius: 8px;     /* Optional: Rounds the corners slightly */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Optional: Adds a slight shadow */
+        }
+
+        /* Fixed IDs: Changed from #1 to #btn1, etc. */
+        #btn1 {
+            background-color: #4CAF50; /* Green */
+            color: white;
+        }
+
+        #btn2 {
+            background-color: blue; 
+            color: white;
+        }
+
+        #btn3 {
+            background-color: black; 
+            color: white;
+        }
+
+        #btn4 {
+            background-color: purple; 
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="con">
+        <div id="box">
+            <a href="/Flyer EPM AI092.png" target="_blank">
+                <button id="btn1" type="button">Flyer png</button>
+            </a>
+
+            <a href="/Flyer EPM AI092.pdf" target="_blank">
+                <button id="btn2" type="button">Flyer pdf</button>
+            </a>
+
+            <a href="/Pranav Veeraghanta Flyer EPM AAT AI092.pdf" target="_blank">
+                <button id="btn3" type="button">Report pdf</button>
+            </a>
+
+            <a href="https://docs.google.com/document/d/1JtBYIaEPwDS0WTCxFTeSxEXlt3R-KvUc/edit?usp=sharing&ouid=106843111959126951447&rtpof=true&sd=true"
+                target="_blank">
+                <button id="btn4" type="button">Google docs</button>
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>
