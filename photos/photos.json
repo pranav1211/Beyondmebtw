@@ -32,27 +32,6 @@
           "alt": ""
         }
       ]
-    },
-    {
-      "id": "moon",
-      "title": "Moon Series",
-      "description": "Long-exposure shots of the moon across different phases, captured over the last year. All at 200mm, hand-held except where noted.",
-      "thumbnail": "https://content.beyondmebtw.com/photos/moon/cover.jpg",
-      "rawLink": "",
-      "rawLinkLabel": "",
-      "grid": {
-        "colSpan": 2,
-        "rowSpan": 2
-      },
-      "order": 2,
-      "images": [
-        {
-          "id": "moon_001",
-          "url": "https://content.beyondmebtw.com/photos/moon/01.jpg",
-          "description": "Full moon, 200mm, ISO 100, 1/250s. Shot from the terrace on a clear winter night.",
-          "alt": "Full moon close-up"
-        }
-      ]
     }
   ]
 }
