@@ -20,7 +20,7 @@
     <link rel="icon" type="image/x-icon" href="https://beyondmebtw.com/assets/images/favicon.ico">
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Delius&family=Kavoon&family=Kreon:wght@300&family=Permanent+Marker&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Delius&family=Kavoon&family=Kreon:wght@300&family=Mogra&family=Permanent+Marker&display=swap');
     </style>
 
     <link rel="stylesheet" href="https://beyondmebtw.com/css/base.css">
@@ -35,13 +35,14 @@
 
 <body>
 
-    <!-- Wordmark header (no site nav, like minis) -->
-    <header class="photos-wordmark">
-        <a href="https://beyondmebtw.com" class="wordmark-link">
-            <span class="wordmark-main">photos</span>
-            <span class="wordmark-sub">by beyondmebtw</span>
-        </a>
-    </header>
+    <!-- Wordmark header (mirrors the minis title treatment) -->
+    <div class="header-container">
+        <h1 class="page-title">
+            <a href="https://photos.beyondmebtw.com" class="photos">PHOTOS</a>
+            <span class="by">by</span>
+            <span class="brand"><a href="https://beyondmebtw.com">Beyond Me Btw</a></span>
+        </h1>
+    </div>
 
     <main class="photos-main">
 
@@ -66,6 +67,15 @@
         </section>
 
     </main>
+
+    <div id="footer">
+        <div>
+            © 2022-Present. Beyond Me Btw created by <a
+                href="https://beyondmebtw.com/about"
+                style="color: black; text-decoration: none; font-weight: bold;"
+                target="_blank">Pranav Veeraghanta.</a>
+        </div>
+    </div>
 
     <!-- ═══ LIGHTBOX ═══ -->
     <div id="lightbox" class="lightbox" hidden>

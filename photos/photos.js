@@ -68,8 +68,6 @@
             const thumb = series.thumbnail
                 || (series.images && series.images[0] && series.images[0].url)
                 || FALLBACK_THUMB;
-            const count = (series.images || []).length;
-            const countText = count === 1 ? '1 photo' : `${count} photos`;
 
             return `
                 <button class="bento-card"
@@ -84,9 +82,8 @@
                     <div class="bento-card-overlay"></div>
                     <div class="bento-card-content">
                         <h2 class="bento-card-title">${esc(series.title)}</h2>
-                        <span class="bento-card-count">${esc(countText)}</span>
-                        <span class="bento-card-cta">Explore &rarr;</span>
                     </div>
+                    <span class="bento-card-cta">click to explore</span>
                 </button>
             `;
         }).join('');

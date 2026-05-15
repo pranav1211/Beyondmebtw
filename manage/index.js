@@ -1705,10 +1705,14 @@ function renderPhotosBentoPreview() {
     const thumb = s.thumbnail
       || (s.images && s.images[0] && s.images[0].url)
       || '';
-    const bg = thumb ? `style="background-image: url('${esc(thumb)}'); grid-column: span ${colSpan}; grid-row: span ${rowSpan};"`
-                     : `style="grid-column: span ${colSpan}; grid-row: span ${rowSpan};"`;
+    const bgLayer = thumb ? `<div class="ph-bento-tile-bg" style="background-image: url('${esc(thumb)}');"></div>` : '';
+    const imgLayer = thumb ? `<img class="ph-bento-tile-img" src="${esc(thumb)}" alt="" onerror="this.style.display='none'">` : '';
     return `
-      <div class="ph-bento-tile" data-series-id="${esc(s.id)}" draggable="true" ${bg}>
+      <div class="ph-bento-tile" data-series-id="${esc(s.id)}" draggable="true"
+           style="grid-column: span ${colSpan}; grid-row: span ${rowSpan};">
+        ${bgLayer}
+        ${imgLayer}
+        <div class="ph-bento-tile-shade"></div>
         <span class="ph-bento-tile-label">${esc(s.title || s.id)}</span>
         <div class="ph-bento-tile-controls">
           <span class="ph-span-ctrl" title="Column span">
@@ -1726,14 +1730,20 @@ function renderPhotosBentoPreview() {
     `;
   }).join('');
 
-  // Span buttons
+  // Span buttons — also stop drag from starting on the controls so a
+  // click isn't interpreted as the beginning of a drag-reorder gesture.
+  grid.querySelectorAll('.ph-span-ctrl').forEach(ctrl => {
+    ctrl.addEventListener('mousedown', e => e.stopPropagation());
+    ctrl.addEventListener('dragstart', e => { e.preventDefault(); e.stopPropagation(); });
+  });
   grid.querySelectorAll('.ph-span-ctrl button').forEach(btn => {
-    btn.addEventListener('click', async e => {
+    btn.addEventListener('click', e => {
       e.preventDefault();
+      e.stopPropagation();
       const id = btn.dataset.id;
       const axis = btn.dataset.span;
       const delta = parseInt(btn.dataset.delta, 10);
-      await adjustPhotoSpan(id, axis, delta);
+      adjustPhotoSpan(id, axis, delta);
     });
   });
 
