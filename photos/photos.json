@@ -7,7 +7,10 @@
       "thumbnail": "https://content.beyondmebtw.com/photos/moon/cover.jpg",
       "rawLink": "",
       "rawLinkLabel": "",
-      "grid": { "colSpan": 2, "rowSpan": 2 },
+      "grid": {
+        "colSpan": 2,
+        "rowSpan": 2
+      },
       "order": 1,
       "images": [
         {
@@ -17,6 +20,20 @@
           "alt": "Full moon close-up"
         }
       ]
+    },
+    {
+      "id": "blackkite",
+      "title": "The Black Kite",
+      "description": "",
+      "thumbnail": "",
+      "rawLink": "",
+      "rawLinkLabel": "",
+      "grid": {
+        "colSpan": 1,
+        "rowSpan": 1
+      },
+      "order": 2,
+      "images": []
     }
   ]
 }
