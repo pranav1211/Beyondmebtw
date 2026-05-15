@@ -5,7 +5,7 @@
 (function () {
     'use strict';
 
-    const PHOTOS_JSON_URL = '/photos/photos.json';
+    const PHOTOS_JSON_URL = '/photos.json';
     const FALLBACK_THUMB = 'https://beyondmebtw.com/assets/images/favicon.ico';
 
     const state = {
