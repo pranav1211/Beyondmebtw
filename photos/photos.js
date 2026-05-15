@@ -116,6 +116,15 @@
         state.currentSeries = series;
 
         $('series-title').textContent = series.title || '';
+
+        const images = series.images || [];
+        const countEl = $('series-count');
+        if (countEl) {
+            const n = images.length;
+            countEl.textContent = n === 0 ? '' : (n === 1 ? '1 photo' : `${n} photos`);
+            countEl.hidden = n === 0;
+        }
+
         const descEl = $('series-description');
         const descText = (series.description || '').trim();
         if (descText) {
@@ -139,7 +148,6 @@
         }
 
         const imageGrid = $('series-image-grid');
-        const images = series.images || [];
 
         if (images.length === 0) {
             imageGrid.innerHTML = '<p class="empty-msg">No images in this series yet.</p>';
@@ -173,7 +181,7 @@
         $('series-view').hidden = false;
         window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
 
-        document.title = `${series.title} | Photos | BeyondMeBtw`;
+        document.title = `${series.title} | BeyondMeBtw`;
 
         if (pushHistory) {
             const url = new URL(window.location.href);
@@ -243,7 +251,11 @@
         $('lightbox-next').addEventListener('click', () => lightboxStep(1));
 
         $('lightbox').addEventListener('click', e => {
-            if (e.target.id === 'lightbox') closeLightbox();
+            // Close on click of anything except the image itself or the
+            // close / prev / next controls (those have their own handlers).
+            if (e.target.closest('.lightbox-close, .lightbox-nav')) return;
+            if (e.target === $('lightbox-img')) return;
+            closeLightbox();
         });
 
         document.addEventListener('keydown', e => {

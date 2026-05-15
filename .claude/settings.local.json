@@ -35,7 +35,8 @@
       "Bash(node --check c:/Users/pranav/Downloads/Beyondmebtw/manage/manageserver.js c:/Users/pranav/Downloads/Beyondmebtw/manage/index.js c:/Users/pranav/Downloads/Beyondmebtw/photos/photos.js)",
       "Bash(node --check c:/Users/pranav/Downloads/Beyondmebtw/manage/index.js c:/Users/pranav/Downloads/Beyondmebtw/photos/photos.js c:/Users/pranav/Downloads/Beyondmebtw/manage/manageserver.js)",
       "Bash(ls \"C:/Users/pranav/Documents/BMB/Minis/frontend\" 2>&1 | head -20)",
-      "Read(//c/Users/pranav/Documents/BMB/Minis/frontend/**)"
+      "Read(//c/Users/pranav/Documents/BMB/Minis/frontend/**)",
+      "Bash(node --check c:/Users/pranav/Downloads/Beyondmebtw/photos/photos.js)"
     ]
   }
 }
