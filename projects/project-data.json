@@ -362,5 +362,17 @@
         "description": "Configure the app to your preferences:  App Lock — secure access to your financial data Currency Preference — set your default display currency Data Export — export everything as a CSV or JSON file for external use or backup"
       }
     ]
+  },
+  {
+    "id": 14,
+    "title": "Photos",
+    "category": "Web Development",
+    "shortDescription": "A platform to showcase my photography",
+    "fullDescription": "",
+    "logo": "https://content.beyondmebtw.com/assets/bmb_logos/bmblogo.png",
+    "link": "https://photos.beyondmebtw.com",
+    "githubLink": "https://github.com/pranav1211/photosbmb",
+    "tags": [],
+    "images": []
   }
 ]
