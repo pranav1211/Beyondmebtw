@@ -373,6 +373,11 @@
     "link": "https://photos.beyondmebtw.com",
     "githubLink": "https://github.com/pranav1211/photosbmb",
     "tags": [],
-    "images": []
+    "images": [
+      {
+        "url": "https://content.beyondmebtw.com/assets/photos/photos.webp",
+        "description": ""
+      }
+    ]
   }
 ]
