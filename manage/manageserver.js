@@ -391,11 +391,14 @@ function normalizePhotosImage(image, fallbackId) {
   const url = String(image.url || '').trim();
   if (!url) return null;
   const id = sanitizePhotosId(image.id) || sanitizePhotosId(fallbackId) || `img_${Date.now()}`;
+  const rawO = String(image.orientation || '').toLowerCase().trim();
+  const orientation = (rawO === 'portrait' || rawO === 'square') ? rawO : 'landscape';
   return {
     id,
     url,
     description: String(image.description || '').trim(),
-    alt: String(image.alt || '').trim()
+    alt: String(image.alt || '').trim(),
+    orientation
   };
 }
 

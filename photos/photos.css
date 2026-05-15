@@ -42,7 +42,7 @@ body {
 }
 
 .page-title .photos {
-    font-size: clamp(48px, 7vw, 82px);
+    font-size: clamp(43px, 6.3vw, 74px);
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--text-light-color) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -57,7 +57,7 @@ body {
 .page-title .photos:hover { text-decoration: none; }
 
 .page-title .by {
-    font-size: clamp(20px, 3vw, 36px);
+    font-size: clamp(18px, 2.7vw, 32px);
     color: #0d1a33;
     font-weight: 700;
     font-style: italic;
@@ -68,7 +68,7 @@ body {
 }
 
 .page-title .brand {
-    font-size: clamp(22px, 3.6vw, 44px);
+    font-size: clamp(20px, 3.24vw, 40px);
     color: #0d1a33;
     font-weight: 600;
     font-style: italic;
@@ -87,7 +87,7 @@ body {
 .photos-main {
     width: 100%;
     margin: 0;
-    padding: 8px 10px 24px;
+    padding: 8px 40px 24px;
 }
 
 .empty-msg {
@@ -142,6 +142,9 @@ body {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    /* Anchor to the top so any letterbox sits at the bottom of the
+       card, where the gradient + title overlay can absorb it. */
+    object-position: center top;
     transition: transform 0.5s ease;
     z-index: 1;
 }
@@ -183,6 +186,14 @@ body {
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
+.bento-card-count {
+    font-family: var(--font-accent);
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.82);
+    margin-top: 4px;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+}
+
 /* Hover CTA — pinned bottom-right. */
 .bento-card-cta {
     position: absolute;
@@ -212,7 +223,7 @@ body {
 
 /* ── Series view ────────────────────────────────────────────── */
 .series-view {
-    padding: 8px 40px 0;
+    padding: 0;
 }
 
 .back-btn {
@@ -282,12 +293,15 @@ body {
     box-shadow: var(--card-shadow);
 }
 
-/* Centered masonry — preserves each image's natural aspect ratio while
-   keeping sparse layouts focused (1 image sits centered, not flush-left). */
+/* Centered grid of fixed-aspect cards.
+   Each card is 16:9 (landscape) by default; cards with
+   data-orientation="portrait" flip to 9:16. The actual full-resolution
+   image is shown in the lightbox — these cards are just consistent tiles. */
 .series-image-grid {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    align-items: flex-start;
     gap: 14px;
     max-width: 1600px;
     margin: 0 auto;
@@ -305,6 +319,21 @@ body {
     flex: 0 1 calc(25% - 11px);
     max-width: 520px;
     min-width: 220px;
+    aspect-ratio: 16 / 9;
+}
+
+.series-image-card[data-orientation="portrait"] {
+    aspect-ratio: 9 / 16;
+    flex-basis: calc(16% - 11px);
+    min-width: 180px;
+    max-width: 360px;
+}
+
+.series-image-card[data-orientation="square"] {
+    aspect-ratio: 1 / 1;
+    flex-basis: calc(22% - 11px);
+    min-width: 200px;
+    max-width: 420px;
 }
 
 .series-image-card:hover {
@@ -314,7 +343,8 @@ body {
 
 .series-image-card img {
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;
     display: block;
     transition: transform 0.4s ease;
 }
@@ -469,6 +499,8 @@ body {
     .bento-card[data-col-span="3"] { grid-column: span 3; }
 
     .series-image-card { flex-basis: calc(33.333% - 10px); }
+    .series-image-card[data-orientation="portrait"] { flex-basis: calc(22% - 10px); }
+    .series-image-card[data-orientation="square"] { flex-basis: calc(28% - 10px); }
 }
 
 @media (max-width: 720px) {
@@ -488,15 +520,21 @@ body {
         transform: none;
     }
 
-    .series-view {
-        padding: 6px 16px 0;
-    }
+    .photos-main { padding: 6px 16px 24px; }
 
     .series-image-grid {
         gap: 10px;
     }
     .series-image-card {
         flex-basis: calc(50% - 5px);
+        min-width: 0;
+    }
+    .series-image-card[data-orientation="portrait"] {
+        flex-basis: calc(40% - 5px);
+        min-width: 0;
+    }
+    .series-image-card[data-orientation="square"] {
+        flex-basis: calc(45% - 5px);
         min-width: 0;
     }
 
@@ -547,5 +585,10 @@ body {
     .bento-card[data-row-span="3"],
     .bento-card[data-row-span="4"] { grid-row: span 1; }
 
-    .series-image-card { flex-basis: 100%; }
+    .series-image-card,
+    .series-image-card[data-orientation="portrait"],
+    .series-image-card[data-orientation="square"] {
+        flex-basis: 100%;
+        max-width: none;
+    }
 }

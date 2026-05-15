@@ -616,9 +616,20 @@
         <label>Description</label>
         <textarea id="ph-image-description" rows="4" placeholder="Caption shown next to the expanded image..."></textarea>
       </div>
-      <div class="form-group">
-        <label>Alt text</label>
-        <input type="text" id="ph-image-alt" placeholder="Short alt text for accessibility">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Alt text</label>
+          <input type="text" id="ph-image-alt" placeholder="Short alt text for accessibility">
+        </div>
+        <div class="form-group">
+          <label>Orientation</label>
+          <select id="ph-image-orientation">
+            <option value="landscape">Landscape (16:9)</option>
+            <option value="portrait">Portrait (9:16)</option>
+            <option value="square">Square (1:1)</option>
+          </select>
+          <span class="hint">Controls the tile shape in the series view. The lightbox always shows the full image.</span>
+        </div>
       </div>
       <input type="hidden" id="ph-image-series-id" value="">
       <input type="hidden" id="ph-image-edit-id" value="">

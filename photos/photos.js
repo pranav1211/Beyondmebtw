@@ -68,6 +68,8 @@
             const thumb = series.thumbnail
                 || (series.images && series.images[0] && series.images[0].url)
                 || FALLBACK_THUMB;
+            const count = (series.images || []).length;
+            const countText = count === 1 ? '1 photo' : `${count} photos`;
 
             return `
                 <button class="bento-card"
@@ -82,6 +84,7 @@
                     <div class="bento-card-overlay"></div>
                     <div class="bento-card-content">
                         <h2 class="bento-card-title">${esc(series.title)}</h2>
+                        <span class="bento-card-count">${esc(countText)}</span>
                     </div>
                     <span class="bento-card-cta">click to explore</span>
                 </button>
@@ -141,14 +144,18 @@
         if (images.length === 0) {
             imageGrid.innerHTML = '<p class="empty-msg">No images in this series yet.</p>';
         } else {
-            imageGrid.innerHTML = images.map((img, i) => `
-                <div class="series-image-card" data-index="${i}" tabindex="0" role="button"
-                     aria-label="Expand image ${i + 1}">
+            imageGrid.innerHTML = images.map((img, i) => {
+                const o = (img.orientation || 'landscape').toLowerCase();
+                const orientation = (o === 'portrait' || o === 'square') ? o : 'landscape';
+                return `
+                <div class="series-image-card" data-index="${i}" data-orientation="${orientation}"
+                     tabindex="0" role="button" aria-label="Expand image ${i + 1}">
                     <img src="${esc(img.url)}" alt="${esc(img.alt || img.description || series.title)}"
                          loading="lazy" onerror="this.src='${FALLBACK_THUMB}'">
                     <div class="series-image-hover">click to expand</div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
 
             imageGrid.querySelectorAll('.series-image-card').forEach(card => {
                 const idx = parseInt(card.dataset.index, 10);

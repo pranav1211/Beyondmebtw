@@ -2053,11 +2053,13 @@ function openPhotosImageModal(seriesId, imageId) {
     document.getElementById('ph-image-url').value = img.url || '';
     document.getElementById('ph-image-description').value = img.description || '';
     document.getElementById('ph-image-alt').value = img.alt || '';
+    document.getElementById('ph-image-orientation').value = (img.orientation || 'landscape');
   } else {
     modalTitle.textContent = 'Add Image';
     submitBtn.textContent = 'Add Image';
     modeInput.value = 'create';
     editIdInput.value = '';
+    document.getElementById('ph-image-orientation').value = 'landscape';
   }
 
   openModal('photos-image-modal');
@@ -2074,6 +2076,7 @@ function initPhotosImageModal() {
     const url = document.getElementById('ph-image-url').value.trim();
     const description = document.getElementById('ph-image-description').value.trim();
     const alt = document.getElementById('ph-image-alt').value.trim();
+    const orientation = document.getElementById('ph-image-orientation').value || 'landscape';
 
     if (!url) { toast('Image URL is required', 'warning'); return; }
 
@@ -2083,13 +2086,13 @@ function initPhotosImageModal() {
       if (mode === 'edit') {
         await apiCall('POST', '/photosdata', {
           action: 'updateImage', seriesId, imageId,
-          image: { id: imageId, url, description, alt }
+          image: { id: imageId, url, description, alt, orientation }
         });
         toast('Image updated');
       } else {
         await apiCall('POST', '/photosdata', {
           action: 'addImage', seriesId,
-          image: { url, description, alt }
+          image: { url, description, alt, orientation }
         });
         toast('Image added');
       }
