@@ -29,7 +29,10 @@
       "Bash(node --check /home/pranav/Desktop/Beyondmebtw/blog/blog.js)",
       "Bash(python3 -m json.tool)",
       "Bash(git -C /home/pranav/Desktop/Beyondmebtw rev-parse --short HEAD)",
-      "Bash(git log *)"
+      "Bash(git log *)",
+      "Bash(node --check c:/Users/pranav/Downloads/Beyondmebtw/manage/manageserver.js)",
+      "Bash(node --check c:/Users/pranav/Downloads/Beyondmebtw/manage/index.js c:/Users/pranav/Downloads/Beyondmebtw/photos/photos.js)",
+      "Bash(node --check c:/Users/pranav/Downloads/Beyondmebtw/manage/manageserver.js c:/Users/pranav/Downloads/Beyondmebtw/manage/index.js c:/Users/pranav/Downloads/Beyondmebtw/photos/photos.js)"
     ]
   }
 }

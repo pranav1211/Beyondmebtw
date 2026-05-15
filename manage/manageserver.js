@@ -28,6 +28,8 @@ const PROJECTS_JSON_PATH = "/bmbsifi/Beyondmebtw/projects/project-data.json";
 const BLOG_BASE_PATH = "/bmbsifi/Beyondmebtw/blog";
 const CATEGORIES_CONFIG_PATH = nodePath.join(BLOG_BASE_PATH, "categories.json");
 const CATEGORIES_CONFIG_LOCAL = nodePath.join(__dirname, "..", "blog", "categories.json");
+const PHOTOS_JSON_PATH = "/bmbsifi/Beyondmebtw/photos/photos.json";
+const PHOTOS_JSON_LOCAL = nodePath.join(__dirname, "..", "photos", "photos.json");
 
 function resolveCategoriesPath() {
   if (fs.existsSync(CATEGORIES_CONFIG_PATH)) return CATEGORIES_CONFIG_PATH;
@@ -320,6 +322,273 @@ function writeProjectsJSONSafe(projects, callback) {
       callback(e2);
     }
   }
+}
+
+// ─── Photos helpers ───────────────────────────────────────────────────────────
+function resolvePhotosPath(forWrite) {
+  // For reads: prefer server path, fall back to local.
+  // For writes: write wherever the parent directory exists.
+  if (forWrite) {
+    if (fs.existsSync(nodePath.dirname(PHOTOS_JSON_PATH))) return PHOTOS_JSON_PATH;
+    return PHOTOS_JSON_LOCAL;
+  }
+  if (fs.existsSync(PHOTOS_JSON_PATH)) return PHOTOS_JSON_PATH;
+  return PHOTOS_JSON_LOCAL;
+}
+
+function clampSpan(n) {
+  const v = parseInt(n, 10);
+  if (!Number.isFinite(v)) return 1;
+  return Math.max(1, Math.min(4, v));
+}
+
+function readPhotosJSON() {
+  try {
+    const path = resolvePhotosPath(false);
+    if (fs.existsSync(path)) {
+      const raw = fs.readFileSync(path, "utf8");
+      const parsed = safeJSONParse(raw, null);
+      if (parsed && typeof parsed === 'object' && Array.isArray(parsed.series)) {
+        return parsed;
+      }
+    }
+    return { series: [] };
+  } catch (e) {
+    console.error("Error reading photos.json:", e);
+    return { series: [] };
+  }
+}
+
+function writePhotosJSON(data, callback) {
+  try {
+    const path = resolvePhotosPath(true);
+    fs.writeFileSync(path, JSON.stringify(data, null, 2), "utf8");
+    console.log("photos.json written to", path);
+    callback(null);
+  } catch (e) {
+    // Fallback to local dev path if the primary path failed.
+    try {
+      fs.writeFileSync(PHOTOS_JSON_LOCAL, JSON.stringify(data, null, 2), "utf8");
+      console.log("photos.json written (local fallback)");
+      callback(null);
+    } catch (e2) {
+      console.error("Error writing photos.json:", e2);
+      callback(e2);
+    }
+  }
+}
+
+function sanitizePhotosId(raw) {
+  return String(raw || '')
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9_-]/g, '')
+    .slice(0, 64);
+}
+
+function normalizePhotosImage(image, fallbackId) {
+  if (!image || typeof image !== 'object') return null;
+  const url = String(image.url || '').trim();
+  if (!url) return null;
+  const id = sanitizePhotosId(image.id) || sanitizePhotosId(fallbackId) || `img_${Date.now()}`;
+  return {
+    id,
+    url,
+    description: String(image.description || '').trim(),
+    alt: String(image.alt || '').trim()
+  };
+}
+
+function normalizePhotosSeries(series) {
+  if (!series || typeof series !== 'object') return null;
+  const id = sanitizePhotosId(series.id);
+  const title = String(series.title || '').trim();
+  if (!id || !title) return null;
+
+  const grid = (series.grid && typeof series.grid === 'object') ? series.grid : {};
+  const images = Array.isArray(series.images)
+    ? series.images
+        .map((img, i) => normalizePhotosImage(img, `${id}_${i + 1}`))
+        .filter(Boolean)
+    : [];
+
+  return {
+    id,
+    title,
+    description: String(series.description || '').trim(),
+    thumbnail: String(series.thumbnail || '').trim(),
+    rawLink: String(series.rawLink || '').trim(),
+    rawLinkLabel: String(series.rawLinkLabel || '').trim(),
+    grid: {
+      colSpan: clampSpan(grid.colSpan),
+      rowSpan: clampSpan(grid.rowSpan)
+    },
+    order: Number.isFinite(parseInt(series.order, 10)) ? parseInt(series.order, 10) : 999,
+    images
+  };
+}
+
+function findSeriesIndex(data, seriesId) {
+  return data.series.findIndex(s => s.id === seriesId);
+}
+
+// ─── Photos endpoint handlers ─────────────────────────────────────────────────
+function handlePhotosCreateSeries(body, response) {
+  const data = readPhotosJSON();
+  const normalized = normalizePhotosSeries(body);
+  if (!normalized) return sendError(response, "Missing id or title");
+  if (findSeriesIndex(data, normalized.id) !== -1) {
+    return sendError(response, "Series id already exists");
+  }
+  // Assign an order at the end if not provided.
+  if (body.order === undefined || body.order === null || body.order === '') {
+    const maxOrder = data.series.reduce((m, s) => Math.max(m, s.order || 0), 0);
+    normalized.order = maxOrder + 1;
+  }
+  data.series.push(normalized);
+  writePhotosJSON(data, err => {
+    if (err) return sendError(response, "Error writing photos.json", 500);
+    runScriptIgnoreError(() => {
+      sendJSON(response, { success: true, message: "Series created", series: normalized });
+    });
+  });
+}
+
+function handlePhotosUpdateSeries(body, response) {
+  const data = readPhotosJSON();
+  const seriesId = sanitizePhotosId(body.seriesId || body.id);
+  if (!seriesId) return sendError(response, "Missing seriesId");
+  const idx = findSeriesIndex(data, seriesId);
+  if (idx === -1) return sendError(response, "Series not found");
+
+  const current = data.series[idx];
+  const merged = { ...current, ...body, id: current.id, images: current.images };
+  const normalized = normalizePhotosSeries(merged);
+  if (!normalized) return sendError(response, "Invalid series payload");
+  // Preserve existing image list (separate endpoints manage images).
+  normalized.images = current.images || [];
+
+  data.series[idx] = normalized;
+  writePhotosJSON(data, err => {
+    if (err) return sendError(response, "Error writing photos.json", 500);
+    runScriptIgnoreError(() => {
+      sendJSON(response, { success: true, message: "Series updated", series: normalized });
+    });
+  });
+}
+
+function handlePhotosDeleteSeries(body, response) {
+  const data = readPhotosJSON();
+  const seriesId = sanitizePhotosId(body.seriesId || body.id);
+  if (!seriesId) return sendError(response, "Missing seriesId");
+  const before = data.series.length;
+  data.series = data.series.filter(s => s.id !== seriesId);
+  if (data.series.length === before) return sendError(response, "Series not found");
+
+  writePhotosJSON(data, err => {
+    if (err) return sendError(response, "Error writing photos.json", 500);
+    runScriptIgnoreError(() => {
+      sendJSON(response, { success: true, message: "Series deleted" });
+    });
+  });
+}
+
+function handlePhotosReorder(body, response) {
+  const data = readPhotosJSON();
+  const order = Array.isArray(body.order) ? body.order : null;
+  if (!order) return sendError(response, "Missing order array");
+
+  const indexById = new Map();
+  data.series.forEach((s, i) => indexById.set(s.id, i));
+
+  order.forEach((seriesId, position) => {
+    const idx = indexById.get(seriesId);
+    if (idx !== undefined) {
+      data.series[idx].order = position + 1;
+    }
+  });
+  data.series.sort((a, b) => (a.order || 999) - (b.order || 999));
+
+  writePhotosJSON(data, err => {
+    if (err) return sendError(response, "Error writing photos.json", 500);
+    runScriptIgnoreError(() => {
+      sendJSON(response, { success: true, message: "Series order updated", series: data.series });
+    });
+  });
+}
+
+function handlePhotosAddImage(body, response) {
+  const data = readPhotosJSON();
+  const seriesId = sanitizePhotosId(body.seriesId);
+  if (!seriesId) return sendError(response, "Missing seriesId");
+  const idx = findSeriesIndex(data, seriesId);
+  if (idx === -1) return sendError(response, "Series not found");
+
+  const fallbackId = `${seriesId}_${(data.series[idx].images || []).length + 1}`;
+  const normalized = normalizePhotosImage(body.image || body, fallbackId);
+  if (!normalized) return sendError(response, "Missing image url");
+
+  if (!Array.isArray(data.series[idx].images)) data.series[idx].images = [];
+  // Ensure unique image id within series
+  if (data.series[idx].images.some(img => img.id === normalized.id)) {
+    normalized.id = `${normalized.id}_${Date.now()}`;
+  }
+  data.series[idx].images.push(normalized);
+
+  writePhotosJSON(data, err => {
+    if (err) return sendError(response, "Error writing photos.json", 500);
+    runScriptIgnoreError(() => {
+      sendJSON(response, { success: true, message: "Image added", image: normalized });
+    });
+  });
+}
+
+function handlePhotosUpdateImage(body, response) {
+  const data = readPhotosJSON();
+  const seriesId = sanitizePhotosId(body.seriesId);
+  const imageId = sanitizePhotosId(body.imageId || (body.image && body.image.id));
+  if (!seriesId || !imageId) return sendError(response, "Missing seriesId or imageId");
+  const sIdx = findSeriesIndex(data, seriesId);
+  if (sIdx === -1) return sendError(response, "Series not found");
+
+  const images = data.series[sIdx].images || [];
+  const iIdx = images.findIndex(img => img.id === imageId);
+  if (iIdx === -1) return sendError(response, "Image not found");
+
+  const merged = { ...images[iIdx], ...(body.image || body), id: imageId };
+  const normalized = normalizePhotosImage(merged, imageId);
+  if (!normalized) return sendError(response, "Invalid image payload");
+
+  images[iIdx] = normalized;
+  data.series[sIdx].images = images;
+
+  writePhotosJSON(data, err => {
+    if (err) return sendError(response, "Error writing photos.json", 500);
+    runScriptIgnoreError(() => {
+      sendJSON(response, { success: true, message: "Image updated", image: normalized });
+    });
+  });
+}
+
+function handlePhotosDeleteImage(body, response) {
+  const data = readPhotosJSON();
+  const seriesId = sanitizePhotosId(body.seriesId);
+  const imageId = sanitizePhotosId(body.imageId);
+  if (!seriesId || !imageId) return sendError(response, "Missing seriesId or imageId");
+  const sIdx = findSeriesIndex(data, seriesId);
+  if (sIdx === -1) return sendError(response, "Series not found");
+
+  const images = data.series[sIdx].images || [];
+  const before = images.length;
+  data.series[sIdx].images = images.filter(img => img.id !== imageId);
+  if (data.series[sIdx].images.length === before) return sendError(response, "Image not found");
+
+  writePhotosJSON(data, err => {
+    if (err) return sendError(response, "Error writing photos.json", 500);
+    runScriptIgnoreError(() => {
+      sendJSON(response, { success: true, message: "Image deleted" });
+    });
+  });
 }
 
 function executeScript(callback) {
@@ -960,6 +1229,30 @@ const server = http.createServer((request, response) => {
             sendJSON(response, { success: true, message: "Project deleted" });
           });
         });
+      });
+    }
+
+    // ── Photos data GET ───────────────────────────────────────────────────────
+    else if (pathname === "/photosdata" && request.method === "GET") {
+      return sendJSON(response, readPhotosJSON());
+    }
+
+    // ── Photos data POST (action-dispatched) ─────────────────────────────────
+    else if (pathname === "/photosdata" && request.method === "POST") {
+      return getJSONBody(request, (err, body) => {
+        if (err) return sendError(response, "Bad JSON");
+        if (!validateKey(body.key, response)) return;
+
+        switch (body.action) {
+          case 'createSeries': return handlePhotosCreateSeries(body, response);
+          case 'updateSeries': return handlePhotosUpdateSeries(body, response);
+          case 'deleteSeries': return handlePhotosDeleteSeries(body, response);
+          case 'reorderSeries': return handlePhotosReorder(body, response);
+          case 'addImage':     return handlePhotosAddImage(body, response);
+          case 'updateImage':  return handlePhotosUpdateImage(body, response);
+          case 'deleteImage':  return handlePhotosDeleteImage(body, response);
+          default: return sendError(response, `Unknown action: ${body.action}`);
+        }
       });
     }
 

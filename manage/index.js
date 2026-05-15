@@ -6,6 +6,7 @@ const BASE_URL = "https://manage.beyondmebtw.com";
 const PROJECTS_URL = 'https://beyondmebtw.com/projects/project-data.json';
 const BLOG_BASE_URL = 'https://beyondmebtw.com/blog';
 const CATEGORIES_MANIFEST_URL = 'https://beyondmebtw.com/blog/categories.json';
+const PHOTOS_URL = 'https://beyondmebtw.com/photos/photos.json';
 
 // ─── State ────────────────────────────────────────────────────────────────────
 let state = {
@@ -22,7 +23,9 @@ let state = {
   confirmCallback: null,
   latestConfirmCallback: null,
   catDeleteTarget: null,     // key of category being deleted
-  subcatEditTarget: null     // { key, from } when renaming
+  subcatEditTarget: null,    // { key, from } when renaming
+  photosData: null,          // from photos.json
+  expandedSeriesIds: new Set() // which series cards are expanded in the list
 };
 
 async function fetchCategoriesManifest() {
@@ -262,6 +265,10 @@ function initTabs() {
       if (tab === 'projects') {
         if (state.projects.length === 0) loadProjectsTab();
         else renderProjectsList();
+      }
+      if (tab === 'photos') {
+        if (!state.photosData) loadPhotosTab();
+        else renderPhotosTab();
       }
     });
   });
@@ -1577,6 +1584,480 @@ function resetProjectForm() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// PHOTOS TAB
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const PHOTOS_BENTO_COLS = 4;
+const PHOTOS_BENTO_MAX_SPAN = 4;
+
+function clampPhotoSpan(n) {
+  const v = parseInt(n, 10);
+  if (!Number.isFinite(v)) return 1;
+  return Math.max(1, Math.min(PHOTOS_BENTO_MAX_SPAN, v));
+}
+
+async function loadPhotosTab() {
+  try {
+    const url = `${PHOTOS_URL}?t=${Date.now()}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    state.photosData = (data && Array.isArray(data.series)) ? data : { series: [] };
+    sortPhotosSeries();
+    renderPhotosTab();
+  } catch (e) {
+    console.error('Photos load error:', e);
+    state.photosData = { series: [] };
+    toast(`Failed to load photos: ${e.message}`, 'error');
+    renderPhotosTab();
+  }
+}
+
+function sortPhotosSeries() {
+  if (!state.photosData) return;
+  state.photosData.series.sort((a, b) => {
+    const oa = Number.isFinite(a.order) ? a.order : 999;
+    const ob = Number.isFinite(b.order) ? b.order : 999;
+    if (oa !== ob) return oa - ob;
+    return String(a.title || '').localeCompare(String(b.title || ''));
+  });
+}
+
+function renderPhotosTab() {
+  renderPhotosBentoPreview();
+  renderPhotosSeriesList();
+}
+
+function renderPhotosBentoPreview() {
+  const grid = document.getElementById('photos-bento-preview');
+  if (!grid) return;
+
+  const series = (state.photosData && state.photosData.series) || [];
+  if (series.length === 0) {
+    grid.innerHTML = '<p class="loading-msg">No series yet. Click + New Series to add one.</p>';
+    return;
+  }
+
+  grid.innerHTML = series.map(s => {
+    const colSpan = clampPhotoSpan(s.grid && s.grid.colSpan);
+    const rowSpan = clampPhotoSpan(s.grid && s.grid.rowSpan);
+    const thumb = s.thumbnail
+      || (s.images && s.images[0] && s.images[0].url)
+      || '';
+    const bg = thumb ? `style="background-image: url('${esc(thumb)}'); grid-column: span ${colSpan}; grid-row: span ${rowSpan};"`
+                     : `style="grid-column: span ${colSpan}; grid-row: span ${rowSpan};"`;
+    return `
+      <div class="ph-bento-tile" data-series-id="${esc(s.id)}" draggable="true" ${bg}>
+        <span class="ph-bento-tile-label">${esc(s.title || s.id)}</span>
+        <div class="ph-bento-tile-controls">
+          <span class="ph-span-ctrl" title="Column span">
+            <button type="button" data-span="col" data-delta="-1" data-id="${esc(s.id)}" ${colSpan<=1?'disabled':''}>&minus;</button>
+            <span class="ph-span-ctrl-label">${colSpan}w</span>
+            <button type="button" data-span="col" data-delta="1" data-id="${esc(s.id)}" ${colSpan>=PHOTOS_BENTO_MAX_SPAN?'disabled':''}>+</button>
+          </span>
+          <span class="ph-span-ctrl" title="Row span">
+            <button type="button" data-span="row" data-delta="-1" data-id="${esc(s.id)}" ${rowSpan<=1?'disabled':''}>&minus;</button>
+            <span class="ph-span-ctrl-label">${rowSpan}h</span>
+            <button type="button" data-span="row" data-delta="1" data-id="${esc(s.id)}" ${rowSpan>=PHOTOS_BENTO_MAX_SPAN?'disabled':''}>+</button>
+          </span>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Span buttons
+  grid.querySelectorAll('.ph-span-ctrl button').forEach(btn => {
+    btn.addEventListener('click', async e => {
+      e.preventDefault();
+      const id = btn.dataset.id;
+      const axis = btn.dataset.span;
+      const delta = parseInt(btn.dataset.delta, 10);
+      await adjustPhotoSpan(id, axis, delta);
+    });
+  });
+
+  // Drag-to-reorder
+  let dragId = null;
+  grid.querySelectorAll('.ph-bento-tile').forEach(tile => {
+    tile.addEventListener('dragstart', e => {
+      dragId = tile.dataset.seriesId;
+      tile.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      try { e.dataTransfer.setData('text/plain', dragId); } catch (_) { /* ignore */ }
+    });
+    tile.addEventListener('dragend', () => {
+      tile.classList.remove('dragging');
+      grid.querySelectorAll('.ph-bento-tile').forEach(t => t.classList.remove('drag-over'));
+      dragId = null;
+    });
+    tile.addEventListener('dragover', e => {
+      e.preventDefault();
+      if (tile.dataset.seriesId !== dragId) tile.classList.add('drag-over');
+    });
+    tile.addEventListener('dragleave', () => tile.classList.remove('drag-over'));
+    tile.addEventListener('drop', async e => {
+      e.preventDefault();
+      tile.classList.remove('drag-over');
+      const sourceId = dragId;
+      const targetId = tile.dataset.seriesId;
+      if (!sourceId || !targetId || sourceId === targetId) return;
+      await reorderPhotoSeries(sourceId, targetId);
+    });
+  });
+}
+
+async function adjustPhotoSpan(seriesId, axis, delta) {
+  const series = state.photosData.series.find(s => s.id === seriesId);
+  if (!series) return;
+  if (!series.grid) series.grid = { colSpan: 1, rowSpan: 1 };
+  const key = axis === 'col' ? 'colSpan' : 'rowSpan';
+  const next = clampPhotoSpan((series.grid[key] || 1) + delta);
+  if (next === series.grid[key]) return;
+  series.grid[key] = next;
+  renderPhotosBentoPreview();
+
+  try {
+    await apiCall('POST', '/photosdata', {
+      action: 'updateSeries',
+      seriesId,
+      title: series.title,
+      description: series.description,
+      thumbnail: series.thumbnail,
+      rawLink: series.rawLink,
+      rawLinkLabel: series.rawLinkLabel,
+      order: series.order,
+      grid: series.grid
+    });
+  } catch (e) {
+    toast(`Error saving span: ${e.message}`, 'error');
+    loadPhotosTab();
+  }
+}
+
+async function reorderPhotoSeries(sourceId, targetId) {
+  const list = state.photosData.series.slice();
+  const fromIdx = list.findIndex(s => s.id === sourceId);
+  const toIdx = list.findIndex(s => s.id === targetId);
+  if (fromIdx === -1 || toIdx === -1) return;
+  const [moved] = list.splice(fromIdx, 1);
+  list.splice(toIdx, 0, moved);
+  state.photosData.series = list;
+  list.forEach((s, i) => { s.order = i + 1; });
+  renderPhotosTab();
+
+  try {
+    await apiCall('POST', '/photosdata', {
+      action: 'reorderSeries',
+      order: list.map(s => s.id)
+    });
+  } catch (e) {
+    toast(`Error reordering: ${e.message}`, 'error');
+    loadPhotosTab();
+  }
+}
+
+function renderPhotosSeriesList() {
+  const container = document.getElementById('photos-series-list');
+  if (!container) return;
+
+  const series = (state.photosData && state.photosData.series) || [];
+  if (series.length === 0) {
+    container.innerHTML = '<p class="empty-msg">No series yet.</p>';
+    return;
+  }
+
+  container.innerHTML = series.map(s => {
+    const expanded = state.expandedSeriesIds.has(s.id);
+    const thumb = s.thumbnail
+      || (s.images && s.images[0] && s.images[0].url)
+      || 'https://beyondmebtw.com/assets/images/favicon.ico';
+    const count = (s.images || []).length;
+    const colSpan = clampPhotoSpan(s.grid && s.grid.colSpan);
+    const rowSpan = clampPhotoSpan(s.grid && s.grid.rowSpan);
+
+    const imagesHtml = (s.images || []).map(img => `
+      <div class="ph-image-tile" data-image-id="${esc(img.id)}">
+        <img src="${esc(img.url)}" alt="" onerror="this.src='https://beyondmebtw.com/assets/images/favicon.ico'">
+        <div class="ph-image-tile-meta">${esc(img.description || 'No description')}</div>
+        <div class="ph-image-tile-actions">
+          <button type="button" data-photos-action="edit-image" data-series-id="${esc(s.id)}" data-image-id="${esc(img.id)}">Edit</button>
+          <button type="button" class="danger" data-photos-action="delete-image" data-series-id="${esc(s.id)}" data-image-id="${esc(img.id)}">Delete</button>
+        </div>
+      </div>
+    `).join('');
+
+    return `
+      <div class="ph-series-card ${expanded ? 'expanded' : ''}" data-series-id="${esc(s.id)}">
+        <div class="ph-series-head">
+          <img class="ph-series-thumb" src="${esc(thumb)}" alt="" onerror="this.src='https://beyondmebtw.com/assets/images/favicon.ico'">
+          <div class="ph-series-meta">
+            <h3>${esc(s.title)}</h3>
+            <div class="ph-series-id">${esc(s.id)}</div>
+            <div class="ph-series-stats">${count} ${count === 1 ? 'image' : 'images'} &middot; ${colSpan}&times;${rowSpan} bento</div>
+          </div>
+          <div class="ph-series-actions">
+            <button type="button" class="btn-secondary" data-photos-action="toggle-series" data-series-id="${esc(s.id)}">${expanded ? 'Collapse' : 'Manage Images'}</button>
+            <button type="button" class="btn-secondary" data-photos-action="edit-series" data-series-id="${esc(s.id)}">Edit</button>
+            <button type="button" class="btn-danger" data-photos-action="delete-series" data-series-id="${esc(s.id)}">Delete</button>
+          </div>
+        </div>
+        <div class="ph-series-body">
+          ${s.description ? `<p style="color:var(--text-muted);font-size:13px;margin-bottom:10px;">${esc(s.description)}</p>` : ''}
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h4 style="font-size:13px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Images</h4>
+            <button type="button" class="btn-primary" data-photos-action="add-image" data-series-id="${esc(s.id)}">+ Add Image</button>
+          </div>
+          ${count === 0
+            ? '<p class="empty-msg" style="padding:20px 0;">No images yet.</p>'
+            : `<div class="ph-images-grid">${imagesHtml}</div>`}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  container.querySelectorAll('[data-photos-action]').forEach(btn => {
+    btn.addEventListener('click', handlePhotosListAction);
+  });
+}
+
+function handlePhotosListAction(e) {
+  const btn = e.currentTarget;
+  const action = btn.dataset.photosAction;
+  const seriesId = btn.dataset.seriesId;
+  const imageId = btn.dataset.imageId;
+
+  switch (action) {
+    case 'toggle-series':
+      if (state.expandedSeriesIds.has(seriesId)) state.expandedSeriesIds.delete(seriesId);
+      else state.expandedSeriesIds.add(seriesId);
+      renderPhotosSeriesList();
+      break;
+    case 'edit-series':
+      openPhotosSeriesModal(seriesId);
+      break;
+    case 'delete-series':
+      confirmDeleteSeries(seriesId);
+      break;
+    case 'add-image':
+      openPhotosImageModal(seriesId, null);
+      break;
+    case 'edit-image':
+      openPhotosImageModal(seriesId, imageId);
+      break;
+    case 'delete-image':
+      confirmDeleteImage(seriesId, imageId);
+      break;
+  }
+}
+
+function confirmDeleteSeries(seriesId) {
+  const series = state.photosData.series.find(s => s.id === seriesId);
+  if (!series) return;
+  confirm(`Delete series "${series.title}" and all its image references? This cannot be undone.`, async () => {
+    try {
+      await apiCall('POST', '/photosdata', { action: 'deleteSeries', seriesId });
+      toast('Series deleted');
+      loadPhotosTab();
+    } catch (e) {
+      toast(`Error: ${e.message}`, 'error');
+    }
+  });
+}
+
+function confirmDeleteImage(seriesId, imageId) {
+  confirm('Delete this image reference?', async () => {
+    try {
+      await apiCall('POST', '/photosdata', { action: 'deleteImage', seriesId, imageId });
+      toast('Image deleted');
+      loadPhotosTab();
+    } catch (e) {
+      toast(`Error: ${e.message}`, 'error');
+    }
+  });
+}
+
+// ── Series modal ──────────────────────────────────────────────────────────────
+function openPhotosSeriesModal(seriesId) {
+  const form = document.getElementById('photos-series-form');
+  if (!form) return;
+  form.reset();
+
+  const idInput = document.getElementById('ph-series-id');
+  const modeInput = document.getElementById('ph-series-edit-mode');
+  const editIdInput = document.getElementById('ph-series-edit-id');
+  const submitBtn = document.getElementById('ph-series-submit-btn');
+  const modalTitle = document.getElementById('photos-series-modal-title');
+  const thumbPick = document.getElementById('ph-series-thumb-pick');
+
+  if (seriesId) {
+    const s = state.photosData.series.find(x => x.id === seriesId);
+    if (!s) return;
+    modalTitle.textContent = 'Edit Series';
+    submitBtn.textContent = 'Save Series';
+    modeInput.value = 'edit';
+    editIdInput.value = s.id;
+    idInput.value = s.id;
+    idInput.disabled = true;
+    document.getElementById('ph-series-title').value = s.title || '';
+    document.getElementById('ph-series-description').value = s.description || '';
+    document.getElementById('ph-series-thumbnail').value = s.thumbnail || '';
+    document.getElementById('ph-series-order').value = s.order || '';
+    document.getElementById('ph-series-rawlink').value = s.rawLink || '';
+    document.getElementById('ph-series-rawlabel').value = s.rawLinkLabel || '';
+    document.getElementById('ph-series-colspan').value = clampPhotoSpan(s.grid && s.grid.colSpan);
+    document.getElementById('ph-series-rowspan').value = clampPhotoSpan(s.grid && s.grid.rowSpan);
+
+    // Populate thumb picker with existing image urls
+    const options = ['<option value="">— Pick from images / paste below —</option>']
+      .concat((s.images || []).map(img => `<option value="${esc(img.url)}">${esc(img.description || img.id || img.url)}</option>`));
+    thumbPick.innerHTML = options.join('');
+  } else {
+    modalTitle.textContent = 'New Series';
+    submitBtn.textContent = 'Create Series';
+    modeInput.value = 'create';
+    editIdInput.value = '';
+    idInput.disabled = false;
+    document.getElementById('ph-series-colspan').value = 1;
+    document.getElementById('ph-series-rowspan').value = 1;
+    thumbPick.innerHTML = '<option value="">— No images yet, paste URL below —</option>';
+  }
+
+  openModal('photos-series-modal');
+}
+
+function initPhotosSeriesModal() {
+  const form = document.getElementById('photos-series-form');
+  const newBtn = document.getElementById('new-photos-series-btn');
+  const thumbPick = document.getElementById('ph-series-thumb-pick');
+
+  if (newBtn) newBtn.addEventListener('click', () => openPhotosSeriesModal(null));
+
+  if (thumbPick) {
+    thumbPick.addEventListener('change', () => {
+      if (thumbPick.value) {
+        document.getElementById('ph-series-thumbnail').value = thumbPick.value;
+      }
+    });
+  }
+
+  if (!form) return;
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const mode = document.getElementById('ph-series-edit-mode').value;
+    const id = document.getElementById('ph-series-id').value.trim();
+    const title = document.getElementById('ph-series-title').value.trim();
+
+    if (!id || !title) { toast('ID and title are required', 'warning'); return; }
+
+    const payload = {
+      id,
+      seriesId: id,
+      title,
+      description: document.getElementById('ph-series-description').value.trim(),
+      thumbnail: document.getElementById('ph-series-thumbnail').value.trim(),
+      rawLink: document.getElementById('ph-series-rawlink').value.trim(),
+      rawLinkLabel: document.getElementById('ph-series-rawlabel').value.trim(),
+      order: parseInt(document.getElementById('ph-series-order').value, 10) || undefined,
+      grid: {
+        colSpan: clampPhotoSpan(document.getElementById('ph-series-colspan').value),
+        rowSpan: clampPhotoSpan(document.getElementById('ph-series-rowspan').value)
+      }
+    };
+
+    const submitBtn = document.getElementById('ph-series-submit-btn');
+    submitBtn.disabled = true;
+    try {
+      if (mode === 'edit') {
+        await apiCall('POST', '/photosdata', { action: 'updateSeries', ...payload });
+        toast('Series updated');
+      } else {
+        await apiCall('POST', '/photosdata', { action: 'createSeries', ...payload });
+        toast('Series created');
+      }
+      closeModal('photos-series-modal');
+      loadPhotosTab();
+    } catch (err) {
+      toast(`Error: ${err.message}`, 'error');
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+}
+
+// ── Image modal ───────────────────────────────────────────────────────────────
+function openPhotosImageModal(seriesId, imageId) {
+  const form = document.getElementById('photos-image-form');
+  if (!form) return;
+  form.reset();
+
+  document.getElementById('ph-image-series-id').value = seriesId;
+  const modeInput = document.getElementById('ph-image-edit-mode');
+  const editIdInput = document.getElementById('ph-image-edit-id');
+  const submitBtn = document.getElementById('ph-image-submit-btn');
+  const modalTitle = document.getElementById('photos-image-modal-title');
+
+  if (imageId) {
+    const series = state.photosData.series.find(s => s.id === seriesId);
+    const img = series && (series.images || []).find(i => i.id === imageId);
+    if (!img) return;
+    modalTitle.textContent = 'Edit Image';
+    submitBtn.textContent = 'Save Image';
+    modeInput.value = 'edit';
+    editIdInput.value = img.id;
+    document.getElementById('ph-image-url').value = img.url || '';
+    document.getElementById('ph-image-description').value = img.description || '';
+    document.getElementById('ph-image-alt').value = img.alt || '';
+  } else {
+    modalTitle.textContent = 'Add Image';
+    submitBtn.textContent = 'Add Image';
+    modeInput.value = 'create';
+    editIdInput.value = '';
+  }
+
+  openModal('photos-image-modal');
+}
+
+function initPhotosImageModal() {
+  const form = document.getElementById('photos-image-form');
+  if (!form) return;
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const mode = document.getElementById('ph-image-edit-mode').value;
+    const seriesId = document.getElementById('ph-image-series-id').value;
+    const imageId = document.getElementById('ph-image-edit-id').value;
+    const url = document.getElementById('ph-image-url').value.trim();
+    const description = document.getElementById('ph-image-description').value.trim();
+    const alt = document.getElementById('ph-image-alt').value.trim();
+
+    if (!url) { toast('Image URL is required', 'warning'); return; }
+
+    const submitBtn = document.getElementById('ph-image-submit-btn');
+    submitBtn.disabled = true;
+    try {
+      if (mode === 'edit') {
+        await apiCall('POST', '/photosdata', {
+          action: 'updateImage', seriesId, imageId,
+          image: { id: imageId, url, description, alt }
+        });
+        toast('Image updated');
+      } else {
+        await apiCall('POST', '/photosdata', {
+          action: 'addImage', seriesId,
+          image: { url, description, alt }
+        });
+        toast('Image added');
+      }
+      closeModal('photos-image-modal');
+      loadPhotosTab();
+    } catch (err) {
+      toast(`Error: ${err.message}`, 'error');
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -1614,6 +2095,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initSubcatModal();
   initCategoryDeleteModal();
   initProjectForm();
+  initPhotosSeriesModal();
+  initPhotosImageModal();
   buildSecondaryCategoryChips();
 
   // Load homepage tab by default

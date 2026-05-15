@@ -56,6 +56,10 @@
         <span class="nav-icon">&#9776;</span>
         <span class="nav-label">Projects</span>
       </button>
+      <button class="nav-tab" data-tab="photos">
+        <span class="nav-icon">&#128247;</span>
+        <span class="nav-label">Photos</span>
+      </button>
       <button id="logout-btn" class="logout-btn">Logout</button>
     </nav>
   </aside>
@@ -192,6 +196,38 @@
 
       <div id="projects-list" class="projects-list">
         <div class="loading-msg">Loading projects...</div>
+      </div>
+    </section>
+
+    <!-- ═══════════ PHOTOS TAB ═══════════ -->
+    <section id="tab-photos" class="tab-panel">
+      <div class="panel-header">
+        <h1>Photos</h1>
+        <div class="panel-actions">
+          <button id="new-photos-series-btn" class="btn-primary">+ New Series</button>
+        </div>
+      </div>
+
+      <!-- Live bento preview -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Bento Preview</h2>
+          <span class="card-hint">Live 4-column grid — adjust spans with the +/&minus; controls. Drag to reorder.</span>
+        </div>
+        <div id="photos-bento-preview" class="photos-bento-preview">
+          <p class="loading-msg">Loading series...</p>
+        </div>
+      </div>
+
+      <!-- Series list (cards with images sub-editor) -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Series</h2>
+          <span class="card-hint">Edit metadata, manage images per series.</span>
+        </div>
+        <div id="photos-series-list" class="photos-series-list">
+          <div class="loading-msg">Loading series...</div>
+        </div>
       </div>
     </section>
 
@@ -480,6 +516,111 @@
     <div class="modal-footer">
       <button type="button" class="btn-ghost" id="latest-confirm-cancel">Cancel</button>
     </div>
+  </div>
+</div>
+
+<!-- ═══════════ PHOTOS SERIES MODAL ═══════════ -->
+<div id="photos-series-modal" class="modal-overlay" style="display:none">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2 id="photos-series-modal-title">New Series</h2>
+      <button class="modal-close" data-modal="photos-series-modal">&times;</button>
+    </div>
+    <form id="photos-series-form" class="modal-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Series ID <span class="req">*</span></label>
+          <input type="text" id="ph-series-id" placeholder="e.g., moon" autocomplete="off">
+          <span class="hint">Lowercase letters, digits, dash, underscore. Used in the URL.</span>
+        </div>
+        <div class="form-group">
+          <label>Title <span class="req">*</span></label>
+          <input type="text" id="ph-series-title" placeholder="e.g., Moon Series">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="ph-series-description" rows="4" placeholder="Long-form description shown on the series page..."></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Thumbnail URL</label>
+          <div class="ph-thumb-picker">
+            <select id="ph-series-thumb-pick">
+              <option value="">— Pick from images / paste below —</option>
+            </select>
+            <input type="text" id="ph-series-thumbnail" placeholder="https://content.beyondmebtw.com/photos/...">
+          </div>
+          <span class="hint">Pick one of the series images or paste any URL.</span>
+        </div>
+        <div class="form-group">
+          <label>Order</label>
+          <input type="number" id="ph-series-order" min="1" placeholder="1">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Raw / non-watermarked images link (optional)</label>
+          <input type="text" id="ph-series-rawlink" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label>Raw link button label (optional)</label>
+          <input type="text" id="ph-series-rawlabel" placeholder="View raw / non-watermarked images">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Bento column span (1&ndash;4)</label>
+          <input type="number" id="ph-series-colspan" min="1" max="4" value="1">
+        </div>
+        <div class="form-group">
+          <label>Bento row span (1&ndash;4)</label>
+          <input type="number" id="ph-series-rowspan" min="1" max="4" value="1">
+        </div>
+      </div>
+
+      <input type="hidden" id="ph-series-edit-mode" value="create">
+      <input type="hidden" id="ph-series-edit-id" value="">
+      <div class="modal-footer">
+        <button type="button" class="btn-ghost" data-modal="photos-series-modal">Cancel</button>
+        <button type="submit" class="btn-primary" id="ph-series-submit-btn">Create Series</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ═══════════ PHOTOS IMAGE MODAL ═══════════ -->
+<div id="photos-image-modal" class="modal-overlay" style="display:none">
+  <div class="modal-box modal-small">
+    <div class="modal-header">
+      <h2 id="photos-image-modal-title">Add Image</h2>
+      <button class="modal-close" data-modal="photos-image-modal">&times;</button>
+    </div>
+    <form id="photos-image-form" class="modal-form">
+      <div class="form-group">
+        <label>Image URL <span class="req">*</span></label>
+        <input type="text" id="ph-image-url" placeholder="https://content.beyondmebtw.com/photos/...">
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="ph-image-description" rows="4" placeholder="Caption shown next to the expanded image..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Alt text</label>
+        <input type="text" id="ph-image-alt" placeholder="Short alt text for accessibility">
+      </div>
+      <input type="hidden" id="ph-image-series-id" value="">
+      <input type="hidden" id="ph-image-edit-id" value="">
+      <input type="hidden" id="ph-image-edit-mode" value="create">
+      <div class="modal-footer">
+        <button type="button" class="btn-ghost" data-modal="photos-image-modal">Cancel</button>
+        <button type="submit" class="btn-primary" id="ph-image-submit-btn">Add Image</button>
+      </div>
+    </form>
   </div>
 </div>
 
