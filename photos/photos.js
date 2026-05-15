@@ -78,6 +78,7 @@
                         data-row-span="${rowSpan}"
                         style="grid-column: span ${colSpan}; grid-row: span ${rowSpan};"
                         aria-label="Open series ${esc(series.title)}">
+                    <div class="bento-card-bg" style="background-image: url('${esc(thumb)}');"></div>
                     <img class="bento-card-img" src="${esc(thumb)}" alt="${esc(series.title)}" loading="lazy"
                          onerror="this.src='${FALLBACK_THUMB}'">
                     <div class="bento-card-overlay"></div>
@@ -115,7 +116,15 @@
         state.currentSeries = series;
 
         $('series-title').textContent = series.title || '';
-        $('series-description').textContent = series.description || '';
+        const descEl = $('series-description');
+        const descText = (series.description || '').trim();
+        if (descText) {
+            descEl.textContent = descText;
+            descEl.hidden = false;
+        } else {
+            descEl.textContent = '';
+            descEl.hidden = true;
+        }
 
         const rawLink = $('series-raw-link');
         if (series.rawLink && String(series.rawLink).trim()) {
@@ -193,7 +202,13 @@
 
         $('lightbox-img').src = img.url;
         $('lightbox-img').alt = img.alt || img.description || '';
-        $('lightbox-desc').textContent = img.description || '';
+
+        const descText = (img.description || '').trim();
+        $('lightbox-desc').textContent = descText;
+
+        // Center the image when there is no description (single-column layout).
+        const content = document.querySelector('.lightbox-content');
+        if (content) content.classList.toggle('no-desc', !descText);
 
         const lb = $('lightbox');
         lb.hidden = false;

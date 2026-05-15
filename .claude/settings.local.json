@@ -32,7 +32,8 @@
       "Bash(git log *)",
       "Bash(node --check c:/Users/pranav/Downloads/Beyondmebtw/manage/manageserver.js)",
       "Bash(node --check c:/Users/pranav/Downloads/Beyondmebtw/manage/index.js c:/Users/pranav/Downloads/Beyondmebtw/photos/photos.js)",
-      "Bash(node --check c:/Users/pranav/Downloads/Beyondmebtw/manage/manageserver.js c:/Users/pranav/Downloads/Beyondmebtw/manage/index.js c:/Users/pranav/Downloads/Beyondmebtw/photos/photos.js)"
+      "Bash(node --check c:/Users/pranav/Downloads/Beyondmebtw/manage/manageserver.js c:/Users/pranav/Downloads/Beyondmebtw/manage/index.js c:/Users/pranav/Downloads/Beyondmebtw/photos/photos.js)",
+      "Bash(node --check c:/Users/pranav/Downloads/Beyondmebtw/manage/index.js c:/Users/pranav/Downloads/Beyondmebtw/photos/photos.js c:/Users/pranav/Downloads/Beyondmebtw/manage/manageserver.js)"
     ]
   }
 }

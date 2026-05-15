@@ -24,7 +24,9 @@ let state = {
   latestConfirmCallback: null,
   catDeleteTarget: null,     // key of category being deleted
   subcatEditTarget: null,    // { key, from } when renaming
-  photosData: null,          // from photos.json
+  photosData: null,          // working draft of photos.json (may include unsaved layout edits)
+  photosDataClean: null,     // last-saved snapshot (used to compute dirty state / discard)
+  photosLayoutDirty: false,  // true when local layout differs from photosDataClean
   expandedSeriesIds: new Set() // which series cards are expanded in the list
 };
 
@@ -1604,13 +1606,64 @@ async function loadPhotosTab() {
     const data = await res.json();
     state.photosData = (data && Array.isArray(data.series)) ? data : { series: [] };
     sortPhotosSeries();
+    state.photosDataClean = JSON.parse(JSON.stringify(state.photosData));
+    state.photosLayoutDirty = false;
     renderPhotosTab();
+    updatePhotosLayoutButtons();
   } catch (e) {
     console.error('Photos load error:', e);
     state.photosData = { series: [] };
+    state.photosDataClean = { series: [] };
+    state.photosLayoutDirty = false;
     toast(`Failed to load photos: ${e.message}`, 'error');
     renderPhotosTab();
+    updatePhotosLayoutButtons();
   }
+}
+
+function markPhotosLayoutDirty() {
+  state.photosLayoutDirty = true;
+  updatePhotosLayoutButtons();
+}
+
+function updatePhotosLayoutButtons() {
+  const saveBtn = document.getElementById('save-bento-btn');
+  const discardBtn = document.getElementById('discard-bento-btn');
+  const flag = document.getElementById('bento-dirty-flag');
+  const dirty = !!state.photosLayoutDirty;
+  if (saveBtn) saveBtn.disabled = !dirty;
+  if (discardBtn) discardBtn.disabled = !dirty;
+  if (flag) flag.hidden = !dirty;
+}
+
+async function savePhotosLayout() {
+  if (!state.photosLayoutDirty || !state.photosData) return;
+  const saveBtn = document.getElementById('save-bento-btn');
+  if (saveBtn) saveBtn.disabled = true;
+
+  const layout = state.photosData.series.map(s => ({
+    seriesId: s.id,
+    colSpan: clampPhotoSpan(s.grid && s.grid.colSpan),
+    rowSpan: clampPhotoSpan(s.grid && s.grid.rowSpan)
+  }));
+
+  try {
+    await apiCall('POST', '/photosdata', { action: 'updateLayout', layout });
+    toast('Layout saved');
+    await loadPhotosTab();
+  } catch (e) {
+    toast(`Error saving layout: ${e.message}`, 'error');
+    updatePhotosLayoutButtons();
+  }
+}
+
+function discardPhotosLayout() {
+  if (!state.photosDataClean) return;
+  state.photosData = JSON.parse(JSON.stringify(state.photosDataClean));
+  state.photosLayoutDirty = false;
+  renderPhotosTab();
+  updatePhotosLayoutButtons();
+  toast('Layout changes discarded', 'warning');
 }
 
 function sortPhotosSeries() {
@@ -1626,6 +1679,14 @@ function sortPhotosSeries() {
 function renderPhotosTab() {
   renderPhotosBentoPreview();
   renderPhotosSeriesList();
+  updatePhotosLayoutButtons();
+}
+
+function initPhotosLayoutControls() {
+  const saveBtn = document.getElementById('save-bento-btn');
+  const discardBtn = document.getElementById('discard-bento-btn');
+  if (saveBtn) saveBtn.addEventListener('click', savePhotosLayout);
+  if (discardBtn) discardBtn.addEventListener('click', discardPhotosLayout);
 }
 
 function renderPhotosBentoPreview() {
@@ -1706,7 +1767,7 @@ function renderPhotosBentoPreview() {
   });
 }
 
-async function adjustPhotoSpan(seriesId, axis, delta) {
+function adjustPhotoSpan(seriesId, axis, delta) {
   const series = state.photosData.series.find(s => s.id === seriesId);
   if (!series) return;
   if (!series.grid) series.grid = { colSpan: 1, rowSpan: 1 };
@@ -1714,46 +1775,21 @@ async function adjustPhotoSpan(seriesId, axis, delta) {
   const next = clampPhotoSpan((series.grid[key] || 1) + delta);
   if (next === series.grid[key]) return;
   series.grid[key] = next;
+  markPhotosLayoutDirty();
   renderPhotosBentoPreview();
-
-  try {
-    await apiCall('POST', '/photosdata', {
-      action: 'updateSeries',
-      seriesId,
-      title: series.title,
-      description: series.description,
-      thumbnail: series.thumbnail,
-      rawLink: series.rawLink,
-      rawLinkLabel: series.rawLinkLabel,
-      order: series.order,
-      grid: series.grid
-    });
-  } catch (e) {
-    toast(`Error saving span: ${e.message}`, 'error');
-    loadPhotosTab();
-  }
 }
 
-async function reorderPhotoSeries(sourceId, targetId) {
+function reorderPhotoSeries(sourceId, targetId) {
   const list = state.photosData.series.slice();
   const fromIdx = list.findIndex(s => s.id === sourceId);
   const toIdx = list.findIndex(s => s.id === targetId);
-  if (fromIdx === -1 || toIdx === -1) return;
+  if (fromIdx === -1 || toIdx === -1 || fromIdx === toIdx) return;
   const [moved] = list.splice(fromIdx, 1);
   list.splice(toIdx, 0, moved);
   state.photosData.series = list;
   list.forEach((s, i) => { s.order = i + 1; });
+  markPhotosLayoutDirty();
   renderPhotosTab();
-
-  try {
-    await apiCall('POST', '/photosdata', {
-      action: 'reorderSeries',
-      order: list.map(s => s.id)
-    });
-  } catch (e) {
-    toast(`Error reordering: ${e.message}`, 'error');
-    loadPhotosTab();
-  }
 }
 
 function renderPhotosSeriesList() {
@@ -2097,6 +2133,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initProjectForm();
   initPhotosSeriesModal();
   initPhotosImageModal();
+  initPhotosLayoutControls();
   buildSecondaryCategoryChips();
 
   // Load homepage tab by default

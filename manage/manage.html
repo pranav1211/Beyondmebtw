@@ -210,9 +210,16 @@
 
       <!-- Live bento preview -->
       <div class="card">
-        <div class="card-header">
-          <h2>Bento Preview</h2>
-          <span class="card-hint">Live 4-column grid — adjust spans with the +/&minus; controls. Drag to reorder.</span>
+        <div class="card-header bento-card-header">
+          <div>
+            <h2>Bento Preview</h2>
+            <span class="card-hint">Adjust spans with +/&minus;. Drag to reorder. Click Save Layout to commit.</span>
+          </div>
+          <div class="bento-layout-actions">
+            <span id="bento-dirty-flag" class="bento-dirty-flag" hidden>Unsaved changes</span>
+            <button type="button" id="discard-bento-btn" class="btn-ghost" disabled>Discard</button>
+            <button type="button" id="save-bento-btn" class="btn-primary" disabled>Save Layout</button>
+          </div>
         </div>
         <div id="photos-bento-preview" class="photos-bento-preview">
           <p class="loading-msg">Loading series...</p>

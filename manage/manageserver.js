@@ -493,6 +493,33 @@ function handlePhotosDeleteSeries(body, response) {
   });
 }
 
+function handlePhotosUpdateLayout(body, response) {
+  const data = readPhotosJSON();
+  const layout = Array.isArray(body.layout) ? body.layout : null;
+  if (!layout) return sendError(response, "Missing layout array");
+
+  layout.forEach((item, position) => {
+    if (!item || typeof item !== 'object') return;
+    const seriesId = sanitizePhotosId(item.seriesId);
+    const sIdx = findSeriesIndex(data, seriesId);
+    if (sIdx === -1) return;
+    const series = data.series[sIdx];
+    if (!series.grid) series.grid = { colSpan: 1, rowSpan: 1 };
+    if (item.colSpan !== undefined) series.grid.colSpan = clampSpan(item.colSpan);
+    if (item.rowSpan !== undefined) series.grid.rowSpan = clampSpan(item.rowSpan);
+    // Always assign order from position so the array order matches the saved order.
+    series.order = position + 1;
+  });
+  data.series.sort((a, b) => (a.order || 999) - (b.order || 999));
+
+  writePhotosJSON(data, err => {
+    if (err) return sendError(response, "Error writing photos.json", 500);
+    runScriptIgnoreError(() => {
+      sendJSON(response, { success: true, message: "Layout saved", series: data.series });
+    });
+  });
+}
+
 function handlePhotosReorder(body, response) {
   const data = readPhotosJSON();
   const order = Array.isArray(body.order) ? body.order : null;
@@ -1248,6 +1275,7 @@ const server = http.createServer((request, response) => {
           case 'updateSeries': return handlePhotosUpdateSeries(body, response);
           case 'deleteSeries': return handlePhotosDeleteSeries(body, response);
           case 'reorderSeries': return handlePhotosReorder(body, response);
+          case 'updateLayout': return handlePhotosUpdateLayout(body, response);
           case 'addImage':     return handlePhotosAddImage(body, response);
           case 'updateImage':  return handlePhotosUpdateImage(body, response);
           case 'deleteImage':  return handlePhotosDeleteImage(body, response);
