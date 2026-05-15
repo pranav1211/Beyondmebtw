@@ -12,7 +12,14 @@
         "rowSpan": 2
       },
       "order": 1,
-      "images": []
+      "images": [
+        {
+          "id": "blackkite_1",
+          "url": "https://content.beyondmebtw.com/assets/photos/bks/k1.png",
+          "description": "",
+          "alt": ""
+        }
+      ]
     },
     {
       "id": "moon",
