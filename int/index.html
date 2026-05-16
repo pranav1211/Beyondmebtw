@@ -3,12 +3,12 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>EPM docs</title>
+    <title>EPM Docs</title>
+
     <style>
-        /* Reset margins to prevent scrollbars */
         body {
             margin: 0;
-            font-family: sans-serif; /* Added a slightly nicer default font */
+            font-family: Arial, sans-serif;
         }
 
         #con {
@@ -22,98 +22,75 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
+            gap: 10px;
+            max-width: 700px;
         }
 
         button {
-            width: 80px;
+            width: 120px;
             height: 80px;
             cursor: pointer;
-            margin: 5px;
             font-size: 14px;
-            border: none;           /* Removes the default ugly 3D border */
-            border-radius: 8px;     /* Optional: Rounds the corners slightly */
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Optional: Adds a slight shadow */
+            border: none;
+            border-radius: 8px;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        /* Fixed IDs: Changed from #1 to #btn1, etc. */
-        #btn1 {
-            background-color: #4CAF50; /* Green */
-            color: white;
-        }
-
-        #btn2 {
-            background-color: blue; 
-            color: white;
-        }
-
-        #btn3 {
-            background-color: black; 
-            color: white;
-        }
-
-        #btn4 {
-            background-color: purple; 
-            color: white;
-        }
-        #btn5 {
-            background-color: orange; 
-            color: white;
-        }
-        #btn6 {
-            background-color: yellow; 
-            color: black;
-        }
-        #btn7 {
-            background-color: indianred; 
-            color: white;
-        }
+        #btn1 { background: #4CAF50; }
+        #btn2 { background: blue; }
+        #btn3 { background: black; }
+        #btn4 { background: purple; }
+        #btn5 { background: orange; }
+        #btn6 { background: goldenrod; color: black; }
+        #btn7 { background: indianred; }
     </style>
 </head>
 
 <body>
+
     <div id="con">
         <div id="box">
+
             <a href="https://docs.google.com/document/d/1UYrlo8Z1hZ_U4zxS-3O-7KfJEWvBO3sNq7eUhJtWIw8/edit?usp=sharing" target="_blank">
-                <button id="btn1" type="button">Report google docs</button>
+                <button id="btn1">Report Docs</button>
             </a>
 
             <a href="/int/report.pdf" target="_blank">
-                <button id="btn2" type="button">Report pdf</button>
+                <button id="btn2">Report PDF</button>
             </a>
 
             <a href="https://docs.google.com/presentation/d/1Ny50uudGI3ImPWiFXIP8IBNNMq5nJVUgtgGSURnIMPY/edit?usp=sharing" target="_blank">
-                <button id="btn3" type="button">Presentation 1</button>
+                <button id="btn3">Presentation 1</button>
             </a>
 
-            <a href="https://docs.google.com/presentation/d/15YVrb8WkIKxj60tFie2Bnyto52GI8tK8/edit?usp=sharing&ouid=106843111959126951447&rtpof=true&sd=true"
-                target="_blank">
-                <button id="btn4" type="button">Presentation2</button>
-            </abackground-color: purple; 
-color: white;
-<a href="https://docs.google.com/presentation/d/1Ny50uudGI3ImPWiFXIP8IBNNMq5nJVUgtgGSURnIMPY/edit?usp=sharing" target="_blank">
-                <button id="btn3" type="button">review 1</button>
-                <button id="btn3" type="button">Presentation 1</button>
-</a>
+            <a href="https://docs.google.com/presentation/d/15YVrb8WkIKxj60tFie2Bnyto52GI8tK8/edit?usp=sharing&ouid=106843111959126951447&rtpof=true&sd=true" target="_blank">
+                <button id="btn4">Presentation 2</button>
+            </a>
 
-<a href="https://docs.google.com/presentation/d/15YVrb8WkIKxj60tFie2Bnyto52GI8tK8/edit?usp=sharing&ouid=106843111959126951447&rtpof=true&sd=true"
-target="_blank">
-                <button id="btn4" type="button">review 2</button>
+            <a href="https://docs.google.com/presentation/d/1Ny50uudGI3ImPWiFXIP8IBNNMq5nJVUgtgGSURnIMPY/edit?usp=sharing" target="_blank">
+                <button id="btn3">Review 1</button>
             </a>
-            <a href="https://insight.protektor4.com"
-                target="_blank">
-                <button id="btn5" type="button">Insight</button>
+
+            <a href="https://docs.google.com/presentation/d/15YVrb8WkIKxj60tFie2Bnyto52GI8tK8/edit?usp=sharing&ouid=106843111959126951447&rtpof=true&sd=true" target="_blank">
+                <button id="btn4">Review 2</button>
             </a>
-            <a href="https://v2.aidelve.com"
-                target="_blank">
-                <button id="btn6" type="button">AIDELVE</button>
+
+            <a href="https://insight.protektor4.com" target="_blank">
+                <button id="btn5">Insight</button>
             </a>
-            <a href="https://detect.protektor4.com"
-                target="_blank">
-                <button id="btn7" type="button">Detect</button>
-                <button id="btn4" type="button">Presentation2</button>
-</a>
+
+            <a href="https://v2.aidelve.com" target="_blank">
+                <button id="btn6">AIDELVE</button>
+            </a>
+
+            <a href="https://detect.protektor4.com" target="_blank">
+                <button id="btn7">Detect</button>
+            </a>
+
         </div>
     </div>
+
 </body>
 
 </html>
