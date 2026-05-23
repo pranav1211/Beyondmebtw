@@ -39,6 +39,18 @@
     padding: 16px 18px;
 }
 
+.featured-mini:nth-child(3n + 1) .featured-mini-hero {
+    background: linear-gradient(135deg, #9c8a6e 0%, #6a5a4a 55%, #3f3528 100%);
+}
+
+.featured-mini:nth-child(3n + 2) .featured-mini-hero {
+    background: linear-gradient(135deg, #7d8a66 0%, #5d6a4a 55%, #38432f 100%);
+}
+
+.featured-mini:nth-child(3n + 3) .featured-mini-hero {
+    background: linear-gradient(135deg, #8a6a76 0%, #6a4a55 55%, #432f3a 100%);
+}
+
 .featured-mini-hero-title {
     font-family: "Kreon", serif;
     font-size: 22px;
