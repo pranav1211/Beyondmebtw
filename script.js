@@ -120,13 +120,32 @@ function truncateExcerpt(text, limit = 200) {
     return cut.replace(/[.,;:!?\-—\s]+$/, '') + '…';
 }
 
+function buildMiniHero(dateStr) {
+    if (!dateStr) {
+        return `<div class="featured-mini-hero featured-mini-hero-empty"><div class="featured-mini-hero-meta">Minis</div></div>`;
+    }
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) {
+        return `<div class="featured-mini-hero"><div class="featured-mini-hero-meta">${dateStr}</div></div>`;
+    }
+    const day = d.getDate();
+    const month = d.toLocaleString('en-US', { month: 'short' }).toUpperCase();
+    const year = d.getFullYear();
+    return `
+        <div class="featured-mini-hero">
+            <div class="featured-mini-hero-day">${day}<span class="featured-mini-hero-day-suffix">${ordinalSuffix(day)}</span></div>
+            <div class="featured-mini-hero-meta">${month} &middot; ${year}</div>
+        </div>
+    `;
+}
+
 function createFeaturedMini(mini) {
     const el = document.createElement('div');
     el.className = 'featured-mini';
     el.innerHTML = `
+        ${buildMiniHero(mini.date)}
         <div class="featured-mini-details">
             <h3 class="featured-mini-title">${mini.title || ''}</h3>
-            <p class="featured-mini-date">${formatMiniDate(mini.date)}</p>
             <p class="featured-mini-excerpt">${truncateExcerpt(mini.featuredExcerpt, 200)}</p>
         </div>
         <button class="featured-mini-read-more">Read More</button>
