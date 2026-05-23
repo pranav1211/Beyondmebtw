@@ -71,10 +71,11 @@ loadProjectsData()
       data: {
         projects: projectsData.map(project => {
           const images = normalizeProjectImages(project.images);
+          const explicitCover = typeof project.coverImage === 'string' ? project.coverImage.trim() : '';
           return {
             ...project,
             images,
-            coverImage: images[0]?.url || project.logo || ''
+            coverImage: explicitCover || images[0]?.url || project.logo || ''
           };
         }),
         projectMap: {},

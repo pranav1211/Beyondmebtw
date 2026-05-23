@@ -30,6 +30,11 @@ The Current Home Page
 
 ## Changelog:
 
+## 5.2 (23/05/2026)
+- made upgrades to projects management regards to thumbnails and preferrential ordering
+- added information for the 2 new projects
+- a new section on the home page dedicated to Minis. 3 featured.
+
 ## 5.1 (16/05/2026)
 - launched photos by beyondmebtw
 - on the backend need to normailze and manage the node server files and nginx server files cross the domains.

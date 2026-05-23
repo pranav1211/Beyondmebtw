@@ -36,7 +36,12 @@
       "Bash(node --check c:/Users/pranav/Downloads/Beyondmebtw/manage/index.js c:/Users/pranav/Downloads/Beyondmebtw/photos/photos.js c:/Users/pranav/Downloads/Beyondmebtw/manage/manageserver.js)",
       "Bash(ls \"C:/Users/pranav/Documents/BMB/Minis/frontend\" 2>&1 | head -20)",
       "Read(//c/Users/pranav/Documents/BMB/Minis/frontend/**)",
-      "Bash(node --check c:/Users/pranav/Downloads/Beyondmebtw/photos/photos.js)"
+      "Bash(node --check c:/Users/pranav/Downloads/Beyondmebtw/photos/photos.js)",
+      "Bash(node -e \"const fs=require\\('fs'\\);const p='c:/Users/pranav/Downloads/Beyondmebtw/projects/project-data.json';const d=JSON.parse\\(fs.readFileSync\\(p,'utf8'\\)\\);let changed=0;d.forEach\\(proj=>{if\\(proj.coverImage\\)return;let url='';if\\(Array.isArray\\(proj.images\\)&&proj.images.length\\){const first=proj.images[0];url=typeof first==='string'?first:\\(first&&first.url\\)||'';}if\\(url\\){proj.coverImage=url;changed++;}}\\);fs.writeFileSync\\(p,JSON.stringify\\(d,null,2\\)+'\\\\n'\\);console.log\\('Updated',changed,'projects'\\);\")",
+      "Bash(node --check \"c:/Users/pranav/Downloads/Beyondmebtw/manage/index.js\")",
+      "Bash(node --check \"c:/Users/pranav/Downloads/Beyondmebtw/manage/manageserver.js\")",
+      "Bash(node --check \"c:/Users/pranav/Downloads/Beyondmebtw/projects/projects.js\")",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('c:/Users/pranav/Downloads/Beyondmebtw/projects/project-data.json','utf8'\\)\\);console.log\\('JSON ok'\\)\")"
     ]
   }
 }

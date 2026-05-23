@@ -25,7 +25,8 @@
       "Nginx",
       "Ubuntu",
       "Vue.js"
-    ]
+    ],
+    "coverImage": "https://content.beyondmebtw.com/assets/projects/bmb/bmb.webp"
   },
   {
     "id": 2,
@@ -53,7 +54,8 @@
       "Next.js",
       "Tailwind CSS",
       "Vercel"
-    ]
+    ],
+    "coverImage": "https://content.beyondmebtw.com/assets/projects/gradient/Gradient.webp"
   },
   {
     "id": 3,
@@ -77,7 +79,8 @@
       "Nginx",
       "Ubuntu",
       "Markdown/JSON"
-    ]
+    ],
+    "coverImage": "https://content.beyondmebtw.com/thumbnails/experience/exp30.webp"
   },
   {
     "id": 4,
@@ -100,7 +103,8 @@
       "Machine Learning",
       "Lidar",
       "Depth Cameras"
-    ]
+    ],
+    "coverImage": "https://content.beyondmebtw.com/assets/projects/lumex/lumex.webp"
   },
   {
     "id": 5,
@@ -118,7 +122,8 @@
       "Python",
       "Computer Vision",
       "Machine Learning"
-    ]
+    ],
+    "coverImage": "https://content.beyondmebtw.com/assets/projects/rtdms.webp"
   },
   {
     "id": 6,
@@ -137,7 +142,8 @@
       "Node.js",
       "Database",
       "Vue.js"
-    ]
+    ],
+    "coverImage": "https://content.beyondmebtw.com/assets/projects/my-library/mylib.webp"
   },
   {
     "id": 7,
@@ -155,7 +161,8 @@
       "Python",
       "HTML",
       "CSS"
-    ]
+    ],
+    "coverImage": "https://content.beyondmebtw.com/assets/projects/pair.webp"
   },
   {
     "id": 8,
@@ -176,7 +183,8 @@
       "HTML",
       "CSS",
       "Vercel"
-    ]
+    ],
+    "coverImage": "https://gradient-content-server.vercel.app/content/utsav25/gallery/unc/ulvfs.png"
   },
   {
     "id": 9,
@@ -195,7 +203,8 @@
       "CSS/JS",
       "Vercel",
       "Haptic Feedback"
-    ]
+    ],
+    "coverImage": "https://content.beyondmebtw.com/thumbnails/experience/exp29.webp"
   },
   {
     "id": 10,
@@ -217,7 +226,8 @@
       "Event Management",
       "Java",
       "Multiplayer"
-    ]
+    ],
+    "coverImage": "https://content.beyondmebtw.com/thumbnails/experience/exp21.webp"
   },
   {
     "id": 11,
@@ -239,7 +249,8 @@
       "JSON",
       "Levenshtein Distance",
       "Client-side Processing"
-    ]
+    ],
+    "coverImage": "https://content.beyondmebtw.com/assets/projects/uceed/u26sc.webp"
   },
   {
     "id": 12,
@@ -279,7 +290,8 @@
         "url": "https://content.beyondmebtw.com/assets/projects/mynyl/risograph-theme.webp",
         "description": "Risograph themed Vinyl"
       }
-    ]
+    ],
+    "coverImage": "https://content.beyondmebtw.com/assets/projects/mynyl/mynyl.webp"
   },
   {
     "id": 13,
@@ -361,7 +373,8 @@
         "url": "https://content.beyondmebtw.com/assets/projects/bmoney/11settingsdesk.webp",
         "description": "Configure the app to your preferences:  App Lock — secure access to your financial data Currency Preference — set your default display currency Data Export — export everything as a CSV or JSON file for external use or backup"
       }
-    ]
+    ],
+    "coverImage": "https://content.beyondmebtw.com/assets/projects/bmoney/bmoneyt.webp"
   },
   {
     "id": 14,
@@ -378,7 +391,8 @@
         "url": "https://content.beyondmebtw.com/assets/photos/photos.webp",
         "description": ""
       }
-    ]
+    ],
+    "coverImage": "https://content.beyondmebtw.com/assets/photos/photos.webp"
   },
   {
     "id": 15,
@@ -395,6 +409,7 @@
         "url": "https://content.beyondmebtw.com/assets/projects/tocbmb/cover.webp",
         "description": ""
       }
-    ]
+    ],
+    "coverImage": "https://content.beyondmebtw.com/assets/projects/tocbmb/cover.webp"
   }
 ]

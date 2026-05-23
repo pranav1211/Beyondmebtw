@@ -1055,10 +1055,11 @@ const server = http.createServer((request, response) => {
           const projects = readProjectsJSON();
           const maxId = projects.reduce((max, p) => Math.max(max, p.id || 0), 0);
           const newProject = { id: maxId + 1 };
-          const fields = ['title','category','shortDescription','fullDescription','logo','link','githubLink','tags','images'];
+          const fields = ['title','category','shortDescription','fullDescription','logo','link','githubLink','tags','images','coverImage'];
           fields.forEach(f => { if (body[f] !== undefined) newProject[f] = body[f]; });
           if (typeof newProject.tags === 'string') newProject.tags = newProject.tags.split(',').map(t => t.trim()).filter(Boolean);
           if (body.images !== undefined) newProject.images = normalizeProjectImages(body.images);
+          if (typeof newProject.coverImage === 'string') newProject.coverImage = newProject.coverImage.trim();
           projects.push(newProject);
           writeProjectsJSONSafe(projects, err2 => {
             if (err2) return sendError(response, "Error writing projects file", 500);
@@ -1075,10 +1076,11 @@ const server = http.createServer((request, response) => {
           const projects = readProjectsJSON();
           const idx = projects.findIndex(p => p.id === projId);
           if (idx === -1) return sendError(response, "Project not found");
-          const fields = ['title','category','shortDescription','fullDescription','logo','link','githubLink','tags','images'];
+          const fields = ['title','category','shortDescription','fullDescription','logo','link','githubLink','tags','images','coverImage'];
           fields.forEach(f => { if (body[f] !== undefined) projects[idx][f] = body[f]; });
           if (typeof projects[idx].tags === 'string') projects[idx].tags = projects[idx].tags.split(',').map(t => t.trim()).filter(Boolean);
           if (body.images !== undefined) projects[idx].images = normalizeProjectImages(body.images);
+          if (typeof projects[idx].coverImage === 'string') projects[idx].coverImage = projects[idx].coverImage.trim();
           writeProjectsJSONSafe(projects, err2 => {
             if (err2) return sendError(response, "Error writing projects file", 500);
             runScriptIgnoreError(() => {

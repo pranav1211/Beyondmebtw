@@ -20,6 +20,8 @@ let state = {
   editingProjectId: null,    // id when editing
   projectImagesDraft: [],
   editingProjectImageIndex: null,
+  projectCoverImageDraft: '',   // explicit cover image URL (empty = use first image)
+  dragImageIndex: null,         // index of image currently being dragged
   confirmCallback: null,
   latestConfirmCallback: null,
   catDeleteTarget: null,     // key of category being deleted
@@ -88,6 +90,22 @@ function resetProjectImageEditor() {
   if (button) button.textContent = 'Add Image';
 }
 
+function getEffectiveCoverUrl() {
+  const explicit = (state.projectCoverImageDraft || '').trim();
+  if (explicit) {
+    const stillExists = state.projectImagesDraft.some(img => img.url === explicit);
+    if (stillExists) return explicit;
+  }
+  return state.projectImagesDraft[0]?.url || '';
+}
+
+function setProjectCoverImage(index) {
+  const image = state.projectImagesDraft[index];
+  if (!image || !image.url) return;
+  state.projectCoverImageDraft = image.url;
+  renderProjectImagesList();
+}
+
 function renderProjectImagesList() {
   const container = document.getElementById('project-images-list');
   if (!container) return;
@@ -97,11 +115,18 @@ function renderProjectImagesList() {
     return;
   }
 
+  const coverUrl = getEffectiveCoverUrl();
+
   container.innerHTML = state.projectImagesDraft.map((image, index) => {
     const isEditing = state.editingProjectImageIndex === index;
+    const isCover = image.url && image.url === coverUrl;
     return `
-      <div class="project-image-item ${isEditing ? 'editing' : ''}">
-        <img class="project-image-thumb" src="${esc(image.url)}" alt="" onerror="this.src='https://beyondmebtw.com/assets/images/favicon.ico'">
+      <div class="project-image-item ${isEditing ? 'editing' : ''} ${isCover ? 'is-cover' : ''}" draggable="true" data-index="${index}">
+        <div class="project-image-drag-handle" title="Drag to reorder" aria-label="Drag to reorder">&#x2630;</div>
+        <div class="project-image-thumb-wrap">
+          <img class="project-image-thumb" src="${esc(image.url)}" alt="" onerror="this.src='https://beyondmebtw.com/assets/images/favicon.ico'">
+          ${isCover ? '<span class="project-image-cover-badge">&#9733; Cover</span>' : ''}
+        </div>
         <div class="project-image-meta">
           ${isEditing ? `
             <div class="project-image-edit-fields">
@@ -118,6 +143,9 @@ function renderProjectImagesList() {
             <button type="button" class="btn-icon edit" data-action="save-project-image" data-index="${index}">Save</button>
             <button type="button" class="btn-icon" data-action="cancel-project-image-edit" data-index="${index}">Cancel</button>
           ` : `
+            ${isCover
+              ? '<button type="button" class="btn-icon" disabled title="This image is the current cover">&#9733; Cover</button>'
+              : `<button type="button" class="btn-icon" data-action="set-cover-image" data-index="${index}">Set as Cover</button>`}
             <button type="button" class="btn-icon edit" data-action="edit-project-image" data-index="${index}">Edit</button>
           `}
           <button type="button" class="btn-icon danger" data-action="delete-project-image" data-index="${index}">Remove</button>
@@ -138,6 +166,9 @@ function renderProjectImagesList() {
   container.querySelectorAll('[data-action="delete-project-image"]').forEach(btn => {
     btn.addEventListener('click', () => removeProjectImage(parseInt(btn.dataset.index, 10)));
   });
+  container.querySelectorAll('[data-action="set-cover-image"]').forEach(btn => {
+    btn.addEventListener('click', () => setProjectCoverImage(parseInt(btn.dataset.index, 10)));
+  });
   container.querySelectorAll('.project-image-inline-description').forEach(input => {
     input.addEventListener('keydown', e => {
       if (e.key === 'Enter') {
@@ -146,6 +177,68 @@ function renderProjectImagesList() {
       }
     });
   });
+
+  container.querySelectorAll('.project-image-item').forEach(item => {
+    item.addEventListener('dragstart', handleProjectImageDragStart);
+    item.addEventListener('dragover', handleProjectImageDragOver);
+    item.addEventListener('dragleave', handleProjectImageDragLeave);
+    item.addEventListener('drop', handleProjectImageDrop);
+    item.addEventListener('dragend', handleProjectImageDragEnd);
+  });
+}
+
+function handleProjectImageDragStart(e) {
+  const idx = parseInt(this.dataset.index, 10);
+  if (Number.isNaN(idx)) return;
+  state.dragImageIndex = idx;
+  this.classList.add('dragging');
+  if (e.dataTransfer) {
+    e.dataTransfer.effectAllowed = 'move';
+    try { e.dataTransfer.setData('text/plain', String(idx)); } catch (_) {}
+  }
+}
+
+function handleProjectImageDragOver(e) {
+  if (state.dragImageIndex === null) return;
+  e.preventDefault();
+  if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+  this.classList.add('drag-over');
+}
+
+function handleProjectImageDragLeave() {
+  this.classList.remove('drag-over');
+}
+
+function handleProjectImageDrop(e) {
+  e.preventDefault();
+  this.classList.remove('drag-over');
+  const from = state.dragImageIndex;
+  const to = parseInt(this.dataset.index, 10);
+  if (from === null || Number.isNaN(to) || from === to) return;
+  const [moved] = state.projectImagesDraft.splice(from, 1);
+  state.projectImagesDraft.splice(to, 0, moved);
+
+  // Keep the editing-row pointer aligned with the moved row, if applicable
+  if (state.editingProjectImageIndex === from) {
+    state.editingProjectImageIndex = to;
+  } else if (state.editingProjectImageIndex !== null) {
+    const editing = state.editingProjectImageIndex;
+    if (from < editing && to >= editing) state.editingProjectImageIndex = editing - 1;
+    else if (from > editing && to <= editing) state.editingProjectImageIndex = editing + 1;
+  }
+
+  renderProjectImagesList();
+}
+
+function handleProjectImageDragEnd() {
+  state.dragImageIndex = null;
+  const container = document.getElementById('project-images-list');
+  if (container) {
+    container.querySelectorAll('.project-image-item').forEach(el => {
+      el.classList.remove('dragging');
+      el.classList.remove('drag-over');
+    });
+  }
 }
 
 function startEditProjectImage(index) {
@@ -173,10 +266,15 @@ function saveProjectImageEdit(index) {
 
 function removeProjectImage(index) {
   if (Number.isNaN(index) || index < 0) return;
+  const removed = state.projectImagesDraft[index];
   state.projectImagesDraft.splice(index, 1);
   if (state.editingProjectImageIndex === index) resetProjectImageEditor();
   if (state.editingProjectImageIndex !== null && state.editingProjectImageIndex > index) {
     state.editingProjectImageIndex -= 1;
+  }
+  // If the explicit cover was the removed image, clear it so it falls back to the new first image
+  if (removed && removed.url && removed.url === state.projectCoverImageDraft) {
+    state.projectCoverImageDraft = '';
   }
   renderProjectImagesList();
 }
@@ -1460,6 +1558,7 @@ function openEditProject(id) {
   document.getElementById('proj-github').value = proj.githubLink || '';
   document.getElementById('proj-tags').value = (proj.tags || []).join(', ');
   state.projectImagesDraft = normalizeProjectImages(proj.images);
+  state.projectCoverImageDraft = typeof proj.coverImage === 'string' ? proj.coverImage.trim() : '';
   resetProjectImageEditor();
   renderProjectImagesList();
 
@@ -1546,7 +1645,8 @@ function initProjectForm() {
       link: document.getElementById('proj-link').value.trim(),
       githubLink: document.getElementById('proj-github').value.trim(),
       tags: document.getElementById('proj-tags').value,
-      images: state.projectImagesDraft
+      images: state.projectImagesDraft,
+      coverImage: getEffectiveCoverUrl()
     };
 
     const btn = document.getElementById('project-submit-btn');
@@ -1577,6 +1677,8 @@ function initProjectForm() {
 function resetProjectForm() {
   state.editingProjectId = null;
   state.projectImagesDraft = [];
+  state.projectCoverImageDraft = '';
+  state.dragImageIndex = null;
   document.getElementById('project-modal-title').textContent = 'New Project';
   document.getElementById('project-submit-btn').textContent = 'Add Project';
   document.getElementById('proj-edit-id').value = '';
