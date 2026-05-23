@@ -161,9 +161,14 @@
         grid-row: 4 / 5;
     }
 
-    .projects-showcase {
+    .featured-minis {
         grid-column: 1 / 3;
         grid-row: 5 / 6;
+    }
+
+    .projects-showcase {
+        grid-column: 1 / 3;
+        grid-row: 6 / 7;
     }
 
     .get-in-touch {
@@ -279,14 +284,19 @@
         grid-row: 3 / 4;
     }
 
-    .projects-showcase {
+    .featured-minis {
         grid-column: 1 / 3;
         grid-row: 4 / 5;
     }
 
+    .projects-showcase {
+        grid-column: 1 / 3;
+        grid-row: 5 / 6;
+    }
+
     .get-in-touch {
         grid-column: 1 / 2;
-        grid-row: 5 / 6;
+        grid-row: 6 / 7;
         min-height: 400px;
         height: auto;
     }
@@ -302,6 +312,7 @@
 
     /* Grid Column Stacking */
     .featured-posts-container,
+    .featured-minis-container,
     .projects-grid {
         grid-template-columns: 1fr;
     }
@@ -357,6 +368,7 @@
     .latest-post,
     .projects-showcase,
     .featured-posts,
+    .featured-minis,
     .twitter-feed {
         grid-column: 1 / 2;
     }
@@ -380,16 +392,20 @@
         min-height: 450px;
     }
 
-    .projects-showcase {
-        grid-row: 8 / 9;
-    }
-
     .featured-posts {
         grid-row: 7 / 8;
     }
 
-    .twitter-feed {
+    .featured-minis {
+        grid-row: 8 / 9;
+    }
+
+    .projects-showcase {
         grid-row: 9 / 10;
+    }
+
+    .twitter-feed {
+        grid-row: 10 / 11;
     }
 
     /* Latest Post */

@@ -1,7 +1,7 @@
 /* projects-showcase.css */
 .projects-showcase {
     grid-column: 1 / 5; /* Span all four columns */
-    grid-row: 4 / 5;    /* Move to the next row */
+    grid-row: 5 / 6;    /* Row 5: below Featured Minis */
 }
 
 .projects-grid {

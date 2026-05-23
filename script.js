@@ -89,6 +89,54 @@ function renderFeaturedPosts(posts) {
     });
 }
 
+function ordinalSuffix(n) {
+    const v = n % 100;
+    if (v >= 11 && v <= 13) return 'th';
+    switch (n % 10) {
+        case 1: return 'st';
+        case 2: return 'nd';
+        case 3: return 'rd';
+        default: return 'th';
+    }
+}
+
+function formatMiniDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    const day = d.getDate();
+    const month = d.toLocaleString('en-US', { month: 'long' });
+    const year = d.getFullYear();
+    return `${day}${ordinalSuffix(day)} ${month}, ${year}`;
+}
+
+function createFeaturedMini(mini) {
+    const el = document.createElement('div');
+    el.className = 'featured-mini';
+    el.innerHTML = `
+        <div class="featured-mini-details">
+            <h3 class="featured-mini-title">${mini.title || ''}</h3>
+            <p class="featured-mini-date">${formatMiniDate(mini.date)}</p>
+            <p class="featured-mini-excerpt">${mini.featuredExcerpt || ''}</p>
+        </div>
+        <button class="featured-mini-read-more">Read More</button>
+    `;
+    if (mini.id) {
+        const url = `https://minis.beyondmebtw.com/?id=${encodeURIComponent(mini.id)}`;
+        el.addEventListener('click', () => window.open(url, '_blank'));
+    }
+    return el;
+}
+
+function renderFeaturedMinis(minis) {
+    const container = document.getElementById('featured-minis-container');
+    if (!container) return;
+    container.innerHTML = '';
+    (minis || [])
+        .filter(m => m && (m.title || m.id))
+        .forEach(m => container.appendChild(createFeaturedMini(m)));
+}
+
 function renderFeaturedProjects(projects) {
     const container = document.getElementById('projects-grid');
     if (!container || !projects || projects.length === 0) return;
@@ -132,6 +180,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Render featured posts
         renderFeaturedPosts(data.featured);
+
+        // Render featured minis
+        renderFeaturedMinis(data.featuredMinis || []);
 
         // Render featured projects from latest.json featuredProjects IDs
         if (data.featuredProjects && allProjects) {

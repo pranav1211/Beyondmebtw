@@ -41,7 +41,11 @@
       "Bash(node --check \"c:/Users/pranav/Downloads/Beyondmebtw/manage/index.js\")",
       "Bash(node --check \"c:/Users/pranav/Downloads/Beyondmebtw/manage/manageserver.js\")",
       "Bash(node --check \"c:/Users/pranav/Downloads/Beyondmebtw/projects/projects.js\")",
-      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('c:/Users/pranav/Downloads/Beyondmebtw/projects/project-data.json','utf8'\\)\\);console.log\\('JSON ok'\\)\")"
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('c:/Users/pranav/Downloads/Beyondmebtw/projects/project-data.json','utf8'\\)\\);console.log\\('JSON ok'\\)\")",
+      "WebFetch(domain:minis.beyondmebtw.com)",
+      "Bash(node --check \"c:/Users/pranav/Downloads/Beyondmebtw/script.js\")",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('c:/Users/pranav/Downloads/Beyondmebtw/manage/latest.json','utf8'\\)\\);console.log\\('latest.json ok'\\)\")",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('c:/Users/pranav/Downloads/Beyondmebtw/manage/latest.json','utf8'\\)\\);JSON.parse\\(require\\('fs'\\).readFileSync\\('c:/Users/pranav/Downloads/Beyondmebtw/projects/project-data.json','utf8'\\)\\);console.log\\('JSON ok'\\)\")"
     ]
   }
 }

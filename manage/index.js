@@ -13,6 +13,7 @@ let state = {
   latestData: null,          // from latest.json
   blogData: null,            // from direct blog JSON URLs
   projects: [],              // from project-data.json
+  minisMetadata: [],         // from https://minis.beyondmebtw.com/content/metadata.json (proxied)
   categories: {},            // from blog/categories.json manifest
   currentBlogCategory: 'all',
   blogSearch: '',
@@ -454,10 +455,31 @@ async function loadHomepageTab() {
       state.projects = await fetch(PROJECTS_URL).then(r => r.json()) || [];
     }
     renderFeaturedProjects(data.featuredProjects || [1,2,3,4], state.projects);
+
+    // Load minis metadata + render featured minis dropdowns
+    if (state.minisMetadata.length === 0) {
+      try {
+        state.minisMetadata = await fetchMinisMetadata();
+      } catch (e) {
+        console.warn('Failed to fetch minis metadata:', e);
+        state.minisMetadata = [];
+      }
+    }
+    renderFeaturedMinis(data.featuredMinis || [{},{},{}], state.minisMetadata);
   } catch (e) {
     console.error('Homepage load error:', e);
     toast('Failed to load homepage data', 'error');
   }
+}
+
+async function fetchMinisMetadata() {
+  // Try the proxied endpoint first (avoids CORS); fall back to direct fetch
+  try {
+    const r = await apiCall('GET', '/minismetadata');
+    if (Array.isArray(r)) return r;
+  } catch (_) {}
+  const direct = await fetch('https://minis.beyondmebtw.com/content/metadata.json').then(r => r.json());
+  return Array.isArray(direct) ? direct : [];
 }
 
 function renderLatestPost(post) {
@@ -618,6 +640,91 @@ function initLatestForm() {
   form.addEventListener('submit', async e => {
     e.preventDefault();
     await submitContentForm(e.target, 'latest');
+  });
+}
+
+function initSubtabs() {
+  const buttons = document.querySelectorAll('.subtab-btn');
+  if (!buttons.length) return;
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.subtab;
+      buttons.forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.subtab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      const panel = document.querySelector(`.subtab-panel[data-subpanel="${target}"]`);
+      if (panel) panel.classList.add('active');
+    });
+  });
+}
+
+function renderFeaturedMinis(featuredMinis, allMinis) {
+  const container = document.getElementById('featured-minis-container');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const slots = (featuredMinis && featuredMinis.length === 3)
+    ? featuredMinis
+    : [featuredMinis?.[0] || {}, featuredMinis?.[1] || {}, featuredMinis?.[2] || {}];
+
+  if (!Array.isArray(allMinis) || allMinis.length === 0) {
+    container.innerHTML = '<p class="empty-msg">No minis available. Check the minis source.</p>';
+    return;
+  }
+
+  for (let i = 0; i < 3; i++) {
+    const current = slots[i] || {};
+    const currentId = current.id || '';
+    const slot = document.createElement('div');
+    slot.className = 'featured-proj-slot';
+    slot.innerHTML = `
+      <div class="slot-label">Slot ${i+1}</div>
+      <select class="feat-mini-select" data-slot="${i}">
+        <option value="">— None —</option>
+        ${allMinis.map(m => `<option value="${esc(m.id)}" ${m.id===currentId?'selected':''}>${esc(m.title || m.id)}</option>`).join('')}
+      </select>
+      <div class="proj-preview" data-role="mini-preview">${esc((allMinis.find(m => m.id === currentId) || current).featuredExcerpt || '')}</div>
+    `;
+    container.appendChild(slot);
+
+    slot.querySelector('select').addEventListener('change', e => {
+      const m = allMinis.find(x => x.id === e.target.value);
+      slot.querySelector('[data-role="mini-preview"]').textContent = m ? (m.featuredExcerpt || '') : '';
+    });
+  }
+}
+
+function initFeaturedMinisForm() {
+  const form = document.getElementById('featured-minis-form');
+  if (!form) return;
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const selects = document.querySelectorAll('.feat-mini-select');
+    const ids = Array.from(selects).map(s => s.value);
+
+    if (ids.some(id => !id)) {
+      toast('Please select a mini for all 3 slots', 'warning');
+      return;
+    }
+
+    const minis = ids.map(id => {
+      const m = state.minisMetadata.find(x => x.id === id);
+      if (!m) return { id };
+      return {
+        id: m.id,
+        title: m.title || '',
+        date: m.date || '',
+        featuredExcerpt: m.featuredExcerpt || ''
+      };
+    });
+
+    try {
+      await apiCall('POST', '/latestdata', { formid: 'featuredMinis', minis });
+      toast('Featured minis saved');
+      if (state.latestData) state.latestData.featuredMinis = minis;
+    } catch (e) {
+      toast(`Error: ${e.message}`, 'error');
+    }
   });
 }
 
@@ -2240,6 +2347,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initLatestConfirmModal();
   initLatestForm();
   initFeaturedProjectsForm();
+  initFeaturedMinisForm();
+  initSubtabs();
   initBlogForm();
   initBlogSearch();
   initCategoryModal();

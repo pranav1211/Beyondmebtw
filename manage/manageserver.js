@@ -71,6 +71,7 @@ let jsdata = {
   mainPost: {},
   featured: Array(4).fill(null).map(() => ({})),
   featuredProjects: [1, 2, 3, 4],
+  featuredMinis: Array(3).fill(null).map(() => ({})),
   categories: {}
 };
 
@@ -171,6 +172,9 @@ function loadExistingData() {
       jsdata.mainPost = existing.mainPost || {};
       jsdata.featured = existing.featured || Array(4).fill(null).map(() => ({}));
       jsdata.featuredProjects = existing.featuredProjects || [1, 2, 3, 4];
+      jsdata.featuredMinis = Array.isArray(existing.featuredMinis)
+        ? existing.featuredMinis.slice(0, 3).concat(Array(Math.max(0, 3 - existing.featuredMinis.length)).fill({}))
+        : Array(3).fill(null).map(() => ({}));
       jsdata.categories = existing.categories || {};
       console.log("Existing local data loaded");
     }
@@ -198,6 +202,10 @@ function loadJSON(callback) {
         }
         if (parsed.featuredProjects) {
           jsdata.featuredProjects = parsed.featuredProjects;
+        }
+        if (Array.isArray(parsed.featuredMinis)) {
+          const incoming = parsed.featuredMinis.slice(0, 3);
+          jsdata.featuredMinis = incoming.concat(Array(Math.max(0, 3 - incoming.length)).fill({}));
         }
       } else {
         console.error("Remote latest.json returned invalid data, skipping merge");
@@ -656,7 +664,8 @@ function updateLatestPost(name, date, excerpt, thumbnail, link, formId) {
     featured2: () => updateFields(jsdata.featured[1], { title: name, date, excerpt, thumbnail, link }),
     featured3: () => updateFields(jsdata.featured[2], { title: name, date, excerpt, thumbnail, link }),
     featured4: () => updateFields(jsdata.featured[3], { title: name, date, excerpt, thumbnail, link }),
-    featuredProjects: () => {} // handled separately
+    featuredProjects: () => {}, // handled separately
+    featuredMinis: () => {}     // handled separately
   };
 
   if (handlers[formId]) {
@@ -1014,7 +1023,7 @@ const server = http.createServer((request, response) => {
     else if (pathname === "/latestdata" && request.method === "POST") {
       return getJSONBody(request, (err, body) => {
         if (err) return sendError(response, "Bad JSON");
-        const { name, date, excerpt, thumbnail, link, formid, projectIds, key } = body;
+        const { name, date, excerpt, thumbnail, link, formid, projectIds, minis, key } = body;
         if (!validateKey(key, response)) return;
         if (!formid) return sendError(response, "Missing formid");
 
@@ -1025,6 +1034,19 @@ const server = http.createServer((request, response) => {
                 return sendError(response, "projectIds must be an array of 4 IDs");
               }
               jsdata.featuredProjects = projectIds.map(id => parseInt(id, 10));
+            } else if (formid === 'featuredMinis') {
+              if (!Array.isArray(minis) || minis.length !== 3) {
+                return sendError(response, "minis must be an array of 3 entries");
+              }
+              jsdata.featuredMinis = minis.map(m => {
+                if (!m || typeof m !== 'object') return {};
+                return {
+                  id: String(m.id || '').trim(),
+                  title: String(m.title || '').trim(),
+                  date: String(m.date || '').trim(),
+                  featuredExcerpt: String(m.featuredExcerpt || '').trim()
+                };
+              });
             } else {
               updateLatestPost(name, date, excerpt, thumbnail, link, formid);
             }
@@ -1191,6 +1213,22 @@ const server = http.createServer((request, response) => {
     else if (pathname === "/projectsdata" && request.method === "GET") {
       const projects = readProjectsJSON();
       return sendJSON(response, projects);
+    }
+
+    // ── Minis metadata proxy GET (avoids CORS in the manage UI) ────────────────
+    else if (pathname === "/minismetadata" && request.method === "GET") {
+      const minisReq = https.get("https://minis.beyondmebtw.com/content/metadata.json", res => {
+        let data = "";
+        res.on("data", chunk => { data += chunk; });
+        res.on("end", () => {
+          const parsed = safeJSONParse(data, null);
+          if (parsed === null) return sendError(response, "Failed to parse minis metadata", 502);
+          sendJSON(response, parsed);
+        });
+      });
+      minisReq.on("error", e => sendError(response, `Minis fetch error: ${e.message}`, 502));
+      minisReq.setTimeout(10000, () => { minisReq.destroy(); sendError(response, "Minis fetch timeout", 504); });
+      return;
     }
 
     // ── Projects POST (create) ────────────────────────────────────────────────

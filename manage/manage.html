@@ -42,7 +42,7 @@
     <nav class="sidebar-nav" id="sidebar-nav">
       <button class="nav-tab active" data-tab="homepage">
         <span class="nav-icon">&#8962;</span>
-        <span class="nav-label">Homepage</span>
+        <span class="nav-label">Featured</span>
       </button>
       <button class="nav-tab" data-tab="blog">
         <span class="nav-icon">&#9998;</span>
@@ -67,73 +67,103 @@
   <!-- Main content -->
   <main class="main-content">
 
-    <!-- ═══════════ HOMEPAGE TAB ═══════════ -->
+    <!-- ═══════════ FEATURED TAB ═══════════ -->
     <section id="tab-homepage" class="tab-panel active">
       <div class="panel-header">
-        <h1>Homepage</h1>
-        <p class="panel-subtitle">Manage latest post, featured posts, and featured projects</p>
+        <h1>Featured</h1>
+        <p class="panel-subtitle">Manage the latest post, featured posts, projects, and minis shown on the homepage</p>
       </div>
 
-      <!-- Latest Post -->
-      <div class="card">
-        <div class="card-header">
-          <h2>Latest Post</h2>
-          <button class="btn-ghost toggle-form-btn" data-target="latest-form-body">Edit</button>
+      <!-- Sub-tab switcher -->
+      <div class="subtab-bar" id="featured-subtab-bar">
+        <button class="subtab-btn active" data-subtab="latest">Latest</button>
+        <button class="subtab-btn" data-subtab="blogs">Blogs</button>
+        <button class="subtab-btn" data-subtab="projects">Projects</button>
+        <button class="subtab-btn" data-subtab="minis">Minis</button>
+      </div>
+
+      <!-- Latest Post sub-panel -->
+      <div class="subtab-panel active" data-subpanel="latest">
+        <div class="card">
+          <div class="card-header">
+            <h2>Latest Post</h2>
+            <button class="btn-ghost toggle-form-btn" data-target="latest-form-body">Edit</button>
+          </div>
+          <div id="latest-display" class="post-preview-strip"></div>
+          <div id="latest-form-body" class="form-body collapsed">
+            <form id="latest" class="inline-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Title</label>
+                  <input type="text" name="name" placeholder="Post title">
+                </div>
+                <div class="form-group">
+                  <label>Date</label>
+                  <input type="date" name="date">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Excerpt</label>
+                <textarea name="excerpt" rows="4" placeholder="Short excerpt..."></textarea>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Thumbnail URL</label>
+                  <input type="text" name="thumbnail" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                  <label>Post Link</label>
+                  <input type="text" name="link" placeholder="https://...">
+                </div>
+              </div>
+              <input type="hidden" name="instance" value="latest">
+              <button type="submit" class="btn-primary">Save Latest Post</button>
+            </form>
+          </div>
         </div>
-        <div id="latest-display" class="post-preview-strip"></div>
-        <div id="latest-form-body" class="form-body collapsed">
-          <form id="latest" class="inline-form">
-            <div class="form-row">
-              <div class="form-group">
-                <label>Title</label>
-                <input type="text" name="name" placeholder="Post title">
-              </div>
-              <div class="form-group">
-                <label>Date</label>
-                <input type="date" name="date">
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Excerpt</label>
-              <textarea name="excerpt" rows="4" placeholder="Short excerpt..."></textarea>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Thumbnail URL</label>
-                <input type="text" name="thumbnail" placeholder="https://...">
-              </div>
-              <div class="form-group">
-                <label>Post Link</label>
-                <input type="text" name="link" placeholder="https://...">
-              </div>
-            </div>
-            <input type="hidden" name="instance" value="latest">
-            <button type="submit" class="btn-primary">Save Latest Post</button>
+      </div>
+
+      <!-- Featured Posts (Blogs) sub-panel -->
+      <div class="subtab-panel" data-subpanel="blogs">
+        <div class="card">
+          <div class="card-header">
+            <h2>Featured Posts</h2>
+            <span class="card-badge">4 slots</span>
+          </div>
+          <div id="featured-posts-container" class="featured-grid"></div>
+        </div>
+      </div>
+
+      <!-- Featured Projects sub-panel -->
+      <div class="subtab-panel" data-subpanel="projects">
+        <div class="card">
+          <div class="card-header">
+            <h2>Featured Projects</h2>
+            <span class="card-badge">4 slots</span>
+          </div>
+          <div id="featured-projects-container" class="featured-projects-grid">
+            <p class="loading-msg">Loading projects...</p>
+          </div>
+          <form id="featured-projects-form" class="inline-form" style="margin-top:16px">
+            <button type="submit" class="btn-primary">Save Featured Projects</button>
           </form>
         </div>
       </div>
 
-      <!-- Featured Posts -->
-      <div class="card">
-        <div class="card-header">
-          <h2>Featured Posts</h2>
-          <span class="card-badge">4 slots</span>
+      <!-- Featured Minis sub-panel -->
+      <div class="subtab-panel" data-subpanel="minis">
+        <div class="card">
+          <div class="card-header">
+            <h2>Featured Minis</h2>
+            <span class="card-badge">3 slots</span>
+          </div>
+          <div id="featured-minis-container" class="featured-minis-grid">
+            <p class="loading-msg">Loading minis...</p>
+          </div>
+          <form id="featured-minis-form" class="inline-form" style="margin-top:16px">
+            <button type="submit" class="btn-primary">Save Featured Minis</button>
+          </form>
         </div>
-        <div id="featured-posts-container" class="featured-grid"></div>
-      </div>
-
-      <!-- Featured Projects -->
-      <div class="card">
-        <div class="card-header">
-          <h2>Featured Projects</h2>
-          <span class="card-badge">4 slots</span>
-        </div>
-        <div id="featured-projects-container" class="featured-projects-grid">
-          <p class="loading-msg">Loading projects...</p>
-        </div>
-        <form id="featured-projects-form" class="inline-form" style="margin-top:16px">
-          <button type="submit" class="btn-primary">Save Featured Projects</button>
-        </form>
       </div>
     </section>
 
