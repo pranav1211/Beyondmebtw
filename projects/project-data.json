@@ -379,5 +379,17 @@
         "description": ""
       }
     ]
+  },
+  {
+    "id": 15,
+    "title": "TOC Generator for Medium",
+    "category": "Web Development",
+    "shortDescription": "A chrome extensions used to generate table of content for medium articles",
+    "fullDescription": "",
+    "logo": "https://content.beyondmebtw.com/assets/projects/tocbmb/tocbmb.webp",
+    "link": "https://github.com/pranav1211/toc-medium-by-bmb",
+    "githubLink": "https://github.com/pranav1211/toc-medium-by-bmb",
+    "tags": [],
+    "images": []
   }
 ]
