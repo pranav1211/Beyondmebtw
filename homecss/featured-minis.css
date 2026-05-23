@@ -44,7 +44,7 @@
 }
 
 .featured-mini:nth-child(3n + 2) .featured-mini-hero {
-    background: linear-gradient(135deg, #7d8a66 0%, #5d6a4a 55%, #38432f 100%);
+    background: linear-gradient(135deg, #7a6f95 0%, #4f4373 55%, #2c2247 100%);
 }
 
 .featured-mini:nth-child(3n + 3) .featured-mini-hero {
