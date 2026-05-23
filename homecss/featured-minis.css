@@ -50,9 +50,9 @@
 }
 
 .featured-mini-excerpt {
-    font-size: 16px;
+    font-size: 19px;
     color: #3b342d;
-    line-height: 1.4;
+    line-height: 1.45;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     overflow: hidden;

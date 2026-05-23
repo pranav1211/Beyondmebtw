@@ -110,6 +110,16 @@ function formatMiniDate(dateStr) {
     return `${day}${ordinalSuffix(day)} ${month}, ${year}`;
 }
 
+function truncateExcerpt(text, limit = 200) {
+    if (!text) return '';
+    const trimmed = text.trim();
+    if (trimmed.length <= limit) return trimmed;
+    const slice = trimmed.slice(0, limit);
+    const lastSpace = slice.lastIndexOf(' ');
+    const cut = lastSpace > limit - 30 ? slice.slice(0, lastSpace) : slice;
+    return cut.replace(/[.,;:!?\-—\s]+$/, '') + '…';
+}
+
 function createFeaturedMini(mini) {
     const el = document.createElement('div');
     el.className = 'featured-mini';
@@ -117,12 +127,12 @@ function createFeaturedMini(mini) {
         <div class="featured-mini-details">
             <h3 class="featured-mini-title">${mini.title || ''}</h3>
             <p class="featured-mini-date">${formatMiniDate(mini.date)}</p>
-            <p class="featured-mini-excerpt">${mini.featuredExcerpt || ''}</p>
+            <p class="featured-mini-excerpt">${truncateExcerpt(mini.featuredExcerpt, 200)}</p>
         </div>
         <button class="featured-mini-read-more">Read More</button>
     `;
     if (mini.id) {
-        const url = `https://minis.beyondmebtw.com/?id=${encodeURIComponent(mini.id)}`;
+        const url = `https://minis.beyondmebtw.com/post/${encodeURIComponent(mini.id)}/`;
         el.addEventListener('click', () => window.open(url, '_blank'));
     }
     return el;
