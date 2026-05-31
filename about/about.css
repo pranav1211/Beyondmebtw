@@ -8,7 +8,8 @@
    ======================================== */
 .bento-container {
     margin: 0 auto;
-    padding: 0 95px;
+    padding: 0 40px;
+    max-width: 1800px;
     display: grid;
     grid-template-columns: 3fr 1fr;
     gap: 30px;
