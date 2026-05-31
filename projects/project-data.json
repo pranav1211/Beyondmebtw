@@ -381,11 +381,19 @@
     "title": "Photos",
     "category": "Web Development",
     "shortDescription": "A platform to showcase my photography",
-    "fullDescription": "",
+    "fullDescription": "• A dedicated photography platform built to showcase my curated photo series in a clean, gallery-first layout.\n• Designed as a bento-style grid where each series gets its own tile with custom row and column spans, giving every collection a distinct visual presence.\n• Each series opens into a full viewer with image-level descriptions, orientation-aware layouts, and optional links to the raw high-resolution sets hosted on Google Drive.\n• Driven by a single JSON file so adding a new series is just dropping in metadata and image URLs — no rebuilds, no CMS.\n• Built with vanilla HTML, CSS, and JavaScript on top of the Beyond Me Btw base styles, and served as a static subdomain.",
     "logo": "https://content.beyondmebtw.com/assets/bmb_logos/bmblogo.png",
     "link": "https://photos.beyondmebtw.com",
     "githubLink": "https://github.com/pranav1211/photosbmb",
-    "tags": [],
+    "tags": [
+      "Photography",
+      "Adobe Lightroom",
+      "Adobe Photoshop",
+      "Vanilla JavaScript",
+      "HTML",
+      "CSS",
+      "JSON"
+    ],
     "images": [
       {
         "url": "https://content.beyondmebtw.com/assets/photos/photos.webp",
@@ -399,11 +407,15 @@
     "title": "TOC Generator for Medium",
     "category": "Web Development",
     "shortDescription": "A chrome extensions used to generate table of content for medium articles",
-    "fullDescription": "",
+    "fullDescription": "• A Chrome extension that auto-generates a clean, clickable table of contents for any Medium article.\n• Scans the article's heading structure on the page and builds a navigable outline so longer reads become easier to skim and jump through.\n• Designed to sit unobtrusively alongside Medium's reading experience without interfering with the article layout.\n• Built with vanilla JavaScript as a lightweight browser extension — no dependencies, no tracking, just a reading aid.",
     "logo": "https://content.beyondmebtw.com/assets/projects/tocbmb/tocbmb.webp",
     "link": "https://github.com/pranav1211/toc-medium-by-bmb",
     "githubLink": "https://github.com/pranav1211/toc-medium-by-bmb",
-    "tags": [],
+    "tags": [
+      "Chrome Extension",
+      "JavaScript",
+      "Medium"
+    ],
     "images": [
       {
         "url": "https://content.beyondmebtw.com/assets/projects/tocbmb/cover.webp",

@@ -29,6 +29,27 @@ const experienceData = [
         ]
     },
     {
+        organization: "CloudMPower Technologies Private Limited",
+        roles: [
+            {
+                title: "AI and Full Stack Development Intern",
+                duration: "Jan 2026 - Present",
+                description: [
+                    "Working across the stack with <strong>Vue.js</strong>, <strong>MongoDB</strong>, <strong>Node.js</strong>, and <strong>Nginx</strong>, using <strong>Postman</strong> for API design and testing.",
+                    "Serving as the <strong>primary UI/UX designer</strong>, owning interface design and user experience decisions across product surfaces.",
+                    "Contributing to AI-driven features alongside core full stack development."
+                ]
+            },
+            {
+                title: "Summer Intern",
+                duration: "Jul 2025 - Aug 2025",
+                description: [
+                    "Completed a summer internship contributing to ongoing development work and gaining hands-on exposure to the company's tech stack and workflow."
+                ]
+            }
+        ]
+    },
+    {
         organization: "Beyond Me Btw",
         roles: [
             {
