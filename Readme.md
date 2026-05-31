@@ -30,6 +30,23 @@ The Current Home Page
 
 ## Changelog:
 
+## 5.3 (31/05/2026)
+- major responsiveness overhaul across home, blog, projects and about
+- home page: fixed the title clipping into the centered links pill in the 1441-1920 row mode by switching to a fluid clamp on the title size and margin
+- home page: minis button position is now dynamic, tracks the get-in-touch card center instead of the viewport edge, and scales smoothly with viewport via clamps for size and offset
+- home page: bento grid now drops to 2 columns and promotes get-in-touch to its own full-width row at 1350px instead of 1024, because the email kept getting cut off
+- home page: get-in-touch social-links becomes a 2-col grid when the card goes full-width, collapses back to single column at 530px
+- home page: links pill restored to ~92% width on mobile with proper padding (was content-sized after a wrong turn)
+- home page: links pill regains the 2x2 grid layout at mobile and stays content-width on tablet
+- projects page: fixed the thumbnail image not filling cards between 1024-1200 by switching to aspect-ratio 16/9 + object-fit cover, so the image always fills the card no matter the column count
+- about page: bento container padding was 95px each side, dropped to 40px to match home
+- about page: experience section was horizontally scrolling at all sizes, now a proper responsive grid (3 -> 2 -> 1 cols at 1200 and 768)
+- about page: skills restructured into 4 cleaner subcategories (frontend, backend and data, ai/ml, languages) with a side-by-side subcategory grid so the software dev card no longer towers over the others
+- about page: mined project tags and added a bunch of missing skills - vue 3, pinia, supabase, postgresql, pwa, indexeddb, mongodb, postman, photography, adobe lightroom, adobe photoshop, ui/ux design, mentoring, team coordination
+- design refresh across about-cards, intro-section, skill-category, experience cards and project cards: hairline border + layered shadow replaces the 4-5px heavy left stripes everywhere
+- specific css transitions on transform + box-shadow only (no more transition: all), added prefers-reduced-motion fallbacks, killed the perpetual float/pulse icon animations
+- installed claude code design skills: impeccable, taste, emil kowalski and caveman, applied their motion and typography conventions
+
 ## 5.2 (23/05/2026)
 - made upgrades to projects management regards to thumbnails and preferrential ordering
 - added information for the 2 new projects
