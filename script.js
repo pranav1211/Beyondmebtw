@@ -110,6 +110,15 @@ function formatMiniDate(dateStr) {
     return `${day}${ordinalSuffix(day)} ${month}, ${year}`;
 }
 
+function formatMiniHeroDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return '';
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    return `${dd}.${mm}`;
+}
+
 function truncateExcerpt(text, limit = 200) {
     if (!text) return '';
     const trimmed = text.trim();
@@ -123,8 +132,10 @@ function truncateExcerpt(text, limit = 200) {
 function createFeaturedMini(mini) {
     const el = document.createElement('div');
     el.className = 'featured-mini';
+    const heroDate = formatMiniHeroDate(mini.date);
     el.innerHTML = `
         <div class="featured-mini-hero">
+            <span class="featured-mini-hero-eyebrow">${heroDate ? `Mini &middot; ${heroDate}` : 'Mini'}</span>
             <h3 class="featured-mini-hero-title">${mini.title || 'Untitled'}</h3>
         </div>
         <div class="featured-mini-details">
