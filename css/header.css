@@ -77,41 +77,29 @@ header {
    ======================================== */
 
 /* Desktop to Tablet Transition (max-width: 1440px)
-   Title + minis share a centered row 1 ("minis right next to title").
-   Links pill wraps to row 2 (full-width, centered). */
+   Column-stacked header: title centered, links pill below. Minis floats
+   separately at the top-right via specials.css. */
 @media (max-width: 1440px) {
     header {
-        display: grid;
-        grid-template-columns: auto auto;
-        grid-template-areas:
-            "name minis"
-            "links links";
-        column-gap: 20px;
-        row-gap: 8px;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
         margin-bottom: 20px;
-        padding: 16px 24px 0 24px;
-        min-height: 0;
     }
 
     #name {
-        grid-area: name;
-        font-size: 48px;
-        margin: 0;
+        font-size: 52px;
+        margin: 20px 0 15px 0;
         text-align: center;
-        width: auto;
+        width: 100%;
         display: block;
     }
 
     #links {
-        grid-area: links;
         position: relative;
         left: auto;
         transform: none;
         width: auto;
-        margin: 4px auto 16px auto;
-        justify-self: center;
+        margin: 0 auto 15px auto;
         font-size: 25px;
     }
 
@@ -131,12 +119,15 @@ header {
     }
 }
 
-/* Medium-Small Screens (max-width: 1024px)
-   Title size inherits the @media 1440 value (48px) so there's no jump
-   between the 1025→1024 boundary. */
+/* Medium-Small Screens (max-width: 1024px) */
 @media (max-width: 1024px) {
     header {
         margin-bottom: 0;
+    }
+
+    #name {
+        font-size: 52px;
+        margin-left: 0;
     }
 
     #links {
@@ -153,10 +144,10 @@ header {
     }
 }
 
-/* Small Screens (max-width: 992px) — narrower laptops/tablets */
+/* Small Screens (max-width: 992px) */
 @media (max-width: 992px) {
     #name {
-        font-size: 36px;
+        font-size: 30px;
     }
 
     #links {
@@ -170,24 +161,17 @@ header {
 }
 
 /* Mobile Screens (max-width: 768px)
-   Header reverts to a column-flex: title → pill → minis (inline, handled
-   in specials.css). Title and pill use most of the viewport width. */
+   Title at top, pill below, minis goes inline beneath the pill
+   (handled in specials.css). */
 @media (max-width: 768px) {
     header {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        grid-template-areas: none;
-        grid-template-columns: none;
         margin-bottom: 0px;
         min-height: 140px;
-        padding: 0;
     }
 
     #name {
         font-size: 40px;
         margin: 22px 0 12px 0;
-        grid-area: auto;
     }
 
     #links {
