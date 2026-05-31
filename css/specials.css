@@ -1,10 +1,12 @@
 .minis-button {
     position: absolute;
     top: 10px;
-    right: 200px;
+    /* Anchored to the right corner; fluid sizing keeps the cluster tidy
+       through the 1441–1920 row-layout range. */
+    right: 30px;
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: clamp(12px, 1.1vw, 20px);
     background: linear-gradient(135deg,
             #4A90E2 0%,
             /* Blue */
@@ -16,12 +18,12 @@
             /* Green */
             #4A90E2 100%);
     /* Back to Blue */
-    padding: 20px 35px;
+    padding: clamp(12px, 1vw, 20px) clamp(20px, 1.8vw, 35px);
     border: none;
     border-radius: 50px;
     font-family: "Delius", cursive;
     font-weight: 700;
-    font-size: 28px;
+    font-size: clamp(20px, 1.5vw, 28px);
     color: #ffffff;
     text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
     cursor: pointer;
@@ -76,11 +78,10 @@
 }
 
 .minis-button-icon {
-    width: 45px;
-    height: 45px;
+    width: clamp(34px, 2.4vw, 45px);
+    height: clamp(34px, 2.4vw, 45px);
     flex-shrink: 0;
     border-radius: 8px;
-    filter: drop-shadow(3px 3px 8px rgba(0, 0, 0, 0.4));
     /* Enhance the 3D book colors */
     filter: drop-shadow(3px 3px 8px rgba(0, 0, 0, 0.4)) saturate(1.2) contrast(1.1);
 }
@@ -128,7 +129,9 @@
 
 /* ── Photos button (variant of minis-button) ───────────────────────────── */
 .photos-button {
-    right: 430px;
+    /* Row mode (>1440): sits to the left of minis with a constant ~20px gap.
+       Scales with the same vw the minis button uses so the cluster stays tidy. */
+    right: clamp(200px, 14.5vw, 260px);
     background: linear-gradient(135deg,
             #2c3e50 0%,
             #8e44ad 30%,
@@ -153,23 +156,25 @@
 }
 
 .photos-button-icon {
-    width: 45px;
-    height: 45px;
+    width: clamp(34px, 2.4vw, 45px);
+    height: clamp(34px, 2.4vw, 45px);
     flex-shrink: 0;
     /* PNG is a black silhouette — invert to white so it reads on the dark gradient */
     filter: brightness(0) invert(1) drop-shadow(3px 3px 8px rgba(0, 0, 0, 0.45));
 }
 
+/* Column-stacked header (title on top, links below):
+   Photos flips to the LEFT side, Minis stays on the RIGHT. */
 @media (max-width: 1440px) {
-    .photos-button { top: 60px; right: 330px; }
+    .photos-button { top: 60px; left: 40px; right: auto; }
 }
 
 @media (max-width: 1024px) {
-    .photos-button { top: 60px; right: 270px; }
+    .photos-button { top: 60px; left: 30px; right: auto; }
 }
 
 @media (max-width: 900px) {
-    .photos-button { right: 220px; }
+    .photos-button { left: 20px; right: auto; }
 }
 
 @media (max-width: 768px) {
@@ -204,14 +209,20 @@
 @media (max-width: 1440px) {
     .minis-button {
         top: 60px;
-        right: 100px;
+        right: 40px;
     }
 }
 
 @media (max-width: 1024px) {
     .minis-button {
         top: 60px;
-        right: 40px;
+        right: 30px;
+    }
+}
+
+@media (max-width: 900px) {
+    .minis-button {
+        right: 20px;
     }
 }
 

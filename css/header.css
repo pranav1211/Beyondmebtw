@@ -24,9 +24,11 @@ header {
     font-weight: 400;
     font-style: normal;
     font-optical-sizing: auto;
-    font-size: 58px;
+    /* Fluid scale in row layout (1441–1920+) so the title stops clipping
+       into the centered links pill on smaller laptops. */
+    font-size: clamp(46px, 3vw, 58px);
     margin-top: 15px;
-    margin-left: 95px;
+    margin-left: clamp(40px, 5vw, 95px);
     display: block;
     color: #3b342d;
 }
