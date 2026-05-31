@@ -149,45 +149,51 @@ header {
     }
 
     #links {
-        font-size: 14px;
-        padding: 5px;
+        font-size: 16px;
+        /* Keep visible side padding inside the pill so it reads as a pill,
+           not as a strip of buttons. */
+        padding: 6px 10px;
     }
 
     .link {
-        padding: 8px 20px;
+        padding: 8px 18px;
     }
 }
 
-/* Mobile Screens (max-width: 768px) */
+/* Mobile Screens (max-width: 768px)
+   Layout (grid header) is handled in specials.css; this block governs the
+   pill sizing/padding so the pill stays content-width and keeps a visible
+   inset around the link buttons. */
 @media (max-width: 768px) {
     header {
         margin-bottom: 0px;
-        min-height: 200px;
-        flex-direction: column;
-        align-items: center;
     }
 
     #name {
         font-size: 36px;
-        margin: 20px 0 15px 0;
+        margin: 20px 0 10px 0;
     }
 
     #links {
-        width: 90%;
-        margin: 0 auto 20px auto;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
+        /* Content width, NOT stretched to the row. */
+        width: auto;
+        max-width: 100%;
+        margin: 0 auto 12px auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 4px;
         text-align: center;
-        grid-gap: 6px;
-        border-radius: 15px;
-        font-size: 20px;
+        border-radius: 18px;
+        font-size: 18px;
+        padding: 6px 10px;
     }
 
     .link {
         display: flex;
         justify-content: center;
-        padding: 11px 5px;
-        border-radius: 15px;
+        padding: 8px 16px;
+        border-radius: 14px;
     }
 
     .link:hover {
@@ -198,33 +204,39 @@ header {
 /* Extra Small Screens (max-width: 576px) */
 @media (max-width: 576px) {
     #name {
-        font-size: 36px;
+        font-size: 34px;
+    }
+
+    #links {
+        font-size: 17px;
+        padding: 5px 9px;
     }
 
     .link {
-        padding: 9px 15px;
-        font-size: 20px;
+        padding: 7px 14px;
+        font-size: 17px;
     }
 }
 
 /* Very Small Screens (max-width: 480px) */
 @media (max-width: 480px) {
     #name {
-        font-size: 36px;
+        font-size: 32px;
     }
 
     #links {
-        width: 89.1%;
-        margin: 1px auto 15px auto;
-        font-size: 20px;
-        padding: 3px;
+        width: auto;
+        max-width: 100%;
+        margin: 0 auto 10px auto;
+        font-size: 15px;
+        padding: 5px 8px;
+        gap: 3px;
     }
 
     .link {
-        display: flex;
-        justify-content: center;
-        padding: 11px 5px;
-        border-radius: 15px;
+        padding: 7px 12px;
+        font-size: 15px;
+        border-radius: 12px;
     }
 }
 
@@ -232,18 +244,19 @@ header {
 @media (max-width: 320px) {
     #name {
         font-size: 24px;
-        margin: 10px 0 8px 0;
+        margin: 10px 0 6px 0;
     }
 
     #links {
-        width: 100%;
-        font-size: 14px;
-        padding: 1px;
-        grid-gap: 2px;
+        width: auto;
+        max-width: 100%;
+        font-size: 12px;
+        padding: 4px 6px;
+        gap: 2px;
     }
 
     .link {
-        padding: 6px 1px;
+        padding: 5px 8px;
         font-size: 12px;
     }
 }

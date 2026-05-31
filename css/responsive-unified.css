@@ -19,11 +19,75 @@
     }
 }
 
+/* Laptop / 14" range (max-width: 1350px)
+   The 4-column bento gets too tight by 1350 — the get-in-touch card can't
+   fit the email and the profile photo column gets cramped. Drop to 2 columns
+   and promote get-in-touch to its own full-width row earlier than 1024px. */
+@media (max-width: 1350px) {
+    .bento-grid {
+        grid-template-columns: 1fr 1fr;
+        padding: 0 30px;
+    }
+
+    /* 3-row top section: profile (col 1 spans rows 1-2), welcome (col 2 row 1),
+       latest-post (col 2 row 2), get-in-touch (full-width row 3). */
+    .profile-card {
+        grid-column: 1 / 2;
+        grid-row: 1 / 3;
+    }
+
+    .welcome-section {
+        grid-column: 2 / 3;
+        grid-row: 1 / 2;
+    }
+
+    .latest-post {
+        grid-column: 2 / 3;
+        grid-row: 2 / 3;
+    }
+
+    .get-in-touch {
+        grid-column: 1 / 3;
+        grid-row: 3 / 4;
+        min-height: auto;
+        height: auto;
+    }
+
+    .featured-posts {
+        grid-column: 1 / 3;
+        grid-row: 4 / 5;
+    }
+
+    .featured-minis {
+        grid-column: 1 / 3;
+        grid-row: 5 / 6;
+    }
+
+    .projects-showcase {
+        grid-column: 1 / 3;
+        grid-row: 6 / 7;
+    }
+
+    /* With get-in-touch full-width, split social-links into 2 columns so
+       the card uses the new horizontal room instead of stretching items wide. */
+    .get-in-touch .social-links {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 16px;
+        row-gap: 6px;
+    }
+
+    /* Long usernames (email) shouldn't push past the social-item width. */
+    .social-username {
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+}
+
 /* Medium Screens (max-width: 1200px) */
 @media (max-width: 1200px) {
-    /* Bento Grid Adjustments */
+    /* Bento Grid Adjustments — keep the 2-col layout from the 1350 rule. */
     .bento-grid {
-        grid-template-columns: 1fr 1fr 1fr 1fr;
         padding: 0 20px;
     }
 
@@ -273,41 +337,11 @@
 
 /* Small Screens (max-width: 992px) */
 @media (max-width: 992px) {
-    /* Index Page Grid Positioning */
-    .latest-post {
-        grid-column: 2 / 3;
-        grid-row: 2 / 3;
-    }
-
-    .featured-posts {
-        grid-column: 1 / 3;
-        grid-row: 3 / 4;
-    }
-
-    .featured-minis {
-        grid-column: 1 / 3;
-        grid-row: 4 / 5;
-    }
-
-    .projects-showcase {
-        grid-column: 1 / 3;
-        grid-row: 5 / 6;
-    }
-
-    .get-in-touch {
-        grid-column: 1 / 2;
-        grid-row: 6 / 7;
-        min-height: 400px;
-        height: auto;
-    }
+    /* Grid row placements for the home page bento are inherited from the
+       1350px rule above; no need to re-state them here. */
 
     .form-group textarea {
         min-height: 100px;
-    }
-
-    .twitter-feed {
-        grid-column: 2 / 3;
-        grid-row: 5 / 6;
     }
 
     /* Grid Column Stacking */

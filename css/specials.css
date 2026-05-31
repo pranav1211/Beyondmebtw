@@ -1,9 +1,15 @@
+/* The bento grid is max-width 1800px with 40px side padding. This anchor
+   matches the grid's right edge so the button cluster never overflows the
+   grid's right padding on wide desktops. */
+header {
+    --grid-right-anchor: max(40px, calc((100vw - 1800px) / 2 + 40px));
+}
+
 .minis-button {
     position: absolute;
     top: 10px;
-    /* Anchored to the right corner; fluid sizing keeps the cluster tidy
-       through the 1441–1920 row-layout range. */
-    right: 30px;
+    /* Aligned with the bento grid's right padding (see --grid-right-anchor). */
+    right: var(--grid-right-anchor);
     display: flex;
     align-items: center;
     gap: clamp(12px, 1.1vw, 20px);
@@ -130,8 +136,8 @@
 /* ── Photos button (variant of minis-button) ───────────────────────────── */
 .photos-button {
     /* Row mode (>1440): sits to the left of minis with a constant ~20px gap.
-       Scales with the same vw the minis button uses so the cluster stays tidy. */
-    right: clamp(200px, 14.5vw, 260px);
+       Offset from the grid-right anchor by the minis button's own width. */
+    right: calc(var(--grid-right-anchor) + clamp(170px, 12vw, 230px));
     background: linear-gradient(135deg,
             #2c3e50 0%,
             #8e44ad 30%,
@@ -204,36 +210,41 @@
     }
 }
 
-/* ── Mobile (≤768): photos + minis share a row beneath the title/links ─── */
+/* ── Mobile (≤768): grid header so #links stays content-width AND the
+   buttons can share their own row beneath title/links ─────────────────── */
 @media (max-width: 768px) {
-    /* Override the column-stack header so the two buttons can sit side-by-side
-       on their own wrapped row. Title and links each take a full row above. */
     header {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items: center;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+            "name name"
+            "links links"
+            "photos minis";
         column-gap: 10px;
         row-gap: 8px;
+        padding: 0 16px 12px 16px;
         min-height: 0;
-        padding-bottom: 10px;
+        align-items: center;
+        justify-items: center;
     }
 
-    #name,
-    #links {
-        flex: 0 0 100%;
-        max-width: 100%;
-    }
+    #name { grid-area: name; }
+    #links { grid-area: links; justify-self: center; }
 
-    .minis-button,
     .minis-button.photos-button {
+        grid-area: photos;
+        justify-self: stretch;
+    }
+
+    .minis-button {
         position: relative;
         top: auto;
         right: auto;
         left: auto;
-        flex: 0 0 calc(50% - 10px);
-        max-width: calc(50% - 10px);
+        grid-area: minis;
+        justify-self: stretch;
         width: auto;
+        max-width: none;
         height: auto;
         margin: 0;
         justify-content: center;
