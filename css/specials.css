@@ -164,17 +164,20 @@
 }
 
 /* Column-stacked header (title on top, links below):
-   Photos flips to the LEFT side, Minis stays on the RIGHT. */
+   Photos flips to the LEFT side, Minis stays on the RIGHT.
+   Combined selector `.minis-button.photos-button` is required so these win
+   over the later `.minis-button` media queries (same single-class specificity,
+   source order would otherwise re-apply `right: 40px` and stretch the button). */
 @media (max-width: 1440px) {
-    .photos-button { top: 60px; left: 40px; right: auto; }
+    .minis-button.photos-button { top: 60px; left: 40px; right: auto; }
 }
 
 @media (max-width: 1024px) {
-    .photos-button { top: 60px; left: 30px; right: auto; }
+    .minis-button.photos-button { top: 60px; left: 30px; right: auto; }
 }
 
 @media (max-width: 900px) {
-    .photos-button { left: 20px; right: auto; }
+    .minis-button.photos-button { left: 20px; right: auto; }
 }
 
 @media (max-width: 768px) {
