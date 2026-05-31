@@ -12,7 +12,7 @@ header {
     right: var(--grid-right-anchor);
     display: flex;
     align-items: center;
-    gap: clamp(12px, 1.1vw, 20px);
+    gap: clamp(10px, 0.9vw, 16px);
     background: linear-gradient(135deg,
             #4A90E2 0%,
             /* Blue */
@@ -24,12 +24,12 @@ header {
             /* Green */
             #4A90E2 100%);
     /* Back to Blue */
-    padding: clamp(12px, 1vw, 20px) clamp(20px, 1.8vw, 35px);
+    padding: clamp(9px, 0.85vw, 16px) clamp(16px, 1.55vw, 28px);
     border: none;
     border-radius: 50px;
     font-family: "Delius", cursive;
     font-weight: 700;
-    font-size: clamp(20px, 1.5vw, 28px);
+    font-size: clamp(18px, 1.35vw, 24px);
     color: #ffffff;
     text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
     cursor: pointer;
@@ -84,8 +84,8 @@ header {
 }
 
 .minis-button-icon {
-    width: clamp(34px, 2.4vw, 45px);
-    height: clamp(34px, 2.4vw, 45px);
+    width: clamp(30px, 2.1vw, 38px);
+    height: clamp(30px, 2.1vw, 38px);
     flex-shrink: 0;
     border-radius: 8px;
     /* Enhance the 3D book colors */
@@ -135,9 +135,9 @@ header {
 
 /* ── Photos button (variant of minis-button) ───────────────────────────── */
 .photos-button {
-    /* Row mode (>1440): sits to the left of minis with a constant ~20px gap.
+    /* Row mode (>1440): sits to the left of minis with a constant ~18px gap.
        Offset from the grid-right anchor by the minis button's own width. */
-    right: calc(var(--grid-right-anchor) + clamp(170px, 12vw, 230px));
+    right: calc(var(--grid-right-anchor) + clamp(150px, 10.5vw, 200px));
     background: linear-gradient(135deg,
             #2c3e50 0%,
             #8e44ad 30%,
@@ -162,8 +162,8 @@ header {
 }
 
 .photos-button-icon {
-    width: clamp(34px, 2.4vw, 45px);
-    height: clamp(34px, 2.4vw, 45px);
+    width: clamp(30px, 2.1vw, 38px);
+    height: clamp(30px, 2.1vw, 38px);
     flex-shrink: 0;
     /* PNG is a black silhouette — invert to white so it reads on the dark gradient */
     filter: brightness(0) invert(1) drop-shadow(3px 3px 8px rgba(0, 0, 0, 0.45));
@@ -211,7 +211,7 @@ header {
 }
 
 /* ── Mobile (≤768): grid header so #links stays content-width AND the
-   buttons can share their own row beneath title/links ─────────────────── */
+   buttons share their own row beneath title/links ──────────────────────── */
 @media (max-width: 768px) {
     header {
         display: grid;
@@ -220,9 +220,9 @@ header {
             "name name"
             "links links"
             "photos minis";
-        column-gap: 10px;
-        row-gap: 8px;
-        padding: 0 16px 12px 16px;
+        column-gap: 12px;
+        row-gap: 10px;
+        padding: 0 16px 14px 16px;
         min-height: 0;
         align-items: center;
         justify-items: center;
@@ -231,9 +231,16 @@ header {
     #name { grid-area: name; }
     #links { grid-area: links; justify-self: center; }
 
+    /* CRITICAL: reset top/left/right that cascade from the @media 1024
+       column-mode rule (`top: 60px; left: 30px`) — without this the photos
+       button gets shifted 60px down from its grid cell, putting it on a
+       different visual row than the minis button. */
     .minis-button.photos-button {
         grid-area: photos;
-        justify-self: stretch;
+        justify-self: end;
+        top: auto;
+        left: auto;
+        right: auto;
     }
 
     .minis-button {
@@ -242,58 +249,27 @@ header {
         right: auto;
         left: auto;
         grid-area: minis;
-        justify-self: stretch;
+        justify-self: start;
         width: auto;
         max-width: none;
         height: auto;
         margin: 0;
         justify-content: center;
-        padding: clamp(8px, calc(1vw + 4px), 14px) clamp(10px, calc(2vw + 6px), 24px);
-        font-size: clamp(15px, calc(2vw + 7px), 22px);
-        gap: clamp(8px, calc(1.5vw + 2px), 14px);
+        padding: clamp(10px, calc(1.2vw + 6px), 16px) clamp(14px, calc(2.4vw + 8px), 28px);
+        font-size: clamp(17px, calc(2vw + 9px), 24px);
+        gap: clamp(10px, calc(1.5vw + 4px), 16px);
     }
 
     .minis-button-icon,
     .photos-button-icon {
-        width: clamp(26px, calc(2.5vw + 19px), 40px);
-        height: clamp(26px, calc(2.5vw + 19px), 40px);
+        width: clamp(30px, calc(2.5vw + 22px), 42px);
+        height: clamp(30px, calc(2.5vw + 22px), 42px);
     }
 }
 
 @media (max-width: 480px) {
     header {
-        column-gap: 8px;
-        row-gap: 6px;
-    }
-
-    .minis-button,
-    .minis-button.photos-button {
-        flex: 0 0 calc(50% - 8px);
-        max-width: calc(50% - 8px);
-        padding: clamp(6px, 1.5vw, 10px) clamp(8px, 2.5vw, 14px);
-        font-size: clamp(13px, calc(2vw + 7px), 18px);
-        gap: clamp(6px, 1.5vw, 10px);
-    }
-
-    .minis-button-icon,
-    .photos-button-icon {
-        width: clamp(22px, calc(3vw + 14px), 32px);
-        height: clamp(22px, calc(3vw + 14px), 32px);
-    }
-}
-
-@media (max-width: 360px) {
-    .minis-button,
-    .minis-button.photos-button {
-        font-size: 13px;
-        padding: 6px 8px;
-        gap: 6px;
-        letter-spacing: 0.3px;
-    }
-
-    .minis-button-icon,
-    .photos-button-icon {
-        width: 22px;
-        height: 22px;
+        column-gap: 10px;
+        padding: 0 12px 12px 12px;
     }
 }

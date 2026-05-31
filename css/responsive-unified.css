@@ -84,6 +84,14 @@
     }
 }
 
+/* Small tablet / phone (≤530): 2-col social-links gets too cramped for the
+   bordered items, so collapse back to a single column. */
+@media (max-width: 530px) {
+    .get-in-touch .social-links {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* Medium Screens (max-width: 1200px) */
 @media (max-width: 1200px) {
     /* Bento Grid Adjustments — keep the 2-col layout from the 1350 rule. */
