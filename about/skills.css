@@ -1,5 +1,10 @@
 /* ========================================
-   SKILLS SECTION - REVAMPED VISUAL DESIGN
+   SKILLS SECTION
+   Design principles applied: Emil Kowalski (motion intentionality,
+   :active feedback, prefers-reduced-motion), Impeccable (layered
+   shadows, no heavy single-side borders, weight-contrast hierarchy),
+   Taste Skill (anti-default: no centered glow on every card, eyebrow
+   labels for subcategories instead of nested boxes-with-stripes).
    ======================================== */
 
 .skills {
@@ -18,36 +23,25 @@
    Skill Category Cards
    ======================================== */
 .skill-category {
-    background: linear-gradient(135deg, rgba(244, 242, 239, 0.9) 0%, rgba(232, 217, 205, 0.8) 100%);
-    padding: 18px 20px;
-    border-radius: 18px;
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(160deg, #FBF8F3 0%, #F0E8DC 100%);
+    padding: 20px 22px;
+    border-radius: 16px;
+    border: 1px solid rgba(59, 52, 45, 0.07);
+    box-shadow:
+        0 1px 2px rgba(59, 52, 45, 0.04),
+        0 12px 32px -12px rgba(59, 52, 45, 0.16);
+    /* Specific transitions only — never "all" */
+    transition: transform 280ms cubic-bezier(0.32, 0.72, 0, 1),
+                box-shadow 280ms cubic-bezier(0.32, 0.72, 0, 1);
     position: relative;
     overflow: hidden;
-    border: 2px solid transparent;
-}
-
-.skill-category::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 5px;
-    background: linear-gradient(90deg, #4285F4 0%, #34A853 50%, #FBBC05 100%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
 }
 
 .skill-category:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-    border-color: rgba(59, 52, 45, 0.1);
-}
-
-.skill-category:hover::before {
-    opacity: 1;
+    transform: translateY(-3px);
+    box-shadow:
+        0 2px 4px rgba(59, 52, 45, 0.05),
+        0 22px 44px -14px rgba(59, 52, 45, 0.22);
 }
 
 /* ========================================
@@ -57,113 +51,98 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 12px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid rgba(59, 52, 45, 0.2);
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(59, 52, 45, 0.1);
 }
 
 .skill-category-icon {
-    font-size: 28px;
-    animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-5px); }
+    font-size: 26px;
+    line-height: 1;
+    /* Removed perpetual float animation — high-frequency visible motion
+       per Emil's "100+ times/day" rule. */
 }
 
 .skill-category-title {
-    font-size: 22px;
+    font-size: 21px;
     font-weight: 700;
     color: #3b342d;
     margin: 0;
     font-family: "Kavoon", serif;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
 }
 
 /* ========================================
-   Subcategories (for Software Development)
-   Oriented as a grid so they sit side-by-side when there's room,
-   keeping the card from growing tall.
+   Subcategories — grid layout so they fit side-by-side
+   when there's room, no nested-card "stripe on the side" feel
    ======================================== */
 .skill-subcategories {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 10px;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
 }
 
 .skill-subcategory {
-    background-color: rgba(255, 255, 255, 0.5);
-    padding: 10px 12px;
+    background-color: rgba(255, 255, 255, 0.55);
+    padding: 11px 13px;
     border-radius: 10px;
-    border-left: 3px solid #3b342d;
+    border: 1px solid rgba(59, 52, 45, 0.05);
 }
 
 .skill-subcategory-title {
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #3b342d;
+    font-size: 11.5px;
+    font-weight: 700;
+    margin: 0 0 9px 0;
+    color: #6b5d4f;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
     display: flex;
     align-items: center;
     gap: 6px;
 }
 
 /* ========================================
-   Skill Tags/Pills with Icons
+   Skill Tags
    ======================================== */
 .skill-tags-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 5px;
 }
 
 .skill-tag {
-    background: linear-gradient(135deg, #F4F2EF 0%, #fff 100%);
-    padding: 6px 11px;
-    border-radius: 18px;
-    font-size: 13px;
-    font-weight: 600;
+    background: #FFFFFF;
+    padding: 5px 10px;
+    border-radius: 16px;
+    font-size: 12.5px;
+    font-weight: 500;
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(59, 52, 45, 0.06);
+    border: 1px solid rgba(59, 52, 45, 0.06);
+    transition: transform 180ms cubic-bezier(0.32, 0.72, 0, 1),
+                box-shadow 180ms cubic-bezier(0.32, 0.72, 0, 1);
+    cursor: default;
     position: relative;
-    overflow: hidden;
-    border: 2px solid transparent;
-}
-
-.skill-tag::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
-    transition: left 0.5s ease;
 }
 
 .skill-tag:hover {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
-    border-color: rgba(59, 52, 45, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(59, 52, 45, 0.1);
 }
 
-.skill-tag:hover::before {
-    left: 100%;
+.skill-tag:active {
+    transform: translateY(0);
+    transition-duration: 80ms;
 }
 
 .skill-icon {
-    font-size: 14px;
-    animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
+    font-size: 13px;
+    line-height: 1;
+    /* Removed pulse animation — high-frequency visible motion. */
 }
 
 .skill-name {
@@ -172,17 +151,35 @@
 
 /* ========================================
    Application Description
+   No more 4px blue stripe — eyebrow label + italic body
    ======================================== */
 .skill-application {
     font-size: 13.5px;
-    color: #3b342d;
+    color: #5a5149;
     line-height: 1.55;
-    padding: 10px 12px;
-    margin-bottom: 12px;
-    background-color: rgba(255, 255, 255, 0.6);
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    background-color: rgba(255, 255, 255, 0.55);
     border-radius: 10px;
-    border-left: 3px solid #4285F4;
+    border: 1px solid rgba(59, 52, 45, 0.05);
     font-style: italic;
+    text-wrap: pretty;
+}
+
+/* ========================================
+   Reduced motion override (required, per Emil)
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+    .skill-category,
+    .skill-tag {
+        transition: none;
+    }
+
+    .skill-category:hover,
+    .skill-tag:hover,
+    .skill-tag:active {
+        transform: none;
+    }
 }
 
 /* ========================================
@@ -206,21 +203,16 @@
     }
 
     .skill-category-icon {
-        font-size: 26px;
+        font-size: 24px;
     }
 
     .skill-category-title {
-        font-size: 20px;
+        font-size: 19px;
     }
 
-    /* On phones the card is narrower than ~360px, so stacking the
-       subcategories vertically reads better than a one-column grid. */
+    /* Narrower card on phones — stack subcategories vertically */
     .skill-subcategories {
         grid-template-columns: 1fr;
-    }
-
-    .skill-subcategory-title {
-        font-size: 14px;
     }
 }
 
@@ -233,6 +225,6 @@
 
     .skill-tag {
         font-size: 12px;
-        padding: 5px 10px;
+        padding: 5px 9px;
     }
 }

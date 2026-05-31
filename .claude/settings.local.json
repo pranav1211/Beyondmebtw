@@ -45,7 +45,15 @@
       "WebFetch(domain:minis.beyondmebtw.com)",
       "Bash(node --check \"c:/Users/pranav/Downloads/Beyondmebtw/script.js\")",
       "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('c:/Users/pranav/Downloads/Beyondmebtw/manage/latest.json','utf8'\\)\\);console.log\\('latest.json ok'\\)\")",
-      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('c:/Users/pranav/Downloads/Beyondmebtw/manage/latest.json','utf8'\\)\\);JSON.parse\\(require\\('fs'\\).readFileSync\\('c:/Users/pranav/Downloads/Beyondmebtw/projects/project-data.json','utf8'\\)\\);console.log\\('JSON ok'\\)\")"
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('c:/Users/pranav/Downloads/Beyondmebtw/manage/latest.json','utf8'\\)\\);JSON.parse\\(require\\('fs'\\).readFileSync\\('c:/Users/pranav/Downloads/Beyondmebtw/projects/project-data.json','utf8'\\)\\);console.log\\('JSON ok'\\)\")",
+      "Bash(ls \"C:/Users/pranav/.claude/skills/\" 2>&1 | head -30)",
+      "Read(//c/Users/pranav/.claude/**)",
+      "WebFetch(domain:adi-mkv.github.io)",
+      "Bash(npx -y skills add pbakaus/impeccable)",
+      "Bash(npx -y skills add https://github.com/Leonxlnx/taste-skill --skill \"design-taste-frontend\")",
+      "Bash(npx -y skills add emilkowalski/skill)",
+      "Bash(npx -y skills search caveman)",
+      "Bash(npx -y skills add mattpocock/skills@caveman)"
     ]
   }
 }
