@@ -9,8 +9,6 @@
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 15px;
     margin-bottom: 20px;
-    /* Drives the auto-numbered "001 / 002 / 003" in each hero. */
-    counter-reset: mini-counter;
 }
 
 .featured-mini {
@@ -36,9 +34,9 @@
         0 22px 44px -14px rgba(59, 52, 45, 0.22);
 }
 
-/* ── Hero block: editorial number-first
-   Giant ghosted issue number behind, eyebrow top-right, title left-aligned
-   sitting on top of the number. */
+/* ── Hero block: warm paper background, giant pull-quote as graphic accent.
+   Pure type-as-graphic — fills the visual space the missing thumbnail
+   would have occupied, without committing to a literal image. */
 .featured-mini-hero {
     position: relative;
     width: 100%;
@@ -50,22 +48,21 @@
     justify-content: flex-end;
     padding: 18px 22px 22px 22px;
     overflow: hidden;
-    counter-increment: mini-counter;
     border-bottom: 1px solid rgba(59, 52, 45, 0.08);
 }
 
-/* The big ghosted issue number ("001", "002", ...) */
+/* The big ghosted opening quote — sits top-left, slightly cropped at the top
+   for that editorial pull-quote feel. */
 .featured-mini-hero::before {
-    content: counter(mini-counter, decimal-leading-zero);
+    content: '\201C';
     position: absolute;
-    left: 12px;
-    top: -28px;
-    font-family: "Kavoon", serif;
-    font-size: 150px;
+    left: 10px;
+    top: -38px;
+    font-family: "Georgia", "Times New Roman", serif;
     font-weight: 700;
+    font-size: 180px;
     line-height: 1;
-    letter-spacing: -0.05em;
-    color: rgba(59, 52, 45, 0.09);
+    color: rgba(59, 52, 45, 0.14);
     pointer-events: none;
     user-select: none;
 }
@@ -97,10 +94,6 @@
     background-color: #F3EAEC;
 }
 
-.featured-mini:nth-child(3n + 1) .featured-mini-hero::before { color: rgba(106, 90, 74, 0.11); }
-.featured-mini:nth-child(3n + 2) .featured-mini-hero::before { color: rgba(79, 67, 115, 0.10); }
-.featured-mini:nth-child(3n + 3) .featured-mini-hero::before { color: rgba(106, 74, 85, 0.11); }
-
 .featured-mini:nth-child(3n + 1) .featured-mini-hero::after {
     background: radial-gradient(circle at 95% 10%, rgba(156, 138, 110, 0.22) 0%, transparent 55%);
 }
@@ -110,6 +103,11 @@
 .featured-mini:nth-child(3n + 3) .featured-mini-hero::after {
     background: radial-gradient(circle at 95% 10%, rgba(138, 106, 118, 0.22) 0%, transparent 55%);
 }
+
+/* Per-card quote tint — each card's pull-quote picks up its own hue family. */
+.featured-mini:nth-child(3n + 1) .featured-mini-hero::before { color: rgba(106, 90, 74, 0.18); }
+.featured-mini:nth-child(3n + 2) .featured-mini-hero::before { color: rgba(79, 67, 115, 0.18); }
+.featured-mini:nth-child(3n + 3) .featured-mini-hero::before { color: rgba(106, 74, 85, 0.18); }
 
 .featured-mini-hero-eyebrow {
     position: absolute;
@@ -149,8 +147,9 @@
     }
 
     .featured-mini-hero::before {
-        font-size: 180px;
-        top: -36px;
+        font-size: 210px;
+        top: -46px;
+        left: 14px;
     }
 
     .featured-mini-hero-title {
@@ -165,8 +164,8 @@
     }
 
     .featured-mini-hero::before {
-        font-size: 130px;
-        top: -22px;
+        font-size: 155px;
+        top: -32px;
         left: 8px;
     }
 
@@ -193,13 +192,6 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-}
-
-.featured-mini-date {
-    font-size: 14px;
-    color: #3b342d;
-    font-style: italic;
-    margin-bottom: 10px;
 }
 
 .featured-mini-excerpt {

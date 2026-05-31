@@ -116,7 +116,8 @@ function formatMiniHeroDate(dateStr) {
     if (isNaN(d.getTime())) return '';
     const dd = String(d.getDate()).padStart(2, '0');
     const mm = String(d.getMonth() + 1).padStart(2, '0');
-    return `${dd}.${mm}`;
+    const yy = String(d.getFullYear()).slice(-2);
+    return `${dd}.${mm}.${yy}`;
 }
 
 function truncateExcerpt(text, limit = 200) {
@@ -139,7 +140,6 @@ function createFeaturedMini(mini) {
             <h3 class="featured-mini-hero-title">${mini.title || 'Untitled'}</h3>
         </div>
         <div class="featured-mini-details">
-            <p class="featured-mini-date">${formatMiniDate(mini.date)}</p>
             <p class="featured-mini-excerpt">${truncateExcerpt(mini.featuredExcerpt, 200)}</p>
         </div>
         <button class="featured-mini-read-more">Read More</button>
