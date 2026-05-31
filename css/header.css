@@ -76,28 +76,42 @@ header {
    Responsive Header Styles
    ======================================== */
 
-/* Desktop to Tablet Transition (max-width: 1440px) */
+/* Desktop to Tablet Transition (max-width: 1440px)
+   Title + minis share a centered row 1 ("minis right next to title").
+   Links pill wraps to row 2 (full-width, centered). */
 @media (max-width: 1440px) {
     header {
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: auto auto;
+        grid-template-areas:
+            "name minis"
+            "links links";
+        column-gap: 20px;
+        row-gap: 8px;
         align-items: center;
+        justify-content: center;
         margin-bottom: 20px;
+        padding: 16px 24px 0 24px;
+        min-height: 0;
     }
 
     #name {
-        font-size: 52px;
-        margin: 20px 0 15px 0;
+        grid-area: name;
+        font-size: 48px;
+        margin: 0;
         text-align: center;
-        width: 100%;
+        width: auto;
         display: block;
     }
 
     #links {
+        grid-area: links;
         position: relative;
         left: auto;
         transform: none;
         width: auto;
-        margin: 0 auto 15px auto;
+        margin: 4px auto 16px auto;
+        justify-self: center;
         font-size: 25px;
     }
 
@@ -117,15 +131,12 @@ header {
     }
 }
 
-/* Medium-Small Screens (max-width: 1024px) */
+/* Medium-Small Screens (max-width: 1024px)
+   Title size inherits the @media 1440 value (48px) so there's no jump
+   between the 1025→1024 boundary. */
 @media (max-width: 1024px) {
     header {
         margin-bottom: 0;
-    }
-
-    #name {
-        font-size: 52px;
-        margin-left: 0;
     }
 
     #links {
@@ -142,16 +153,14 @@ header {
     }
 }
 
-/* Small Screens (max-width: 992px) */
+/* Small Screens (max-width: 992px) — narrower laptops/tablets */
 @media (max-width: 992px) {
     #name {
-        font-size: 30px;
+        font-size: 36px;
     }
 
     #links {
         font-size: 16px;
-        /* Keep visible side padding inside the pill so it reads as a pill,
-           not as a strip of buttons. */
         padding: 6px 10px;
     }
 
@@ -161,17 +170,24 @@ header {
 }
 
 /* Mobile Screens (max-width: 768px)
-   Title and pill are sized to use more of the viewport width with proper
-   padding. Minis goes inline beneath the pill (handled in specials.css). */
+   Header reverts to a column-flex: title → pill → minis (inline, handled
+   in specials.css). Title and pill use most of the viewport width. */
 @media (max-width: 768px) {
     header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        grid-template-areas: none;
+        grid-template-columns: none;
         margin-bottom: 0px;
         min-height: 140px;
+        padding: 0;
     }
 
     #name {
         font-size: 40px;
         margin: 22px 0 12px 0;
+        grid-area: auto;
     }
 
     #links {

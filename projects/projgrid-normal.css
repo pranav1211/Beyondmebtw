@@ -50,16 +50,19 @@
   opacity: 1;
 }
 
-/* Normal Card Image */
+/* Normal Card Image — 16:9 box that scales with card width so the thumbnail
+   always fills the card (no empty horizontal bars at 2-col laptop widths). */
 .project-card:not(.sidebar-card) .project-image {
-  height: 180px;
+  width: 100%;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
 }
 
 .project-card:not(.sidebar-card) .project-image img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
+  object-position: center;
   display: block;
 }
 
@@ -143,14 +146,7 @@
 
   .project-card:not(.sidebar-card) .project-image {
     width: 100%;
-    height: 210px;
-  }
-
-  .project-card:not(.sidebar-card) .project-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    display: block;
+    aspect-ratio: 16 / 9;
+    height: auto;
   }
 }
