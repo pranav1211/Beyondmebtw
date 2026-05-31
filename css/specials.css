@@ -121,11 +121,22 @@
     }
 }
 
-/* ── Column-stacked header (title centered, links below): top-right corner */
+/* ── Column-stacked header (title centered, links below): top-right corner.
+   The base clamp-based sizing scales down to ~19px font at 1440 which the
+   user found too small for the laptop view — switch to a fixed, generous
+   size for the whole column-mode range. */
 @media (max-width: 1440px) {
     .minis-button {
         top: 60px;
         right: 40px;
+        font-size: 24px;
+        padding: 14px 28px;
+        gap: 16px;
+    }
+
+    .minis-button-icon {
+        width: 40px;
+        height: 40px;
     }
 }
 
@@ -133,6 +144,21 @@
     .minis-button {
         top: 60px;
         right: 30px;
+    }
+}
+
+/* Slightly smaller for the narrow tablet range so the button still has
+   breathing room next to the pill. */
+@media (max-width: 992px) {
+    .minis-button {
+        font-size: 20px;
+        padding: 12px 22px;
+        gap: 12px;
+    }
+
+    .minis-button-icon {
+        width: 34px;
+        height: 34px;
     }
 }
 

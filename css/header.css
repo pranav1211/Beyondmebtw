@@ -175,9 +175,10 @@ header {
     }
 
     #links {
-        /* Content-width 2×2 grid pill — NOT stretched to viewport. */
-        width: max-content;
-        max-width: calc(100% - 24px);
+        /* Take most of the viewport width with a small inset, like the
+           pre-refactor layout. */
+        width: 92%;
+        max-width: 720px;
         margin: 0 auto 14px auto;
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -226,6 +227,7 @@ header {
     }
 
     #links {
+        width: 94%;
         margin: 0 auto 12px auto;
         font-size: 17px;
         padding: 7px 11px;
