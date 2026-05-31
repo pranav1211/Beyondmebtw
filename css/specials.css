@@ -12,9 +12,12 @@
 .minis-button {
     position: absolute;
     top: 10px;
-    /* Tracks the bento grid's right padding: 40px when the grid spans the
-       viewport, growing to keep aligned when the viewport > 1800. */
-    right: max(40px, calc((100vw - 1800px) / 2 + 40px));
+    /* Sits visually centered above the get-in-touch card (col 4 of the bento
+       grid) across the row-layout range. Derived from a linear fit:
+         viewport 1441 → right 100,  viewport 1920 → right 220
+       Capped at 320 so it stays roughly on the rightmost bento column at
+       wide viewports. */
+    right: clamp(100px, calc(25vw - 260px), 320px);
     display: flex;
     align-items: center;
     gap: clamp(10px, 0.9vw, 16px);
