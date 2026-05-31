@@ -153,11 +153,11 @@
 }
 
 .photos-button-icon {
-    width: auto !important;
-    height: auto !important;
-    font-size: 32px;
-    line-height: 1;
-    filter: drop-shadow(2px 2px 6px rgba(0, 0, 0, 0.5));
+    width: 45px;
+    height: 45px;
+    flex-shrink: 0;
+    /* PNG is a black silhouette — invert to white so it reads on the dark gradient */
+    filter: brightness(0) invert(1) drop-shadow(3px 3px 8px rgba(0, 0, 0, 0.45));
 }
 
 @media (max-width: 1440px) {
@@ -183,7 +183,7 @@
         margin-bottom: 8px;
     }
 
-    .photos-button-icon { font-size: 28px; }
+    .photos-button-icon { width: 48px; height: 48px; }
 }
 
 @media (max-width: 480px) {
@@ -197,7 +197,7 @@
         height: 10%;
     }
 
-    .photos-button-icon { font-size: 26px; }
+    .photos-button-icon { width: 42px; height: 42px; }
 }
 
 /* Media Queries for width and position changes */
