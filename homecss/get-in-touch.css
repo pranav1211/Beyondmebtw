@@ -30,16 +30,13 @@
     display: flex;
     align-items: center;
     gap: 15px;
-    padding: 12px 12px;
+    padding: 12px 10px;
     border-radius: 10px;
-    border: 1px solid rgba(110, 90, 70, 0.18);
-    background-color: rgba(255, 255, 255, 0.35);
-    transition: background-color 0.3s, border-color 0.3s, transform 0.2s;
+    transition: background-color 0.3s;
 }
 
 .social-item:hover {
-    background-color: rgba(244, 242, 239, 0.85);
-    border-color: rgba(110, 90, 70, 0.32);
+    background-color: rgba(244, 242, 239, 0.7);
 }
 
 .social-icon-wrapper {

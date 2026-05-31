@@ -186,9 +186,6 @@ header {
     .minis-button.photos-button { left: 20px; right: auto; }
 }
 
-/* Mobile photos-button styling is consolidated with .minis-button below
-   (shared rules in the @media 768 / 480 blocks at the end of the file). */
-
 /* Media Queries for width and position changes */
 @media (max-width: 1440px) {
     .minis-button {
@@ -210,66 +207,45 @@ header {
     }
 }
 
-/* ── Mobile (≤768): grid header so #links stays content-width AND the
-   buttons share their own row beneath title/links ──────────────────────── */
-@media (max-width: 768px) {
-    header {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-template-areas:
-            "name name"
-            "links links"
-            "photos minis";
-        column-gap: 12px;
-        row-gap: 10px;
-        padding: 0 16px 14px 16px;
-        min-height: 0;
-        align-items: center;
-        justify-items: center;
-    }
-
-    #name { grid-area: name; }
-    #links { grid-area: links; justify-self: center; }
-
-    /* CRITICAL: reset top/left/right that cascade from the @media 1024
-       column-mode rule (`top: 60px; left: 30px`) — without this the photos
-       button gets shifted 60px down from its grid cell, putting it on a
-       different visual row than the minis button. */
-    .minis-button.photos-button {
-        grid-area: photos;
-        justify-self: end;
-        top: auto;
-        left: auto;
-        right: auto;
+/* ── Small tablets / phones: buttons stay anchored at the top corners
+   (inheriting @media 1024/900 column-mode positions). At ≤576 we hide the
+   text and keep the icon only so the buttons fit alongside the title. ──── */
+@media (max-width: 576px) {
+    .minis-button-text {
+        display: none;
     }
 
     .minis-button {
-        position: relative;
-        top: auto;
+        padding: 9px 11px;
+        gap: 0;
+        right: 14px;
+    }
+
+    .minis-button.photos-button {
+        left: 14px;
         right: auto;
-        left: auto;
-        grid-area: minis;
-        justify-self: start;
-        width: auto;
-        max-width: none;
-        height: auto;
-        margin: 0;
-        justify-content: center;
-        padding: clamp(10px, calc(1.2vw + 6px), 16px) clamp(14px, calc(2.4vw + 8px), 28px);
-        font-size: clamp(17px, calc(2vw + 9px), 24px);
-        gap: clamp(10px, calc(1.5vw + 4px), 16px);
     }
 
     .minis-button-icon,
     .photos-button-icon {
-        width: clamp(30px, calc(2.5vw + 22px), 42px);
-        height: clamp(30px, calc(2.5vw + 22px), 42px);
+        width: 34px;
+        height: 34px;
     }
 }
 
-@media (max-width: 480px) {
-    header {
-        column-gap: 10px;
-        padding: 0 12px 12px 12px;
+@media (max-width: 360px) {
+    .minis-button {
+        padding: 7px 9px;
+        right: 10px;
+    }
+
+    .minis-button.photos-button {
+        left: 10px;
+    }
+
+    .minis-button-icon,
+    .photos-button-icon {
+        width: 28px;
+        height: 28px;
     }
 }

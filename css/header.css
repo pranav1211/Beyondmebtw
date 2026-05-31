@@ -161,28 +161,28 @@ header {
 }
 
 /* Mobile Screens (max-width: 768px)
-   Layout (grid header) is handled in specials.css; this block governs the
-   pill sizing/padding so the pill stays content-width and keeps a visible
-   inset around the link buttons. */
+   Header is back to flex-column (title, then pill, then buttons stay
+   anchored at top corners via specials.css). Pill is a content-width 2×2
+   grid centered on its own row beneath the title. */
 @media (max-width: 768px) {
     header {
         margin-bottom: 0px;
+        min-height: 140px;
     }
 
     #name {
-        font-size: 36px;
-        margin: 20px 0 10px 0;
+        font-size: 32px;
+        margin: 18px 0 10px 0;
     }
 
     #links {
-        /* Content width, NOT stretched to the row. */
-        width: auto;
-        max-width: 100%;
+        /* Content-width 2×2 grid pill — NOT stretched to viewport. */
+        width: max-content;
+        max-width: calc(100% - 24px);
         margin: 0 auto 12px auto;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 4px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 4px;
         text-align: center;
         border-radius: 18px;
         font-size: 18px;
@@ -192,7 +192,7 @@ header {
     .link {
         display: flex;
         justify-content: center;
-        padding: 8px 16px;
+        padding: 8px 18px;
         border-radius: 14px;
     }
 
@@ -204,7 +204,7 @@ header {
 /* Extra Small Screens (max-width: 576px) */
 @media (max-width: 576px) {
     #name {
-        font-size: 34px;
+        font-size: 28px;
     }
 
     #links {
@@ -213,7 +213,7 @@ header {
     }
 
     .link {
-        padding: 7px 14px;
+        padding: 7px 16px;
         font-size: 17px;
     }
 }
@@ -221,38 +221,53 @@ header {
 /* Very Small Screens (max-width: 480px) */
 @media (max-width: 480px) {
     #name {
-        font-size: 32px;
+        font-size: 26px;
+        margin: 14px 0 8px 0;
     }
 
     #links {
-        width: auto;
-        max-width: 100%;
         margin: 0 auto 10px auto;
         font-size: 15px;
         padding: 5px 8px;
-        gap: 3px;
+        grid-gap: 3px;
     }
 
     .link {
-        padding: 7px 12px;
+        padding: 7px 14px;
         font-size: 15px;
         border-radius: 12px;
+    }
+}
+
+/* Tiny Screens (max-width: 360px) */
+@media (max-width: 360px) {
+    #name {
+        font-size: 22px;
+        margin: 12px 0 6px 0;
+    }
+
+    #links {
+        font-size: 13px;
+        padding: 4px 7px;
+        grid-gap: 2px;
+    }
+
+    .link {
+        padding: 6px 10px;
+        font-size: 13px;
     }
 }
 
 /* Tiny Screens (max-width: 320px) */
 @media (max-width: 320px) {
     #name {
-        font-size: 24px;
+        font-size: 20px;
         margin: 10px 0 6px 0;
     }
 
     #links {
-        width: auto;
-        max-width: 100%;
         font-size: 12px;
-        padding: 4px 6px;
-        gap: 2px;
+        padding: 3px 6px;
     }
 
     .link {
