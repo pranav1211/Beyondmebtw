@@ -180,33 +180,8 @@
     .minis-button.photos-button { left: 20px; right: auto; }
 }
 
-@media (max-width: 768px) {
-    .photos-button {
-        width: 40%;
-        position: relative;
-        justify-content: center;
-        right: -10px;
-        top: -10px;
-        font-size: 24px;
-        margin-bottom: 8px;
-    }
-
-    .photos-button-icon { width: 48px; height: 48px; }
-}
-
-@media (max-width: 480px) {
-    .photos-button {
-        width: 60%;
-        position: relative;
-        top: -10px;
-        right: auto;
-        font-size: 24px;
-        margin-bottom: 8px;
-        height: 10%;
-    }
-
-    .photos-button-icon { width: 42px; height: 42px; }
-}
+/* Mobile photos-button styling is consolidated with .minis-button below
+   (shared rules in the @media 768 / 480 blocks at the end of the file). */
 
 /* Media Queries for width and position changes */
 @media (max-width: 1440px) {
@@ -229,39 +204,85 @@
     }
 }
 
+/* ── Mobile (≤768): photos + minis share a row beneath the title/links ─── */
 @media (max-width: 768px) {
-    .minis-button {
-        width: 40%;
-        position: relative;
+    /* Override the column-stack header so the two buttons can sit side-by-side
+       on their own wrapped row. Title and links each take a full row above. */
+    header {
+        flex-direction: row;
+        flex-wrap: wrap;
         justify-content: center;
-        right: -10px;
-        top: -10px;
-        font-size: 24px;
-        margin-bottom: 8px;
+        align-items: center;
+        column-gap: 10px;
+        row-gap: 8px;
+        min-height: 0;
+        padding-bottom: 10px;
     }
 
-    
+    #name,
+    #links {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
 
-    .minis-button-icon {
-        width: 48px;
-        height: 48px;
+    .minis-button,
+    .minis-button.photos-button {
+        position: relative;
+        top: auto;
+        right: auto;
+        left: auto;
+        flex: 0 0 calc(50% - 10px);
+        max-width: calc(50% - 10px);
+        width: auto;
+        height: auto;
+        margin: 0;
+        justify-content: center;
+        padding: clamp(8px, calc(1vw + 4px), 14px) clamp(10px, calc(2vw + 6px), 24px);
+        font-size: clamp(15px, calc(2vw + 7px), 22px);
+        gap: clamp(8px, calc(1.5vw + 2px), 14px);
+    }
+
+    .minis-button-icon,
+    .photos-button-icon {
+        width: clamp(26px, calc(2.5vw + 19px), 40px);
+        height: clamp(26px, calc(2.5vw + 19px), 40px);
     }
 }
 
 @media (max-width: 480px) {
-    .minis-button {
-        width: 60%;
-        position: relative;
-        top: -10px;
-        right: auto;                
-        font-size: 24px;
-        margin-bottom: 8px;                
-        height: 10%;        
-    }    
+    header {
+        column-gap: 8px;
+        row-gap: 6px;
+    }
 
-    .minis-button-icon {
-        width: 42px;
-        height: 42px;
-        
+    .minis-button,
+    .minis-button.photos-button {
+        flex: 0 0 calc(50% - 8px);
+        max-width: calc(50% - 8px);
+        padding: clamp(6px, 1.5vw, 10px) clamp(8px, 2.5vw, 14px);
+        font-size: clamp(13px, calc(2vw + 7px), 18px);
+        gap: clamp(6px, 1.5vw, 10px);
+    }
+
+    .minis-button-icon,
+    .photos-button-icon {
+        width: clamp(22px, calc(3vw + 14px), 32px);
+        height: clamp(22px, calc(3vw + 14px), 32px);
+    }
+}
+
+@media (max-width: 360px) {
+    .minis-button,
+    .minis-button.photos-button {
+        font-size: 13px;
+        padding: 6px 8px;
+        gap: 6px;
+        letter-spacing: 0.3px;
+    }
+
+    .minis-button-icon,
+    .photos-button-icon {
+        width: 22px;
+        height: 22px;
     }
 }
