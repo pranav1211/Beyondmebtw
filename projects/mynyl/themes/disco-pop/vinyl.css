@@ -23,6 +23,7 @@
   /* Bold glossy sheen */
   --vinyl-sheen: 0.12;
   --vinyl-sheen-width: 0.09;
+  --vinyl-specular: 0.09;
 
   /* Splatter (unused in classic, kept for switching) */
   --vinyl-splatter-color: rgba(255,80,200,0.18);

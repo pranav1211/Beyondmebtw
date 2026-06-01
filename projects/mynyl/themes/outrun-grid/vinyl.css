@@ -1,0 +1,32 @@
+:root {
+  /* Glossy obsidian disc, cyan grooves */
+  --vinyl-style: classic;
+  --vinyl-disc: #0b0420;
+  --vinyl-edge: rgba(255,45,149,0.18);
+  --vinyl-rim-light: rgba(45,226,255,0.10);
+  --vinyl-rim-shadow: rgba(0,0,0,0.50);
+  --vinyl-shadow-ring: rgba(45,226,255,0.06);
+  --vinyl-groove-rgb: 45,226,255;
+  --vinyl-groove-alpha: 0.05;
+  --vinyl-groove-pulse: 0.16;
+  --vinyl-groove-spacing: 1.3;
+  --vinyl-groove-width: 0.75;
+  --vinyl-groove-start: 0.19;
+  --vinyl-groove-end: 0.91;
+  --vinyl-groove-warp: 0.02;
+  --vinyl-sheen: 0.10;
+  --vinyl-sheen-width: 0.05;
+  --vinyl-specular: 0.07;
+  --vinyl-depth: 0.5;
+
+  /* Horizon-sunset label */
+  --vinyl-label-radius: 0.18;
+  --vinyl-hole-radius: 0.02;
+  --vinyl-label-0: #ffb347;
+  --vinyl-label-55: #ff5c8a;
+  --vinyl-label-100: #6a1b6a;
+  --vinyl-label-ring: rgba(45,226,255,0.40);
+  --vinyl-label-stroke: rgba(0,0,0,0.30);
+  --vinyl-label-art-base: #160426;
+  --vinyl-hole-fill: #05010f;
+}

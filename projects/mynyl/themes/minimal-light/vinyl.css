@@ -18,6 +18,7 @@
   --vinyl-groove-warp: 0.02;
   --vinyl-sheen: 0.15;
   --vinyl-sheen-width: 0.11;
+  --vinyl-specular: 0;
   --vinyl-splatter-color: rgba(214,220,228,0.86);
   --vinyl-splatter-secondary: rgba(180,190,201,0.58);
   --vinyl-splatter-count: 42;

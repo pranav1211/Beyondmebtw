@@ -822,6 +822,19 @@ document.addEventListener('keydown', e => {
   }
 });
 
+// Frame-rate-independent exponential smoothing. `rate` is the convergence
+// speed (per second); identical feel at 60Hz, 120Hz, or 144Hz — no jitter.
+function damp(current, target, rate, dt) {
+  if (dt <= 0) return current;
+  return current + (target - current) * (1 - Math.exp(-rate * dt));
+}
+
+// Rates tuned so that at 60fps they match the old per-frame lerp factors
+// (arm 0.06, parked 0.04, groove 0.12) — same character, frame-rate proof.
+const ARM_DAMP = 3.7;
+const PARK_DAMP = 2.45;
+const GROOVE_DAMP = 7.7;
+
 // ─── main loop ─────────────────────────────────────────────
 function animate(ts) {
   requestAnimationFrame(animate);
@@ -842,13 +855,13 @@ function animate(ts) {
         const p = Math.max(0, Math.min(1, currentTime / duration));
         targetArmAngle = progressToAngle(p);
       }
-      armAngle += (targetArmAngle - armAngle) * 0.06;
+      armAngle = damp(armAngle, targetArmAngle, ARM_DAMP, dt);
     } else {
-      armAngle += (GEO.aParked - armAngle) * 0.04;
+      armAngle = damp(armAngle, GEO.aParked, PARK_DAMP, dt);
     }
   }
 
-  groovePulse += (getLevel() - groovePulse) * 0.12;
+  groovePulse = damp(groovePulse, getLevel(), GROOVE_DAMP, dt);
 
   drawBg(ts);
   drawRecord(rotAngle * Math.PI / 180);

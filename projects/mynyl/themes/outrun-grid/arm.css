@@ -1,0 +1,30 @@
+:root {
+  /* Mirror-chrome straight arm with neon edge bleed */
+  --arm-style: straight;
+  --arm-tube-width: 0.018;
+  --arm-shadow-blur: 14;
+  --arm-shadow-offset-y: 5;
+  --arm-highlight-alpha: 0.18;
+  --arm-0: #20102e;
+  --arm-25: #7a4fb0;
+  --arm-60: #e8d6ff;
+  --arm-100: #2de2ff;
+  --arm-headshell: #ff2d95;
+  --arm-headshell-length: 0.10;
+  --arm-headshell-width: 0.016;
+  --arm-headshell-bend-deg: -18;
+  --arm-needle: rgba(45,226,255,0.85);
+  --arm-needle-tip: #2de2ff;
+  --arm-needle-width: 1.5;
+  --arm-needle-length: 0.55;
+  --arm-counterweight-radius: 0.038;
+  --arm-counterweight-offset: 0.15;
+  --arm-cw-0: #e8d6ff;
+  --arm-cw-55: #6a4a9a;
+  --arm-cw-100: #2a1840;
+  --arm-pivot-radius: 0.03;
+  --arm-pivot-inner-radius: 0.30;
+  --arm-pivot-0: #f0e8ff;
+  --arm-pivot-50: #8a5fc0;
+  --arm-pivot-100: #2a1840;
+}

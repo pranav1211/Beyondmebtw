@@ -33,7 +33,9 @@ body { background: var(--page-bg) }
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   box-shadow:
-    0 24px 60px rgba(157,171,186,0.18),
+    0 24px 60px rgba(157,171,186,0.2),
+    8px 8px 22px rgba(163,177,191,0.12),
+    -8px -8px 22px rgba(255,255,255,0.55),
     0 1px 0 var(--glass-inset) inset;
 }
 
@@ -60,33 +62,53 @@ body { background: var(--page-bg) }
     0 14px 28px rgba(157,171,186,0.2);
 }
 
+.upload-btn:active {
+  transform: translateY(1px);
+  box-shadow:
+    inset 4px 4px 9px rgba(163,177,191,0.4),
+    inset -4px -4px 9px rgba(255,255,255,0.85);
+}
+
+/* Neumorphic soft-UI — light from the top-left, shadow toward the
+   bottom-right, so each control reads as moulded from the panel surface. */
 .ctrl-btn,
 .speed-btn {
-  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(226,232,238,0.96));
+  background: linear-gradient(145deg, rgba(255,255,255,0.99), rgba(224,231,238,0.97));
   border-color: var(--border-soft);
   color: rgba(84,99,115,0.84);
   box-shadow:
-    0 10px 18px rgba(157,171,186,0.16),
-    0 1px 0 rgba(255,255,255,0.88) inset;
+    5px 5px 12px rgba(163,177,191,0.5),
+    -5px -5px 12px rgba(255,255,255,0.9),
+    0 1px 0 rgba(255,255,255,0.7) inset;
 }
 
 .ctrl-btn:hover,
 .speed-btn:hover {
-  background: linear-gradient(180deg, rgba(255,255,255,1), rgba(232,237,242,0.98));
+  background: linear-gradient(145deg, rgba(255,255,255,1), rgba(230,236,242,0.98));
   border-color: var(--border-strong);
   color: var(--accent-strong);
   box-shadow:
-    0 14px 24px rgba(157,171,186,0.18),
-    0 1px 0 rgba(255,255,255,0.96) inset;
+    6px 6px 15px rgba(163,177,191,0.55),
+    -6px -6px 15px rgba(255,255,255,0.95),
+    0 1px 0 rgba(255,255,255,0.8) inset;
+}
+
+/* Press feedback — control sinks into the surface. */
+.ctrl-btn:active,
+.speed-btn:active {
+  box-shadow:
+    inset 4px 4px 9px rgba(163,177,191,0.55),
+    inset -4px -4px 9px rgba(255,255,255,0.92);
 }
 
 .ctrl-btn.active {
-  background: linear-gradient(180deg, rgba(245,249,252,1), rgba(216,224,232,1));
+  background: linear-gradient(145deg, rgba(238,244,249,1), rgba(216,224,232,1));
   border-color: rgba(109,127,146,0.44);
   color: #50687d;
   box-shadow:
-    0 10px 18px rgba(157,171,186,0.16),
-    0 0 0 1px rgba(109,127,146,0.14);
+    inset 3px 3px 8px rgba(163,177,191,0.5),
+    inset -3px -3px 8px rgba(255,255,255,0.9),
+    0 0 0 1px rgba(109,127,146,0.12);
 }
 
 .vol-icon { color: rgba(109,127,146,0.45) }
@@ -134,4 +156,15 @@ body { background: var(--page-bg) }
 
 .theme-select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath fill='rgba(92,109,125,0.82)' d='M5 6 .4.8 1.6 0 5 3.5 8.4 0 9.6.8z'/%3E%3C/svg%3E");
+}
+
+/* "Manage Music" modal — near-solid surface so text keeps full contrast
+   instead of fighting the blurred app behind the glass. */
+.queue-modal-panel.ui-panel {
+  background: linear-gradient(180deg, rgba(255,255,255,0.99), rgba(238,243,247,0.99));
+  border-color: rgba(151,166,181,0.32);
+  box-shadow:
+    0 28px 70px rgba(157,171,186,0.32),
+    0 2px 10px rgba(157,171,186,0.18),
+    0 1px 0 rgba(255,255,255,0.9) inset;
 }

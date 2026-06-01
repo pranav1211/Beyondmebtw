@@ -10,6 +10,10 @@ const aCtx = aCv.getContext('2d');
 let VW, VH;
 let REC_R, REC_CX, REC_CY;
 let PIV_X, PIV_Y;
+// Device pixel ratio — every canvas is backed at native resolution and
+// scaled down via CSS so nothing ever renders soft on HiDPI / scaled displays.
+// Capped at 2.5 to keep the fill-rate sane on 3x phones.
+let DPR = 1;
 
 // ─── theme (reads CSS custom properties set in the theme file) ──
 let THEME = {};
@@ -59,12 +63,14 @@ function readTheme() {
     grooveWarp: n('--vinyl-groove-warp', 0.035),
     vinylSheen: n('--vinyl-sheen', 0.055),
     vinylSheenWidth: n('--vinyl-sheen-width', 0.06),
+    vinylSpecular: n('--vinyl-specular', 0.05),
     vinylRimLight: v('--vinyl-rim-light') || 'rgba(255,255,255,0.04)',
     vinylRimShadow: v('--vinyl-rim-shadow') || 'rgba(0,0,0,0.33)',
     vinylShadowRing: v('--vinyl-shadow-ring') || 'rgba(0,0,0,0.16)',
     vinylDropShadow: v('--vinyl-drop-shadow') || 'rgba(0,0,0,0)',
     vinylDropShadowBlur: n('--vinyl-drop-shadow-blur', 0),
     vinylDropShadowOffsetY: n('--vinyl-drop-shadow-offset-y', 0),
+    vinylDepth: Math.max(0, n('--vinyl-depth', 0)),
     splatterColor: v('--vinyl-splatter-color') || 'rgba(255,255,255,0.14)',
     splatterSecondary: v('--vinyl-splatter-secondary') || 'rgba(255,255,255,0.08)',
     splatterCount: Math.max(0, Math.round(n('--vinyl-splatter-count', 0))),
@@ -115,7 +121,16 @@ function readTheme() {
   };
 }
 
+function sizeCanvas(cv, w, h) {
+  cv.width = Math.round(w * DPR);
+  cv.height = Math.round(h * DPR);
+  cv.style.width = w + 'px';
+  cv.style.height = h + 'px';
+}
+
 function layout() {
+  DPR = Math.max(1, Math.min(window.devicePixelRatio || 1, 2.5));
+
   VW = window.innerWidth;
   VH = window.innerHeight;
 
@@ -125,22 +140,23 @@ function layout() {
   const recordPad = REC_R * RECORD_CANVAS_PAD_RATIO;
   const recordCanvasSize = REC_R * 2 + recordPad * 2;
 
-  rCv.width = recordCanvasSize;
-  rCv.height = recordCanvasSize;
+  sizeCanvas(rCv, recordCanvasSize, recordCanvasSize);
   rCv.style.left = REC_CX - REC_R - recordPad + 'px';
   rCv.style.top = REC_CY - REC_R - recordPad + 'px';
 
   PIV_X = REC_CX + REC_R * THEME.pivotOffsetX;
   PIV_Y = REC_CY + REC_R * THEME.pivotOffsetY;
 
-  aCv.width = VW;
-  aCv.height = VH;
+  sizeCanvas(aCv, VW, VH);
   aCv.style.left = '0';
   aCv.style.top = '0';
 
-  bgCv.width = VW;
-  bgCv.height = VH;
+  sizeCanvas(bgCv, VW, VH);
 }
+
+// Logical (CSS-pixel) dimensions of a canvas, independent of DPR backing.
+function cssW(cv) { return cv.width / DPR; }
+function cssH(cv) { return cv.height / DPR; }
 
 // ─── tonearm geometry ──────────────────────────────────────
 function computeArmAngles() {
@@ -247,8 +263,9 @@ function tipOnGroove(angle) {
 
 // ─── draw: background ──────────────────────────────────────
 function drawBg(ts) {
-  const bw = bgCv.width;
-  const bh = bgCv.height;
+  bgCtx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  const bw = VW;
+  const bh = VH;
   bgCtx.clearRect(0, 0, bw, bh);
   const t = ts * 0.00025;
   const c1 = THEME.bgCenterRgb;
@@ -377,16 +394,29 @@ function loadThemeModule(themeName, scriptHref) {
 // ─── draw: record ──────────────────────────────────────────
 function drawDefaultRecord(angle) {
   const R = REC_R;
-  const CX = rCv.width / 2;
-  const CY = rCv.height / 2;
-  rCtx.clearRect(0, 0, rCv.width, rCv.height);
+  const LW = cssW(rCv);
+  const LH = cssH(rCv);
+  const CX = LW / 2;
+  const CY = LH / 2;
+  rCtx.clearRect(0, 0, LW, LH);
+  rCtx.imageSmoothingEnabled = true;
+  rCtx.imageSmoothingQuality = 'high';
   rCtx.save();
 
   rCtx.beginPath();
   rCtx.arc(CX, CY, R - 1, 0, Math.PI * 2);
-  rCtx.shadowColor = THEME.vinylDropShadow;
-  rCtx.shadowBlur = THEME.vinylDropShadowBlur;
-  rCtx.shadowOffsetY = THEME.vinylDropShadowOffsetY;
+  // Contact shadow. `--vinyl-depth` (0..1) gives a record-scale-relative drop
+  // shadow so the disc floats consistently at any size; falls back to the
+  // legacy absolute-pixel tokens when a theme prefers those.
+  if (THEME.vinylDepth > 0) {
+    rCtx.shadowColor = `rgba(0,0,0,${Math.min(0.6, 0.5 * THEME.vinylDepth)})`;
+    rCtx.shadowBlur = R * 0.07;
+    rCtx.shadowOffsetY = R * 0.022;
+  } else {
+    rCtx.shadowColor = THEME.vinylDropShadow;
+    rCtx.shadowBlur = THEME.vinylDropShadowBlur;
+    rCtx.shadowOffsetY = THEME.vinylDropShadowOffsetY;
+  }
   rCtx.fillStyle = THEME.vinylDisc;
   rCtx.fill();
   rCtx.shadowColor = 'rgba(0,0,0,0)';
@@ -419,21 +449,42 @@ function drawDefaultRecord(angle) {
   drawGrooves(CX, CY, R, angle);
   if (THEME.vinylStyle === 'splatter') drawSplatter(CX, CY, R, angle);
 
+  // Rotating reflection band — real vinyl shows two opposing glints, so the
+  // sheen is mirrored across the centre for a more believable spin.
   rCtx.save();
   rCtx.translate(CX, CY);
   rCtx.rotate(angle);
   const sg = rCtx.createLinearGradient(-R, 0, R, 0);
   const halfSheen = THEME.vinylSheenWidth / 2;
+  const sheenA = THEME.vinylSheen;
   sg.addColorStop(0, 'rgba(255,255,255,0)');
-  sg.addColorStop(Math.max(0, 0.5 - halfSheen), 'rgba(255,255,255,0)');
-  sg.addColorStop(0.5, `rgba(255,255,255,${THEME.vinylSheen})`);
-  sg.addColorStop(Math.min(1, 0.5 + halfSheen), 'rgba(255,255,255,0)');
+  sg.addColorStop(Math.max(0, 0.18 - halfSheen), 'rgba(255,255,255,0)');
+  sg.addColorStop(0.18, `rgba(255,255,255,${sheenA * 0.5})`);
+  sg.addColorStop(Math.min(0.5, 0.18 + halfSheen), 'rgba(255,255,255,0)');
+  sg.addColorStop(Math.max(0.5, 0.82 - halfSheen), 'rgba(255,255,255,0)');
+  sg.addColorStop(0.82, `rgba(255,255,255,${sheenA})`);
+  sg.addColorStop(Math.min(1, 0.82 + halfSheen), 'rgba(255,255,255,0)');
   sg.addColorStop(1, 'rgba(255,255,255,0)');
   rCtx.beginPath();
   rCtx.arc(0, 0, R - 1, 0, Math.PI * 2);
   rCtx.fillStyle = sg;
   rCtx.fill();
   rCtx.restore();
+
+  // Fixed gloss — a soft specular hotspot anchored upper-left (the light
+  // source stays put while the disc turns), giving the vinyl a glossy 3D read.
+  if (THEME.vinylStyle !== 'minimal' && THEME.vinylSpecular > 0) {
+    const gx = CX - R * 0.32;
+    const gy = CY - R * 0.4;
+    const gloss = rCtx.createRadialGradient(gx, gy, 0, gx, gy, R * 1.25);
+    gloss.addColorStop(0, `rgba(255,255,255,${THEME.vinylSpecular})`);
+    gloss.addColorStop(0.22, `rgba(255,255,255,${THEME.vinylSpecular * 0.34})`);
+    gloss.addColorStop(0.5, 'rgba(255,255,255,0)');
+    rCtx.beginPath();
+    rCtx.arc(CX, CY, R - 1, 0, Math.PI * 2);
+    rCtx.fillStyle = gloss;
+    rCtx.fill();
+  }
 
   const lR = R * THEME.labelRadius;
   rCtx.save();
@@ -652,13 +703,14 @@ function drawDefaultArm(angle) {
 }
 
 function drawRecord(angle) {
+  rCtx.setTransform(DPR, 0, 0, DPR, 0, 0);
   if (ACTIVE_THEME_MODULE && typeof ACTIVE_THEME_MODULE.drawRecord === 'function') {
     const playbackState = window.MYNYL_PLAYBACK_STATE || {};
     ACTIVE_THEME_MODULE.drawRecord({
       angle,
       theme: THEME,
       geo: GEO,
-      record: { radius: REC_R, cx: rCv.width / 2, cy: rCv.height / 2, pageCx: REC_CX, pageCy: REC_CY },
+      record: { radius: REC_R, cx: cssW(rCv) / 2, cy: cssH(rCv) / 2, pageCx: REC_CX, pageCy: REC_CY },
       ctx: rCtx,
       canvas: rCv,
       state: {
@@ -676,6 +728,7 @@ function drawRecord(angle) {
 }
 
 function drawArm(angle) {
+  aCtx.setTransform(DPR, 0, 0, DPR, 0, 0);
   if (ACTIVE_THEME_MODULE && typeof ACTIVE_THEME_MODULE.drawArm === 'function') {
     ACTIVE_THEME_MODULE.drawArm({
       angle,

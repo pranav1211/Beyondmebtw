@@ -469,7 +469,8 @@ body.ui-hidden .ui-panel-body {
   font-size: 10px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  opacity: 0.7;
+  color: var(--text-main, rgba(245, 245, 245, 0.85));
+  opacity: 0.85;
 }
 
 /* ── Theme switcher ─────────────────────────────────────── */
@@ -575,6 +576,15 @@ body.ui-hidden .music-dock {
   height: 36px;
 }
 
+/* The "Music Queue" heading needs more presence than the tiny faint
+   side-panel labels. Target the id so it outranks the theme's
+   .queue-label color (themes load after main.css). */
+#queue-modal-title {
+  font-size: 11px;
+  color: var(--text-main, rgba(245, 245, 245, 0.9));
+  opacity: 0.92;
+}
+
 .queue-dropzone {
   width: 100%;
   min-height: 140px;
@@ -602,6 +612,8 @@ body.ui-hidden .music-dock {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   text-align: right;
+  color: var(--text-main, rgba(245, 245, 245, 0.82));
+  opacity: 0.8;
 }
 
 .queue-panel-modal {

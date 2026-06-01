@@ -165,3 +165,11 @@ body { background: var(--page-bg) }
 .theme-select {
   background-image: var(--theme-select-caret);
 }
+
+/* "Manage Music" modal — keep the dialog on a near-solid surface so its
+   text stays legible. The floating side panel can be translucent glass,
+   but the modal must not be, or text fights the blurred app behind it. */
+.queue-modal-panel.ui-panel {
+  background: var(--surface-2, rgba(18, 18, 22, 0.98));
+  border-color: var(--ui-button-border);
+}

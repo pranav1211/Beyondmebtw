@@ -13,8 +13,10 @@
   --vinyl-groove-start: 0.19;
   --vinyl-groove-end: 0.91;
   --vinyl-groove-warp: 0.035;
-  --vinyl-sheen: 0.048;
+  --vinyl-sheen: 0.05;
   --vinyl-sheen-width: 0.06;
+  --vinyl-specular: 0.07;
+  --vinyl-depth: 0.65;
 
   /* Label */
   --vinyl-label-radius: 0.175;
