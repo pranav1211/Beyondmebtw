@@ -61,7 +61,64 @@ Use `--force-with-lease` instead of plain `--force`. It refuses to overwrite rem
 
 If the branch is protected, temporarily update the repository branch rules to allow force-pushes, run the command, then re-enable the protection.
 
-## 5. After Cleanup
+## 5. Drop a Commit From the Middle
+
+Use this when the bad commit is not the latest commit, and there are newer commits after it that should be kept.
+
+Example history:
+
+```text
+A -- B -- C -- D main
+     ^
+     bad commit
+```
+
+To remove `B` but keep `C` and `D`, rebase everything after `B` onto `A`:
+
+```bash
+git rebase --onto <commit-before-bad-commit> <bad-commit> main
+```
+
+Generic form:
+
+```bash
+git rebase --onto <new-base> <upstream-to-drop-through> <branch>
+```
+
+What it means:
+
+```text
+Take commits after <upstream-to-drop-through> from <branch>
+Replay them onto <new-base>
+```
+
+In the simple one-bad-commit case:
+
+```bash
+git rebase --onto A B main
+```
+
+Result:
+
+```text
+A -- C' -- D' main
+```
+
+If there is also a later cleanup commit that only reverses the bad commit, drop both the bad commit and the cleanup commit:
+
+```bash
+git rebase --onto <commit-before-bad-add> <cleanup-commit> main
+```
+
+Then update the remote if history rewriting is allowed:
+
+```bash
+git push --force-with-lease origin main
+```
+
+If force-push is blocked, change the branch protection/rules first.
+
+## 6. After Cleanup
 
 Verify:
 
@@ -82,7 +139,7 @@ On PowerShell:
 Test-Path path/to/accidental-file
 ```
 
-## 6. If Secrets Were Committed
+## 7. If Secrets Were Committed
 
 Removing a commit is not enough if a real secret was exposed.
 
@@ -99,7 +156,7 @@ Cloud credentials
 
 For SSH private keys, generate a new keypair and remove the old public key from all `authorized_keys` files.
 
-## 7. What Happened In This Case
+## 8. What Happened In This Case
 
 The cleanup flow was:
 
@@ -126,4 +183,16 @@ Result:
 ```text
 The file was removed from the current branch tip.
 The original commit remained in history because force-push was blocked.
+```
+
+Later, after newer commits had been added, the local history was cleaned by dropping the bad add commit and its later remove commit while keeping the newer work:
+
+```bash
+git rebase --onto <commit-before-bad-add> <cleanup-commit> main
+```
+
+The final remote update still required force-push permission:
+
+```bash
+git push --force-with-lease origin main
 ```
