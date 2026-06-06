@@ -13,7 +13,7 @@ let state = {
   latestData: null,          // from latest.json
   blogData: null,            // from direct blog JSON URLs
   projects: [],              // from project-data.json
-  minisMetadata: [],         // from https://minis.beyondmebtw.com/content/metadata.json (proxied)
+  minisMetadata: [],         // from https://minis.beyondmebtw.com/content/metadata.json
   categories: {},            // from blog/categories.json manifest
   currentBlogCategory: 'all',
   blogSearch: '',
@@ -443,7 +443,7 @@ async function loadHomepageTab() {
   try {
     // Reuse cached data if available, otherwise fetch
     if (!state.latestData) {
-      state.latestData = await fetch('https://beyondmebtw.com/manage/latest.json').then(r => r.json());
+      state.latestData = await fetch(`https://beyondmebtw.com/manage/latest.json?t=${Date.now()}`).then(r => r.json());
     }
     const data = state.latestData;
     renderLatestPost(data.mainPost);
@@ -452,7 +452,7 @@ async function loadHomepageTab() {
 
     // Reuse cached projects if available
     if (state.projects.length === 0) {
-      state.projects = await fetch(PROJECTS_URL).then(r => r.json()) || [];
+      state.projects = await fetch(`${PROJECTS_URL}?t=${Date.now()}`).then(r => r.json()) || [];
     }
     renderFeaturedProjects(data.featuredProjects || [1,2,3,4], state.projects);
 
@@ -473,12 +473,9 @@ async function loadHomepageTab() {
 }
 
 async function fetchMinisMetadata() {
-  // Try the proxied endpoint first (avoids CORS); fall back to direct fetch
-  try {
-    const r = await apiCall('GET', '/minismetadata');
-    if (Array.isArray(r)) return r;
-  } catch (_) {}
-  const direct = await fetch('https://minis.beyondmebtw.com/content/metadata.json').then(r => r.json());
+  // Fetched directly from the minis host (its source sends permissive CORS headers).
+  // Cache-busted so a stale cross-origin cache entry can't shadow the CORS response.
+  const direct = await fetch(`https://minis.beyondmebtw.com/content/metadata.json?t=${Date.now()}`).then(r => r.json());
   return Array.isArray(direct) ? direct : [];
 }
 
@@ -735,7 +732,7 @@ function initFeaturedMinisForm() {
 async function loadBlogTab() {
   try {
     if (!state.latestData) {
-      state.latestData = await fetch('https://beyondmebtw.com/manage/latest.json').then(r => r.json());
+      state.latestData = await fetch(`https://beyondmebtw.com/manage/latest.json?t=${Date.now()}`).then(r => r.json());
     }
     if (!state.categories || Object.keys(state.categories).length === 0) {
       await fetchCategoriesManifest();
@@ -744,7 +741,7 @@ async function loadBlogTab() {
     if (!state.blogData) {
       const catKeys = Object.keys(state.categories);
       const fetched = await Promise.allSettled(
-        catKeys.map(key => fetch(`${BLOG_BASE_URL}/${key}.json`).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }))
+        catKeys.map(key => fetch(`${BLOG_BASE_URL}/${key}.json?t=${Date.now()}`).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }))
       );
       state.blogData = {};
       catKeys.forEach((key, i) => {
@@ -1600,7 +1597,7 @@ async function loadProjectsTab() {
   try {
     // Reuse cached projects if already fetched (e.g. from homepage tab)
     if (state.projects.length === 0) {
-      state.projects = await fetch(PROJECTS_URL).then(r => r.json()) || [];
+      state.projects = await fetch(`${PROJECTS_URL}?t=${Date.now()}`).then(r => r.json()) || [];
     }
     renderProjectsList();
   } catch (e) {
