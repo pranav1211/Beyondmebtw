@@ -1,0 +1,37 @@
+:root {
+  --vinyl-style: etched;
+
+  /* heavy dark-bronze metal disc */
+  --vinyl-disc: #110b07;
+  --vinyl-edge: rgba(255,200,120,0.14);
+  --vinyl-rim-light: rgba(255,205,140,0.14);
+  --vinyl-rim-shadow: rgba(0,0,0,0.55);
+  --vinyl-shadow-ring: none;
+
+  /* candle-amber grooves; etched rings shimmer like reflected flame */
+  --vinyl-groove-rgb: 255,196,120;
+  --vinyl-groove-alpha: 0.05;
+  --vinyl-groove-pulse: 0.06;
+  --vinyl-groove-spacing: 1.5;
+  --vinyl-groove-width: 0.75;
+  --vinyl-groove-start: 0.19;
+  --vinyl-groove-end: 0.91;
+  --vinyl-groove-warp: 0.05;
+
+  /* no rotating sheen glints; glossy metal specular + heavy contact shadow */
+  --vinyl-sheen: 0;
+  --vinyl-sheen-width: 0.06;
+  --vinyl-specular: 0.12;
+  --vinyl-depth: 0.95;
+
+  /* oxblood-wax label, thin brass ring */
+  --vinyl-label-radius: 0.175;
+  --vinyl-hole-radius: 0.02;
+  --vinyl-label-0: #6a1812;
+  --vinyl-label-55: #3e0f0b;
+  --vinyl-label-100: #1c0705;
+  --vinyl-label-ring: rgba(232,183,106,0.45);
+  --vinyl-label-stroke: rgba(0,0,0,0.34);
+  --vinyl-label-art-base: #1a0805;
+  --vinyl-hole-fill: #160a06;
+}

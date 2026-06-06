@@ -41,6 +41,7 @@ Available hooks:
 
 - `drawArm({ angle, theme, geo, pivot, viewport, ctx, canvas, defaults, helpers })`
 - `drawRecord({ angle, theme, geo, record, ctx, canvas, state, defaults, helpers })`
+- `drawBackground({ ts, ctx, width, height, theme, state, defaults })` — fully owns the background canvas; call `defaults.drawBackground(ts)` to paint the standard gradient first, then overlay. `state` carries `hasFile`, `groovePulse`, and `playing`.
 
 Useful values:
 

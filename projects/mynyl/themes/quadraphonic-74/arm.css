@@ -1,0 +1,36 @@
+:root {
+  /* heavy vintage tonearm with a fat counterweight */
+  --arm-style: chunky;
+  --arm-tube-width: 0.026;
+  --arm-shadow-blur: 14;
+  --arm-shadow-offset-y: 5;
+  --arm-highlight-alpha: 0.07;
+  --arm-0: #2a1c10;
+  --arm-25: #6b4a28;
+  --arm-60: #c9a06a;
+  --arm-100: #3a2614;
+
+  /* harvest-gold headshell + cream needle */
+  --arm-headshell: #d9a441;
+  --arm-headshell-length: 0.10;
+  --arm-headshell-width: 0.018;
+  --arm-headshell-bend-deg: -18;
+  --arm-needle: rgba(239,226,198,0.80);
+  --arm-needle-tip: #efe2c6;
+  --arm-needle-width: 1.6;
+  --arm-needle-length: 0.55;
+
+  /* fat counterweight */
+  --arm-counterweight-radius: 0.045;
+  --arm-counterweight-offset: 0.15;
+  --arm-cw-0: #8a6a3a;
+  --arm-cw-55: #4a3210;
+  --arm-cw-100: #2a1a0c;
+
+  /* pivot bearing */
+  --arm-pivot-radius: 0.03;
+  --arm-pivot-inner-radius: 0.30;
+  --arm-pivot-0: #e6c98a;
+  --arm-pivot-50: #7a5226;
+  --arm-pivot-100: #2a1a0c;
+}

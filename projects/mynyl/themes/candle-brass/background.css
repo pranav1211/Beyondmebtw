@@ -1,0 +1,27 @@
+:root {
+  /* layout / geometry (carried over from the canonical wood theme) */
+  --player-record-scale: 0.42;
+  --arm-pivot-offset-x: 1.05;
+  --arm-pivot-offset-y: -0.85;
+  --arm-outer-radius: 0.91;
+  --arm-inner-radius: 0.30;
+  --arm-outer-offset-x: -0.10;
+  --arm-outer-offset-y: -0.85;
+  --arm-park-offset-x: 1.20;
+  --arm-park-offset-y: 0.30;
+
+  /* deep ember radial: one candle */
+  --bg-center-rgb: 64,26,8;
+  --bg-mid-rgb: 26,11,5;
+  --bg-edge-0: #0a0402;
+  --bg-edge-1: #040100;
+  --bg-glow-strength: 1.0;
+  --bg-drift-x: 0.05;
+  --bg-drift-y: 0.08;   /* more vertical = flame rising */
+
+  /* hint overlay: warm candlelit amber */
+  --hint-ring: rgba(232,183,106,0.50);
+  --hint-dot: rgba(255,210,130,0.95);
+  --hint-glow: rgba(255,170,60,0.50);
+  --hint-text: rgba(248,222,168,0.90);
+}

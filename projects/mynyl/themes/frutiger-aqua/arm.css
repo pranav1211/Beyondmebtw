@@ -1,0 +1,37 @@
+:root {
+  --arm-style: straight;
+
+  /* polished aqua-tinted chrome tube */
+  --arm-tube-width: 0.020;
+  --arm-shadow-blur: 14;
+  --arm-shadow-offset-y: 5;
+  --arm-highlight-alpha: 0.18;
+  --arm-0: #0a3a5c;
+  --arm-25: #3fa0d8;
+  --arm-60: #eaf6ff;
+  --arm-100: #1e7fd4;
+
+  /* chrome headshell, white needle, lime-spark tip */
+  --arm-headshell: #d7e6f0;
+  --arm-headshell-length: 0.10;
+  --arm-headshell-width: 0.016;
+  --arm-headshell-bend-deg: -18;
+  --arm-needle: rgba(255,255,255,0.90);
+  --arm-needle-tip: #9fff5a;
+  --arm-needle-width: 1.5;
+  --arm-needle-length: 0.55;
+
+  /* straight-arm counterweight: engine fills a rounded-rect with cw-55 */
+  --arm-counterweight-radius: 0.038;
+  --arm-counterweight-offset: 0.15;
+  --arm-cw-0: #ffffff;
+  --arm-cw-55: #aee0ff;
+  --arm-cw-100: #1e6fa8;
+
+  /* clear-bubble pivot */
+  --arm-pivot-radius: 0.03;
+  --arm-pivot-inner-radius: 0.30;
+  --arm-pivot-0: #ffffff;
+  --arm-pivot-50: #5fb8e8;
+  --arm-pivot-100: #1e6fa8;
+}

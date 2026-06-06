@@ -1,0 +1,27 @@
+:root {
+  /* layout / geometry — keep the wood baseline, these are theme-neutral */
+  --player-record-scale: 0.42;
+  --arm-pivot-offset-x: 1.05;
+  --arm-pivot-offset-y: -0.85;
+  --arm-outer-radius: 0.91;
+  --arm-inner-radius: 0.30;
+  --arm-outer-offset-x: -0.10;
+  --arm-outer-offset-y: -0.85;
+  --arm-park-offset-x: 1.20;
+  --arm-park-offset-y: 0.30;
+
+  /* bright sky-to-water gradient (departs from all-dark themes) */
+  --bg-center-rgb: 90,180,235;
+  --bg-mid-rgb: 30,110,180;
+  --bg-edge-0: #0a4f8a;
+  --bg-edge-1: #052a4a;
+  --bg-glow-strength: 1.2;
+  --bg-drift-x: 0.05;
+  --bg-drift-y: 0.05;
+
+  /* drop hint — bright aqua so it reads on the light background */
+  --hint-ring: rgba(255,255,255,0.65);
+  --hint-dot: rgba(159,255,90,0.95);
+  --hint-glow: rgba(43,183,255,0.55);
+  --hint-text: rgba(255,255,255,0.92);
+}

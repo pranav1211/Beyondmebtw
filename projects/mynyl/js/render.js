@@ -264,6 +264,31 @@ function tipOnGroove(angle) {
 // ─── draw: background ──────────────────────────────────────
 function drawBg(ts) {
   bgCtx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  // Themes may fully own the background canvas via an optional drawBackground
+  // hook (e.g. an animated scene). They can call defaults.drawBackground(ts)
+  // to paint the standard gradient first and then overlay on top of it.
+  if (ACTIVE_THEME_MODULE && typeof ACTIVE_THEME_MODULE.drawBackground === 'function') {
+    const playbackState = window.MYNYL_PLAYBACK_STATE || {};
+    ACTIVE_THEME_MODULE.drawBackground({
+      ts,
+      ctx: bgCtx,
+      width: VW,
+      height: VH,
+      theme: THEME,
+      state: {
+        hasFile,
+        groovePulse,
+        playing: !!playbackState.playing
+      },
+      defaults: { drawBackground: drawDefaultBg }
+    });
+    return;
+  }
+  drawDefaultBg(ts);
+}
+
+function drawDefaultBg(ts) {
+  bgCtx.setTransform(DPR, 0, 0, DPR, 0, 0);
   const bw = VW;
   const bh = VH;
   bgCtx.clearRect(0, 0, bw, bh);

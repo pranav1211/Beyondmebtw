@@ -71,6 +71,7 @@ Themes are no longer color-only. `themes/_template/README.md` is the canonical h
 - tonearm style variants: `classic`, `straight`, `chunky`
 - arm geometry details like headshell bend, counterweight size, pivot radius, needle proportions
 - optional custom arm / record rendering through `theme.js`
+- The 2 lines on the vinyl are called the vinyl sheen. `--vinyl-sheen` in css files
 
 To add a new theme, duplicate `themes/_template/` or `themes/wood/`, rename the folder, edit the CSS sub-files you need, and optionally customize `theme.js` for custom canvas drawing. Then add the theme to the switcher registry in `js/player.js`.
 

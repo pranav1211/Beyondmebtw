@@ -35,8 +35,12 @@ window.MYNYL_THEME_MODULES["outrun-grid"] = {
     ctx.lineCap = "round";
 
     // ── concentric road lines: depth-compressed, scrolling outward ──
-    const RINGS = 10;
-    const scroll = (now * 0.22) % 1;
+    // `phase` increases forever; `scroll` is its fractional part. We slow the
+    // scroll so each pass lasts longer and feels continuous rather than loopy.
+    const RINGS = 12;
+    const phase = now * 0.13;
+    const scroll = phase % 1;
+    const cycle = Math.floor(phase);             // whole passes completed
     for (let i = 0; i < RINGS; i++) {
       const t = (i + scroll) / RINGS;            // 0..1 (small = near spindle / far)
       const ease = t * t;                         // bunch lines toward the spindle
@@ -44,7 +48,10 @@ window.MYNYL_THEME_MODULES["outrun-grid"] = {
       const fade = Math.sin(t * Math.PI);         // fade in at centre, out at the rim
       const a = energy * 0.55 * fade;
       if (a <= 0.012) continue;
-      const col = i % 2 === 0 ? CYAN : MAGENTA;
+      // Colour follows the ring's *identity* (index + completed cycles), not its
+      // slot. When the scroll wraps, each ring inherits the colour of the ring
+      // that was ahead of it, so the cyan/magenta pattern never flips abruptly.
+      const col = (i + cycle) % 2 === 0 ? CYAN : MAGENTA;
       ctx.beginPath();
       ctx.arc(0, 0, r, 0, Math.PI * 2);
       ctx.strokeStyle = "rgba(" + col + "," + a + ")";

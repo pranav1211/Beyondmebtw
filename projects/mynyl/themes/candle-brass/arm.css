@@ -1,0 +1,37 @@
+:root {
+  --arm-style: classic;
+  --arm-tube-width: 0.022;
+  --arm-shadow-blur: 14;
+  --arm-shadow-offset-y: 5;
+  --arm-highlight-alpha: 0.09;
+
+  /* polished brass: warmer + more golden than wood bronze */
+  --arm-0: #2a1c08;
+  --arm-25: #6e4e18;
+  --arm-60: #e8c270;
+  --arm-100: #4a3210;
+
+  --arm-headshell: #c8a258;
+  --arm-headshell-length: 0.10;
+  --arm-headshell-width: 0.016;
+  --arm-headshell-bend-deg: -18;
+
+  --arm-needle: rgba(255,224,170,0.80);
+  --arm-needle-tip: #ffe6aa;
+  --arm-needle-width: 1.5;
+  --arm-needle-length: 0.55;
+
+  /* brass counterweight */
+  --arm-counterweight-radius: 0.038;
+  --arm-counterweight-offset: 0.15;
+  --arm-cw-0: #8a6a3a;
+  --arm-cw-55: #4a3210;
+  --arm-cw-100: #1a1004;
+
+  /* brass pivot bearing */
+  --arm-pivot-radius: 0.03;
+  --arm-pivot-inner-radius: 0.30;
+  --arm-pivot-0: #f0d28a;
+  --arm-pivot-50: #6e4c18;
+  --arm-pivot-100: #1a1004;
+}
