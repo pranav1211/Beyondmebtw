@@ -1,0 +1,38 @@
+:root {
+  /* Etched = line-forward; minimal would skip the specular path but we want the
+     etched accent rings, so use etched with sheen/specular zeroed. */
+  --vinyl-style: etched;
+
+  --vinyl-disc: #07224f;
+  --vinyl-edge: rgba(127,212,255,0.30);
+  --vinyl-rim-light: rgba(127,212,255,0.55);
+  --vinyl-rim-shadow: rgba(3,12,30,0.60);
+  --vinyl-shadow-ring: none;
+
+  /* Drafting-circle grooves: hairline cyan, perfectly concentric (warp 0) */
+  --vinyl-groove-rgb: 127,212,255;
+  --vinyl-groove-alpha: 0.16;
+  --vinyl-groove-pulse: 0.10;
+  --vinyl-groove-spacing: 1.4;
+  --vinyl-groove-width: 0.6;
+  --vinyl-groove-start: 0.19;
+  --vinyl-groove-end: 0.91;
+  --vinyl-groove-warp: 0;
+
+  /* Zero gloss — a flat technical drawing */
+  --vinyl-sheen: 0;
+  --vinyl-sheen-width: 0.06;
+  --vinyl-specular: 0;
+  --vinyl-depth: 0.30;
+
+  /* Title-block label: deep blue field, thin cyan ring + stroke */
+  --vinyl-label-radius: 0.175;
+  --vinyl-hole-radius: 0.02;
+  --vinyl-label-0: #07224f;
+  --vinyl-label-55: #07224f;
+  --vinyl-label-100: #07224f;
+  --vinyl-label-ring: rgba(127,212,255,0.70);
+  --vinyl-label-stroke: rgba(127,212,255,0.55);
+  --vinyl-label-art-base: #07224f;
+  --vinyl-hole-fill: #0b2f6b;
+}

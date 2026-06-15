@@ -1,0 +1,41 @@
+:root {
+  /* etched = grooves become engraved celestial circles */
+  --vinyl-style: etched;
+  --vinyl-disc: #0a1230;
+  --vinyl-edge: rgba(217,178,90,0.15);
+  --vinyl-rim-light: rgba(217,178,90,0.25);   /* gold chart bezel */
+  --vinyl-rim-shadow: rgba(0,0,0,0.40);
+  --vinyl-shadow-ring: rgba(0,0,0,0.35);
+
+  /* meridian-blue grooves read as declination circles */
+  --vinyl-groove-rgb: 111,123,214;
+  --vinyl-groove-alpha: 0.10;
+  --vinyl-groove-pulse: 0.10;
+  --vinyl-groove-spacing: 2.0;
+  --vinyl-groove-width: 0.55;
+  --vinyl-groove-start: 0.19;
+  --vinyl-groove-end: 0.91;
+  --vinyl-groove-warp: 0.02;
+
+  /* cool faint sheen; specular off for a matte chart surface */
+  --vinyl-sheen: 0;
+  --vinyl-sheen-width: 0.05;
+  --vinyl-specular: 0;
+  --vinyl-depth: 0.25;
+
+  /* absolute drop-shadow fallbacks (depth>0 overrides these, kept for completeness) */
+  --vinyl-drop-shadow: rgba(0,0,0,0.55);
+  --vinyl-drop-shadow-blur: 26;
+  --vinyl-drop-shadow-offset-y: 12;
+
+  /* armillary-core gold label */
+  --vinyl-label-radius: 0.175;
+  --vinyl-hole-radius: 0.02;
+  --vinyl-label-0: #d9b25a;
+  --vinyl-label-55: #a07d33;
+  --vinyl-label-100: #5a4418;
+  --vinyl-label-ring: rgba(217,178,90,0.50);
+  --vinyl-label-stroke: rgba(0,0,0,0.30);
+  --vinyl-label-art-base: #11183f;
+  --vinyl-hole-fill: #11183f;
+}

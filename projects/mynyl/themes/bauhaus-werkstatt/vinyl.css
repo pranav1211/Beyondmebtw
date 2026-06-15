@@ -1,0 +1,43 @@
+:root {
+  /* Flat matte disc — classic grooves give a printed concentric pattern,
+     but sheen/specular stay 0 so there is NO gloss (verified flat & matte). */
+  --vinyl-style: classic;
+  --vinyl-disc: #232020;
+  --vinyl-edge: rgba(236,228,212,0.10);
+  --vinyl-rim-light: rgba(236,228,212,0.06);
+  --vinyl-rim-shadow: rgba(0,0,0,0.40);
+  --vinyl-shadow-ring: none;
+
+  /* Graphic grooves: clearly visible concentric rings across the whole disc,
+     tight spacing + raised alpha so they read as a printed Bauhaus pattern. */
+  --vinyl-groove-rgb: 236,228,212;
+  --vinyl-groove-alpha: 0.16;
+  --vinyl-groove-pulse: 0.06;
+  --vinyl-groove-spacing: 2.4;
+  --vinyl-groove-width: 0.7;
+  --vinyl-groove-start: 0.24;
+  --vinyl-groove-end: 0.95;
+  --vinyl-groove-warp: 0;
+
+  /* Zero gloss — keep the disc flat & matte even with classic grooves */
+  --vinyl-sheen: 0;
+  --vinyl-sheen-width: 0;
+  --vinyl-specular: 0;
+
+  /* Flat printed contact shadow */
+  --vinyl-depth: 0.25;
+  --vinyl-drop-shadow: rgba(0,0,0,0.30);
+  --vinyl-drop-shadow-blur: 8;
+  --vinyl-drop-shadow-offset-y: 4;
+
+  /* Bold yellow badge label, heavy black ring + stroke */
+  --vinyl-label-radius: 0.22;
+  --vinyl-hole-radius: 0.02;
+  --vinyl-label-0: #f0b81e;
+  --vinyl-label-55: #f0b81e;
+  --vinyl-label-100: #f0b81e;
+  --vinyl-label-ring: rgba(26,24,21,1);
+  --vinyl-label-stroke: rgba(26,24,21,0.85);
+  --vinyl-label-art-base: #1a1815;
+  --vinyl-hole-fill: #1a1815;
+}

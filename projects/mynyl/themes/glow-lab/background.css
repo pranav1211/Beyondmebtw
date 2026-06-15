@@ -1,0 +1,27 @@
+:root {
+  /* Layout / geometry — keep the canonical wood proportions */
+  --player-record-scale: 0.42;
+  --arm-pivot-offset-x: 1.05;
+  --arm-pivot-offset-y: -0.85;
+  --arm-outer-radius: 0.91;
+  --arm-inner-radius: 0.30;
+  --arm-outer-offset-x: -0.10;
+  --arm-outer-offset-y: -0.85;
+  --arm-park-offset-x: 1.20;
+  --arm-park-offset-y: 0.30;
+
+  /* Pitch-dark room — the canvas contributes almost no light */
+  --bg-center-rgb: 8,14,10;
+  --bg-mid-rgb: 4,8,8;
+  --bg-edge-0: #04060a;
+  --bg-edge-1: #020308;
+  --bg-glow-strength: 0.04;
+  --bg-drift-x: 0.07;
+  --bg-drift-y: 0.05;
+
+  /* Hint overlay glows phosphor-green */
+  --hint-ring: rgba(125,255,176,0.5);
+  --hint-dot: rgba(182,255,106,0.95);
+  --hint-glow: rgba(125,255,176,0.5);
+  --hint-text: rgba(190,255,170,0.85);
+}
