@@ -10,11 +10,10 @@
   const lights = overlay.querySelectorAll('.switch');
   const audioEl = document.getElementById('startAudio');
 
-  // When each light illuminates (ms from sequence start). These match
-  // the beep onsets in starting-lights.mp3: ~0.5s lead, then 1s apart.
-  // (If the cut differs, re-tune these to the file's real onsets.)
-  const LIGHT_TIMES = [500, 1500, 2500, 3500, 4500];
-  const LIGHTS_OUT = 5400;  // all lights cut to black ("lights out")
+  // When each light illuminates (ms from sequence start). Tuned to the
+  // measured beep onsets in starting-lights.mp3 (~0.5s lead, ~1s apart).
+  const LIGHT_TIMES = [500, 1474, 2503, 3504, 4505];
+  const LIGHTS_OUT = 5500;  // all lights cut to black ("lights out")
   const HOLD_CAPTION = 2000; // dwell on the caption before revealing
   const FADE = 600;          // overlay fade (matches CSS transition)
 
@@ -55,32 +54,42 @@
   }
 
   // ----------------------------------------------------------
-  // Audio gating.
+  // Tap-to-start gate (the default on every device).
   //
-  // Readiness (buffered) and permission (autoplay) are separate:
-  // preloading removes stutter, but browsers still only allow
-  // sound after a user gesture. So: try to autoplay; if the
-  // browser blocks it, show a one-tap "start" gate. Either way
-  // the lights start in lockstep with the sound.
+  // Audio can only begin after a user gesture, so rather than
+  // gamble on autoplay we always wait for one tap/click/key. The
+  // gesture starts the sound, and the lights are synced to the
+  // moment playback actually begins. Simple and 100% reliable.
   // ----------------------------------------------------------
-  function playAudioThen(onPlaying, onBlocked) {
-    if (!audioEl) { onPlaying(); return; }       // no audio → just run visuals
-    try { audioEl.currentTime = 0; } catch (e) { /* not seekable yet */ }
+  function startWithAudio() {
+    if (started) return;
 
+    if (!audioEl) { runVisuals(); return; }
+
+    let begun = false;
+    function begin() {
+      if (begun) return;
+      begun = true;
+      audioEl.removeEventListener('playing', begin);
+      runVisuals();
+    }
+
+    // play() is called synchronously inside the gesture — the most
+    // reliable form for unlocking audio (Android Chrome included).
+    // No currentTime write first: that can stall on a not-yet-loaded
+    // element on mobile.
     let p;
     try { p = audioEl.play(); } catch (e) { p = null; }
 
-    if (p && typeof p.then === 'function') {
-      // start visuals the moment playback actually begins → tight sync
-      p.then(onPlaying).catch(onBlocked);
-    } else {
-      // older browsers: no promise, assume it started
-      onPlaying();
-    }
+    // Start the lights the instant audio truly begins (tight sync),
+    // with promise + timeout fallbacks so the visuals never hang
+    // even if playback fails outright.
+    audioEl.addEventListener('playing', begin);
+    if (p && typeof p.then === 'function') p.then(begin).catch(begin);
+    setTimeout(begin, 1500);
   }
 
-  function waitForTap() {
-    if (started || overlay.classList.contains('await-start')) return;
+  function armGate() {
     overlay.classList.add('await-start');   // reveals the "Tap to start" hint
 
     function cleanup() {
@@ -92,52 +101,19 @@
 
     function onGesture() {
       cleanup();
-      // we now have a user gesture → audio is allowed
-      playAudioThen(runVisuals, runVisuals);  // run regardless on the gesture
+      startWithAudio();
     }
 
-    // listen broadly — pointerdown alone is unreliable for audio
-    // activation on some mobile browsers
     overlay.addEventListener('pointerdown', onGesture);
     overlay.addEventListener('touchstart', onGesture);
     overlay.addEventListener('click', onGesture);
     window.addEventListener('keydown', onGesture);
   }
 
-  // Wait until the audio is buffered enough to play gap-free, then
-  // attempt the auto-start. Cap the wait so a slow/failed load never
-  // stalls the intro.
-  function startWhenReady() {
-    let fired = false;
-    function go() {
-      if (fired) return;
-      fired = true;
-      if (audioEl) {
-        audioEl.removeEventListener('canplaythrough', go);
-        audioEl.removeEventListener('loadeddata', go);
-        audioEl.removeEventListener('error', go);
-      }
-      // try to autoplay; if blocked, fall back to the tap gate
-      playAudioThen(runVisuals, waitForTap);
-      // safety net: on mobile play()'s promise often hangs while
-      // loading (never resolves/rejects), so force the gate up
-      setTimeout(function () { if (!started) waitForTap(); }, 700);
-    }
-
-    if (!audioEl || audioEl.readyState >= 3 /* HAVE_FUTURE_DATA */) {
-      go();
-    } else {
-      audioEl.addEventListener('canplaythrough', go);
-      audioEl.addEventListener('loadeddata', go);
-      audioEl.addEventListener('error', go);   // file missing/failed → don't stall
-      setTimeout(go, 2500); // don't wait forever on a slow connection
-    }
-  }
-
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', startWhenReady);
+    document.addEventListener('DOMContentLoaded', armGate);
   } else {
-    startWhenReady();
+    armGate();
   }
 })();
 
