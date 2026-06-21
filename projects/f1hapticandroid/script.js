@@ -137,21 +137,26 @@
     alog('armGate: waiting for tap');
     overlay.classList.add('await-start');   // reveals the "Tap to start" hint
 
+    let consumed = false;  // one tap = pointerup + click; only handle once
+
     function cleanup() {
-      overlay.removeEventListener('pointerdown', onGesture);
-      overlay.removeEventListener('touchstart', onGesture);
+      overlay.removeEventListener('pointerup', onGesture);
       overlay.removeEventListener('click', onGesture);
       window.removeEventListener('keydown', onGesture);
     }
 
     function onGesture(e) {
+      if (consumed) return;
+      consumed = true;
       alog('gesture: ' + (e && e.type));
       cleanup();
       startWithAudio();
     }
 
-    overlay.addEventListener('pointerdown', onGesture);
-    overlay.addEventListener('touchstart', onGesture);
+    // Only events that grant "user activation" can unlock audio.
+    // pointerdown / touchstart do NOT qualify — pointerup, click and
+    // keydown do.
+    overlay.addEventListener('pointerup', onGesture);
     overlay.addEventListener('click', onGesture);
     window.addEventListener('keydown', onGesture);
   }
