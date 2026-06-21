@@ -1,4 +1,119 @@
 // ============================================================
+// F1 Start-Light Loading Sequence
+// 5 red lights illuminate one-by-one, hold, then "lights out"
+// and the page is revealed.
+// ============================================================
+(function () {
+  const overlay = document.getElementById('startLights');
+  if (!overlay) return;
+
+  const lights = overlay.querySelectorAll('.switch');
+  const audioEl = document.getElementById('startAudio');
+
+  // When each light illuminates (ms from sequence start). These match
+  // the beep onsets in starting-lights.mp3: ~0.5s lead, then 1s apart.
+  // (If the cut differs, re-tune these to the file's real onsets.)
+  const LIGHT_TIMES = [500, 1500, 2500, 3500, 4500];
+  const LIGHTS_OUT = 5400;  // all lights cut to black ("lights out")
+  const HOLD_CAPTION = 2000; // dwell on the caption before revealing
+  const FADE = 600;          // overlay fade (matches CSS transition)
+
+  // keep the page from scrolling while the sequence plays
+  document.body.style.overflow = 'hidden';
+
+  // ----------------------------------------------------------
+  // Race-start audio plays from the mp3, in lockstep with the
+  // lights. Browser autoplay rules mean sound can only start
+  // after a user gesture — if the intro runs before any
+  // interaction it stays silent (lights still play), and it
+  // syncs on reloads once audio is unlocked for the session.
+  // ----------------------------------------------------------
+  function playAudio() {
+    if (!audioEl) return;
+    try { audioEl.currentTime = 0; } catch (e) { /* not seekable yet */ }
+    const p = audioEl.play();
+    if (p && p.catch) p.catch(() => { /* autoplay blocked — silent */ });
+  }
+
+  function reveal() {
+    overlay.classList.add('done');
+    document.body.style.overflow = '';
+    // choreograph the content in as the lights clear
+    if (window.runEntrance) window.runEntrance();
+    setTimeout(() => overlay.remove(), FADE + 50);
+  }
+
+  function runSequence() {
+    // start the sound and the lights at the same instant
+    playAudio();
+
+    LIGHT_TIMES.forEach((t, i) => {
+      setTimeout(() => { if (lights[i]) lights[i].classList.add('lit'); }, t);
+    });
+
+    // lights out: all go dark at once, caption flashes
+    setTimeout(() => {
+      lights.forEach((light) => light.classList.remove('lit'));
+      overlay.classList.add('out');
+    }, LIGHTS_OUT);
+
+    // hold on the caption so the user can read it, then reveal
+    setTimeout(reveal, LIGHTS_OUT + HOLD_CAPTION);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', runSequence);
+  } else {
+    runSequence();
+  }
+})();
+
+// ============================================================
+// Entrance choreography (anime.js, progressive enhancement)
+// Content fades + slides up in a stagger as the lights clear.
+// If anime.js fails to load or the user prefers reduced motion,
+// everything stays plainly visible — nothing is ever stuck hidden.
+// ============================================================
+(function () {
+  const prefersReduced =
+    window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const animEnabled = !!window.anime && !prefersReduced;
+
+  const items = Array.from(document.querySelectorAll('.anim-item'));
+
+  // hide the items up front ONLY when we can actually animate them
+  if (animEnabled && items.length) {
+    document.body.classList.add('anim-ready');
+  }
+
+  let played = false;
+  window.runEntrance = function () {
+    if (played) return;
+    played = true;
+    if (!animEnabled || !items.length) return;
+
+    window.anime({
+      targets: items,
+      opacity: [0, 1],
+      translateY: [26, 0],
+      duration: 760,
+      delay: window.anime.stagger(110, { start: 120 }),
+      easing: 'easeOutCubic'
+    });
+  };
+
+  // Safety nets so content is never stuck invisible:
+  // if the lights overlay is missing, reveal once the page loads;
+  // and a hard failsafe in case the sequence never calls us.
+  if (!document.getElementById('startLights')) {
+    window.addEventListener('load', window.runEntrance);
+  }
+  setTimeout(window.runEntrance, 12000);
+})();
+
+// ============================================================
 // Visitor Counter Badge (populated by /analytics.js via GoatCounter)
 // ============================================================
 (function () {
@@ -24,20 +139,77 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 const testBtn = document.getElementById('testVibration');
 const vibeStatus = document.getElementById('vibeStatus');
+const vibeConfirm = document.getElementById('vibeConfirm');
+const vibeYes = document.getElementById('vibeYes');
+const vibeNo = document.getElementById('vibeNo');
 const fullscreenBtn = document.getElementById('fullscreenBtn');
 
 let player;
 let isPlaying = false;
 
-if (!('vibrate' in navigator)) {
-  vibeStatus.textContent = '⚠️ Your device/browser does not support vibration.';
+// ------------------------------------------------------------
+// Vibration test + confirmation flow.
+// The Vibration API can't report whether the motor actually
+// fired, so we ask the user and branch on their answer.
+// ------------------------------------------------------------
+const hasVibrate = 'vibrate' in navigator;
+
+function setVibeStatus(html, type) {
+  vibeStatus.innerHTML = html;
+  vibeStatus.className = 'vibe-status' + (type ? ' ' + type : '');
+}
+
+if (!hasVibrate) {
+  testBtn.disabled = true;
+  setVibeStatus(
+    "⚠️ Your device or browser doesn't support vibration — you'll still get the full audio experience.",
+    'warn'
+  );
 }
 
 testBtn.addEventListener('click', () => {
-  if ('vibrate' in navigator) {
-    navigator.vibrate([200, 100, 200]);
+  if (!hasVibrate) return;
+
+  // a noticeable double-pulse so it's unmistakable
+  const fired = navigator.vibrate([200, 100, 200, 100, 300]);
+
+  setVibeStatus('', null);
+
+  // false = the browser rejected the request outright
+  if (fired === false) {
+    setVibeStatus(
+      "⚠️ The browser blocked that vibration. It's often Do Not Disturb or a power-saving mode — turn those off and try again.",
+      'warn'
+    );
+    vibeConfirm.hidden = true;
+    return;
   }
+
+  vibeConfirm.hidden = false;
 });
+
+if (vibeYes) {
+  vibeYes.addEventListener('click', () => {
+    vibeConfirm.hidden = true;
+    setVibeStatus("✅ You're all set — haptics are working. Enjoy the ride!", 'success');
+  });
+}
+
+if (vibeNo) {
+  vibeNo.addEventListener('click', () => {
+    vibeConfirm.hidden = true;
+    setVibeStatus(
+      "Didn't feel anything? Try these, then tap <strong>Test Vibration</strong> again:" +
+      '<ul class="fix-list">' +
+      '<li>Turn off Silent / Do Not Disturb mode</li>' +
+      '<li>Disable battery saver / power saving mode</li>' +
+      '<li>Enable vibration / haptics in your system settings</li>' +
+      '<li>Make sure your phone isn\'t on a desk that muffles the buzz</li>' +
+      '</ul>',
+      'warn'
+    );
+  });
+}
 
 window.onYouTubeIframeAPIReady = function () {
   player = new YT.Player('video', {
@@ -71,33 +243,47 @@ function onPlayerReady(event) {
 
 // ============================================================
 // Fullscreen
+//
+// requestFullscreen() needs "transient user activation" — it must
+// run synchronously inside the click, BEFORE any await/setTimeout,
+// or mobile browsers silently reject it (the old intermittent bug).
+// So: request fullscreen first, then play + lock orientation.
 // ============================================================
-fullscreenBtn.addEventListener('click', async () => {
+fullscreenBtn.addEventListener('click', () => {
   if (!player) return;
 
-  try {
-    player.playVideo();
+  const iframe = document.getElementById('video');
+  const requestFs =
+    iframe.requestFullscreen ||
+    iframe.webkitRequestFullscreen ||
+    iframe.msRequestFullscreen;
 
-    if (screen.orientation && screen.orientation.lock) {
-      try {
-        await screen.orientation.lock('landscape');
-      } catch (err) {
-        // orientation lock not supported
-      }
+  let fsPromise;
+  if (requestFs) {
+    try {
+      // call within the gesture; may or may not return a promise
+      fsPromise = requestFs.call(iframe);
+    } catch (err) {
+      // fullscreen unavailable (e.g. iOS Safari blocks iframe FS)
     }
+  }
 
-    setTimeout(() => {
-      const iframe = document.getElementById('video');
-      if (iframe.requestFullscreen) {
-        iframe.requestFullscreen();
-      } else if (iframe.webkitRequestFullscreen) {
-        iframe.webkitRequestFullscreen();
-      } else if (iframe.msRequestFullscreen) {
-        iframe.msRequestFullscreen();
-      }
-    }, 200);
-  } catch (error) {
-    console.log('Play failed:', error);
+  // start playback in the same gesture
+  player.playVideo();
+
+  // lock orientation only after we're actually in fullscreen,
+  // since most browsers reject the lock otherwise
+  const lockLandscape = () => {
+    if (screen.orientation && screen.orientation.lock) {
+      screen.orientation.lock('landscape').catch(() => {});
+    }
+  };
+
+  if (fsPromise && typeof fsPromise.then === 'function') {
+    fsPromise.then(lockLandscape).catch(() => {});
+  } else {
+    // no promise returned (older webkit) — give FS a beat to settle
+    setTimeout(lockLandscape, 250);
   }
 });
 

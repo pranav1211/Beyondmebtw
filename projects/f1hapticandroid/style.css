@@ -1,113 +1,457 @@
+/* ============================================================
+   Theme tokens
+   ============================================================ */
+:root {
+  --bg: #08080a;
+  --bg-elev: #0f0f12;
+  --surface: rgba(255, 255, 255, 0.045);
+  --surface-2: rgba(255, 255, 255, 0.07);
+  --border: rgba(255, 255, 255, 0.09);
+  --border-strong: rgba(255, 255, 255, 0.16);
+
+  --text: #ededf0;
+  --text-dim: #a6a6ae;
+  --text-mute: #6e6e78;
+
+  /* warm champagne-amber accent (replaces red) */
+  --gold: #ecc174;
+  --gold-bright: #f8dfa6;
+  --gold-deep: #c2872f;
+  --gold-glow: rgba(236, 180, 110, 0.38);
+
+  /* cool steel secondary */
+  --steel: #9fb8c6;
+
+  /* checkered-flag divider square colour */
+  --check: #d6d6d6;
+
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  /* Motor Oil reverted — display layer now uses the clean stack.
+     To bring Motor Oil back (e.g. just the title), set this to
+     "'Motor Oil 1937', 'Georgia', serif" and apply per-element. */
+  --font-display: var(--font-body);
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: var(--font-body);
   margin: 0;
   padding: 0;
-  background: #000;
-  color: #fff;
+  background:
+    radial-gradient(ellipse 90% 55% at 50% -10%, rgba(232, 201, 138, 0.06), transparent 60%),
+    var(--bg);
+  color: var(--text);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
+/* ============================================================
+   F1 start-light loading sequence
+   (light style adapted from Uiverse.io by PauloRFJ)
+   ============================================================ */
+.start-lights {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  background: radial-gradient(ellipse at center, #0c0c10 0%, #000 75%);
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.start-lights.done {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.lights-rail {
+  display: flex;
+  gap: 18px;
+}
+
+.start-lights .switch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  background-color: #000;
+  width: 96px;
+  height: 96px;
+  box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.2), 0 0 1px 2px #000,
+    inset 0 2px 2px -2px #fff, inset 0 0 2px 5px #2e2e2e,
+    inset 0 0 2px 30px #000;
+  border-radius: 50%;
+}
+
+.start-lights .button {
+  background-color: #2e2e2e;
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+}
+
+.start-lights .light {
+  opacity: 0;
+  position: absolute;
+  inset: 0;
+  transition: opacity 0.12s ease;
+  background-image: radial-gradient(#fff5f5, #ff1a1a 55%, #c40000 72%, transparent 74%);
+}
+
+.start-lights .switch.lit {
+  box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.2), 0 0 1px 2px #000,
+    inset 0 2px 2px -2px #fff, inset 0 0 2px 5px #2e2e2e,
+    inset 0 0 2px 30px #000, 0 0 28px 6px rgba(255, 30, 30, 0.85);
+}
+
+.start-lights .switch.lit .light {
+  opacity: 1;
+  animation: bulb-flicker 0.25s ease-in;
+}
+
+.start-lights .dots {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(transparent 30%, #000 70%);
+  background-size: 8px 8px;
+  border-radius: 50%;
+}
+
+@keyframes bulb-flicker {
+  0% { opacity: 0; }
+  40% { opacity: 1; }
+  55% { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+.lights-caption {
+  margin: 0;
+  font-family: 'Faster One', var(--font-body);
+  font-size: 2.6rem;
+  line-height: 1.15;
+  letter-spacing: 1px;
+  max-width: 16ch;
+  color: var(--gold);
+  text-shadow: 0 0 28px var(--gold-glow);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.start-lights.out .lights-caption {
+  opacity: 1;
+}
+
+/* ============================================================
+   Header
+   ============================================================ */
 header {
   position: relative;
-  padding: 25px 20px;
-  background: #111;
+  padding: 40px 24px 14px;
+  background: transparent;
   width: 100%;
-  box-sizing: border-box;
   max-width: 1200px;
 }
 
 h1 {
-  font-size: 2.2rem;
-  margin: 10px 0 20px 0;
-  color: #ff3c3c;
-  font-weight: bold;
-  text-shadow: 0 2px 10px rgba(255, 60, 60, 0.3);
+  font-family: 'Arial', var(--font-body);
+  font-size: 3.2rem;
+  margin: 6px 0 18px 0;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  line-height: 1.1;
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold) 55%, var(--gold-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--gold);
+  filter: drop-shadow(0 4px 30px var(--gold-glow));
 }
 
+/* Checkered-flag divider (motorsport finish-line) */
 .separator {
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #ff3c3c, transparent);
-  margin: 20px 0;
-  width: 100%;
+  height: 16px;
+  width: min(440px, 78%);
+  margin: 22px auto;
+  background-image:
+    linear-gradient(45deg, var(--check) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--check) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--check) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--check) 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
+  opacity: 0.85;
 }
 
 .description {
-  font-size: 1rem;
-  margin-bottom: 15px;
-  line-height: 1.5;
+  font-size: 1.1rem;
+  margin: 0 auto 24px;
+  line-height: 1.65;
   color: #ffffff;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: 620px;
 }
 
-.combined-info {
-  font-size: 0.9rem;
-  margin-bottom: 15px;
-  line-height: 1.5;
-  color: #ffcc00;
-  padding: 15px;
-  background: rgba(255, 204, 0, 0.1);
-  border-radius: 8px;
-  border-left: 4px solid #ffcc00;
+/* Stage: setup card | video | test card.
+   Stacked on phones/tablets, flanking the video on big screens. */
+.stage {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
+  gap: 16px;
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+/* Big screens: setup left, video centre, test right */
+@media (min-width: 1200px) {
+  main {
+    max-width: 1340px;
+  }
+
+  .stage {
+    display: grid;
+    grid-template-columns: 1fr minmax(520px, 720px) 1fr;
+    gap: 24px;
+    max-width: 1300px;
+    align-items: start;
+  }
+
+  .stage .setup-card {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .stage .video-container {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .stage .test-card {
+    grid-column: 3;
+    grid-row: 1;
+  }
+}
+
+.info-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.info-card:hover {
+  border-color: var(--border-strong);
+}
+
+.card-title {
+  font-size: 1.15rem;
+  margin: 0;
+  color: var(--gold);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.setup-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.setup-list li {
+  position: relative;
+  padding-left: 26px;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: var(--text-dim);
+}
+
+.setup-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.4em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 8px var(--gold-glow);
+}
+
+.test-card {
+  align-items: flex-start;
+}
+
+.test-desc {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--text-dim);
 }
 
 .pc-warning {
-  font-size: 1rem;
-  color: #ffa500;
-  padding: 10px;
-  background: rgba(255, 165, 0, 0.1);
-  border-radius: 6px;
-  border-left: 3px solid #ffa500;
-  margin-bottom: 15px;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
+  font-size: 0.95rem;
+  color: var(--text-dim);
+  padding: 12px 16px;
+  background: var(--surface);
+  border-radius: 10px;
+  border-left: 3px solid var(--gold-deep);
+  margin: 0 auto 18px;
+  max-width: 760px;
+  text-align: left;
   display: none;
 }
 
-.info-text {
-  margin: 0;
+.pc-warning strong {
+  color: var(--gold);
 }
 
-.vibration-test {
+/* "Did you feel it?" confirmation */
+.vibe-confirm {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
-.test-btn {
-  background: #ff3c3c;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  font-size: 0.85rem;
+.vibe-confirm[hidden] {
+  display: none;
 }
 
+.confirm-q {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.confirm-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.confirm-btn {
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text);
+  padding: 6px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.confirm-btn.yes:hover {
+  background: #1f9d55;
+  border-color: #1f9d55;
+}
+
+.confirm-btn.no:hover {
+  background: #c0392b;
+  border-color: #c0392b;
+}
+
+/* status / feedback message */
+.vibe-status {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+.vibe-status:empty {
+  display: none;
+}
+
+.vibe-status.success {
+  color: #7ee787;
+}
+
+.vibe-status.warn {
+  color: var(--gold-bright);
+}
+
+.fix-list {
+  margin: 8px 0 0 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  color: var(--text-dim);
+}
+
+/* ============================================================
+   Buttons
+   ============================================================ */
+/* shared base for filled "premium" buttons */
+.btn-gold,
+.fullscreen-btn,
+.test-btn {
+  font-family: var(--font-body);
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  color: #1a1206;
+  background: linear-gradient(135deg, var(--gold-bright), var(--gold) 45%, var(--gold-deep));
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+}
+
+.btn-gold:hover,
+.fullscreen-btn:hover,
 .test-btn:hover {
-  transform: scale(1.05);
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+  box-shadow: 0 10px 28px var(--gold-glow), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.btn-gold:active,
+.fullscreen-btn:active,
+.test-btn:active {
+  transform: translateY(0);
+}
+
+.test-btn {
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+}
+
+.test-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: grayscale(0.6);
+}
+
+.test-btn:disabled:hover {
+  transform: none;
+  filter: grayscale(0.6);
 }
 
 main {
   width: 100%;
   max-width: 1200px;
-  padding: 0 20px;
+  padding: 8px 20px 0;
   box-sizing: border-box;
   flex-grow: 1;
 }
@@ -118,126 +462,74 @@ main {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 18px;
 }
 
+#video,
 video {
-  width: 100%;
-  height: auto;
-  max-height: 70vh;
-  background: #000;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(255, 60, 60, 0.2);
-}
-
-.fullscreen-btn {
-  background: linear-gradient(135deg, #ff3c3c, #ff6b6b);
-  border: none;
-  padding: 15px 30px;
-  border-radius: 8px;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  box-shadow: 0 4px 15px rgba(255, 60, 60, 0.3);
-  max-width: 300px;
-  margin: 0 auto;
-}
-
-.fullscreen-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 60, 60, 0.4);
-}
-
-.fullscreen-btn:active {
-  transform: translateY(0);
-}
-
-#vibeStatus {
-  font-size: 0.8rem;
-  color: #90EE90;
-  margin-top: 5px;
-}
-
-.thank-you {
-  font-size: 1.1rem;
-  padding: 20px;
-  color: #ffffff;
-  font-style: italic;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-footer {
-  font-size: 0.8rem;
-  padding: 15px 20px;
-  background: #111;
-  width: 100%;
-  margin-top: 40px;
-  box-sizing: border-box;
-  color: #888;
-  border-top: 1px solid #333;
-  max-width: 1200px;
-}
-
-footer p {
-  max-width: 800px;
-  margin: 10px auto;
-  line-height: 1.4;
-}
-
-footer a {
-  color: gray;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-#video {
   width: 100%;
   aspect-ratio: 16/9;
   max-height: 70vh;
   background: #000;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(255, 60, 60, 0.2);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
 }
 
-/* Blog CTA */
+.fullscreen-btn {
+  padding: 15px 32px;
+  border-radius: 10px;
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  max-width: 340px;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   Blog / source CTA
+   ============================================================ */
 .blog-cta-container {
-  margin: 25px auto 0;
-  padding: 25px 20px;
-  max-width: 500px;
-  background: linear-gradient(135deg, rgba(255, 60, 60, 0.05), rgba(255, 107, 107, 0.08));
-  border-radius: 12px;
-  border: 1px solid rgba(255, 60, 60, 0.2);
+  margin: 40px auto 0;
+  padding: 30px 24px;
+  max-width: 540px;
+  background: var(--surface);
+  border-radius: 16px;
+  border: 1px solid var(--border);
   text-align: center;
 }
 
 .cta-text {
-  font-size: 1.1rem;
+  font-size: 1.35rem;
   font-weight: 600;
-  color: #fff;
-  margin: 0 0 15px 0;
+  color: var(--text);
+  margin: 0 0 18px 0;
   letter-spacing: 0.3px;
 }
 
+.cta-buttons {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Medium = the story button (primary, gold outline) */
 .blog-link {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 28px;
-  background: linear-gradient(135deg, #ff3c3c, #ff6b6b);
-  border: none;
-  border-radius: 8px;
-  color: white;
+  padding: 12px 24px;
+  font-weight: 600;
+  background: transparent;
+  border: 1px solid var(--gold);
+  border-radius: 10px;
+  color: var(--gold);
   text-decoration: none;
   font-size: 1rem;
-  font-weight: bold;
+  letter-spacing: 0.3px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(255, 60, 60, 0.3);
-  letter-spacing: 0.5px;
   position: relative;
   overflow: hidden;
 }
@@ -249,7 +541,7 @@ footer a {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(90deg, transparent, var(--gold-glow), transparent);
   transition: left 0.5s ease;
 }
 
@@ -258,21 +550,12 @@ footer a {
 }
 
 .blog-link:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 25px rgba(255, 60, 60, 0.5);
-  background: linear-gradient(135deg, #ff4d4d, #ff7a7a);
-}
-
-.blog-link:active {
-  transform: translateY(-1px);
-}
-
-.blog-link .icon {
-  font-size: 1.2rem;
+  background: rgba(232, 201, 138, 0.08);
+  box-shadow: 0 6px 22px var(--gold-glow);
+  transform: translateY(-2px);
 }
 
 .blog-link .arrow {
-  font-size: 1.2rem;
   transition: transform 0.3s ease;
 }
 
@@ -280,28 +563,91 @@ footer a {
   transform: translateX(4px);
 }
 
-.cta-subtext {
-  font-size: 0.85rem;
-  color: #aaa;
-  margin: 12px 0 0 0;
-  line-height: 1.4;
+/* GitHub = quiet secondary, kept out of the "story" */
+.github-link {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  padding: 11px 20px;
 }
 
-/* Visitor counter badge */
+.github-link::before {
+  display: none;
+}
+
+.github-link:hover {
+  background: var(--surface-2);
+  border-color: var(--border-strong);
+  color: var(--text);
+  box-shadow: none;
+}
+
+.cta-subtext {
+  font-size: 0.85rem;
+  color: var(--text-mute);
+  margin: 16px 0 0 0;
+  line-height: 1.45;
+}
+
+.thank-you {
+  font-size: 1.1rem;
+  padding: 24px;
+  color: var(--text-dim);
+  font-style: italic;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   Footer (edge-to-edge)
+   ============================================================ */
+footer {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  padding: 26px 24px;
+  background: var(--bg-elev);
+  width: 100%;
+  max-width: none;
+  margin-top: 56px;
+  box-sizing: border-box;
+  color: var(--text-mute);
+  border-top: 1px solid var(--border);
+}
+
+footer p {
+  max-width: 820px;
+  margin: 10px auto;
+  line-height: 1.5;
+}
+
+footer a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+footer a:hover {
+  color: var(--gold);
+}
+
+/* ============================================================
+   Visitor counter badge
+   ============================================================ */
 .visitor-counter {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  background: rgba(255, 60, 60, 0.12);
-  border: 1px solid rgba(255, 60, 60, 0.25);
+  top: 14px;
+  right: 14px;
+  background: rgba(232, 201, 138, 0.1);
+  border: 1px solid rgba(232, 201, 138, 0.25);
   border-radius: 20px;
   padding: 5px 12px;
   font-size: 0.7rem;
-  color: #ff8a8a;
+  color: var(--gold);
   display: none;
   align-items: center;
   gap: 5px;
-  backdrop-filter: blur(4px);
   z-index: 10;
 }
 
@@ -311,140 +657,92 @@ footer a {
 
 .visitor-counter .count {
   font-weight: bold;
-  color: #fff;
+  color: var(--text);
 }
 
+/* ============================================================
+   Entrance animation initial state
+   (applied only when JS/anime is available — see script.js)
+   ============================================================ */
+.anim-ready .anim-item {
+  opacity: 0;
+}
 
-/* Desktop */
+/* ============================================================
+   Responsive
+   ============================================================ */
 @media (min-width: 1024px) {
   .pc-warning {
     display: block;
   }
 
   header {
-    padding: 40px 40px;
+    padding: 52px 40px 16px;
   }
 
   h1 {
-    font-size: 2.8rem;
-    margin: 15px 0 25px 0;
+    font-size: 3.8rem;
   }
 
   .description {
-    font-size: 1.1rem;
-    margin-bottom: 20px;
-  }
-
-  .combined-info {
-    font-size: 1rem;
-    padding: 20px;
-    max-width: 500px;
-  }
-
-  .pc-warning {
-    max-width: 500px;
-    font-size: 1rem;
+    font-size: 1.15rem;
   }
 
   .video-container {
-    gap: 20px;
+    gap: 22px;
   }
 
-  video,
-  #video {
-    max-height: 60vh;
-  }
-
-  .fullscreen-btn {
-    padding: 18px 35px;
-    font-size: 1.1rem;
-  }
-
-  .thank-you {
-    font-size: 1.2rem;
-    padding: 30px;
+  #video,
+  video {
+    max-height: 62vh;
   }
 
   footer {
-    padding: 20px 40px;
+    padding: 32px 60px;
     font-size: 0.85rem;
   }
+}
 
-  .blog-cta-container {
-    padding: 30px 25px;
-    max-width: 550px;
-  }
-
-  .cta-text {
-    font-size: 1.2rem;
-    margin-bottom: 18px;
-  }
-
-  .blog-link {
-    padding: 16px 32px;
-    font-size: 1.05rem;
-  }
-
-  .cta-subtext {
-    font-size: 0.9rem;
-    margin-top: 15px;
-  }
-
-  .visitor-counter {
-    top: 18px;
-    right: 20px;
-    font-size: 0.75rem;
-    padding: 6px 14px;
-  }}
-
-/* Large desktop */
 @media (min-width: 1400px) {
   h1 {
-    font-size: 3.2rem;
+    font-size: 4.2rem;
   }
 
   .description {
     font-size: 1.2rem;
   }
-
-  .combined-info {
-    font-size: 1.05rem;
-  }
-
-  .fullscreen-btn {
-    font-size: 1.15rem;
-    padding: 20px 40px;
-  }
-
-  .thank-you {
-    font-size: 1.3rem;
-  }
 }
 
-/* Mobile */
 @media (max-width: 768px) {
-  body {
-    background: radial-gradient(ellipse at center, #7c2e2e 0%, #000 70%);
+  header {
+    padding: 32px 18px 12px;
   }
 
   h1 {
-    font-size: 1.8rem;
+    font-size: 2.4rem;
   }
 
-  .description,
-  .combined-info {
-    font-size: 0.9rem;
+  .description {
+    font-size: 0.98rem;
   }
 
-  .vibration-test {
+  main {
+    padding: 6px 15px 0;
+  }
+
+  .cta-buttons {
     flex-direction: column;
     align-items: stretch;
-    text-align: center;
+  }
+
+  .blog-link,
+  .github-link {
+    justify-content: center;
   }
 
   .fullscreen-btn {
-    padding: 12px 25px;
-    font-size: 0.9rem;
+    padding: 14px 26px;
+    font-size: 1.05rem;
     margin: 0 15px;
     width: auto;
     max-width: calc(100% - 30px);
@@ -454,32 +752,39 @@ footer a {
     max-width: 100%;
   }
 
-  main {
-    padding: 0 15px;
-  }
-
-  footer {
-    padding: 15px;
-  }
-
   .blog-cta-container {
-    margin: 20px 15px 0;
-    padding: 20px 15px;
+    margin: 32px 15px 0;
+    padding: 24px 18px;
     max-width: calc(100% - 30px);
   }
 
-  .cta-text {
-    font-size: 1rem;
-  }
-
-  .blog-link {
-    padding: 12px 24px;
-    font-size: 0.9rem;
+  /* start lights shrink on phones */
+  .lights-rail {
     gap: 8px;
   }
 
-  .cta-subtext {
-    font-size: 0.8rem;
+  .start-lights .switch {
+    width: 60px;
+    height: 60px;
+    box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.2), 0 0 1px 2px #000,
+      inset 0 2px 2px -2px #fff, inset 0 0 2px 5px #2e2e2e,
+      inset 0 0 2px 19px #000;
+  }
+
+  .start-lights .switch.lit {
+    box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.2), 0 0 1px 2px #000,
+      inset 0 2px 2px -2px #fff, inset 0 0 2px 5px #2e2e2e,
+      inset 0 0 2px 19px #000, 0 0 22px 5px rgba(255, 30, 30, 0.85);
+  }
+
+  .start-lights .button {
+    width: 46px;
+    height: 46px;
+  }
+
+  .lights-caption {
+    font-size: 2.4rem;
+    padding: 0 16px;
   }
 
   .visitor-counter {
@@ -487,17 +792,24 @@ footer a {
     right: 8px;
     font-size: 0.65rem;
     padding: 4px 10px;
-  }}
+  }
+}
 
-/* Ultra-wide */
 @media (min-width: 1800px) {
-  body {
-    background: radial-gradient(ellipse at center, #7c2e2e 0%, #000 70%);
+  header,
+  main {
+    max-width: 1400px;
+  }
+}
+
+/* Respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  .anim-ready .anim-item {
+    opacity: 1;
   }
 
-  header,
-  main,
-  footer {
-    max-width: 1400px;
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }
