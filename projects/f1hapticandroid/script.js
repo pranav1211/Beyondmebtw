@@ -10,6 +10,37 @@
   const lights = overlay.querySelectorAll('.switch');
   const audioEl = document.getElementById('startAudio');
 
+  // --- audio diagnostics (temporary) ------------------------
+  function alog() {
+    var a = Array.prototype.slice.call(arguments);
+    a.unshift('[F1AUDIO]');
+    try { console.log.apply(console, a); } catch (e) {}
+  }
+
+  if (audioEl) {
+    alog('element found | src=', audioEl.getAttribute('src'),
+      '| currentSrc=', audioEl.currentSrc,
+      '| readyState=', audioEl.readyState,
+      '| networkState=', audioEl.networkState);
+    ['loadstart', 'loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough',
+      'playing', 'pause', 'waiting', 'stalled', 'suspend', 'abort', 'ended', 'error']
+      .forEach(function (evt) {
+        audioEl.addEventListener(evt, function () {
+          var msg = evt + ' | readyState=' + audioEl.readyState +
+            ' networkState=' + audioEl.networkState;
+          if (evt === 'error' && audioEl.error) {
+            msg += ' | errorCode=' + audioEl.error.code +
+              ' "' + (audioEl.error.message || '') + '"';
+          }
+          alog(msg);
+        });
+      });
+    // explicitly kick off loading so we see network activity in the log
+    try { audioEl.load(); alog('called load()'); } catch (e) { alog('load() threw', e); }
+  } else {
+    alog('NO #startAudio element found');
+  }
+
   // When each light illuminates (ms from sequence start). Tuned to the
   // measured beep onsets in starting-lights.mp3 (~0.5s lead, ~1s apart).
   const LIGHT_TIMES = [500, 1474, 2503, 3504, 4505];
@@ -62,34 +93,48 @@
   // moment playback actually begins. Simple and 100% reliable.
   // ----------------------------------------------------------
   function startWithAudio() {
-    if (started) return;
+    if (started) { alog('startWithAudio: already started'); return; }
 
-    if (!audioEl) { runVisuals(); return; }
+    if (!audioEl) { alog('startWithAudio: no audioEl, visuals only'); runVisuals(); return; }
 
     let begun = false;
-    function begin() {
+    function begin(reason) {
       if (begun) return;
       begun = true;
-      audioEl.removeEventListener('playing', begin);
+      alog('lights begin (' + (reason || '') + ')');
+      audioEl.removeEventListener('playing', onPlaying);
       runVisuals();
     }
+    function onPlaying() { begin('playing-event'); }
 
     // play() is called synchronously inside the gesture — the most
     // reliable form for unlocking audio (Android Chrome included).
-    // No currentTime write first: that can stall on a not-yet-loaded
-    // element on mobile.
+    alog('calling play() | readyState=' + audioEl.readyState +
+      ' currentSrc=' + audioEl.currentSrc + ' muted=' + audioEl.muted +
+      ' volume=' + audioEl.volume);
     let p;
-    try { p = audioEl.play(); } catch (e) { p = null; }
+    try {
+      p = audioEl.play();
+    } catch (e) {
+      p = null;
+      alog('play() THREW: ' + e.name + ' - ' + e.message);
+    }
 
-    // Start the lights the instant audio truly begins (tight sync),
-    // with promise + timeout fallbacks so the visuals never hang
-    // even if playback fails outright.
-    audioEl.addEventListener('playing', begin);
-    if (p && typeof p.then === 'function') p.then(begin).catch(begin);
-    setTimeout(begin, 1500);
+    audioEl.addEventListener('playing', onPlaying);
+    if (p && typeof p.then === 'function') {
+      p.then(function () { alog('play() resolved'); begin('play-resolved'); })
+        .catch(function (err) {
+          alog('play() REJECTED: ' + (err && err.name) + ' - ' + (err && err.message));
+          begin('play-rejected');
+        });
+    } else {
+      alog('play() returned no promise');
+    }
+    setTimeout(function () { begin('timeout-1500'); }, 1500);
   }
 
   function armGate() {
+    alog('armGate: waiting for tap');
     overlay.classList.add('await-start');   // reveals the "Tap to start" hint
 
     function cleanup() {
@@ -99,7 +144,8 @@
       window.removeEventListener('keydown', onGesture);
     }
 
-    function onGesture() {
+    function onGesture(e) {
+      alog('gesture: ' + (e && e.type));
       cleanup();
       startWithAudio();
     }
