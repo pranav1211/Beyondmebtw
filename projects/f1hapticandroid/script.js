@@ -21,20 +21,12 @@
   // keep the page from scrolling while the sequence plays
   document.body.style.overflow = 'hidden';
 
-  // ----------------------------------------------------------
-  // Race-start audio plays from the mp3, in lockstep with the
-  // lights. Browser autoplay rules mean sound can only start
-  // after a user gesture — if the intro runs before any
-  // interaction it stays silent (lights still play), and it
-  // syncs on reloads once audio is unlocked for the session.
-  // ----------------------------------------------------------
-  function playAudio() {
-    if (!audioEl) return;
-    try { audioEl.currentTime = 0; } catch (e) { /* not seekable yet */ }
-    const p = audioEl.play();
-    if (p && p.catch) p.catch(() => { /* autoplay blocked — silent */ });
-  }
+  let started = false;
 
+  // ----------------------------------------------------------
+  // Light + reveal choreography (runs once audio is going, or
+  // immediately if there's no audio element).
+  // ----------------------------------------------------------
   function reveal() {
     overlay.classList.add('done');
     document.body.style.overflow = '';
@@ -43,9 +35,10 @@
     setTimeout(() => overlay.remove(), FADE + 50);
   }
 
-  function runSequence() {
-    // start the sound and the lights at the same instant
-    playAudio();
+  function runVisuals() {
+    if (started) return;
+    started = true;
+    overlay.classList.remove('await-start');
 
     LIGHT_TIMES.forEach((t, i) => {
       setTimeout(() => { if (lights[i]) lights[i].classList.add('lit'); }, t);
@@ -61,10 +54,76 @@
     setTimeout(reveal, LIGHTS_OUT + HOLD_CAPTION);
   }
 
+  // ----------------------------------------------------------
+  // Audio gating.
+  //
+  // Readiness (buffered) and permission (autoplay) are separate:
+  // preloading removes stutter, but browsers still only allow
+  // sound after a user gesture. So: try to autoplay; if the
+  // browser blocks it, show a one-tap "start" gate. Either way
+  // the lights start in lockstep with the sound.
+  // ----------------------------------------------------------
+  function playAudioThen(onPlaying, onBlocked) {
+    if (!audioEl) { onPlaying(); return; }       // no audio → just run visuals
+    try { audioEl.currentTime = 0; } catch (e) { /* not seekable yet */ }
+
+    let p;
+    try { p = audioEl.play(); } catch (e) { p = null; }
+
+    if (p && typeof p.then === 'function') {
+      // start visuals the moment playback actually begins → tight sync
+      p.then(onPlaying).catch(onBlocked);
+    } else {
+      // older browsers: no promise, assume it started
+      onPlaying();
+    }
+  }
+
+  function waitForTap() {
+    overlay.classList.add('await-start');   // reveals the "Tap to start" hint
+
+    function onGesture() {
+      overlay.removeEventListener('pointerdown', onGesture);
+      window.removeEventListener('keydown', onGesture);
+      // we now have a user gesture → audio is allowed
+      playAudioThen(runVisuals, runVisuals);  // run regardless on the gesture
+    }
+
+    overlay.addEventListener('pointerdown', onGesture);
+    window.addEventListener('keydown', onGesture);
+  }
+
+  // Wait until the audio is buffered enough to play gap-free, then
+  // attempt the auto-start. Cap the wait so a slow/failed load never
+  // stalls the intro.
+  function startWhenReady() {
+    let fired = false;
+    function go() {
+      if (fired) return;
+      fired = true;
+      if (audioEl) {
+        audioEl.removeEventListener('canplaythrough', go);
+        audioEl.removeEventListener('loadeddata', go);
+        audioEl.removeEventListener('error', go);
+      }
+      // try to autoplay; if blocked, fall back to the tap gate
+      playAudioThen(runVisuals, waitForTap);
+    }
+
+    if (!audioEl || audioEl.readyState >= 3 /* HAVE_FUTURE_DATA */) {
+      go();
+    } else {
+      audioEl.addEventListener('canplaythrough', go);
+      audioEl.addEventListener('loadeddata', go);
+      audioEl.addEventListener('error', go);   // file missing/failed → don't stall
+      setTimeout(go, 2500); // don't wait forever on a slow connection
+    }
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', runSequence);
+    document.addEventListener('DOMContentLoaded', startWhenReady);
   } else {
-    runSequence();
+    startWhenReady();
   }
 })();
 
