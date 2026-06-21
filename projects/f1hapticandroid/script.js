@@ -80,16 +80,27 @@
   }
 
   function waitForTap() {
+    if (started || overlay.classList.contains('await-start')) return;
     overlay.classList.add('await-start');   // reveals the "Tap to start" hint
 
-    function onGesture() {
+    function cleanup() {
       overlay.removeEventListener('pointerdown', onGesture);
+      overlay.removeEventListener('touchstart', onGesture);
+      overlay.removeEventListener('click', onGesture);
       window.removeEventListener('keydown', onGesture);
+    }
+
+    function onGesture() {
+      cleanup();
       // we now have a user gesture → audio is allowed
       playAudioThen(runVisuals, runVisuals);  // run regardless on the gesture
     }
 
+    // listen broadly — pointerdown alone is unreliable for audio
+    // activation on some mobile browsers
     overlay.addEventListener('pointerdown', onGesture);
+    overlay.addEventListener('touchstart', onGesture);
+    overlay.addEventListener('click', onGesture);
     window.addEventListener('keydown', onGesture);
   }
 
@@ -108,6 +119,9 @@
       }
       // try to autoplay; if blocked, fall back to the tap gate
       playAudioThen(runVisuals, waitForTap);
+      // safety net: on mobile play()'s promise often hangs while
+      // loading (never resolves/rejects), so force the gate up
+      setTimeout(function () { if (!started) waitForTap(); }, 700);
     }
 
     if (!audioEl || audioEl.readyState >= 3 /* HAVE_FUTURE_DATA */) {
