@@ -68,17 +68,40 @@ git clone git@github.com:pranav1211/<repo>.git /projects/<name>
 Folder name = subdomain, always. Clone `mynyl`, `f1hapticandroid`, `uceedanswer`
 (the three with live subdomains) plus anything new.
 
-## Step 4 — Secret + start multigitman under pm2
+## Step 4 — pm2 ecosystem (ALL node services) + multigitman secret
+
+One gitignored ecosystem file now declares every node service on the box —
+all five deploy webhooks, manageserver, minis, rtf — with explicit `cwd` and
+env, replacing envs inherited implicitly from whatever shell started them.
+Template: [ecosystem.config.example.js](../ecosystem.config.example.js).
 
 ```bash
-openssl rand -hex 32          # this is the shared webhook secret
-sudo nano /etc/environment    # add: multigitkey=<secret>
-
-# re-login (or: export multigitkey=<secret>) so pm2 inherits it, then:
 cd /bmbsifi/Beyondmebtw
-pm2 start multigitman.js --name multigitman
+# repo push brought ecosystem.config.example.js; the real file stays server-only:
+cp ecosystem.config.example.js ecosystem.config.js
+
+# collect the secret env-var NAMES the TODO-marked apps currently receive:
+for n in minisgitman minisbackend minis-private bmbmoney-webhook rtf-git rtf-web; do
+  echo "=== $n ==="; pm2 env $(pm2 id $n | tr -d "[]' ") | grep -iE 'key|secret|token'
+done
+
+openssl rand -hex 32          # new shared webhook secret for multigitman
+nano ecosystem.config.js      # fill multigitkey + every REPLACE/TODO env
+
+# cutover (seconds of downtime per service):
+pm2 save && cp ~/.pm2/dump.pm2 ~/.pm2/dump.pm2.bak     # rollback point
+pm2 delete all
+pm2 start ecosystem.config.js
 pm2 save
+
+pm2 ls                        # all 10 online?
+curl -s localhost:6030/multig # multigitman status JSON
 ```
+
+Rollback: `pm2 delete all && cp ~/.pm2/dump.pm2.bak ~/.pm2/dump.pm2 && pm2 resurrect`.
+
+Env changes later: edit the file, then `pm2 restart <name> --update-env` —
+pm2 caches env in its dump, a plain restart keeps the old value.
 
 Sanity: `curl http://localhost:6030/multig` → JSON status (registry + lastDeploys).
 

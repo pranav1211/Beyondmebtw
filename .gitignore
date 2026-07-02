@@ -1,3 +1,5 @@
 node_modules
 .agents
 .claude
+ecosystem.config.js
+ecosystem.config.example.js
