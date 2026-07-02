@@ -284,7 +284,22 @@
       <div class="card">
         <div class="card-header">
           <div>
-            <h2>Project Webhook Registry</h2>
+            <h2>Live Projects</h2>
+            <span class="card-hint">
+              Every folder under <code>/projects</code> on the server — each serves at
+              <code>&lt;folder&gt;.beyondmebtw.com</code> and deploys on push, override row or not.
+            </span>
+          </div>
+        </div>
+        <div id="deploy-projects-list" class="posts-list">
+          <div class="loading-msg">Loading projects...</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2>Override Rows</h2>
             <span class="card-hint">
               Convention: repo name = folder = subdomain, branch <code>main</code> — no row needed.
               Add a row only to override folder/branch or disable a repo.

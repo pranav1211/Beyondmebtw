@@ -398,6 +398,51 @@ function handleDeployRegistrySet(body, response) {
   });
 }
 
+const PROJECTS_ROOT_DIR = "/projects";
+const MULTIGIT_STATUS_URL = "http://localhost:6030/multig";
+
+// Folders actually on disk under /projects — every non-dot dir is live on
+// <folder>.beyondmebtw.com whether or not it has a registry row.
+function listDeployProjects() {
+  try {
+    if (!fs.existsSync(PROJECTS_ROOT_DIR)) return []; // local dev
+    return fs.readdirSync(PROJECTS_ROOT_DIR, { withFileTypes: true })
+      .filter(d => d.isDirectory() && !d.name.startsWith('.'))
+      .map(d => ({
+        folder: d.name,
+        hasGit: fs.existsSync(nodePath.join(PROJECTS_ROOT_DIR, d.name, ".git"))
+      }));
+  } catch (e) {
+    console.error("Error listing /projects:", e);
+    return [];
+  }
+}
+
+// Deploy history lives in multigitman; fetch it, degrade to null if it's down.
+function fetchMultigitStatus(callback) {
+  let done = false;
+  const finish = value => { if (!done) { done = true; callback(value); } };
+  const req = http.get(MULTIGIT_STATUS_URL, res => {
+    let data = "";
+    res.on("data", c => { data += c; });
+    res.on("end", () => finish(safeJSONParse(data, null)));
+  });
+  req.setTimeout(1500, () => req.destroy());
+  req.on("error", () => finish(null));
+}
+
+function handleDeployRegistryList(response) {
+  fetchMultigitStatus(status => {
+    sendJSON(response, {
+      registry: readDeployRegistry(),
+      projects: listDeployProjects(),
+      lastDeploys: (status && status.lastDeploys) || null,
+      inFlight: (status && status.inFlight) || [],
+      multigitUp: !!status
+    });
+  });
+}
+
 function handleDeployRegistryDelete(body, response) {
   const repo = String(body.repo || '').trim();
   const registry = readDeployRegistry();
@@ -1412,7 +1457,7 @@ const server = http.createServer((request, response) => {
         if (!validateKey(body.key, response)) return;
 
         switch (body.action) {
-          case 'list':   return sendJSON(response, { registry: readDeployRegistry() });
+          case 'list':   return handleDeployRegistryList(response);
           case 'set':    return handleDeployRegistrySet(body, response);
           case 'delete': return handleDeployRegistryDelete(body, response);
           default: return sendError(response, `Unknown action: ${body.action}`);

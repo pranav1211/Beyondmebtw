@@ -32,6 +32,7 @@ let state = {
   photosLayoutDirty: false,  // true when local layout differs from photosDataClean
   expandedSeriesIds: new Set(), // which series cards are expanded in the list
   deployRegistry: null,      // from /deployregistry (multigitman override table)
+  deployData: null,          // full list payload: projects on disk, lastDeploys, multigitUp
   editingDeployRepo: null    // repo key when editing an existing registry row
 };
 
@@ -2325,15 +2326,66 @@ function initPhotosImageModal() {
 // DEPLOYS TAB — multigitman registry (repo -> folder/branch/enabled overrides)
 
 async function loadDeploysTab() {
-  const container = document.getElementById('deploy-registry-list');
-  container.innerHTML = '<div class="loading-msg">Loading registry...</div>';
+  const registryEl = document.getElementById('deploy-registry-list');
+  const projectsEl = document.getElementById('deploy-projects-list');
+  registryEl.innerHTML = '<div class="loading-msg">Loading registry...</div>';
+  projectsEl.innerHTML = '<div class="loading-msg">Loading projects...</div>';
   try {
     const res = await apiCall('POST', '/deployregistry', { action: 'list' });
     state.deployRegistry = res.registry || {};
+    state.deployData = res;
+    renderDeployProjects();
     renderDeployRegistry();
   } catch (e) {
-    container.innerHTML = `<div class="loading-msg">Failed to load registry: ${esc(e.message)}</div>`;
+    registryEl.innerHTML = `<div class="loading-msg">Failed to load registry: ${esc(e.message)}</div>`;
+    projectsEl.innerHTML = '';
   }
+}
+
+function renderDeployProjects() {
+  const container = document.getElementById('deploy-projects-list');
+  const data = state.deployData || {};
+  const projects = data.projects || [];
+  const registry = state.deployRegistry || {};
+  const lastDeploys = data.lastDeploys || {};
+
+  if (projects.length === 0) {
+    container.innerHTML = '<div class="loading-msg">No folders under /projects on the server.</div>';
+    return;
+  }
+
+  const rows = projects.map(p => {
+    // reverse-map: which repo deploys into this folder (override row or convention)
+    const repo = Object.keys(registry).find(r => (registry[r].folder || r) === p.folder) || p.folder;
+    const row = registry[repo] || {};
+    const branch = row.branch || 'main';
+    const enabled = row.enabled !== false;
+    const ld = lastDeploys[p.folder];
+
+    const bits = [`repo ${esc(repo)}`, `branch ${esc(branch)}`];
+    if (!p.hasGit) bits.push('<span style="color:#c0392b">no git checkout — webhook can\'t deploy this</span>');
+    if (!enabled) bits.push('<span style="color:#c0392b">deploys disabled</span>');
+    if (ld) {
+      bits.push(`last deploy ${esc(new Date(ld.at).toLocaleString())} ${ld.ok ? '&#10003;' : '<span style="color:#c0392b">FAILED</span>'}`);
+    } else if (data.multigitUp) {
+      bits.push('no deploys recorded yet');
+    }
+
+    return `
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2><a href="https://${esc(p.folder)}.beyondmebtw.com" target="_blank" rel="noopener">${esc(p.folder)}.beyondmebtw.com</a></h2>
+            <span class="card-hint">${bits.join(' &middot; ')}</span>
+          </div>
+        </div>
+      </div>`;
+  });
+
+  const warning = data.multigitUp === false
+    ? '<div class="loading-msg">multigitman is not responding on :6030 — deploy history unavailable.</div>'
+    : '';
+  container.innerHTML = warning + rows.join('');
 }
 
 function renderDeployRegistry() {
@@ -2373,10 +2425,9 @@ function renderDeployRegistry() {
       const repo = btn.dataset.repo;
       confirm(`Remove the override row for "${repo}"? The repo falls back to convention (folder = repo name, branch main, enabled).`, async () => {
         try {
-          const res = await apiCall('POST', '/deployregistry', { action: 'delete', repo });
-          state.deployRegistry = res.registry || {};
-          renderDeployRegistry();
+          await apiCall('POST', '/deployregistry', { action: 'delete', repo });
           toast(`Row removed for ${repo}`);
+          loadDeploysTab();
         } catch (e) {
           toast(e.message, 'error');
         }
@@ -2406,18 +2457,17 @@ function initDeployModal() {
     if (!repo) return toast('Repo name is required', 'error');
 
     try {
-      const res = await apiCall('POST', '/deployregistry', {
+      await apiCall('POST', '/deployregistry', {
         action: 'set',
         repo,
         folder: document.getElementById('deploy-folder').value.trim(),
         branch: document.getElementById('deploy-branch').value.trim(),
         enabled: document.getElementById('deploy-enabled').checked
       });
-      state.deployRegistry = res.registry || {};
       state.editingDeployRepo = null;
       closeModal('deploy-modal');
-      renderDeployRegistry();
       toast(`Row saved for ${repo}`);
+      loadDeploysTab();
     } catch (e2) {
       toast(e2.message, 'error');
     }

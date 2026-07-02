@@ -20,6 +20,7 @@ const PORT = 6030;
 const PROJECTS_ROOT = process.env.MULTIGIT_ROOT || '/projects';
 const REGISTRY_PATH = process.env.MULTIGIT_REGISTRY || path.join(PROJECTS_ROOT, '.registry.json');
 const LOG_PATH = process.env.MULTIGIT_LOG || '/gitlogs/multigitman.log';
+const STATE_PATH = process.env.MULTIGIT_STATE || '/gitlogs/multigitman-state.json';
 const GIT_TIMEOUT_MS = 60000;
 
 // Folder must be a single plain path segment; leading dot is rejected so the
@@ -33,8 +34,18 @@ if (!process.env.multigitkey) {
 
 // Per-folder in-flight lock: two fast pushes must not run overlapping resets.
 const deploying = new Set();
-// Last deploy result per folder, for the GET status page.
-const lastDeploys = {};
+
+// Last deploy result per folder, for the GET status page and the manage page's
+// Live Projects list. Persisted to STATE_PATH so history survives restarts.
+let lastDeploys = {};
+try {
+  const saved = JSON.parse(fs.readFileSync(STATE_PATH, 'utf8'));
+  if (saved && typeof saved === 'object' && !Array.isArray(saved)) lastDeploys = saved;
+} catch {} // missing/corrupt state file just means empty history
+
+function saveState() {
+  fs.writeFile(STATE_PATH, JSON.stringify(lastDeploys, null, 2), () => {}); // best-effort
+}
 
 function log(line) {
   const stamped = `[${new Date().toISOString()}] ${line}`;
@@ -106,9 +117,27 @@ function deploy(folder, branch, callback) {
 const app = express();
 app.use('/multig', express.raw({ type: 'application/json' }));
 
-// Status page: registry view + last deploy per folder. No mutation, no secrets.
+// What's actually on disk: every non-dot folder under PROJECTS_ROOT is a live
+// (routable) project, whether or not it has a registry row.
+function listProjects() {
+  try {
+    return fs.readdirSync(PROJECTS_ROOT, { withFileTypes: true })
+      .filter(d => d.isDirectory() && !d.name.startsWith('.'))
+      .map(d => ({
+        folder: d.name,
+        hasGit: fs.existsSync(path.join(PROJECTS_ROOT, d.name, '.git'))
+      }));
+  } catch (e) {
+    log(`listProjects error: ${e.message}`);
+    return [];
+  }
+}
+
+// Status page: folders on disk + registry view + last deploy per folder.
+// No mutation, no secrets.
 app.get('/multig', (req, res) => {
   res.json({
+    projects: listProjects(),
     registry: loadRegistry(),
     lastDeploys,
     inFlight: [...deploying]
@@ -178,6 +207,7 @@ app.post('/multig', (req, res) => {
       ok: !error,
       output: output.slice(-2000)
     };
+    saveState();
 
     if (error) {
       log(`${repoName} -> ${folder}: deploy FAILED: ${error.message}\n${output}`);

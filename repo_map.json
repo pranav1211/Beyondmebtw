@@ -8,7 +8,7 @@
       "multigitman.js",
       "manage/manageserver.js"
     ],
-    "map_generated_at": "2026-07-02T00:00:00Z",
+    "map_generated_at": "2026-07-02T12:00:00Z",
     "based_on_commit": "b7a753b"
   },
   "structure": [
@@ -117,6 +117,7 @@
         { "name": "openSubcatModal", "summary": "Opens modal for adding a new subcategory or renaming an existing one" },
         { "name": "promptRemoveSubcategory", "summary": "Confirms and dispatches removal of a subcategory from a category" },
         { "name": "renderCategoriesList", "summary": "Renders the list of category cards with edit, delete, and subcat actions" },
+        { "name": "renderDeployProjects", "summary": "Renders Live Projects card with subdomain links, repo/branch, and last-deploy status" },
         { "name": "renderDeployRegistry", "summary": "Renders deploy registry rows with edit and delete actions in Deploys tab" },
         { "name": "resetBlogForm", "summary": "Rebuilds subcategory and secondary category chips when resetting blog form" },
         { "name": "showDeleteStep", "summary": "Switches between warn, confirm-key, and destroy steps of delete modal" },
@@ -132,15 +133,18 @@
         { "name": "clearSecondaryRefsToCategory", "summary": "Clears secondaryCategory/secondarySubcategory refs to a deleted category across posts" },
         { "name": "deleteBlogPost", "summary": "Removes a blog post by UID from the specified category" },
         { "name": "executeScript", "summary": "Runs a shell script to sync JSON changes to the live site" },
+        { "name": "fetchMultigitStatus", "summary": "HTTP GET localhost:6030/multig with 1.5s timeout, returns null on failure" },
         { "name": "getJSONBody", "summary": "Parses incoming request body as JSON with error handling" },
         { "name": "handleAddCategory", "summary": "Creates a new category entry in the manifest and its blog JSON file" },
         { "name": "handleAddSubcategory", "summary": "Appends a new subcategory under the specified category in the manifest" },
         { "name": "handleDeleteCategory", "summary": "Cascading delete of a category: manifest, JSON file, post refs, and latest.json" },
         { "name": "handleDeployRegistryDelete", "summary": "Removes a repo entry from the multigitman deploy registry" },
+        { "name": "handleDeployRegistryList", "summary": "Merges registry, disk folders, and multigitman lastDeploys with multigitUp flag" },
         { "name": "handleDeployRegistrySet", "summary": "Creates or updates a repo entry in the multigitman deploy registry" },
         { "name": "handleRemoveSubcategory", "summary": "Removes a subcategory from a category and clears related post fields" },
         { "name": "handleRenameSubcategory", "summary": "Renames a subcategory in the manifest and across all affected posts" },
         { "name": "handleUpdateCategory", "summary": "Updates name or icon fields on an existing category manifest entry" },
+        { "name": "listDeployProjects", "summary": "Lists directories under /projects on disk for deploy status merging" },
         { "name": "loadAllBlogData", "summary": "Fetches all category blog JSON files on server startup" },
         { "name": "loadBlogJSON", "summary": "Fetches blog data for a single category from the live site" },
         { "name": "loadCategoriesConfig", "summary": "Loads the categories manifest from blog/categories.json at startup" },
@@ -167,11 +171,13 @@
     {
       "path": "multigitman.js",
       "type": "file",
-      "summary": "Multi-repo GitHub webhook deployer (port 6030): shared /multig endpoint resolves repo to folder/branch via registry, deploys with in-flight lock",
+      "summary": "Multi-repo GitHub webhook deployer (port 6030): /multig deploys via registry with in-flight lock; GET /multig status returns projects on disk plus persisted lastDeploys",
       "symbols": [
         { "name": "deploy", "summary": "Runs git fetch, reset --hard, and clean -fd via execFile" },
+        { "name": "listProjects", "summary": "Lists non-dot directories under PROJECTS_ROOT with hasGit flag for each" },
         { "name": "loadRegistry", "summary": "Reads registry JSON from /projects/.registry.json, returns empty object on error" },
         { "name": "resolveEntry", "summary": "Maps repo name to folder, branch, enabled with convention fallback" },
+        { "name": "saveState", "summary": "Persists lastDeploys to /gitlogs/multigitman-state.json so deploy history survives restarts" },
         { "name": "verifyGitHubSignature", "summary": "HMAC SHA-256 webhook signature verification with buffer length guard" }
       ]
     },
