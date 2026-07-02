@@ -1,0 +1,47 @@
+# /etc/nginx/sites-enabled/projects-wildcard
+#
+# Wildcard subdomain -> /projects/<sub>. One block covers every project, now
+# and future: a new project is live the moment /projects/<name> exists.
+#
+# nginx matches exact server_name BEFORE regex, so all reserved subdomains
+# (www, about, blog, manage, minis, photos, projects, library, beyondmoney)
+# keep their existing explicit blocks with no conflict.
+#
+# Requires the *.beyondmebtw.com wildcard cert (DNS-01) — see
+# docs/projects-multiwebhook-implementation.md step 2. The wildcard cert and
+# wildcard DNS cover ONE level only: www.<sub>.beyondmebtw.com is not served
+# (it wasn't consistently before either; the old per-project www aliases had
+# no matching DNS/cert for browsers to reach).
+
+server {
+    server_name ~^(?<sub>[a-z0-9-]+)\.beyondmebtw\.com$;
+
+    root /projects/$sub;
+    index index.html;
+
+    # Block unwanted bots (same policy as the rest of the site)
+    if ($http_user_agent ~* (AhrefsBot|SemrushBot|MJ12bot|DotBot|BLEXBot|crawler)) {
+        return 403;
+    }
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location = /robots.txt {
+        root /bmbsifi/Beyondmebtw;
+    }
+
+    listen 443 ssl;
+    ssl_certificate     /etc/letsencrypt/live/star-beyondmebtw/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/star-beyondmebtw/privkey.pem;
+    include             /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam         /etc/letsencrypt/ssl-dhparams.pem;
+}
+
+# HTTP -> HTTPS redirect for all project subdomains
+server {
+    server_name ~^(?<sub>[a-z0-9-]+)\.beyondmebtw\.com$;
+    listen 80;
+    return 301 https://$host$request_uri;
+}

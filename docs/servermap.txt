@@ -1,0 +1,1141 @@
+===== OS =====
+Linux pranavisda1 6.17.0-35-generic #35-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 13:10:28 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+PRETTY_NAME="Ubuntu 25.10"
+NAME="Ubuntu"
+===== NGINX version + config files =====
+nginx version: nginx/1.28.0 (Ubuntu)
+/etc/nginx/conf.d/:
+total 8
+drwxr-xr-x 2 root root 4096 Sep 10  2025 .
+drwxr-xr-x 8 root root 4096 Jun 24 06:05 ..
+
+/etc/nginx/sites-available/:
+total 8
+drwxr-xr-x 2 root root 4096 Jun 24 06:05 .
+drwxr-xr-x 8 root root 4096 Jun 24 06:05 ..
+lrwxrwxrwx 1 root root   36 Nov 24  2025 Beyondmebtw -> /etc/nginx/sites-enabled/Beyondmebtw
+lrwxrwxrwx 1 root root   46 Apr 17 18:01 about.beyondmebtw.com -> /etc/nginx/sites-enabled/about.beyondmebtw.com
+lrwxrwxrwx 1 root root   52 Mar 31 17:22 beyondmoney.beyondmebtw.com -> /etc/nginx/sites-enabled/beyondmoney.beyondmebtw.com
+lrwxrwxrwx 1 root root   45 Nov 24  2025 blog.beyondmebtw.com -> /etc/nginx/sites-enabled/blog.beyondmebtw.com
+lrwxrwxrwx 1 root root   56 Apr 17 18:01 f1hapticandroid.beyondmebtw.com -> /etc/nginx/sites-enabled/f1hapticandroid.beyondmebtw.com
+lrwxrwxrwx 1 root root   48 Dec 12  2025 library.beyondmebtw.com -> /etc/nginx/sites-enabled/library.beyondmebtw.com
+lrwxrwxrwx 1 root root   47 Nov 24  2025 manage.beyondmebtw.com -> /etc/nginx/sites-enabled/manage.beyondmebtw.com
+lrwxrwxrwx 1 root root   55 May 23 14:49 manage.roomtemperaturefilm.com -> /etc/nginx/sites-enabled/manage.roomtemperaturefilm.com
+lrwxrwxrwx 1 root root   46 Nov 24  2025 minis.beyondmebtw.com -> /etc/nginx/sites-enabled/minis.beyondmebtw.com
+lrwxrwxrwx 1 root root   46 Mar 25 19:23 mynyl.beyondmebtw.com -> /etc/nginx/sites-enabled/mynyl.beyondmebtw.com
+lrwxrwxrwx 1 root root   47 May 15 19:58 photos.beyondmebtw.com -> /etc/nginx/sites-enabled/photos.beyondmebtw.com
+lrwxrwxrwx 1 root root   49 Apr 14 07:35 projects.beyondmebtw.com -> /etc/nginx/sites-enabled/projects.beyondmebtw.com
+lrwxrwxrwx 1 root root   48 May 23 14:48 roomtemperaturefilm.com -> /etc/nginx/sites-enabled/roomtemperaturefilm.com
+lrwxrwxrwx 1 root root   52 Jan 30 06:15 uceedanswer.beyondmebtw.com -> /etc/nginx/sites-enabled/uceedanswer.beyondmebtw.com
+
+/etc/nginx/sites-enabled/:
+total 68
+drwxr-xr-x 2 root root 4096 Jun  6 17:21 .
+drwxr-xr-x 8 root root 4096 Jun 24 06:05 ..
+-rw-r--r-- 1 root root 2723 Jun  6 17:15 Beyondmebtw
+-rw-r--r-- 1 root root 1010 Apr 17 18:02 about.beyondmebtw.com
+-rw-r--r-- 1 root root 1475 Apr 30 08:18 beyondmoney.beyondmebtw.com
+-rw-r--r-- 1 root root 1149 Jun  6 17:21 blog.beyondmebtw.com
+-rw-r--r-- 1 root root 1100 Apr 17 18:02 f1hapticandroid.beyondmebtw.com
+-rw-r--r-- 1 root root 1549 Dec 12  2025 library.beyondmebtw.com
+-rw-r--r-- 1 root root 1858 Jun  6 17:16 manage.beyondmebtw.com
+-rw-r--r-- 1 root root 1303 May 23 14:59 manage.roomtemperaturefilm.com
+-rw-r--r-- 1 root root 4956 Apr 23 09:20 minis.beyondmebtw.com
+-rw-r--r-- 1 root root 1020 Mar 25 19:36 mynyl.beyondmebtw.com
+-rw-r--r-- 1 root root 1019 May 15 19:59 photos.beyondmebtw.com
+-rw-r--r-- 1 root root 1034 Apr 14 07:36 projects.beyondmebtw.com
+-rw-r--r-- 1 root root 1556 May 23 14:57 roomtemperaturefilm.com
+-rw-r--r-- 1 root root 1067 Jan 30 06:16 uceedanswer.beyondmebtw.com
+===== NGINX server blocks (full contents) =====
+--- /etc/nginx/nginx.conf ---
+user www-data;
+worker_processes auto;
+worker_cpu_affinity auto;
+pid /run/nginx.pid;
+error_log /var/log/nginx/error.log;
+include /etc/nginx/modules-enabled/*.conf;
+
+events {
+        worker_connections 768;
+        # multi_accept on;
+}
+
+http {
+
+        ##
+        # Basic Settings
+        ##
+
+        sendfile on;
+        tcp_nopush on;
+        types_hash_max_size 2048;
+        server_tokens build; # Recommended practice is to turn this off
+
+        # server_names_hash_bucket_size 64;
+        # server_name_in_redirect off;
+
+        include /etc/nginx/mime.types;
+        default_type application/octet-stream;
+
+        ##
+        # SSL Settings
+        ##
+
+        ssl_protocols TLSv1.2 TLSv1.3; # Dropping SSLv3 (POODLE), TLS 1.0, 1.1
+        ssl_prefer_server_ciphers off; # Don't force server cipher order.
+
+        ##
+        # Logging Settings
+        ##
+
+        access_log /var/log/nginx/access.log;
+
+        ##
+        # Gzip Settings
+        ##
+
+        gzip on;
+
+        # gzip_vary on;
+        # gzip_proxied any;
+        # gzip_comp_level 6;
+        # gzip_buffers 16 8k;
+        # gzip_http_version 1.1;
+        # gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+
+        log_format minis_noquery '$remote_addr - $remote_user [$time_local] '
+                                 '"$request_method $uri $server_protocol" '
+                                 '$status $body_bytes_sent '
+                                 '"$http_referer" "$http_user_agent"';
+
+        limit_req_zone $binary_remote_addr zone=minis_private:10m rate=60r/m;
+
+        ##
+        # Virtual Host Configs
+        ##
+
+        include /etc/nginx/conf.d/*.conf;
+        include /etc/nginx/sites-enabled/*;
+
+}
+
+
+#mail {
+#       # See sample authentication script at:
+#       # http://wiki.nginx.org/ImapAuthenticateWithApachePhpScript
+#
+#       # auth_http localhost/auth.php;
+#       # pop3_capabilities "TOP" "USER";
+#       # imap_capabilities "IMAP4rev1" "UIDPLUS";
+#
+#       server {
+#               listen     localhost:110;
+#               protocol   pop3;
+#               proxy      on;
+#       }
+#
+#       server {
+#               listen     localhost:143;
+#               protocol   imap;
+#               proxy      on;
+#       }
+#}
+--- /etc/nginx/sites-enabled/Beyondmebtw ---
+
+server {
+    server_name beyondmebtw.com www.beyondmebtw.com;
+
+    root  /bmbsifi/Beyondmebtw;
+    index index.html;
+
+    # Block unwanted bots
+    if ($http_user_agent ~* (AhrefsBot|SemrushBot|MJ12bot|DotBot|BLEXBot|crawler)) {
+        return 403;
+    }
+
+    # ── CORS ──────────────────────────────────────────────────────────────────
+    # Wildcard is correct for public, credential-less static content AND it is
+    # cache-safe: one cached response is valid for EVERY origin. A copy cached
+    # during a same-origin visit here can therefore be reused cross-origin by
+    # manage.beyondmebtw.com without a mismatch.
+    #
+    # The old config reflected the caller's origin ($cors_origin = $http_origin)
+    # WITHOUT sending `Vary: Origin`. Caches key on URL only, so a no-CORS copy
+    # cached during a same-origin visit got served to the cross-origin manage
+    # page -> intermittent CORS errors (worked in incognito only because its
+    # cache was cold). Switching to `*` removes the footgun entirely.
+    add_header Access-Control-Allow-Origin  "*" always;
+    add_header Access-Control-Allow-Methods "GET, POST, OPTIONS" always;
+    add_header Access-Control-Allow-Headers "Content-Type, Authorization" always;
+
+    # Preflight (handled once, globally)
+    if ($request_method = OPTIONS) {
+        return 204;
+    }
+
+    # Project gallery: SPA-style fallback to its own index.
+    location /projects/ {
+        try_files $uri $uri/ /projects/index.html;
+    }
+
+    # GitHub webhook deploy (beyondgitman.js)
+    location /bmbg {
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_pass http://localhost:6009;
+    }
+
+    # Everything else: homepage, /blog/*.json, /manage/*.json, /about, etc.
+    # Inherits the server-level CORS headers above.
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    listen 443 ssl;
+    ssl_certificate     /etc/letsencrypt/live/beyondmebtw.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/beyondmebtw.com/privkey.pem;
+    include             /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam         /etc/letsencrypt/ssl-dhparams.pem;
+}
+
+# HTTP -> HTTPS redirect
+server {
+    if ($host = www.beyondmebtw.com) { return 301 https://$host$request_uri; }
+    if ($host = beyondmebtw.com)     { return 301 https://$host$request_uri; }
+
+    server_name beyondmebtw.com www.beyondmebtw.com;
+    listen 80;
+    return 404;
+}
+--- /etc/nginx/sites-enabled/about.beyondmebtw.com ---
+server {
+    server_name about.beyondmebtw.com www.about.beyondmebtw.com;
+
+    root /bmbsifi/Beyondmebtw/about;
+    index index.html;
+
+    if ($http_user_agent ~* (AhrefsBot|SemrushBot|MJ12bot|DotBot|BLEXBot|crawler)) {
+        return 403;
+    }
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+    location = /robots.txt {
+    root /bmbsifi/Beyondmebtw;
+    }
+
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/about.beyondmebtw.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/about.beyondmebtw.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+server {
+    if ($host = about.beyondmebtw.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    server_name about.beyondmebtw.com www.about.beyondmebtw.com;
+    listen 80;
+    return 404; # managed by Certbot
+
+
+}--- /etc/nginx/sites-enabled/beyondmoney.beyondmebtw.com ---
+server {
+    server_name beyondmoney.beyondmebtw.com www.beyondmoney.beyondmebtw.com;
+
+    root /bmbmoney/beyond-money/dist;
+    index index.html;
+
+    if ($http_user_agent ~* (AhrefsBot|SemrushBot|MJ12bot|DotBot|BLEXBot|crawler)) {
+        return 403;
+    }
+
+    location / {
+        try_files $uri /index.html;
+    }
+
+    location = /robots.txt {
+        root /bmbsifi/Beyondmebtw;
+    }
+
+    # Hashed Vite bundle files only — must not shadow the SPA's /assets route.
+    location ~ ^/assets/.+\.(js|mjs|css|map|woff2?|ttf|svg|png|jpg|jpeg|gif|webp|ico)$ {
+        try_files $uri =404;
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+    }
+
+    location /beyondmoneyg {
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Host $host;
+        proxy_pass http://localhost:7020;
+    }
+
+    listen 443 ssl;
+    ssl_certificate /etc/letsencrypt/live/beyondmoney.beyondmebtw.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/beyondmoney.beyondmebtw.com/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+}
+
+server {
+    if ($host = beyondmoney.beyondmebtw.com) {
+        return 301 https://$host$request_uri;
+    }
+
+    server_name beyondmoney.beyondmebtw.com www.beyondmoney.beyondmebtw.com;
+    listen 80;
+    return 404;
+}
+--- /etc/nginx/sites-enabled/blog.beyondmebtw.com ---
+# blog.beyondmebtw.com — vanity host for the blog listing UI.
+# Serves static HTML/CSS/JS only. All blog DATA is fetched cross-origin from
+# beyondmebtw.com (see blog/blog.js), so NO CORS headers are needed here.
+
+server {
+    server_name blog.beyondmebtw.com www.blog.beyondmebtw.com;
+
+    root  /bmbsifi/Beyondmebtw/blog;
+    index index.html;
+
+    if ($http_user_agent ~* (AhrefsBot|SemrushBot|MJ12bot|DotBot|BLEXBot|crawler)) {
+        return 403;
+    }
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate     /etc/letsencrypt/live/blog.beyondmebtw.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/blog.beyondmebtw.com/privkey.pem;
+    include             /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam         /etc/letsencrypt/ssl-dhparams.pem;
+}
+
+# HTTP -> HTTPS redirect
+server {
+    if ($host = www.blog.beyondmebtw.com) { return 301 https://$host$request_uri; }
+    if ($host = blog.beyondmebtw.com)     { return 301 https://$host$request_uri; }
+
+    server_name blog.beyondmebtw.com www.blog.beyondmebtw.com;
+    listen 80;
+    return 404;
+}
+--- /etc/nginx/sites-enabled/f1hapticandroid.beyondmebtw.com ---
+server {
+    server_name f1hapticandroid.beyondmebtw.com www.f1hapticandroid.beyondmebtw.com;
+
+    root /bmbsifi/Beyondmebtw/projects/f1hapticandroid;
+    index index.html;
+
+    if ($http_user_agent ~* (AhrefsBot|SemrushBot|MJ12bot|DotBot|BLEXBot|crawler)) {
+        return 403;
+    }
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+    location = /robots.txt {
+    root /bmbsifi/Beyondmebtw;
+    }
+
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/f1hapticandroid.beyondmebtw.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/f1hapticandroid.beyondmebtw.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+
+server {
+    if ($host = f1hapticandroid.beyondmebtw.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    server_name f1hapticandroid.beyondmebtw.com www.f1hapticandroid.beyondmebtw.com;
+    listen 80;
+    return 404; # managed by Certbot
+
+
+}--- /etc/nginx/sites-enabled/library.beyondmebtw.com ---
+server {
+
+    root /mylib/My-Library;
+    index index.html;
+
+    # Block unwanted bots
+    if ($http_user_agent ~* (AhrefsBot|SemrushBot|MJ12bot|DotBot|BLEXBot|crawler)) {
+        return 403;
+    }
+
+    server_name library.beyondmebtw.com www.library.beyondmebtw.com;
+
+    # Proxy only this path
+    location /mylibg {
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Host $host;
+
+        proxy_pass http://localhost:6004;
+    }
+
+    # Optional: if you want root to show something later
+    # location / {
+    #     return 200 "Library API is running";
+    # }
+
+    listen 443 ssl; # managed by Certbot
+    listen [::]:443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/library.beyondmebtw.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/library.beyondmebtw.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+
+}
+
+server {
+    if ($host = www.library.beyondmebtw.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    if ($host = library.beyondmebtw.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    listen [::]:80;
+
+    server_name library.beyondmebtw.com www.library.beyondmebtw.com;
+    return 404; # managed by Certbot
+
+
+
+
+}
+--- /etc/nginx/sites-enabled/manage.beyondmebtw.com ---
+server {
+    server_name manage.beyondmebtw.com www.manage.beyondmebtw.com;
+
+    root  /bmbsifi/Beyondmebtw/manage;
+    index index.html;
+
+    # Block unwanted bots
+    if ($http_user_agent ~* (AhrefsBot|SemrushBot|MJ12bot|DotBot|BLEXBot|crawler)) {
+        return 403;
+    }
+
+    # Static admin UI
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    # REST API -> Node backend (manageserver.js on :7000)
+    location /loginauth      { include snippets/bmb-proxy.conf; proxy_pass http://localhost:7000; }
+    location /latestdata     { include snippets/bmb-proxy.conf; proxy_pass http://localhost:7000; }
+    location /category       { include snippets/bmb-proxy.conf; proxy_pass http://localhost:7000; }
+    location /projectsdata   { include snippets/bmb-proxy.conf; proxy_pass http://localhost:7000; }
+    location /photosdata     { include snippets/bmb-proxy.conf; proxy_pass http://localhost:7000; }
+    location /blogposts      { include snippets/bmb-proxy.conf; proxy_pass http://localhost:7000; }
+    location /blogdata       { include snippets/bmb-proxy.conf; proxy_pass http://localhost:7000; }
+    location /searchblogpost { include snippets/bmb-proxy.conf; proxy_pass http://localhost:7000; }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate     /etc/letsencrypt/live/manage.beyondmebtw.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/manage.beyondmebtw.com/privkey.pem;
+    include             /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam         /etc/letsencrypt/ssl-dhparams.pem;
+}
+
+# HTTP -> HTTPS redirect
+server {
+    if ($host = www.manage.beyondmebtw.com) { return 301 https://$host$request_uri; }
+    if ($host = manage.beyondmebtw.com)     { return 301 https://$host$request_uri; }
+
+    server_name manage.beyondmebtw.com www.manage.beyondmebtw.com;
+    listen 80;
+    return 404;
+}
+--- /etc/nginx/sites-enabled/manage.roomtemperaturefilm.com ---
+server {
+    server_name manage.roomtemperaturefilm.com;
+
+    root /rtf/roomtemperaturefilm;
+
+    # Block bad bots and disallow indexing entirely
+    if ($http_user_agent ~* (AhrefsBot|SemrushBot|MJ12bot|DotBot|BLEXBot|crawler)) {
+        return 403;
+    }
+    add_header X-Robots-Tag "noindex, nofollow" always;
+
+    # All traffic -> backend (login, redirect mgmt, password change)
+    location / {
+        proxy_pass http://localhost:7014;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/manage.roomtemperaturefilm.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/manage.roomtemperaturefilm.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+server {
+    if ($host = manage.roomtemperaturefilm.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    server_name manage.roomtemperaturefilm.com;
+    return 404; # managed by Certbot
+
+
+}--- /etc/nginx/sites-enabled/minis.beyondmebtw.com ---
+server {
+    server_name minis.beyondmebtw.com www.minis.beyondmebtw.com;
+
+    # Static frontend (Astro build output)
+    root /minisbmb/minis/frontend/dist;
+    index index.html;
+
+    # Block bad bots
+    if ($http_user_agent ~* (AhrefsBot|SemrushBot|MJ12bot|DotBot|BLEXBot|crawler)) {
+        return 403;
+    }
+
+    # Serve metadata.json directly from content dir (runtime access for post feed)
+    location = /content/metadata.json {
+        alias /minisbmb/minis/content/metadata.json;
+        add_header Cache-Control "no-cache, no-store, must-revalidate";
+        add_header Access-Control-Allow-Origin *;
+    }
+
+    # Public API routes - proxy to public backend
+    location /api/ {
+        proxy_pass http://localhost:7004/api/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Public editor page - proxy to public backend
+    location /editor {
+        proxy_pass http://localhost:7004/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Public editor static assets
+    location /editor.css { proxy_pass http://localhost:7004/editor.css; }
+    location /editor.js  { proxy_pass http://localhost:7004/editor.js;  }
+
+    # Health check
+    location = /health { proxy_pass http://localhost:7004/health; }
+
+    # Public git webhook (existing)
+    location /minisg {
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Host $host;
+        proxy_pass http://localhost:6011;
+    }
+
+    # ───────────────────────── PRIVATE MINIS ──────────────────────────
+
+    # Private reader: /p/<slug>?k=<token>
+    # Query string stripped from access log to prevent k leak.
+    location /p/ {
+        limit_req zone=minis_private burst=20 nodelay;
+        access_log /var/log/nginx/minis-private-read.log minis_noquery;
+        proxy_pass http://127.0.0.1:7005;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        # Strip aggressive caching from any upstream
+        proxy_hide_header Cache-Control;
+        add_header Cache-Control "private, no-store" always;
+        add_header X-Robots-Tag "noindex, nofollow, noarchive, nosnippet" always;
+        add_header Referrer-Policy "no-referrer" always;
+    }
+
+    # Private editor UI: /private (list) + /private/* (edit, assets, API)
+    # Cookie-authed (beyondme_auth_key), same cookie as public editor.
+    location /private {
+        access_log /var/log/nginx/minis-private-admin.log minis_noquery;
+        proxy_pass http://127.0.0.1:7005;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        add_header Cache-Control "private, no-store" always;
+        add_header X-Robots-Tag "noindex, nofollow, noarchive, nosnippet" always;
+        add_header Referrer-Policy "no-referrer" always;
+    }
+
+    # Private git webhook (GitHub → private server)
+    location /minisg-private {
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Host $host;
+        proxy_pass http://127.0.0.1:7005;
+    }
+
+    # ──────────────────────────────────────────────────────────────────
+
+    # Static files (Astro output) — must stay last
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/minis.beyondmebtw.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/minis.beyondmebtw.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+}
+
+server {
+    if ($host = www.minis.beyondmebtw.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+    if ($host = minis.beyondmebtw.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+    server_name minis.beyondmebtw.com www.minis.beyondmebtw.com;
+    listen 80;
+    return 404; # managed by Certbot
+}
+--- /etc/nginx/sites-enabled/mynyl.beyondmebtw.com ---
+server {
+    server_name mynyl.beyondmebtw.com www.mynyl.beyondmebtw.com;
+
+    root /bmbsifi/Beyondmebtw/projects/mynyl;
+    index index.html;
+
+    if ($http_user_agent ~* (AhrefsBot|SemrushBot|MJ12bot|DotBot|BLEXBot|crawler)) {
+        return 403;
+    }
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+    location = /robots.txt {
+    root /bmbsifi/Beyondmebtw;
+    }
+
+
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/mynyl.beyondmebtw.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/mynyl.beyondmebtw.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+server {
+    if ($host = mynyl.beyondmebtw.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    server_name mynyl.beyondmebtw.com www.mynyl.beyondmebtw.com;
+    listen 80;
+    return 404; # managed by Certbot
+
+
+}--- /etc/nginx/sites-enabled/photos.beyondmebtw.com ---
+server {
+    server_name photos.beyondmebtw.com www.photos.beyondmebtw.com;
+
+    root /bmbsifi/Beyondmebtw/photos;
+    index index.html;
+
+    if ($http_user_agent ~* (AhrefsBot|SemrushBot|MJ12bot|DotBot|BLEXBot|crawler)) {
+        return 403;
+    }
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+    location = /robots.txt {
+    root /bmbsifi/Beyondmebtw;
+    }
+
+
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/photos.beyondmebtw.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/photos.beyondmebtw.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+server {
+    if ($host = photos.beyondmebtw.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    server_name photos.beyondmebtw.com www.photos.beyondmebtw.com;
+    listen 80;
+    return 404; # managed by Certbot
+
+
+}--- /etc/nginx/sites-enabled/projects.beyondmebtw.com ---
+server {
+    server_name projects.beyondmebtw.com www.projects.beyondmebtw.com;
+
+    root /bmbsifi/Beyondmebtw/projects;
+    index index.html;
+
+    if ($http_user_agent ~* (AhrefsBot|SemrushBot|MJ12bot|DotBot|BLEXBot|crawler)) {
+        return 403;
+    }
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+    location = /robots.txt {
+    root /bmbsifi/Beyondmebtw;
+    }
+
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/projects.beyondmebtw.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/projects.beyondmebtw.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+server {
+    if ($host = projects.beyondmebtw.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    server_name projects.beyondmebtw.com www.projects.beyondmebtw.com;
+    listen 80;
+    return 404; # managed by Certbot
+
+
+}--- /etc/nginx/sites-enabled/roomtemperaturefilm.com ---
+server {
+    server_name roomtemperaturefilm.com www.roomtemperaturefilm.com;
+
+    root /rtf/roomtemperaturefilm;
+
+    # Block bad bots
+    if ($http_user_agent ~* (AhrefsBot|SemrushBot|MJ12bot|DotBot|BLEXBot|crawler)) {
+        return 403;
+    }
+
+    # GitHub webhook -> auto-deploy
+    location /rtfg {
+        proxy_pass http://localhost:6021/rtfg;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Everything else -> backend (handles redirect logic + home page)
+    location / {
+        proxy_pass http://localhost:7014;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/roomtemperaturefilm.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/roomtemperaturefilm.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+server {
+    if ($host = roomtemperaturefilm.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    server_name roomtemperaturefilm.com www.roomtemperaturefilm.com;
+    return 404; # managed by Certbot
+
+
+}--- /etc/nginx/sites-enabled/uceedanswer.beyondmebtw.com ---
+server {
+    server_name uceedanswer.beyondmebtw.com www.uceedanswer.beyondmebtw.com;
+
+    root /bmbsifi/Beyondmebtw/projects/uceedanswer;
+    index index.html;
+
+    if ($http_user_agent ~* (AhrefsBot|SemrushBot|MJ12bot|DotBot|BLEXBot|crawler)) {
+        return 403;
+    }
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+    location = /robots.txt {
+    root /bmbsifi/Beyondmebtw;
+    }
+
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/uceedanswer.beyondmebtw.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/uceedanswer.beyondmebtw.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+server {
+    if ($host = uceedanswer.beyondmebtw.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    server_name uceedanswer.beyondmebtw.com www.uceedanswer.beyondmebtw.com;
+    listen 80;
+    return 404; # managed by Certbot
+
+
+}--- /etc/nginx/conf.d/* ---
+===== TLS certs =====
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Found the following certs:
+  Certificate Name: about.beyondmebtw.com
+    Serial Number: 52dfcc42968deea939d4eca322f136e0485
+    Key Type: ECDSA
+    Domains: about.beyondmebtw.com
+    Expiry Date: 2026-09-15 03:46:59+00:00 (VALID: 74 days)
+    Certificate Path: /etc/letsencrypt/live/about.beyondmebtw.com/fullchain.pem
+    Private Key Path: /etc/letsencrypt/live/about.beyondmebtw.com/privkey.pem
+  Certificate Name: beyondmebtw.com
+    Serial Number: 6d805d630fdb7f182cbdbd54dc2ce9b63de
+    Key Type: ECDSA
+    Domains: beyondmebtw.com www.beyondmebtw.com
+    Expiry Date: 2026-08-22 01:57:30+00:00 (VALID: 50 days)
+    Certificate Path: /etc/letsencrypt/live/beyondmebtw.com/fullchain.pem
+    Private Key Path: /etc/letsencrypt/live/beyondmebtw.com/privkey.pem
+  Certificate Name: beyondmoney.beyondmebtw.com
+    Serial Number: 5aae5f51977ef914537a509a6911779e6d7
+    Key Type: ECDSA
+    Domains: beyondmoney.beyondmebtw.com
+    Expiry Date: 2026-08-28 18:27:28+00:00 (VALID: 57 days)
+    Certificate Path: /etc/letsencrypt/live/beyondmoney.beyondmebtw.com/fullchain.pem
+    Private Key Path: /etc/letsencrypt/live/beyondmoney.beyondmebtw.com/privkey.pem
+  Certificate Name: blog.beyondmebtw.com
+    Serial Number: 6bbc4a053bd73d2392fe1ef1bc5d51a42b7
+    Key Type: ECDSA
+    Domains: blog.beyondmebtw.com www.blog.beyondmebtw.com
+    Expiry Date: 2026-08-22 01:57:44+00:00 (VALID: 50 days)
+    Certificate Path: /etc/letsencrypt/live/blog.beyondmebtw.com/fullchain.pem
+    Private Key Path: /etc/letsencrypt/live/blog.beyondmebtw.com/privkey.pem
+  Certificate Name: f1hapticandroid.beyondmebtw.com
+    Serial Number: 6b9de475816410d7916f04aad863aa73d13
+    Key Type: ECDSA
+    Domains: f1hapticandroid.beyondmebtw.com
+    Expiry Date: 2026-09-15 03:47:14+00:00 (VALID: 74 days)
+    Certificate Path: /etc/letsencrypt/live/f1hapticandroid.beyondmebtw.com/fullchain.pem
+    Private Key Path: /etc/letsencrypt/live/f1hapticandroid.beyondmebtw.com/privkey.pem
+  Certificate Name: library.beyondmebtw.com
+    Serial Number: 6415432fd81c067f17886a2d04f9fa7803b
+    Key Type: ECDSA
+    Domains: library.beyondmebtw.com www.library.beyondmebtw.com
+    Expiry Date: 2026-09-09 17:51:17+00:00 (VALID: 69 days)
+    Certificate Path: /etc/letsencrypt/live/library.beyondmebtw.com/fullchain.pem
+    Private Key Path: /etc/letsencrypt/live/library.beyondmebtw.com/privkey.pem
+  Certificate Name: manage.beyondmebtw.com
+    Serial Number: 6336f02d12c128ba43a9decbc4b1cf5161a
+    Key Type: ECDSA
+    Domains: manage.beyondmebtw.com www.manage.beyondmebtw.com
+    Expiry Date: 2026-08-22 01:58:00+00:00 (VALID: 50 days)
+    Certificate Path: /etc/letsencrypt/live/manage.beyondmebtw.com/fullchain.pem
+    Private Key Path: /etc/letsencrypt/live/manage.beyondmebtw.com/privkey.pem
+  Certificate Name: manage.roomtemperaturefilm.com
+    Serial Number: 66198a00e7b023da006b62bbc081e519c67
+    Key Type: ECDSA
+    Domains: manage.roomtemperaturefilm.com
+    Expiry Date: 2026-08-21 14:00:35+00:00 (VALID: 50 days)
+    Certificate Path: /etc/letsencrypt/live/manage.roomtemperaturefilm.com/fullchain.pem
+    Private Key Path: /etc/letsencrypt/live/manage.roomtemperaturefilm.com/privkey.pem
+  Certificate Name: minis.beyondmebtw.com
+    Serial Number: 6d1d2920c7763cc70b20ef594bd508cee25
+    Key Type: ECDSA
+    Domains: minis.beyondmebtw.com www.minis.beyondmebtw.com
+    Expiry Date: 2026-08-22 20:28:26+00:00 (VALID: 51 days)
+    Certificate Path: /etc/letsencrypt/live/minis.beyondmebtw.com/fullchain.pem
+    Private Key Path: /etc/letsencrypt/live/minis.beyondmebtw.com/privkey.pem
+  Certificate Name: mynyl.beyondmebtw.com
+    Serial Number: 6cbda2a5a53696682b488c61f7ea40e6dc1
+    Key Type: ECDSA
+    Domains: mynyl.beyondmebtw.com
+    Expiry Date: 2026-08-22 20:28:41+00:00 (VALID: 51 days)
+    Certificate Path: /etc/letsencrypt/live/mynyl.beyondmebtw.com/fullchain.pem
+    Private Key Path: /etc/letsencrypt/live/mynyl.beyondmebtw.com/privkey.pem
+  Certificate Name: photos.beyondmebtw.com
+    Serial Number: 64de9f1d7ed395fd461671ec0b01447990a
+    Key Type: ECDSA
+    Domains: photos.beyondmebtw.com
+    Expiry Date: 2026-08-13 19:00:26+00:00 (VALID: 42 days)
+    Certificate Path: /etc/letsencrypt/live/photos.beyondmebtw.com/fullchain.pem
+    Private Key Path: /etc/letsencrypt/live/photos.beyondmebtw.com/privkey.pem
+  Certificate Name: projects.beyondmebtw.com
+    Serial Number: 6f1200bdf776545f582806ff762697eb8a9
+    Key Type: ECDSA
+    Domains: projects.beyondmebtw.com
+    Expiry Date: 2026-09-11 21:50:58+00:00 (VALID: 71 days)
+    Certificate Path: /etc/letsencrypt/live/projects.beyondmebtw.com/fullchain.pem
+    Private Key Path: /etc/letsencrypt/live/projects.beyondmebtw.com/privkey.pem
+  Certificate Name: roomtemperaturefilm.com
+    Serial Number: 52df8cbfa1beb69378762bf357f5e66792b
+    Key Type: ECDSA
+    Domains: roomtemperaturefilm.com
+    Expiry Date: 2026-08-21 13:59:08+00:00 (VALID: 50 days)
+    Certificate Path: /etc/letsencrypt/live/roomtemperaturefilm.com/fullchain.pem
+    Private Key Path: /etc/letsencrypt/live/roomtemperaturefilm.com/privkey.pem
+  Certificate Name: uceedanswer.beyondmebtw.com
+    Serial Number: 5c1e01d01878ba9bf969af5ab872a065c69
+    Key Type: ECDSA
+    Domains: uceedanswer.beyondmebtw.com
+    Expiry Date: 2026-08-28 18:27:43+00:00 (VALID: 57 days)
+    Certificate Path: /etc/letsencrypt/live/uceedanswer.beyondmebtw.com/fullchain.pem
+    Private Key Path: /etc/letsencrypt/live/uceedanswer.beyondmebtw.com/privkey.pem
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+===== Filesystem layout =====
+total 1048676
+drwxr-xr-x  26 root root       4096 Jun  1 16:17 .
+drwxr-xr-x  26 root root       4096 Jun  1 16:17 ..
+lrwxrwxrwx   1 root root          7 Oct  3  2025 bin -> usr/bin
+drwxr-xr-x   3 pvr  pvr        4096 Apr  1 07:47 bmbmoney
+drwxr-xr-x   3 pvr  pvr        4096 Feb 17 13:56 bmbsifi
+drwxr-xr-x   5 root root       4096 Jun 27 06:36 boot
+drwxr-xr-x  18 root root       4000 Jun  1 16:17 dev
+drwxr-xr-x 108 root root       4096 Jul  1 06:30 etc
+drwxr-xr-x   2 pvr  pvr        4096 Jun  9 04:50 gitlogs
+drwxr-xr-x   3 root root       4096 Nov 24  2025 home
+lrwxrwxrwx   1 root root          7 Oct  3  2025 lib -> usr/lib
+lrwxrwxrwx   1 root root          9 Oct  3  2025 lib64 -> usr/lib64
+drwx------   2 root root      16384 Oct 23  2025 lost+found
+drwxr-xr-x   2 root root       4096 Oct 23  2025 media
+drwxr-xr-x   4 pvr  pvr        4096 Apr 23 09:16 minisbmb
+drwxr-xr-x   2 root root       4096 Oct 23  2025 mnt
+drwxr-xr-x   3 pvr  pvr        4096 Dec 12  2025 mylib
+drwxr-xr-x   3 root root       4096 Nov 24  2025 opt
+dr-xr-xr-x 183 root root          0 Jun  1 16:17 proc
+drwx------   7 root root       4096 Nov 24  2025 root
+drwxr-xr-x   3 pvr  pvr        4096 May 23 14:40 rtf
+drwxr-xr-x  33 root root       1040 Jul  2 07:37 run
+lrwxrwxrwx   1 root root          8 Oct  3  2025 sbin -> usr/sbin
+drwxr-xr-x   2 pvr  pvr        4096 Apr  1 07:38 shellfiles
+drwxr-xr-x   2 root root       4096 Nov 24  2025 snap
+drwxr-xr-x   2 root root       4096 Oct 23  2025 srv
+-rw-------   1 root root 1073741824 Jun  1 15:52 swapfile
+dr-xr-xr-x  13 root root          0 Jun  1 16:17 sys
+drwxrwxrwt   8 root root        180 Jul  2 07:38 tmp
+drwxr-xr-x  12 root root       4096 Oct 23  2025 usr
+drwxr-xr-x  14 root root       4096 Nov 24  2025 var
+total 12
+drwxr-xr-x  3 pvr  pvr  4096 Feb 17 13:56 .
+drwxr-xr-x 26 root root 4096 Jun  1 16:17 ..
+drwxrwxr-x 16 pvr  pvr  4096 Jun 21 20:14 Beyondmebtw
+total 220
+drwxrwxr-x 16 pvr pvr  4096 Jun 21 20:14 .
+drwxr-xr-x  3 pvr pvr  4096 Feb 17 13:56 ..
+drwxrwxr-x  3 pvr pvr  4096 May 31 11:48 .claude
+drwxrwxr-x  7 pvr pvr  4096 Jun 21 20:14 .git
+-rwxrwxr-x  1 pvr pvr   144 Feb 17 13:56 .gitattributes
+-rw-r--r--  1 pvr pvr    28 May 31 11:48 .gitignore
+drwxrwxr-x  2 pvr pvr  4096 Mar 15 14:30 .vscode
+-rw-r--r--  1 pvr pvr  3660 Apr 13 08:38 AGENTS.md
+-rw-r--r--  1 pvr pvr  1849 Apr 13 12:38 CLAUDE.md
+-rw-r--r--  1 pvr pvr  4376 Jun  1 21:29 GIT_ACCIDENTAL_COMMIT_CLEANUP.md
+-rwxr-xr-x  1 pvr pvr 10513 May 31 11:58 Readme.md
+drwxrwxr-x  3 pvr pvr  4096 May 31 11:58 about
+-rw-r--r--  1 pvr pvr  1516 Apr  9 10:15 analytics.js
+drwxrwxr-x  4 pvr pvr  4096 May 31 09:35 assets
+-rwxr-xr-x  1 pvr pvr  3295 Apr 13 12:31 beyondgitman.js
+drwxrwxr-x  9 pvr pvr  4096 Jun 11 10:57 blog
+drwxrwxr-x  2 pvr pvr  4096 May 31 11:24 css
+drwxr-xr-x  2 pvr pvr  4096 Jun 21 20:14 docs
+-rwxrwxr-x  1 pvr pvr    53 Feb 17 13:56 googlef1b0d74b5ada35c8.html
+drwxr-xr-x  2 pvr pvr  4096 May 31 12:08 homecss
+-rwxr-xr-x  1 pvr pvr 16153 May 31 10:47 index.html
+-rwxrwxr-x  1 pvr pvr    54 Feb 17 13:56 launch.bat
+-rw-r--r--  1 pvr pvr   592 Apr  9 10:15 live-bridge.html
+drwxrwxr-x  2 pvr pvr  4096 Jun 11 10:58 manage
+drwxrwxr-x  2 pvr pvr  4096 Apr  8 11:09 music
+drwxr-xr-x 67 pvr pvr  4096 Feb 17 14:05 node_modules
+-rw-r--r--  1 pvr pvr 28933 Jun  1 21:19 package-lock.json
+-rw-rw-r--  1 pvr pvr   982 Feb 17 13:56 package.json
+drwxr-xr-x  2 pvr pvr  4096 May 15 21:42 photos
+drwxrwxr-x 11 pvr pvr  4096 May 31 11:48 projects
+-rw-r--r--  1 pvr pvr    24 Apr  4 03:51 pull.bat
+-rw-r--r--  1 pvr pvr 22566 Apr 20 11:54 repo_map.json
+-rwxrwxr-x  1 pvr pvr   728 Feb 17 13:56 robots.txt
+-rwxr-xr-x  1 pvr pvr  7928 May 31 12:08 script.js
+-rwxr-xr-x  1 pvr pvr  2519 May 15 20:30 sitemap.xml
+-rw-r--r--  1 pvr pvr  1007 May 31 11:48 skills-lock.json
+total 172
+drwxrwxr-x 11 pvr pvr  4096 May 31 11:48 .
+drwxrwxr-x 16 pvr pvr  4096 Jun 21 20:14 ..
+drwxrwxr-x  7 pvr pvr  4096 Feb 17 13:56 V1
+drwxrwxr-x  4 pvr pvr  4096 Apr  8 11:09 beyondpages
+drwxrwxr-x  2 pvr pvr  4096 Jun 21 19:44 f1hapticandroid
+drwxrwxr-x  5 pvr pvr  4096 Apr  8 11:09 grocery
+-rwxr-xr-x  1 pvr pvr 12869 May 31 10:47 index.html
+-rw-r--r--  1 pvr pvr 20037 Mar  2 13:57 key.html
+-rw-r--r--  1 pvr pvr 17684 Mar  5 10:46 mindmap.html
+drwxrwxr-x  2 pvr pvr  4096 Apr  8 11:09 minescan
+drwxr-xr-x  5 pvr pvr  4096 Jun 15 21:05 mynyl
+drwxrwxr-x  2 pvr pvr  4096 Apr  8 11:09 pairgame
+-rw-r--r--  1 pvr pvr 25057 Jun  2 05:07 project-data.json
+-rwxrwxr-x  1 pvr pvr  1290 Feb 17 13:56 projects.css
+-rwxr-xr-x  1 pvr pvr  9535 May 23 10:41 projects.js
+-rw-r--r--  1 pvr pvr  3571 May 31 11:48 projgrid-normal.css
+-rw-r--r--  1 pvr pvr 13152 Apr 18 07:20 projgrid-sidebar.css
+-rwxr-xr-x  1 pvr pvr  6509 Feb 25 06:29 responsive.css
+drwxrwxr-x  2 pvr pvr  4096 Feb 17 13:56 rtdms
+drwxrwxr-x  4 pvr pvr  4096 Apr  8 11:09 uceedanswer
+total 12
+drwxr-xr-x  3 root root 4096 Nov 24  2025 .
+drwxr-xr-x 14 root root 4096 Nov 24  2025 ..
+drwxr-xr-x  2 root root 4096 Nov 24  2025 html
+===== beyondgitman + deploy scripts =====
+/bmbsifi/Beyondmebtw/manage/manageserver.js
+/bmbsifi/Beyondmebtw/beyondgitman.js
+/opt/digitalocean/droplet-agent/scripts/update.sh
+===== Running node processes =====
+pvr         1100  0.3  5.4 1659960 53428 ?       Ssl  Jun01 145:28 PM2 v6.0.13: God Daemon (/home/pvr/.pm2)
+pvr         1112  0.1  3.4 1452820 33700 ?       Ssl  Jun01  81:42 node /bmbsifi/Beyondmebtw/beyondgitman.js
+pvr         1113  0.1  3.3 1452000 32888 ?       Ssl  Jun01  79:58 node /mylib/My-Library/mylibgitman.js
+pvr         1119  0.1  3.8 1452432 38016 ?       Ssl  Jun01  80:19 node /minisbmb/minis/minisgitman.js
+pvr         1125  0.1  4.1 1522420 40648 ?       Ssl  Jun01  85:43 node /minisbmb/minis/backend/server.js
+pvr         1136  0.1  3.4 1452636 33508 ?       Ssl  Jun01  81:10 node /bmbmoney/beyond-money/bmbmoneygitman.js
+pvr         1137  0.1  3.5 1656584 35360 ?       Ssl  Jun01  81:53 node /bmbsifi/Beyondmebtw/manage/manageserver.js
+pvr       143473  0.1  3.7 1521452 36504 ?       Ssl  Jun09  62:32 node /minisbmb/minis-private/server.js
+pvr       959450  0.1 10.6 10052996 104772 ?     Ssl  Jul01   1:52 node /rtf/roomtemperaturefilm/manage/server.js
+pvr       959461  0.1  7.8 1452700 77220 ?       Ssl  Jul01   1:48 node /rtf/roomtemperaturefilm/gitman.js
+===== Listening ports =====
+State  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess                                      
+LISTEN 0      511          0.0.0.0:443       0.0.0.0:*                                                
+LISTEN 0      511        127.0.0.1:7005      0.0.0.0:*    users:(("node /minisbmb/",pid=143473,fd=23))
+LISTEN 0      511          0.0.0.0:7004      0.0.0.0:*    users:(("node /minisbmb/",pid=1125,fd=23))  
+LISTEN 0      4096   127.0.0.53%lo:53        0.0.0.0:*                                                
+LISTEN 0      4096      127.0.0.54:53        0.0.0.0:*                                                
+LISTEN 0      511          0.0.0.0:80        0.0.0.0:*                                                
+LISTEN 0      4096         0.0.0.0:22        0.0.0.0:*                                                
+LISTEN 0      511             [::]:443          [::]:*                                                
+LISTEN 0      511                *:6021            *:*    users:(("node /rtf/roomt",pid=959461,fd=23))
+LISTEN 0      511                *:6009            *:*    users:(("node /bmbsifi/B",pid=1112,fd=23))  
+LISTEN 0      511                *:6011            *:*    users:(("node /minisbmb/",pid=1119,fd=23))  
+LISTEN 0      511                *:6004            *:*    users:(("node /mylib/My-",pid=1113,fd=23))  
+LISTEN 0      511                *:7020            *:*    users:(("node /bmbmoney/",pid=1136,fd=23))  
+LISTEN 0      511                *:7014            *:*    users:(("node /rtf/roomt",pid=959450,fd=23))
+LISTEN 0      511                *:7000            *:*    users:(("node /bmbsifi/B",pid=1137,fd=22))  
+LISTEN 0      511             [::]:80           [::]:*                                                
+LISTEN 0      4096            [::]:22           [::]:*                                                
+===== pm2 =====
+┌────┬─────────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name                │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼─────────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ beyondgitman        │ default     │ 1.0.0   │ fork    │ 1112     │ 30D    │ 0    │ online    │ 0%       │ 32.9mb   │ pvr      │ disabled │
+│ 4  │ bmbmoney-webhook    │ default     │ 1.0.0   │ fork    │ 1136     │ 30D    │ 0    │ online    │ 0%       │ 32.7mb   │ pvr      │ disabled │
+│ 5  │ manageserver        │ default     │ 1.0.0   │ fork    │ 1137     │ 30D    │ 0    │ online    │ 0%       │ 34.6mb   │ pvr      │ disabled │
+│ 6  │ minis-private       │ default     │ 1.0.0   │ fork    │ 143473   │ 23D    │ 2    │ online    │ 0%       │ 35.6mb   │ pvr      │ disabled │
+│ 3  │ minisbackend        │ default     │ 1.0.0   │ fork    │ 1125     │ 30D    │ 0    │ online    │ 0%       │ 39.6mb   │ pvr      │ disabled │
+│ 2  │ minisgitman         │ default     │ N/A     │ fork    │ 1119     │ 30D    │ 0    │ online    │ 0%       │ 37.0mb   │ pvr      │ disabled │
+│ 1  │ mylibgitman         │ default     │ 1.0.0   │ fork    │ 1113     │ 30D    │ 0    │ online    │ 0%       │ 32.1mb   │ pvr      │ disabled │
+│ 7  │ rtf-git             │ default     │ 1.0.0   │ fork    │ 959461   │ 18h    │ 81   │ online    │ 0%       │ 75.3mb   │ pvr      │ disabled │
+│ 8  │ rtf-web             │ default     │ 1.0.0   │ fork    │ 959450   │ 18h    │ 81   │ online    │ 0%       │ 102.3mb  │ pvr      │ disabled │
+└────┴─────────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+[{"pid":1112,"name":"beyondgitman","pm2_env":{"kill_retry_time":100,"windowsHide":true,"username":"pvr","treekill":true,"automation":true,"pmx":true,"instance_var":"NODE_APP_INSTANCE","watch":false,"autorestart":true,"autostart":true,"vizion":true,"merge_logs":true,"env":{"SHELL":"/bin/bash","PWD":"/bmbsifi/Beyondmebtw","LOGNAME":"pvr","XDG_SESSION_TYPE":"tty","HOME":"/home/pvr","LANG":"C.UTF-8","mylibgitkey":"{Redacted}","LS_COLORS":"rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.7z=01;31:*.ace=01;31:*.alz=01;31:*.apk=01;31:*.arc=01;31:*.arj=01;31:*.bz=01;31:*.bz2=01;31:*.cab=01;31:*.cpio=01;31:*.crate=01;31:*.deb=01;31:*.drpm=01;31:*.dwm=01;31:*.dz=01;31:*.ear=01;31:*.egg=01;31:*.esd=01;31:*.gz=01;31:*.jar=01;31:*.lha=01;31:*.lrz=01;31:*.lz=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.lzo=01;31:*.pyz=01;31:*.rar=01;31:*.rpm=01;31:*.rz=01;31:*.sar=01;31:*.swm=01;31:*.t7z=01;31:*.tar=01;31:*.taz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tgz=01;31:*.tlz=01;31:*.txz=01;31:*.tz=01;31:*.tzo=01;31:*.tzst=01;31:*.udeb=01;31:*.war=01;31:*.whl=01;31:*.wim=01;31:*.xz=01;31:*.z=01;31:*.zip=01;31:*.zoo=01;31:*.zst=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:","managekey":"{Redacted}}","beyondmegitkey":"{Redacted}","SSH_CONNECTION":"122.172.86.221 3093 167.71.230.251 22","LESSCLOSE":"/usr/bin/lesspipe %s %s","XDG_SESSION_CLASS":"user","TERM":"xterm-256color","LESSOPEN":"| /usr/bin/lesspipe %s","USER":"pvr","SHLVL":"1","XDG_SESSION_ID":"1","XDG_RUNTIME_DIR":"/run/user/1000","SSH_CLIENT":"122.172.86.221 3093 22","DEBUGINFOD_URLS":"https://debuginfod.ubuntu.com ","XDG_DATA_DIRS":"/usr/local/share:/usr/share:/var/lib/snapd/desktop","PATH":"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin","DBUS_SESSION_BUS_ADDRESS":"unix:path=/run/user/1000/bus","SSH_TTY":"/d===== systemd services (relevant) =====
+● display-manager.service                        not-found inactive dead    display-manager.service
+  kmod-static-nodes.service                      loaded    active   exited  Create List of Static Device Nodes
+  ModemManager.service                           loaded    active   running Modem Manager
+● NetworkManager.service                         not-found inactive dead    NetworkManager.service
+  nginx.service                                  loaded    active   running A high performance web server and a reverse proxy server
+  pm2-pvr.service                                loaded    active   running PM2 process manager
+  polkit.service                                 loaded    active   running Authorization Manager
+  snapd.apparmor.service                         loaded    active   exited  Load AppArmor profiles managed internally by snapd
+  systemd-logind.service                         loaded    active   running User Login Management
+  systemd-tmpfiles-setup-dev-early.service       loaded    active   exited  Create Static Device Nodes in /dev gracefully
+  systemd-tmpfiles-setup-dev.service             loaded    active   exited  Create Static Device Nodes in /dev
+  systemd-udevd.service                          loaded    active   running Rule-based Manager for Device Events and Files
+  udisks2.service                                loaded    active   running Disk Manager
+  user@1000.service                              loaded    active   running User Manager for UID 1000
+--- display-manager.service ---
+--- display-manager.service ---
+--- ModemManager.service ---
+# /usr/lib/systemd/system/ModemManager.service
+[Unit]
+Description=Modem Manager
+After=polkit.service
+Requires=polkit.service
+ConditionVirtualization=!container
+
+[Service]
+Type=dbus
+BusName=org.freedesktop.ModemManager1
+ExecStart=/usr/sbin/ModemManager
+StandardError=null
+Restart=on-abort
+CapabilityBoundingSet=CAP_SYS_ADMIN CAP_NET_ADMIN
+ProtectSystem=true
+ProtectHome=true
+PrivateTmp=true
+RestrictAddressFamilies=AF_NETLINK AF_UNIX AF_QIPCRTR
+NoNewPrivileges=true
+User=root
+
+[Install]
+WantedBy=multi-user.target
+Alias=dbus-org.freedesktop.ModemManager1.service
+--- NetworkManager.service ---
+--- NetworkManager.service ---
+===== main repo git state =====
+origin  git@github.com:pranav1211/Beyondmebtw.git (fetch)
+origin  git@github.com:pranav1211/Beyondmebtw.git (push)
+main
+b7a753b backend projects multiwebook document.
+45e4922 new
+b2d8e7e new
+===== crontab =====
+===== DNS from server =====
+167.71.230.251
+beyondmebtw.com.
+167.71.230.251
+beyondmebtw.com.
+167.71.230.251

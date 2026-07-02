@@ -60,6 +60,10 @@
         <span class="nav-icon">&#128247;</span>
         <span class="nav-label">Photos</span>
       </button>
+      <button class="nav-tab" data-tab="deploys">
+        <span class="nav-icon">&#8635;</span>
+        <span class="nav-label">Deploys</span>
+      </button>
       <button id="logout-btn" class="logout-btn">Logout</button>
     </nav>
   </aside>
@@ -264,6 +268,32 @@
         </div>
         <div id="photos-series-list" class="photos-series-list">
           <div class="loading-msg">Loading series...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ DEPLOYS TAB ═══════════ -->
+    <section id="tab-deploys" class="tab-panel">
+      <div class="panel-header">
+        <h1>Deploys</h1>
+        <div class="panel-actions">
+          <button id="new-deploy-row-btn" class="btn-primary">+ Override Row</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2>Project Webhook Registry</h2>
+            <span class="card-hint">
+              Convention: repo name = folder = subdomain, branch <code>main</code> — no row needed.
+              Add a row only to override folder/branch or disable a repo.
+              Webhook URL for every repo: <code>https://beyondmebtw.com/multig</code>
+            </span>
+          </div>
+        </div>
+        <div id="deploy-registry-list" class="posts-list">
+          <div class="loading-msg">Loading registry...</div>
         </div>
       </div>
     </section>
@@ -517,6 +547,38 @@
       <div class="modal-footer">
         <button type="button" class="btn-ghost" id="clear-project-form">Clear</button>
         <button type="submit" class="btn-primary" id="project-submit-btn">Add Project</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ═══════════ DEPLOY REGISTRY MODAL ═══════════ -->
+<div id="deploy-modal" class="modal-overlay" style="display:none">
+  <div class="modal-box modal-small">
+    <div class="modal-header">
+      <h2 id="deploy-modal-title">Registry Override</h2>
+      <button class="modal-close" data-modal="deploy-modal">&times;</button>
+    </div>
+    <form id="deploy-form" class="modal-form">
+      <div class="form-group">
+        <label>Repo Name <span class="req">*</span></label>
+        <input type="text" id="deploy-repo" placeholder="GitHub repository name">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Folder (blank = repo name)</label>
+          <input type="text" id="deploy-folder" placeholder="folder under /projects">
+        </div>
+        <div class="form-group">
+          <label>Branch (blank = main)</label>
+          <input type="text" id="deploy-branch" placeholder="main">
+        </div>
+      </div>
+      <div class="form-group">
+        <label><input type="checkbox" id="deploy-enabled" checked> Deploys enabled</label>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn-primary" id="deploy-submit-btn">Save Row</button>
       </div>
     </form>
   </div>

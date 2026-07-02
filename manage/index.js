@@ -30,7 +30,9 @@ let state = {
   photosData: null,          // working draft of photos.json (may include unsaved layout edits)
   photosDataClean: null,     // last-saved snapshot (used to compute dirty state / discard)
   photosLayoutDirty: false,  // true when local layout differs from photosDataClean
-  expandedSeriesIds: new Set() // which series cards are expanded in the list
+  expandedSeriesIds: new Set(), // which series cards are expanded in the list
+  deployRegistry: null,      // from /deployregistry (multigitman override table)
+  editingDeployRepo: null    // repo key when editing an existing registry row
 };
 
 async function fetchCategoriesManifest() {
@@ -370,6 +372,9 @@ function initTabs() {
       if (tab === 'photos') {
         if (!state.photosData) loadPhotosTab();
         else renderPhotosTab();
+      }
+      if (tab === 'deploys') {
+        loadDeploysTab(); // always reload — file is tiny and edited out-of-band too
       }
     });
   });
@@ -2316,6 +2321,109 @@ function initPhotosImageModal() {
 // INIT
 // ═══════════════════════════════════════════════════════════════════════════════
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// DEPLOYS TAB — multigitman registry (repo -> folder/branch/enabled overrides)
+
+async function loadDeploysTab() {
+  const container = document.getElementById('deploy-registry-list');
+  container.innerHTML = '<div class="loading-msg">Loading registry...</div>';
+  try {
+    const res = await apiCall('POST', '/deployregistry', { action: 'list' });
+    state.deployRegistry = res.registry || {};
+    renderDeployRegistry();
+  } catch (e) {
+    container.innerHTML = `<div class="loading-msg">Failed to load registry: ${esc(e.message)}</div>`;
+  }
+}
+
+function renderDeployRegistry() {
+  const container = document.getElementById('deploy-registry-list');
+  const repos = Object.keys(state.deployRegistry || {}).sort();
+
+  if (repos.length === 0) {
+    container.innerHTML = '<div class="loading-msg">No override rows. Every repo deploys by convention: folder = repo name, branch main.</div>';
+    return;
+  }
+
+  container.innerHTML = repos.map(repo => {
+    const row = state.deployRegistry[repo] || {};
+    const folder = row.folder || repo;
+    const branch = row.branch || 'main';
+    const enabled = row.enabled !== false;
+    return `
+      <div class="card" data-deploy-repo="${esc(repo)}">
+        <div class="card-header">
+          <div>
+            <h2>${esc(repo)} ${enabled ? '' : '&mdash; <span style="color:#c0392b">disabled</span>'}</h2>
+            <span class="card-hint">/projects/${esc(folder)} &middot; branch ${esc(branch)} &middot; ${esc(folder)}.beyondmebtw.com</span>
+          </div>
+          <div class="panel-actions">
+            <button class="btn-secondary btn-small deploy-edit-btn" data-repo="${esc(repo)}">Edit</button>
+            <button class="btn-danger btn-small deploy-delete-btn" data-repo="${esc(repo)}">Delete</button>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  container.querySelectorAll('.deploy-edit-btn').forEach(btn => {
+    btn.addEventListener('click', () => openDeployModal(btn.dataset.repo));
+  });
+  container.querySelectorAll('.deploy-delete-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const repo = btn.dataset.repo;
+      confirm(`Remove the override row for "${repo}"? The repo falls back to convention (folder = repo name, branch main, enabled).`, async () => {
+        try {
+          const res = await apiCall('POST', '/deployregistry', { action: 'delete', repo });
+          state.deployRegistry = res.registry || {};
+          renderDeployRegistry();
+          toast(`Row removed for ${repo}`);
+        } catch (e) {
+          toast(e.message, 'error');
+        }
+      });
+    });
+  });
+}
+
+function openDeployModal(repo) {
+  const row = (repo && state.deployRegistry && state.deployRegistry[repo]) || {};
+  state.editingDeployRepo = repo || null;
+  document.getElementById('deploy-modal-title').textContent = repo ? `Edit: ${repo}` : 'New Override Row';
+  document.getElementById('deploy-repo').value = repo || '';
+  document.getElementById('deploy-repo').disabled = !!repo;
+  document.getElementById('deploy-folder').value = row.folder || '';
+  document.getElementById('deploy-branch').value = row.branch || '';
+  document.getElementById('deploy-enabled').checked = row.enabled !== false;
+  openModal('deploy-modal');
+}
+
+function initDeployModal() {
+  document.getElementById('new-deploy-row-btn').addEventListener('click', () => openDeployModal(null));
+
+  document.getElementById('deploy-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const repo = document.getElementById('deploy-repo').value.trim();
+    if (!repo) return toast('Repo name is required', 'error');
+
+    try {
+      const res = await apiCall('POST', '/deployregistry', {
+        action: 'set',
+        repo,
+        folder: document.getElementById('deploy-folder').value.trim(),
+        branch: document.getElementById('deploy-branch').value.trim(),
+        enabled: document.getElementById('deploy-enabled').checked
+      });
+      state.deployRegistry = res.registry || {};
+      state.editingDeployRepo = null;
+      closeModal('deploy-modal');
+      renderDeployRegistry();
+      toast(`Row saved for ${repo}`);
+    } catch (e2) {
+      toast(e2.message, 'error');
+    }
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // Auth system
   window.authSystem.init();
@@ -2355,6 +2463,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initPhotosSeriesModal();
   initPhotosImageModal();
   initPhotosLayoutControls();
+  initDeployModal();
   buildSecondaryCategoryChips();
 
   // Load homepage tab by default

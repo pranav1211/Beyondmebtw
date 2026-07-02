@@ -5,10 +5,11 @@
     "entrypoints": [
       "index.html",
       "beyondgitman.js",
+      "multigitman.js",
       "manage/manageserver.js"
     ],
-    "map_generated_at": "2026-04-20T00:00:00Z",
-    "based_on_commit": "875e80f"
+    "map_generated_at": "2026-07-02T00:00:00Z",
+    "based_on_commit": "b7a753b"
   },
   "structure": [
     {
@@ -94,7 +95,7 @@
     {
       "path": "manage/index.js",
       "type": "file",
-      "summary": "Admin dashboard client with Homepage, Blog, Projects, and Categories tabs wired to REST API",
+      "summary": "Admin dashboard client with Homepage, Blog, Projects, Categories, and Deploys tabs wired to REST API",
       "symbols": [
         { "name": "apiCall", "summary": "Generic fetch wrapper that injects auth key and handles responses" },
         { "name": "countOrphans", "summary": "Counts posts that will be orphaned if a category is deleted" },
@@ -102,17 +103,21 @@
         { "name": "getKey", "summary": "Returns stored auth key from the authentication system" },
         { "name": "initCategoryDeleteModal", "summary": "Wires up the 3-step destructive category deletion modal flow" },
         { "name": "initCategoryModal", "summary": "Rewritten combined add/edit category modal initializer" },
+        { "name": "initDeployModal", "summary": "Wires up the deploy registry add/edit modal and its save handler" },
         { "name": "initSidebarToggle", "summary": "Sets up hamburger menu toggle for mobile sidebar navigation" },
         { "name": "initSubcatModal", "summary": "Initializes modal for adding or renaming a subcategory" },
-        { "name": "initTabs", "summary": "Initializes tab switching between Homepage, Blog, Projects, and Categories" },
+        { "name": "initTabs", "summary": "Initializes tab switching between Homepage, Blog, Projects, Categories, and Deploys" },
         { "name": "loadBlogTab", "summary": "Fetches manifest from CATEGORIES_MANIFEST_URL and populates Blog tab UI" },
         { "name": "loadCategoriesTab", "summary": "Loads manifest and renders category list cards in the Categories tab" },
+        { "name": "loadDeploysTab", "summary": "Fetches deploy registry via /deployregistry API and triggers rendering" },
         { "name": "openCategoryDeleteModal", "summary": "Opens the 3-step destructive delete modal for a category" },
+        { "name": "openDeployModal", "summary": "Opens the deploy registry modal for a new or existing repo entry" },
         { "name": "openEditCategoryModal", "summary": "Opens the category modal prefilled for editing an existing category" },
         { "name": "openNewCategoryModal", "summary": "Opens the category modal in add mode with empty fields" },
         { "name": "openSubcatModal", "summary": "Opens modal for adding a new subcategory or renaming an existing one" },
         { "name": "promptRemoveSubcategory", "summary": "Confirms and dispatches removal of a subcategory from a category" },
         { "name": "renderCategoriesList", "summary": "Renders the list of category cards with edit, delete, and subcat actions" },
+        { "name": "renderDeployRegistry", "summary": "Renders deploy registry rows with edit and delete actions in Deploys tab" },
         { "name": "resetBlogForm", "summary": "Rebuilds subcategory and secondary category chips when resetting blog form" },
         { "name": "showDeleteStep", "summary": "Switches between warn, confirm-key, and destroy steps of delete modal" },
         { "name": "toast", "summary": "Displays a temporary notification message with success or error styling" }
@@ -121,7 +126,7 @@
     {
       "path": "manage/manageserver.js",
       "type": "file",
-      "summary": "Node.js HTTP server with REST API for blog posts, projects, and categories manifest management",
+      "summary": "Node.js HTTP server with REST API for blog posts, projects, categories manifest, and deploy registry management",
       "symbols": [
         { "name": "addNewBlogPost", "summary": "Appends a new post to in-memory blog data for a given category" },
         { "name": "clearSecondaryRefsToCategory", "summary": "Clears secondaryCategory/secondarySubcategory refs to a deleted category across posts" },
@@ -131,6 +136,8 @@
         { "name": "handleAddCategory", "summary": "Creates a new category entry in the manifest and its blog JSON file" },
         { "name": "handleAddSubcategory", "summary": "Appends a new subcategory under the specified category in the manifest" },
         { "name": "handleDeleteCategory", "summary": "Cascading delete of a category: manifest, JSON file, post refs, and latest.json" },
+        { "name": "handleDeployRegistryDelete", "summary": "Removes a repo entry from the multigitman deploy registry" },
+        { "name": "handleDeployRegistrySet", "summary": "Creates or updates a repo entry in the multigitman deploy registry" },
         { "name": "handleRemoveSubcategory", "summary": "Removes a subcategory from a category and clears related post fields" },
         { "name": "handleRenameSubcategory", "summary": "Renames a subcategory in the manifest and across all affected posts" },
         { "name": "handleUpdateCategory", "summary": "Updates name or icon fields on an existing category manifest entry" },
@@ -139,9 +146,11 @@
         { "name": "loadCategoriesConfig", "summary": "Loads the categories manifest from blog/categories.json at startup" },
         { "name": "loadExistingData", "summary": "Loads latest.json from disk into in-memory state" },
         { "name": "loadJSON", "summary": "Fetches latest.json from live site and merges with local state" },
+        { "name": "readDeployRegistry", "summary": "Reads the multigitman deploy registry JSON, returns empty object on error" },
         { "name": "readProjectsJSON", "summary": "Reads project-data.json from server or local fallback path" },
         { "name": "renameSubcategoryAcrossPosts", "summary": "Rewrites subcategory and secondarySubcategory values across every category's posts" },
         { "name": "resolveCategoriesPath", "summary": "Resolves the absolute filesystem path for blog/categories.json" },
+        { "name": "resolveDeployRegistryPath", "summary": "Returns /projects/.registry.json server path or docs/registry.local.json fallback" },
         { "name": "sanitizeCategoryKey", "summary": "Validates and normalizes a category key to safe filename stem form" },
         { "name": "sendJSON", "summary": "Sends a JSON response with proper content-type header" },
         { "name": "updateBlogPost", "summary": "Updates allowed fields of an existing blog post by UID" },
@@ -150,8 +159,20 @@
         { "name": "validateKey", "summary": "Checks request auth key against server passkey" },
         { "name": "writeAllBlogFiles", "summary": "Persists every category's in-memory blog data back to its JSON file" },
         { "name": "writeBlogJSONFile", "summary": "Persists in-memory blog data to category JSON file on disk" },
+        { "name": "writeDeployRegistry", "summary": "Persists the multigitman deploy registry JSON to disk" },
         { "name": "writeJSONFile", "summary": "Writes latest.json to disk from in-memory state" },
         { "name": "writeProjectsJSONSafe", "summary": "Writes project-data.json with server path and local fallback" }
+      ]
+    },
+    {
+      "path": "multigitman.js",
+      "type": "file",
+      "summary": "Multi-repo GitHub webhook deployer (port 6030): shared /multig endpoint resolves repo to folder/branch via registry, deploys with in-flight lock",
+      "symbols": [
+        { "name": "deploy", "summary": "Runs git fetch, reset --hard, and clean -fd via execFile" },
+        { "name": "loadRegistry", "summary": "Reads registry JSON from /projects/.registry.json, returns empty object on error" },
+        { "name": "resolveEntry", "summary": "Maps repo name to folder, branch, enabled with convention fallback" },
+        { "name": "verifyGitHubSignature", "summary": "HMAC SHA-256 webhook signature verification with buffer length guard" }
       ]
     },
     {

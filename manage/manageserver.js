@@ -30,6 +30,8 @@ const CATEGORIES_CONFIG_PATH = nodePath.join(BLOG_BASE_PATH, "categories.json");
 const CATEGORIES_CONFIG_LOCAL = nodePath.join(__dirname, "..", "blog", "categories.json");
 const PHOTOS_JSON_PATH = "/bmbsifi/Beyondmebtw/photos/photos.json";
 const PHOTOS_JSON_LOCAL = nodePath.join(__dirname, "..", "photos", "photos.json");
+const DEPLOY_REGISTRY_PATH = "/projects/.registry.json";
+const DEPLOY_REGISTRY_LOCAL = nodePath.join(__dirname, "..", "docs", "registry.local.json");
 
 function resolveCategoriesPath() {
   if (fs.existsSync(CATEGORIES_CONFIG_PATH)) return CATEGORIES_CONFIG_PATH;
@@ -330,6 +332,81 @@ function writeProjectsJSONSafe(projects, callback) {
       callback(e2);
     }
   }
+}
+
+// ─── Deploy registry helpers ──────────────────────────────────────────────────
+// Thin override table for multigitman.js: repo name -> { folder, branch, enabled }.
+// No row = convention (folder = repo, branch = main, enabled). See
+// docs/projects-multiwebhook-design.md.
+
+const DEPLOY_NAME_RE = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
+const DEPLOY_BRANCH_RE = /^[A-Za-z0-9][A-Za-z0-9._/-]*$/;
+
+function resolveDeployRegistryPath() {
+  if (fs.existsSync(nodePath.dirname(DEPLOY_REGISTRY_PATH))) return DEPLOY_REGISTRY_PATH;
+  return DEPLOY_REGISTRY_LOCAL;
+}
+
+function readDeployRegistry() {
+  try {
+    const path = resolveDeployRegistryPath();
+    if (fs.existsSync(path)) {
+      const parsed = safeJSONParse(fs.readFileSync(path, "utf8"), null);
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) return parsed;
+      console.error("Deploy registry contains invalid data — treating as empty");
+    }
+    return {};
+  } catch (e) {
+    console.error("Error reading deploy registry:", e);
+    return {};
+  }
+}
+
+function writeDeployRegistry(registry, callback) {
+  try {
+    fs.writeFileSync(resolveDeployRegistryPath(), JSON.stringify(registry, null, 2), "utf8");
+    console.log("Deploy registry written");
+    callback(null);
+  } catch (e) {
+    console.error("Error writing deploy registry:", e);
+    callback(e);
+  }
+}
+
+function handleDeployRegistrySet(body, response) {
+  const repo = String(body.repo || '').trim();
+  if (!DEPLOY_NAME_RE.test(repo)) return sendError(response, "Invalid repo name");
+
+  const row = {};
+  if (body.folder !== undefined && String(body.folder).trim() !== '') {
+    const folder = String(body.folder).trim();
+    if (!DEPLOY_NAME_RE.test(folder)) return sendError(response, "Invalid folder name");
+    if (folder !== repo) row.folder = folder;
+  }
+  if (body.branch !== undefined && String(body.branch).trim() !== '') {
+    const branch = String(body.branch).trim();
+    if (!DEPLOY_BRANCH_RE.test(branch)) return sendError(response, "Invalid branch name");
+    if (branch !== 'main') row.branch = branch;
+  }
+  if (body.enabled === false) row.enabled = false;
+
+  const registry = readDeployRegistry();
+  registry[repo] = row;
+  writeDeployRegistry(registry, err => {
+    if (err) return sendError(response, "Error writing deploy registry", 500);
+    sendJSON(response, { success: true, message: `Registry row saved for ${repo}`, registry });
+  });
+}
+
+function handleDeployRegistryDelete(body, response) {
+  const repo = String(body.repo || '').trim();
+  const registry = readDeployRegistry();
+  if (!(repo in registry)) return sendError(response, "Repo not in registry");
+  delete registry[repo];
+  writeDeployRegistry(registry, err => {
+    if (err) return sendError(response, "Error writing deploy registry", 500);
+    sendJSON(response, { success: true, message: `Registry row removed for ${repo}`, registry });
+  });
 }
 
 // ─── Photos helpers ───────────────────────────────────────────────────────────
@@ -1322,6 +1399,22 @@ const server = http.createServer((request, response) => {
           case 'addImage':     return handlePhotosAddImage(body, response);
           case 'updateImage':  return handlePhotosUpdateImage(body, response);
           case 'deleteImage':  return handlePhotosDeleteImage(body, response);
+          default: return sendError(response, `Unknown action: ${body.action}`);
+        }
+      });
+    }
+
+    // ── Deploy registry POST (action-dispatched; key-gated even for list since
+    //    the registry can reveal private repo names) ───────────────────────────
+    else if (pathname === "/deployregistry" && request.method === "POST") {
+      return getJSONBody(request, (err, body) => {
+        if (err) return sendError(response, "Bad JSON");
+        if (!validateKey(body.key, response)) return;
+
+        switch (body.action) {
+          case 'list':   return sendJSON(response, { registry: readDeployRegistry() });
+          case 'set':    return handleDeployRegistrySet(body, response);
+          case 'delete': return handleDeployRegistryDelete(body, response);
           default: return sendError(response, `Unknown action: ${body.action}`);
         }
       });

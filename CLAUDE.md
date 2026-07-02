@@ -13,7 +13,9 @@ Personal website (beyondmebtw.com) — purely client-side HTML/CSS/JS with a Nod
 ## Project structure
 
 ```
-/                        — Homepage (script.js, analytics.js), GitHub webhook deploy (beyondgitman.js)
+/                        — Homepage (script.js, analytics.js), GitHub webhook deploys:
+                           beyondgitman.js (main site), multigitman.js (all project repos —
+                           see docs/projects-multiwebhook-design.md + implementation runbook)
 about/                   — About page, ES module imports from about/data/
 blog/                    — Blog listing: category filtering, search, pagination, lazy loading
 manage/                  — Admin system: cookie auth, dashboard, Node.js REST API (manageserver.js)

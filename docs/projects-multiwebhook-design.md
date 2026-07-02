@@ -1,6 +1,8 @@
 # Projects Multi-Webhook + Subdomain Routing — Design Doc
 
-> Status: **Design / not yet implemented.** Captured 2026-06-22.
+> Status: **Code implemented (2026-07-02) — server rollout pending.**
+> See [projects-multiwebhook-implementation.md](projects-multiwebhook-implementation.md) for the runbook.
+> Captured 2026-06-22.
 > Goal: move projects out of the `Beyondmebtw` repo so each project lives in its own
 > repo, syncs to the server automatically on push, and serves on its own subdomain
 > with zero per-project infrastructure work.
