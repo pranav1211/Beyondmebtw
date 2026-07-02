@@ -1692,3 +1692,112 @@ select option { background: var(--surface2); }
   .ph-series-actions button { flex: 1; }
 }
 
+
+/* ── Deploys tab ─────────────────────────────────────────────────────── */
+.deploys-section-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 26px 0 4px;
+}
+
+.deploys-section-title:first-of-type { margin-top: 0; }
+
+.deploys-section-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  max-width: 72ch;
+}
+
+.deploys-list { margin-top: 10px; }
+
+.deploy-projects-grid {
+  grid-template-columns: minmax(160px, 1.4fr) minmax(120px, 1fr) 90px 130px 110px;
+}
+
+.deploy-registry-grid {
+  grid-template-columns: minmax(120px, 1fr) minmax(160px, 1.2fr) 90px 100px 140px;
+}
+
+.deploy-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.deploy-link:hover { color: var(--accent); }
+.deploy-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+
+.deploy-link-domain {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.deploy-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.deploy-time {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.deploy-badge {
+  justify-self: start;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 9px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.deploy-badge.ok   { background: #e5f4ea; color: #166534; }
+.deploy-badge.fail { background: #fdeaea; color: #b91c1c; }
+.deploy-badge.warn { background: #fdf2e2; color: #92400e; }
+.deploy-badge.off  { background: var(--surface3); color: var(--text-muted); }
+
+.deploy-offline-note {
+  padding: 8px 16px;
+  font-size: 12px;
+  color: #92400e;
+  background: #fdf2e2;
+  border-bottom: 1px solid var(--border);
+}
+
+.deploy-edit-btn:hover { border-color: var(--accent); color: var(--accent); }
+.deploy-delete-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+@media (max-width: 700px) {
+  .deploys-list .posts-list-header { display: none; }
+
+  /* name + badge on top, repo full-width, branch/time below
+     (the blog-tab 700px rule flips .post-row to flex; restore grid here) */
+  .post-row.deploy-projects-grid,
+  .post-row.deploy-registry-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    row-gap: 4px;
+  }
+  .deploy-projects-grid > .deploy-link            { grid-area: 1 / 1; }
+  .deploy-projects-grid > .deploy-badge           { grid-area: 1 / 2; justify-self: end; }
+  .deploy-projects-grid > .deploy-mono:nth-child(2) { grid-area: 2 / 1 / 2 / -1; }
+  .deploy-projects-grid > .deploy-mono:nth-child(3) { grid-area: 3 / 1; }
+  .deploy-projects-grid > .deploy-time            { grid-area: 3 / 2; justify-self: end; }
+
+  .deploy-registry-grid > .deploy-mono:nth-child(1) { grid-area: 1 / 1; font-weight: 600; color: var(--text); }
+  .deploy-registry-grid > .deploy-badge             { grid-area: 1 / 2; justify-self: end; }
+  .deploy-registry-grid > .deploy-mono:nth-child(2) { grid-area: 2 / 1 / 2 / -1; }
+  .deploy-registry-grid > .deploy-mono:nth-child(3) { grid-area: 3 / 1; }
+  .deploy-registry-grid > .post-actions             { grid-area: 3 / 2; }
+}

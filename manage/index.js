@@ -2342,6 +2342,22 @@ async function loadDeploysTab() {
   }
 }
 
+function deployStatusBadge(p, enabled, ld) {
+  if (!p.hasGit) return '<span class="deploy-badge warn">no checkout</span>';
+  if (!enabled) return '<span class="deploy-badge off">disabled</span>';
+  if (!ld) return '<span class="deploy-badge off">no deploys yet</span>';
+  return ld.ok
+    ? '<span class="deploy-badge ok">deployed</span>'
+    : '<span class="deploy-badge fail">failed</span>';
+}
+
+function deployTimeLabel(ld) {
+  if (!ld) return '&mdash;';
+  const d = new Date(ld.at);
+  return esc(d.toLocaleDateString(undefined, { day: 'numeric', month: 'short' }) + ', ' +
+    d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }));
+}
+
 function renderDeployProjects() {
   const container = document.getElementById('deploy-projects-list');
   const data = state.deployData || {};
@@ -2350,9 +2366,14 @@ function renderDeployProjects() {
   const lastDeploys = data.lastDeploys || {};
 
   if (projects.length === 0) {
-    container.innerHTML = '<div class="loading-msg">No folders under /projects on the server.</div>';
+    container.innerHTML = '<div class="loading-msg">Nothing under /projects yet. "+ Add Project" clones a repo and puts it live at its own subdomain.</div>';
     return;
   }
+
+  const header = `
+    <div class="posts-list-header deploy-projects-grid">
+      <span>Project</span><span>Repo</span><span>Branch</span><span>Last deploy</span><span>Status</span>
+    </div>`;
 
   const rows = projects.map(p => {
     // reverse-map: which repo deploys into this folder (override row or convention)
@@ -2362,30 +2383,20 @@ function renderDeployProjects() {
     const enabled = row.enabled !== false;
     const ld = lastDeploys[p.folder];
 
-    const bits = [`repo ${esc(repo)}`, `branch ${esc(branch)}`];
-    if (!p.hasGit) bits.push('<span style="color:#c0392b">no git checkout — webhook can\'t deploy this</span>');
-    if (!enabled) bits.push('<span style="color:#c0392b">deploys disabled</span>');
-    if (ld) {
-      bits.push(`last deploy ${esc(new Date(ld.at).toLocaleString())} ${ld.ok ? '&#10003;' : '<span style="color:#c0392b">FAILED</span>'}`);
-    } else if (data.multigitUp) {
-      bits.push('no deploys recorded yet');
-    }
-
     return `
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <h2><a href="https://${esc(p.folder)}.beyondmebtw.com" target="_blank" rel="noopener">${esc(p.folder)}.beyondmebtw.com</a></h2>
-            <span class="card-hint">${bits.join(' &middot; ')}</span>
-          </div>
-        </div>
+      <div class="post-row deploy-projects-grid">
+        <a class="deploy-link" href="https://${esc(p.folder)}.beyondmebtw.com" target="_blank" rel="noopener">${esc(p.folder)}<span class="deploy-link-domain">.beyondmebtw.com</span></a>
+        <span class="deploy-mono">${esc(repo)}</span>
+        <span class="deploy-mono">${esc(branch)}</span>
+        <span class="deploy-time" ${ld ? `title="${esc(new Date(ld.at).toLocaleString())}"` : ''}>${deployTimeLabel(ld)}</span>
+        ${deployStatusBadge(p, enabled, ld)}
       </div>`;
   });
 
   const warning = data.multigitUp === false
-    ? '<div class="loading-msg">multigitman is not responding on :6030 — deploy history unavailable.</div>'
+    ? '<div class="deploy-offline-note">multigitman is not responding on :6030 &mdash; deploy history unavailable.</div>'
     : '';
-  container.innerHTML = warning + rows.join('');
+  container.innerHTML = warning + header + rows.join('');
 }
 
 function renderDeployRegistry() {
@@ -2393,27 +2404,30 @@ function renderDeployRegistry() {
   const repos = Object.keys(state.deployRegistry || {}).sort();
 
   if (repos.length === 0) {
-    container.innerHTML = '<div class="loading-msg">No override rows. Every repo deploys by convention: folder = repo name, branch main.</div>';
+    container.innerHTML = '<div class="loading-msg">No override rows &mdash; every repo deploys by convention.</div>';
     return;
   }
 
-  container.innerHTML = repos.map(repo => {
+  const header = `
+    <div class="posts-list-header deploy-registry-grid">
+      <span>Repo</span><span>Deploys to</span><span>Branch</span><span>Status</span><span></span>
+    </div>`;
+
+  container.innerHTML = header + repos.map(repo => {
     const row = state.deployRegistry[repo] || {};
     const folder = row.folder || repo;
     const branch = row.branch || 'main';
     const enabled = row.enabled !== false;
     return `
-      <div class="card" data-deploy-repo="${esc(repo)}">
-        <div class="card-header">
-          <div>
-            <h2>${esc(repo)} ${enabled ? '' : '&mdash; <span style="color:#c0392b">disabled</span>'}</h2>
-            <span class="card-hint">/projects/${esc(folder)} &middot; branch ${esc(branch)} &middot; ${esc(folder)}.beyondmebtw.com</span>
-          </div>
-          <div class="panel-actions">
-            <button class="btn-secondary btn-small deploy-edit-btn" data-repo="${esc(repo)}">Edit</button>
-            <button class="btn-danger btn-small deploy-delete-btn" data-repo="${esc(repo)}">Delete</button>
-          </div>
-        </div>
+      <div class="post-row deploy-registry-grid" data-deploy-repo="${esc(repo)}">
+        <span class="deploy-mono">${esc(repo)}</span>
+        <span class="deploy-mono">/projects/${esc(folder)}</span>
+        <span class="deploy-mono">${esc(branch)}</span>
+        ${enabled ? '<span class="deploy-badge ok">enabled</span>' : '<span class="deploy-badge off">disabled</span>'}
+        <span class="post-actions">
+          <button class="btn-ghost btn-small deploy-edit-btn" data-repo="${esc(repo)}">Edit</button>
+          <button class="btn-ghost btn-small deploy-delete-btn" data-repo="${esc(repo)}">Delete</button>
+        </span>
       </div>`;
   }).join('');
 
@@ -2450,6 +2464,37 @@ function openDeployModal(repo) {
 
 function initDeployModal() {
   document.getElementById('new-deploy-row-btn').addEventListener('click', () => openDeployModal(null));
+
+  document.getElementById('add-project-btn').addEventListener('click', () => {
+    document.getElementById('add-project-form').reset();
+    openModal('add-project-modal');
+  });
+
+  document.getElementById('add-project-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const repoUrl = document.getElementById('add-project-url').value.trim();
+    if (!repoUrl) return toast('Repo URL is required', 'error');
+
+    const btn = document.getElementById('add-project-submit');
+    btn.disabled = true;
+    btn.textContent = 'Cloning…';
+    try {
+      const res = await apiCall('POST', '/deployregistry', {
+        action: 'clone',
+        repoUrl,
+        folder: document.getElementById('add-project-folder').value.trim(),
+        branch: document.getElementById('add-project-branch').value.trim()
+      });
+      closeModal('add-project-modal');
+      toast(`${res.folder} is live — now add the webhook to the repo on GitHub`);
+      loadDeploysTab();
+    } catch (e2) {
+      toast(e2.message, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Clone project';
+    }
+  });
 
   document.getElementById('deploy-form').addEventListener('submit', async e => {
     e.preventDefault();

@@ -275,41 +275,25 @@
     <!-- ═══════════ DEPLOYS TAB ═══════════ -->
     <section id="tab-deploys" class="tab-panel">
       <div class="panel-header">
-        <h1>Deploys</h1>
+        <div>
+          <h1>Deploys</h1>
+          <p class="panel-subtitle">Push to a project repo and it goes live at <span class="deploy-mono">&lt;folder&gt;.beyondmebtw.com</span>. Webhook URL for every repo: <span class="deploy-mono">https://beyondmebtw.com/multig</span></p>
+        </div>
         <div class="panel-actions">
-          <button id="new-deploy-row-btn" class="btn-primary">+ Override Row</button>
+          <button id="add-project-btn" class="btn-primary">+ Add Project</button>
+          <button id="new-deploy-row-btn" class="btn-secondary">+ Override Row</button>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <h2>Live Projects</h2>
-            <span class="card-hint">
-              Every folder under <code>/projects</code> on the server — each serves at
-              <code>&lt;folder&gt;.beyondmebtw.com</code> and deploys on push, override row or not.
-            </span>
-          </div>
-        </div>
-        <div id="deploy-projects-list" class="posts-list">
-          <div class="loading-msg">Loading projects...</div>
-        </div>
+      <h2 class="deploys-section-title">Live projects</h2>
+      <div id="deploy-projects-list" class="posts-list deploys-list">
+        <div class="loading-msg">Loading projects...</div>
       </div>
 
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <h2>Override Rows</h2>
-            <span class="card-hint">
-              Convention: repo name = folder = subdomain, branch <code>main</code> — no row needed.
-              Add a row only to override folder/branch or disable a repo.
-              Webhook URL for every repo: <code>https://beyondmebtw.com/multig</code>
-            </span>
-          </div>
-        </div>
-        <div id="deploy-registry-list" class="posts-list">
-          <div class="loading-msg">Loading registry...</div>
-        </div>
+      <h2 class="deploys-section-title">Override rows</h2>
+      <p class="deploys-section-hint">Convention needs no row: repo = folder = subdomain, branch <span class="deploy-mono">main</span>. A row only redirects a repo to a different folder or branch, or disables its deploys.</p>
+      <div id="deploy-registry-list" class="posts-list deploys-list">
+        <div class="loading-msg">Loading registry...</div>
       </div>
     </section>
 
@@ -562,6 +546,37 @@
       <div class="modal-footer">
         <button type="button" class="btn-ghost" id="clear-project-form">Clear</button>
         <button type="submit" class="btn-primary" id="project-submit-btn">Add Project</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ═══════════ ADD PROJECT MODAL ═══════════ -->
+<div id="add-project-modal" class="modal-overlay" style="display:none">
+  <div class="modal-box modal-small">
+    <div class="modal-header">
+      <h2>Add Project</h2>
+      <button class="modal-close" data-modal="add-project-modal">&times;</button>
+    </div>
+    <form id="add-project-form" class="modal-form">
+      <div class="form-group">
+        <label>Repo URL <span class="req">*</span></label>
+        <input type="text" id="add-project-url" placeholder="git@github.com:pranav1211/repo.git" autocomplete="off">
+        <span class="hint">SSH form works for private repos; https for public.</span>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Folder <span class="hint-inline">(blank = repo name)</span></label>
+          <input type="text" id="add-project-folder" placeholder="becomes the subdomain" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>Branch <span class="hint-inline">(blank = default)</span></label>
+          <input type="text" id="add-project-branch" placeholder="main" autocomplete="off">
+        </div>
+      </div>
+      <p class="hint">Clones into <span class="deploy-mono">/projects/&lt;folder&gt;</span> and writes an override row automatically if folder or branch differ from convention. Afterwards, add the webhook to the repo on GitHub — same URL and secret as every other project.</p>
+      <div class="modal-footer">
+        <button type="submit" class="btn-primary" id="add-project-submit">Clone project</button>
       </div>
     </form>
   </div>

@@ -8,8 +8,8 @@
       "multigitman.js",
       "manage/manageserver.js"
     ],
-    "map_generated_at": "2026-07-02T12:00:00Z",
-    "based_on_commit": "b7a753b"
+    "map_generated_at": "2026-07-02T09:48:46Z",
+    "based_on_commit": "0386708"
   },
   "structure": [
     {
@@ -99,11 +99,13 @@
       "symbols": [
         { "name": "apiCall", "summary": "Generic fetch wrapper that injects auth key and handles responses" },
         { "name": "countOrphans", "summary": "Counts posts that will be orphaned if a category is deleted" },
+        { "name": "deployStatusBadge", "summary": "Builds status badge HTML for a Deploys tab row from last-deploy result" },
+        { "name": "deployTimeLabel", "summary": "Formats last-deploy timestamp into a display label for Deploys tab rows" },
         { "name": "fetchCategoriesManifest", "summary": "Fetches categories.json manifest for client-side tab population" },
         { "name": "getKey", "summary": "Returns stored auth key from the authentication system" },
         { "name": "initCategoryDeleteModal", "summary": "Wires up the 3-step destructive category deletion modal flow" },
         { "name": "initCategoryModal", "summary": "Rewritten combined add/edit category modal initializer" },
-        { "name": "initDeployModal", "summary": "Wires up the deploy registry add/edit modal and its save handler" },
+        { "name": "initDeployModal", "summary": "Wires deploy registry add/edit modal, save handler, and Add Project clone modal" },
         { "name": "initSidebarToggle", "summary": "Sets up hamburger menu toggle for mobile sidebar navigation" },
         { "name": "initSubcatModal", "summary": "Initializes modal for adding or renaming a subcategory" },
         { "name": "initTabs", "summary": "Initializes tab switching between Homepage, Blog, Projects, Categories, and Deploys" },
@@ -117,8 +119,8 @@
         { "name": "openSubcatModal", "summary": "Opens modal for adding a new subcategory or renaming an existing one" },
         { "name": "promptRemoveSubcategory", "summary": "Confirms and dispatches removal of a subcategory from a category" },
         { "name": "renderCategoriesList", "summary": "Renders the list of category cards with edit, delete, and subcat actions" },
-        { "name": "renderDeployProjects", "summary": "Renders Live Projects card with subdomain links, repo/branch, and last-deploy status" },
-        { "name": "renderDeployRegistry", "summary": "Renders deploy registry rows with edit and delete actions in Deploys tab" },
+        { "name": "renderDeployProjects", "summary": "Renders Live Projects as dense posts-list grid rows with subdomain links, repo/branch, deploy status" },
+        { "name": "renderDeployRegistry", "summary": "Renders deploy registry as dense posts-list grid rows with edit and delete actions" },
         { "name": "resetBlogForm", "summary": "Rebuilds subcategory and secondary category chips when resetting blog form" },
         { "name": "showDeleteStep", "summary": "Switches between warn, confirm-key, and destroy steps of delete modal" },
         { "name": "toast", "summary": "Displays a temporary notification message with success or error styling" }
@@ -138,13 +140,14 @@
         { "name": "handleAddCategory", "summary": "Creates a new category entry in the manifest and its blog JSON file" },
         { "name": "handleAddSubcategory", "summary": "Appends a new subcategory under the specified category in the manifest" },
         { "name": "handleDeleteCategory", "summary": "Cascading delete of a category: manifest, JSON file, post refs, and latest.json" },
+        { "name": "handleDeployClone", "summary": "Validates GitHub repo URL, git-clones into projects root via execFile with GIT_TERMINAL_PROMPT=0, auto-writes registry override when folder or branch differs" },
         { "name": "handleDeployRegistryDelete", "summary": "Removes a repo entry from the multigitman deploy registry" },
         { "name": "handleDeployRegistryList", "summary": "Merges registry, disk folders, and multigitman lastDeploys with multigitUp flag" },
         { "name": "handleDeployRegistrySet", "summary": "Creates or updates a repo entry in the multigitman deploy registry" },
         { "name": "handleRemoveSubcategory", "summary": "Removes a subcategory from a category and clears related post fields" },
         { "name": "handleRenameSubcategory", "summary": "Renames a subcategory in the manifest and across all affected posts" },
         { "name": "handleUpdateCategory", "summary": "Updates name or icon fields on an existing category manifest entry" },
-        { "name": "listDeployProjects", "summary": "Lists directories under /projects on disk for deploy status merging" },
+        { "name": "listDeployProjects", "summary": "Lists directories under PROJECTS_ROOT_DIR (env-overridable via PROJECTS_ROOT) for deploy status merging" },
         { "name": "loadAllBlogData", "summary": "Fetches all category blog JSON files on server startup" },
         { "name": "loadBlogJSON", "summary": "Fetches blog data for a single category from the live site" },
         { "name": "loadCategoriesConfig", "summary": "Loads the categories manifest from blog/categories.json at startup" },
@@ -154,7 +157,7 @@
         { "name": "readProjectsJSON", "summary": "Reads project-data.json from server or local fallback path" },
         { "name": "renameSubcategoryAcrossPosts", "summary": "Rewrites subcategory and secondarySubcategory values across every category's posts" },
         { "name": "resolveCategoriesPath", "summary": "Resolves the absolute filesystem path for blog/categories.json" },
-        { "name": "resolveDeployRegistryPath", "summary": "Returns /projects/.registry.json server path or docs/registry.local.json fallback" },
+        { "name": "resolveDeployRegistryPath", "summary": "Returns DEPLOY_REGISTRY_PATH (env-overridable via PROJECTS_ROOT) or docs/registry.local.json fallback" },
         { "name": "sanitizeCategoryKey", "summary": "Validates and normalizes a category key to safe filename stem form" },
         { "name": "sendJSON", "summary": "Sends a JSON response with proper content-type header" },
         { "name": "updateBlogPost", "summary": "Updates allowed fields of an existing blog post by UID" },

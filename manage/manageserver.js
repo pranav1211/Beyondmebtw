@@ -1,7 +1,7 @@
 const http = require("http");
 const https = require("https");
 const fs = require("fs");
-const { exec } = require("child_process");
+const { exec, execFile } = require("child_process");
 const nodePath = require("path");
 
 let thepasskey;
@@ -30,7 +30,7 @@ const CATEGORIES_CONFIG_PATH = nodePath.join(BLOG_BASE_PATH, "categories.json");
 const CATEGORIES_CONFIG_LOCAL = nodePath.join(__dirname, "..", "blog", "categories.json");
 const PHOTOS_JSON_PATH = "/bmbsifi/Beyondmebtw/photos/photos.json";
 const PHOTOS_JSON_LOCAL = nodePath.join(__dirname, "..", "photos", "photos.json");
-const DEPLOY_REGISTRY_PATH = "/projects/.registry.json";
+const DEPLOY_REGISTRY_PATH = nodePath.join(process.env.PROJECTS_ROOT || "/projects", ".registry.json");
 const DEPLOY_REGISTRY_LOCAL = nodePath.join(__dirname, "..", "docs", "registry.local.json");
 
 function resolveCategoriesPath() {
@@ -398,7 +398,7 @@ function handleDeployRegistrySet(body, response) {
   });
 }
 
-const PROJECTS_ROOT_DIR = "/projects";
+const PROJECTS_ROOT_DIR = process.env.PROJECTS_ROOT || "/projects";
 const MULTIGIT_STATUS_URL = "http://localhost:6030/multig";
 
 // Folders actually on disk under /projects — every non-dot dir is live on
@@ -439,6 +439,72 @@ function handleDeployRegistryList(response) {
       lastDeploys: (status && status.lastDeploys) || null,
       inFlight: (status && status.inFlight) || [],
       multigitUp: !!status
+    });
+  });
+}
+
+// GitHub-only on purpose: the pvr SSH key auths git@ URLs, https works for
+// public repos. Anything else is a typo until proven otherwise.
+const DEPLOY_REPO_URL_RE = /^(https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+?(\.git)?|git@github\.com:[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+?(\.git)?)$/;
+
+// Clone a repo into /projects/<folder> and, when the setup deviates from
+// convention (folder ≠ repo name, or non-main branch), write the matching
+// registry row so the webhook deploys it correctly from the first push.
+function handleDeployClone(body, response) {
+  const repoUrl = String(body.repoUrl || '').trim();
+  if (!DEPLOY_REPO_URL_RE.test(repoUrl)) {
+    return sendError(response, "Invalid repo URL — use https://github.com/user/repo or git@github.com:user/repo");
+  }
+
+  const repoName = repoUrl.split('/').pop().replace(/\.git$/, '');
+  const folder = String(body.folder || '').trim() || repoName;
+  const branch = String(body.branch || '').trim();
+  if (!DEPLOY_NAME_RE.test(folder)) return sendError(response, "Invalid folder name");
+  if (branch && !DEPLOY_BRANCH_RE.test(branch)) return sendError(response, "Invalid branch name");
+
+  if (!fs.existsSync(PROJECTS_ROOT_DIR)) {
+    return sendError(response, `${PROJECTS_ROOT_DIR} does not exist on this machine`, 500);
+  }
+  const target = nodePath.join(PROJECTS_ROOT_DIR, folder);
+  if (fs.existsSync(target)) {
+    return sendError(response, `Folder already exists: ${target}`);
+  }
+
+  const args = branch
+    ? ["clone", "-b", branch, repoUrl, target]
+    : ["clone", repoUrl, target];
+
+  execFile("git", args, {
+    timeout: 180000,
+    env: { ...process.env, GIT_TERMINAL_PROMPT: "0" } // fail fast instead of hanging on an auth prompt
+  }, (error, stdout, stderr) => {
+    if (error) {
+      console.error("Clone failed:", error.message, stderr);
+      return sendError(response, `Clone failed: ${(stderr || error.message).trim().slice(-500)}`, 500);
+    }
+
+    let registryRow = null;
+    const row = {};
+    if (folder !== repoName) row.folder = folder;
+    if (branch && branch !== 'main') row.branch = branch;
+    if (Object.keys(row).length > 0) {
+      const registry = readDeployRegistry();
+      registry[repoName] = row;
+      registryRow = { repo: repoName, ...row };
+      try {
+        fs.writeFileSync(resolveDeployRegistryPath(), JSON.stringify(registry, null, 2), "utf8");
+      } catch (e) {
+        console.error("Clone ok but registry write failed:", e);
+        return sendError(response, `Cloned, but writing the registry row failed: ${e.message}. Add it manually.`, 500);
+      }
+    }
+
+    sendJSON(response, {
+      success: true,
+      message: `Cloned into ${target}`,
+      folder,
+      url: `https://${folder}.beyondmebtw.com`,
+      registryRow
     });
   });
 }
@@ -1460,6 +1526,7 @@ const server = http.createServer((request, response) => {
           case 'list':   return handleDeployRegistryList(response);
           case 'set':    return handleDeployRegistrySet(body, response);
           case 'delete': return handleDeployRegistryDelete(body, response);
+          case 'clone':  return handleDeployClone(body, response);
           default: return sendError(response, `Unknown action: ${body.action}`);
         }
       });
