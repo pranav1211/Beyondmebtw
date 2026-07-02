@@ -27,6 +27,38 @@ const GIT_TIMEOUT_MS = 60000;
 // registry file itself (and any dotfile) can never be a deploy target.
 const FOLDER_RE = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
 const BRANCH_RE = /^[A-Za-z0-9][A-Za-z0-9._/-]*$/;
+// Serve path: slash-separated segments, each starting alphanumeric — this
+// makes ".." (and any dot-segment) unrepresentable, so it can't escape the checkout.
+const SERVE_PATH_RE = /^[A-Za-z0-9][A-Za-z0-9._-]*(\/[A-Za-z0-9][A-Za-z0-9._-]*)*$/;
+
+// With a serve path, the git checkout lives under .checkouts (dot-dir: nginx's
+// wildcard can't reach it and listings skip it) and /projects/<folder> is a
+// symlink into the checkout's subfolder. Without one, the checkout IS the folder.
+const CHECKOUTS_DIR = '.checkouts';
+
+function checkoutDir(folder, servePath) {
+  return servePath
+    ? path.join(PROJECTS_ROOT, CHECKOUTS_DIR, folder)
+    : path.join(PROJECTS_ROOT, folder);
+}
+
+// Point /projects/<folder> at the checkout's serve subfolder. Retargets an
+// existing link if the path changed; refuses to clobber a real directory.
+function ensureServeLink(folder, servePath) {
+  const link = path.join(PROJECTS_ROOT, folder);
+  const target = path.join(CHECKOUTS_DIR, folder, servePath); // relative: survives root moves
+  try {
+    const st = fs.lstatSync(link);
+    if (st.isSymbolicLink()) {
+      if (fs.readlinkSync(link) === target) return null;
+      fs.unlinkSync(link);
+    } else {
+      return `refusing to replace real directory ${link} with a symlink — remove it first`;
+    }
+  } catch {} // ENOENT: nothing there yet
+  fs.symlinkSync(target, link);
+  return null;
+}
 
 if (!process.env.multigitkey) {
   console.error('CRITICAL: multigitkey environment variable is not set. Webhook signature verification will reject all requests.');
@@ -78,12 +110,13 @@ function loadRegistry() {
   return {};
 }
 
-// repo name -> { folder, branch, enabled }, falling back to convention.
+// repo name -> { folder, branch, enabled, path }, falling back to convention.
 function resolveEntry(repoName) {
   const row = loadRegistry()[repoName];
   return {
     folder: (row && row.folder) || repoName,
     branch: (row && row.branch) || 'main',
+    path: (row && row.path) || '',
     enabled: !row || row.enabled !== false,
     explicit: !!row
   };
@@ -93,8 +126,7 @@ function git(cwd, args, callback) {
   execFile('git', args, { cwd, timeout: GIT_TIMEOUT_MS }, callback);
 }
 
-function deploy(folder, branch, callback) {
-  const dir = path.join(PROJECTS_ROOT, folder);
+function deploy(dir, branch, callback) {
   const output = [];
   const steps = [
     ['fetch', 'origin'],
@@ -117,16 +149,27 @@ function deploy(folder, branch, callback) {
 const app = express();
 app.use('/multig', express.raw({ type: 'application/json' }));
 
-// What's actually on disk: every non-dot folder under PROJECTS_ROOT is a live
-// (routable) project, whether or not it has a registry row.
+// What's actually on disk: every non-dot folder (or serve symlink) under
+// PROJECTS_ROOT is a live (routable) project, whether or not it has a registry row.
 function listProjects() {
   try {
+    const registry = loadRegistry();
+    const rowByFolder = {};
+    for (const repo of Object.keys(registry)) {
+      const row = registry[repo] || {};
+      rowByFolder[row.folder || repo] = row;
+    }
     return fs.readdirSync(PROJECTS_ROOT, { withFileTypes: true })
-      .filter(d => d.isDirectory() && !d.name.startsWith('.'))
-      .map(d => ({
-        folder: d.name,
-        hasGit: fs.existsSync(path.join(PROJECTS_ROOT, d.name, '.git'))
-      }));
+      .filter(d => !d.name.startsWith('.') && (d.isDirectory() || d.isSymbolicLink()))
+      .map(d => {
+        const servePath = (rowByFolder[d.name] && rowByFolder[d.name].path) || '';
+        return {
+          folder: d.name,
+          path: servePath,
+          hasGit: fs.existsSync(path.join(checkoutDir(d.name, servePath), '.git')),
+          hasIndex: fs.existsSync(path.join(PROJECTS_ROOT, d.name, 'index.html')) // follows the serve symlink
+        };
+      });
   } catch (e) {
     log(`listProjects error: ${e.message}`);
     return [];
@@ -169,22 +212,22 @@ app.post('/multig', (req, res) => {
   const repoName = payload.repository && payload.repository.name;
   if (!repoName) return res.status(400).json({ message: 'No repository.name in payload' });
 
-  const { folder, branch, enabled, explicit } = resolveEntry(repoName);
+  const { folder, branch, enabled, path: servePath, explicit } = resolveEntry(repoName);
 
   if (!enabled) {
     log(`${repoName}: disabled in registry — ignored`);
     return res.status(200).json({ message: 'Repo disabled in registry — ignored' });
   }
-  if (!FOLDER_RE.test(folder) || !BRANCH_RE.test(branch)) {
-    log(`${repoName}: invalid folder "${folder}" or branch "${branch}" — rejected`);
-    return res.status(400).json({ message: 'Invalid folder or branch in registry' });
+  if (!FOLDER_RE.test(folder) || !BRANCH_RE.test(branch) || (servePath && !SERVE_PATH_RE.test(servePath))) {
+    log(`${repoName}: invalid folder "${folder}", branch "${branch}" or path "${servePath}" — rejected`);
+    return res.status(400).json({ message: 'Invalid folder, branch or path in registry' });
   }
   if (payload.ref !== `refs/heads/${branch}`) {
     log(`${repoName}: push to ${payload.ref}, deploys track ${branch} — ignored`);
     return res.status(200).json({ message: `Push to ${payload.ref} ignored (tracking ${branch})` });
   }
 
-  const dir = path.join(PROJECTS_ROOT, folder);
+  const dir = checkoutDir(folder, servePath);
   if (!fs.existsSync(path.join(dir, '.git'))) {
     log(`${repoName}: no git checkout at ${dir}${explicit ? '' : ' (no registry row either)'} — 404`);
     return res.status(404).json({ message: `Unknown project: no checkout at ${dir}. Clone it first or add a registry row.` });
@@ -196,22 +239,37 @@ app.post('/multig', (req, res) => {
   }
 
   deploying.add(folder);
-  log(`${repoName} -> ${folder} (${branch}): deploy started`);
+  log(`${repoName} -> ${folder} (${branch}${servePath ? `, serves ${servePath}/` : ''}): deploy started`);
 
-  deploy(folder, branch, (error, output) => {
+  deploy(dir, branch, (error, output) => {
     deploying.delete(folder);
+
+    // keep /projects/<folder> pointing at the serve subfolder (covers registry edits)
+    let linkError = null;
+    if (!error && servePath) {
+      try {
+        linkError = ensureServeLink(folder, servePath);
+      } catch (e) {
+        linkError = e.message;
+      }
+      if (linkError) log(`${repoName} -> ${folder}: serve link problem: ${linkError}`);
+    }
+
     lastDeploys[folder] = {
       repo: repoName,
       branch,
       at: new Date().toISOString(),
-      ok: !error,
-      output: output.slice(-2000)
+      ok: !error && !linkError,
+      output: (linkError ? `serve link: ${linkError}\n` : '') + output.slice(-2000)
     };
     saveState();
 
     if (error) {
       log(`${repoName} -> ${folder}: deploy FAILED: ${error.message}\n${output}`);
       return res.status(500).json({ message: 'Deploy failed', error: error.message, output });
+    }
+    if (linkError) {
+      return res.status(500).json({ message: 'Deployed, but serve link failed', error: linkError, output });
     }
     log(`${repoName} -> ${folder}: deploy ok\n${output}`);
     res.status(200).json({ message: 'Deployed', folder, branch, output });

@@ -204,8 +204,12 @@ Then update `CLAUDE.md` project structure + flip the design doc status line.
 
 ## Adding a project from now on
 
-1. Make the repo.
+1. Make the repo — with an `index.html` at whatever level gets served.
 2. Add the webhook: `https://beyondmebtw.com/multig` + the shared secret.
-3. `git clone git@github.com:pranav1211/<repo>.git /projects/<name>` once.
+3. Clone it: manage page → Deploys → "+ Add Project" (repo URL, optional
+   folder/branch/serve-path), or manually
+   `git clone git@github.com:pranav1211/<repo>.git /projects/<name>`.
 4. Done — live at `https://<name>.beyondmebtw.com`. Registry row (manage page →
-   Deploys) only if repo name ≠ folder, non-main branch, or to disable.
+   Deploys) only if repo name ≠ folder, non-main branch, serve path (site files
+   in a subfolder — editing the row's path switches instantly, e.g. live ↔ demo),
+   or to disable.

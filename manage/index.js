@@ -2344,6 +2344,7 @@ async function loadDeploysTab() {
 
 function deployStatusBadge(p, enabled, ld) {
   if (!p.hasGit) return '<span class="deploy-badge warn">no checkout</span>';
+  if (p.hasIndex === false) return '<span class="deploy-badge warn" title="nginx 403s the subdomain until the repo root has an index.html">no index.html</span>';
   if (!enabled) return '<span class="deploy-badge off">disabled</span>';
   if (!ld) return '<span class="deploy-badge off">no deploys yet</span>';
   return ld.ok
@@ -2386,7 +2387,7 @@ function renderDeployProjects() {
     return `
       <div class="post-row deploy-projects-grid">
         <a class="deploy-link" href="https://${esc(p.folder)}.beyondmebtw.com" target="_blank" rel="noopener">${esc(p.folder)}<span class="deploy-link-domain">.beyondmebtw.com</span></a>
-        <span class="deploy-mono">${esc(repo)}</span>
+        <span class="deploy-mono">${esc(repo)}${p.path ? ` &middot; /${esc(p.path)}` : ''}</span>
         <span class="deploy-mono">${esc(branch)}</span>
         <span class="deploy-time" ${ld ? `title="${esc(new Date(ld.at).toLocaleString())}"` : ''}>${deployTimeLabel(ld)}</span>
         ${deployStatusBadge(p, enabled, ld)}
@@ -2421,7 +2422,7 @@ function renderDeployRegistry() {
     return `
       <div class="post-row deploy-registry-grid" data-deploy-repo="${esc(repo)}">
         <span class="deploy-mono">${esc(repo)}</span>
-        <span class="deploy-mono">/projects/${esc(folder)}</span>
+        <span class="deploy-mono">/projects/${esc(folder)}${row.path ? ` &middot; serves /${esc(row.path)}` : ''}</span>
         <span class="deploy-mono">${esc(branch)}</span>
         ${enabled ? '<span class="deploy-badge ok">enabled</span>' : '<span class="deploy-badge off">disabled</span>'}
         <span class="post-actions">
@@ -2439,8 +2440,9 @@ function renderDeployRegistry() {
       const repo = btn.dataset.repo;
       confirm(`Remove the override row for "${repo}"? The repo falls back to convention (folder = repo name, branch main, enabled).`, async () => {
         try {
-          await apiCall('POST', '/deployregistry', { action: 'delete', repo });
-          toast(`Row removed for ${repo}`);
+          const res = await apiCall('POST', '/deployregistry', { action: 'delete', repo });
+          if (res.warning) toast(`Removed, but: ${res.warning}`, 'error');
+          else toast(`Row removed for ${repo}`);
           loadDeploysTab();
         } catch (e) {
           toast(e.message, 'error');
@@ -2458,6 +2460,7 @@ function openDeployModal(repo) {
   document.getElementById('deploy-repo').disabled = !!repo;
   document.getElementById('deploy-folder').value = row.folder || '';
   document.getElementById('deploy-branch').value = row.branch || '';
+  document.getElementById('deploy-path').value = row.path || '';
   document.getElementById('deploy-enabled').checked = row.enabled !== false;
   openModal('deploy-modal');
 }
@@ -2483,10 +2486,12 @@ function initDeployModal() {
         action: 'clone',
         repoUrl,
         folder: document.getElementById('add-project-folder').value.trim(),
-        branch: document.getElementById('add-project-branch').value.trim()
+        branch: document.getElementById('add-project-branch').value.trim(),
+        path: document.getElementById('add-project-path').value.trim()
       });
       closeModal('add-project-modal');
-      toast(`${res.folder} is live — now add the webhook to the repo on GitHub`);
+      if (res.warning) toast(`Cloned, but: ${res.warning}`, 'error');
+      else toast(`${res.folder} is live — now add the webhook to the repo on GitHub`);
       loadDeploysTab();
     } catch (e2) {
       toast(e2.message, 'error');
@@ -2502,16 +2507,18 @@ function initDeployModal() {
     if (!repo) return toast('Repo name is required', 'error');
 
     try {
-      await apiCall('POST', '/deployregistry', {
+      const res = await apiCall('POST', '/deployregistry', {
         action: 'set',
         repo,
         folder: document.getElementById('deploy-folder').value.trim(),
         branch: document.getElementById('deploy-branch').value.trim(),
+        path: document.getElementById('deploy-path').value.trim(),
         enabled: document.getElementById('deploy-enabled').checked
       });
       state.editingDeployRepo = null;
       closeModal('deploy-modal');
-      toast(`Row saved for ${repo}`);
+      if (res.warning) toast(`Saved, but: ${res.warning}`, 'error');
+      else toast(`Row saved for ${repo}`);
       loadDeploysTab();
     } catch (e2) {
       toast(e2.message, 'error');

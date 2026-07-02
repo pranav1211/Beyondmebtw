@@ -341,6 +341,63 @@ function writeProjectsJSONSafe(projects, callback) {
 
 const DEPLOY_NAME_RE = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
 const DEPLOY_BRANCH_RE = /^[A-Za-z0-9][A-Za-z0-9._/-]*$/;
+// Serve path: slash-separated segments, each starting alphanumeric — ".." is
+// unrepresentable, so it can't escape the checkout.
+const DEPLOY_SERVE_PATH_RE = /^[A-Za-z0-9][A-Za-z0-9._-]*(\/[A-Za-z0-9][A-Za-z0-9._-]*)*$/;
+
+// Serve-path layout (mirrors multigitman.js): with a path, the checkout lives
+// at /projects/.checkouts/<folder> and /projects/<folder> is a symlink into
+// the checkout's subfolder. Without one, the checkout IS the folder.
+const DEPLOY_CHECKOUTS = ".checkouts";
+
+function deployCheckoutDir(folder, servePath) {
+  const root = nodePath.dirname(DEPLOY_REGISTRY_PATH);
+  return servePath
+    ? nodePath.join(root, DEPLOY_CHECKOUTS, folder)
+    : nodePath.join(root, folder);
+}
+
+// Reshape /projects/<folder> to match the requested serve path. Handles all
+// transitions: adopt a path (real dir moves under .checkouts, symlink appears),
+// change a path (symlink retargets), drop a path (checkout moves back).
+// Returns null on success, a message string on problems.
+function applyServeLayout(folder, servePath) {
+  const root = nodePath.dirname(DEPLOY_REGISTRY_PATH);
+  const entry = nodePath.join(root, folder);
+  const checkout = nodePath.join(root, DEPLOY_CHECKOUTS, folder);
+  const linkTarget = servePath ? nodePath.join(DEPLOY_CHECKOUTS, folder, servePath) : null;
+
+  let st = null;
+  try { st = fs.lstatSync(entry); } catch {}
+
+  try {
+    if (servePath) {
+      if (st && !st.isSymbolicLink()) {
+        // adopt: real checkout moves under .checkouts, folder becomes the serve link
+        fs.mkdirSync(nodePath.join(root, DEPLOY_CHECKOUTS), { recursive: true });
+        if (fs.existsSync(checkout)) return `${checkout} already exists — resolve manually`;
+        fs.renameSync(entry, checkout);
+      } else if (st && st.isSymbolicLink()) {
+        if (fs.readlinkSync(entry) === linkTarget) return null;
+        fs.unlinkSync(entry);
+      }
+      if (!fs.existsSync(checkout)) return null; // no checkout yet (clone comes later) — nothing to link
+      fs.symlinkSync(linkTarget, entry);
+      if (!fs.existsSync(entry)) return `serve path "${servePath}" does not exist inside the checkout — the subdomain will 404 until it does`;
+      return null;
+    }
+
+    // no serve path wanted: fold a linked checkout back to a plain folder
+    if (st && st.isSymbolicLink()) {
+      fs.unlinkSync(entry);
+      if (fs.existsSync(checkout)) fs.renameSync(checkout, entry);
+      else return `removed the serve link but no checkout found at ${checkout} — re-clone the project`;
+    }
+    return null;
+  } catch (e) {
+    return `layout change failed: ${e.message}`;
+  }
+}
 
 function resolveDeployRegistryPath() {
   if (fs.existsSync(nodePath.dirname(DEPLOY_REGISTRY_PATH))) return DEPLOY_REGISTRY_PATH;
@@ -388,13 +445,21 @@ function handleDeployRegistrySet(body, response) {
     if (!DEPLOY_BRANCH_RE.test(branch)) return sendError(response, "Invalid branch name");
     if (branch !== 'main') row.branch = branch;
   }
+  const servePath = String(body.path || '').trim().replace(/^\/+|\/+$/g, '');
+  if (servePath) {
+    if (!DEPLOY_SERVE_PATH_RE.test(servePath)) return sendError(response, "Invalid serve path");
+    row.path = servePath;
+  }
   if (body.enabled === false) row.enabled = false;
 
   const registry = readDeployRegistry();
   registry[repo] = row;
   writeDeployRegistry(registry, err => {
     if (err) return sendError(response, "Error writing deploy registry", 500);
-    sendJSON(response, { success: true, message: `Registry row saved for ${repo}`, registry });
+    // apply the serve layout immediately — this is how live/demo switching
+    // works: edit the row's path, the symlink retargets without a push
+    const warning = applyServeLayout(row.folder || repo, servePath);
+    sendJSON(response, { success: true, message: `Registry row saved for ${repo}`, registry, warning });
   });
 }
 
@@ -406,12 +471,25 @@ const MULTIGIT_STATUS_URL = "http://localhost:6030/multig";
 function listDeployProjects() {
   try {
     if (!fs.existsSync(PROJECTS_ROOT_DIR)) return []; // local dev
+    const registry = readDeployRegistry();
+    const rowByFolder = {};
+    for (const repo of Object.keys(registry)) {
+      const row = registry[repo] || {};
+      rowByFolder[row.folder || repo] = row;
+    }
     return fs.readdirSync(PROJECTS_ROOT_DIR, { withFileTypes: true })
-      .filter(d => d.isDirectory() && !d.name.startsWith('.'))
-      .map(d => ({
-        folder: d.name,
-        hasGit: fs.existsSync(nodePath.join(PROJECTS_ROOT_DIR, d.name, ".git"))
-      }));
+      .filter(d => !d.name.startsWith('.') && (d.isDirectory() || d.isSymbolicLink()))
+      .map(d => {
+        const servePath = (rowByFolder[d.name] && rowByFolder[d.name].path) || '';
+        return {
+          folder: d.name,
+          path: servePath,
+          hasGit: fs.existsSync(nodePath.join(deployCheckoutDir(d.name, servePath), ".git")),
+          // nginx serves index.html from the folder root (through the serve
+          // symlink when set); without it the subdomain 403s (autoindex off)
+          hasIndex: fs.existsSync(nodePath.join(PROJECTS_ROOT_DIR, d.name, "index.html"))
+        };
+      });
   } catch (e) {
     console.error("Error listing /projects:", e);
     return [];
@@ -459,16 +537,20 @@ function handleDeployClone(body, response) {
   const repoName = repoUrl.split('/').pop().replace(/\.git$/, '');
   const folder = String(body.folder || '').trim() || repoName;
   const branch = String(body.branch || '').trim();
+  const servePath = String(body.path || '').trim().replace(/^\/+|\/+$/g, '');
   if (!DEPLOY_NAME_RE.test(folder)) return sendError(response, "Invalid folder name");
   if (branch && !DEPLOY_BRANCH_RE.test(branch)) return sendError(response, "Invalid branch name");
+  if (servePath && !DEPLOY_SERVE_PATH_RE.test(servePath)) return sendError(response, "Invalid serve path");
 
   if (!fs.existsSync(PROJECTS_ROOT_DIR)) {
     return sendError(response, `${PROJECTS_ROOT_DIR} does not exist on this machine`, 500);
   }
-  const target = nodePath.join(PROJECTS_ROOT_DIR, folder);
-  if (fs.existsSync(target)) {
-    return sendError(response, `Folder already exists: ${target}`);
+  const entryPath = nodePath.join(PROJECTS_ROOT_DIR, folder);
+  const target = deployCheckoutDir(folder, servePath);
+  if (fs.existsSync(entryPath) || fs.existsSync(target)) {
+    return sendError(response, `Folder already exists: ${fs.existsSync(entryPath) ? entryPath : target}`);
   }
+  if (servePath) fs.mkdirSync(nodePath.join(PROJECTS_ROOT_DIR, DEPLOY_CHECKOUTS), { recursive: true });
 
   const args = branch
     ? ["clone", "-b", branch, repoUrl, target]
@@ -487,6 +569,7 @@ function handleDeployClone(body, response) {
     const row = {};
     if (folder !== repoName) row.folder = folder;
     if (branch && branch !== 'main') row.branch = branch;
+    if (servePath) row.path = servePath;
     if (Object.keys(row).length > 0) {
       const registry = readDeployRegistry();
       registry[repoName] = row;
@@ -499,12 +582,19 @@ function handleDeployClone(body, response) {
       }
     }
 
+    // create the serve symlink when a path is set, then check what actually serves
+    const layoutWarning = servePath ? applyServeLayout(folder, servePath) : null;
+    const indexWarning = fs.existsSync(nodePath.join(entryPath, "index.html"))
+      ? null
+      : `No index.html at the ${servePath ? `serve path "${servePath}"` : "repo root"} — the subdomain will 403 until one is pushed.`;
+
     sendJSON(response, {
       success: true,
       message: `Cloned into ${target}`,
       folder,
       url: `https://${folder}.beyondmebtw.com`,
-      registryRow
+      registryRow,
+      warning: layoutWarning || indexWarning
     });
   });
 }
@@ -513,10 +603,14 @@ function handleDeployRegistryDelete(body, response) {
   const repo = String(body.repo || '').trim();
   const registry = readDeployRegistry();
   if (!(repo in registry)) return sendError(response, "Repo not in registry");
+  const hadPath = !!(registry[repo] && registry[repo].path);
+  const folder = (registry[repo] && registry[repo].folder) || repo;
   delete registry[repo];
   writeDeployRegistry(registry, err => {
     if (err) return sendError(response, "Error writing deploy registry", 500);
-    sendJSON(response, { success: true, message: `Registry row removed for ${repo}`, registry });
+    // deleting a row means back to convention — fold a linked checkout back
+    const warning = hadPath ? applyServeLayout(folder, '') : null;
+    sendJSON(response, { success: true, message: `Registry row removed for ${repo}`, registry, warning });
   });
 }
 

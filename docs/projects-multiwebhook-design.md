@@ -116,9 +116,15 @@ required mapping. Default: folder = repo = subdomain. Override only when needed:
 
 ```json
 {
-  "some-private-repo-name": { "folder": "vinyl", "branch": "dev", "enabled": true }
+  "some-private-repo-name": { "folder": "vinyl", "branch": "dev", "enabled": true, "path": "web" }
 }
 ```
+
+`path` (added at implementation time) serves a subfolder of the repo instead of its
+root: the checkout moves to `/projects/.checkouts/<folder>` and `/projects/<folder>`
+becomes a symlink into `<checkout>/<path>`. Changing `path` retargets the symlink
+immediately (live ↔ demo switching without a push); clearing it folds the checkout
+back to a plain folder. Deploy layer unaffected — it's a serve-layer override.
 
 Webhook logic: read `repository.name` → explicit row? use its `folder`/`branch` →
 otherwise fall back to a folder of the same name on `main`.
