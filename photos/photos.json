@@ -76,6 +76,13 @@
           "description": "",
           "alt": "",
           "orientation": "portrait"
+        },
+        {
+          "id": "rbl_5",
+          "url": "https://content.beyondmebtw.com/assets/photos/rbl/5.webp",
+          "description": "",
+          "alt": "",
+          "orientation": "landscape"
         }
       ]
     }
