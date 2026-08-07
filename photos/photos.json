@@ -48,7 +48,15 @@
         "rowSpan": 1
       },
       "order": 2,
-      "images": []
+      "images": [
+        {
+          "id": "rbl_1",
+          "url": "https://content.beyondmebtw.com/assets/photos/rbl/1.webp",
+          "description": "",
+          "alt": "",
+          "orientation": "landscape"
+        }
+      ]
     }
   ]
 }
