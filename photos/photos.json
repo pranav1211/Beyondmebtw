@@ -37,6 +37,20 @@
       ]
     },
     {
+      "id": "moon",
+      "title": "One Moon, Many Nights",
+      "description": "",
+      "thumbnail": "",
+      "rawLink": "",
+      "rawLinkLabel": "",
+      "grid": {
+        "colSpan": 2,
+        "rowSpan": 2
+      },
+      "order": 2,
+      "images": []
+    },
+    {
       "id": "rbl",
       "title": "Legacy In New Colors",
       "description": "",
@@ -47,7 +61,7 @@
         "colSpan": 1,
         "rowSpan": 3
       },
-      "order": 2,
+      "order": 3,
       "images": [
         {
           "id": "rbl_1",
@@ -99,20 +113,6 @@
           "orientation": "portrait"
         }
       ]
-    },
-    {
-      "id": "moon",
-      "title": "One Moon, Many Nights",
-      "description": "",
-      "thumbnail": "",
-      "rawLink": "",
-      "rawLinkLabel": "",
-      "grid": {
-        "colSpan": 1,
-        "rowSpan": 1
-      },
-      "order": 3,
-      "images": []
     }
   ]
 }
