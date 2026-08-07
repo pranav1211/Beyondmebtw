@@ -40,12 +40,12 @@
       "id": "rbl",
       "title": "Legacy In New Colors",
       "description": "",
-      "thumbnail": "https://content.beyondmebtw.com/assets/photos/rbl/1.webp",
+      "thumbnail": "https://content.beyondmebtw.com/assets/photos/rbl/thumb.webp",
       "rawLink": "",
       "rawLinkLabel": "",
       "grid": {
         "colSpan": 1,
-        "rowSpan": 2
+        "rowSpan": 1
       },
       "order": 2,
       "images": [
