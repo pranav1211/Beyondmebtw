@@ -35,6 +35,20 @@
           "orientation": "portrait"
         }
       ]
+    },
+    {
+      "id": "rbl",
+      "title": "Legacy In New Colors",
+      "description": "",
+      "thumbnail": "",
+      "rawLink": "",
+      "rawLinkLabel": "",
+      "grid": {
+        "colSpan": 1,
+        "rowSpan": 1
+      },
+      "order": 2,
+      "images": []
     }
   ]
 }
