@@ -99,6 +99,20 @@
           "orientation": "portrait"
         }
       ]
+    },
+    {
+      "id": "moon",
+      "title": "One Moon, Many Nights",
+      "description": "",
+      "thumbnail": "",
+      "rawLink": "",
+      "rawLinkLabel": "",
+      "grid": {
+        "colSpan": 1,
+        "rowSpan": 1
+      },
+      "order": 3,
+      "images": []
     }
   ]
 }
