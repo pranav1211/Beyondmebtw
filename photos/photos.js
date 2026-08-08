@@ -31,6 +31,14 @@
         return Math.max(1, Math.min(4, v));
     }
 
+    function defaultImageColSpan(orientation) {
+        return orientation === 'landscape' ? 2 : 1;
+    }
+
+    function defaultImageRowSpan(orientation) {
+        return orientation === 'portrait' ? 2 : 1;
+    }
+
     function $(id) { return document.getElementById(id); }
 
     // ── Data ───────────────────────────────────────────────────────────────
@@ -48,6 +56,15 @@
             const ob = Number.isFinite(b.order) ? b.order : 999;
             if (oa !== ob) return oa - ob;
             return String(a.title || '').localeCompare(String(b.title || ''));
+        });
+        data.series.forEach(series => {
+            if (!Array.isArray(series.images)) return;
+            series.images.sort((a, b) => {
+                const oa = Number.isFinite(a.order) ? a.order : 999;
+                const ob = Number.isFinite(b.order) ? b.order : 999;
+                if (oa !== ob) return oa - ob;
+                return String(a.id || '').localeCompare(String(b.id || ''));
+            });
         });
         return data;
     }
@@ -155,8 +172,12 @@
             imageGrid.innerHTML = images.map((img, i) => {
                 const o = (img.orientation || 'landscape').toLowerCase();
                 const orientation = (o === 'portrait' || o === 'square') ? o : 'landscape';
+                const colSpan = clampSpan(img.grid && img.grid.colSpan || defaultImageColSpan(orientation));
+                const rowSpan = clampSpan(img.grid && img.grid.rowSpan || defaultImageRowSpan(orientation));
                 return `
                 <div class="series-image-card" data-index="${i}" data-orientation="${orientation}"
+                     data-col-span="${colSpan}" data-row-span="${rowSpan}"
+                     style="grid-column: span ${colSpan}; grid-row: span ${rowSpan};"
                      tabindex="0" role="button" aria-label="Expand image ${i + 1}">
                     <img src="${esc(img.url)}" alt="${esc(img.alt || img.description || series.title)}"
                          loading="lazy" onerror="this.src='${FALLBACK_THUMB}'">

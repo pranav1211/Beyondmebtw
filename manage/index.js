@@ -30,6 +30,7 @@ let state = {
   photosData: null,          // working draft of photos.json (may include unsaved layout edits)
   photosDataClean: null,     // last-saved snapshot (used to compute dirty state / discard)
   photosLayoutDirty: false,  // true when local layout differs from photosDataClean
+  photosImageLayoutDirtyIds: new Set(), // series ids with unsaved image layout edits
   expandedSeriesIds: new Set(), // which series cards are expanded in the list
   deployRegistry: null,      // from /deployregistry (multigitman override table)
   deployData: null,          // full list payload: projects on disk, lastDeploys, multigitUp
@@ -1810,6 +1811,28 @@ function clampPhotoSpan(n) {
   return Math.max(1, Math.min(PHOTOS_BENTO_MAX_SPAN, v));
 }
 
+function getPhotoImageOrientation(img) {
+  const raw = String((img && img.orientation) || '').toLowerCase().trim();
+  return (raw === 'portrait' || raw === 'square') ? raw : 'landscape';
+}
+
+function defaultPhotoImageColSpan(orientation) {
+  return orientation === 'landscape' ? 2 : 1;
+}
+
+function defaultPhotoImageRowSpan(orientation) {
+  return orientation === 'portrait' ? 2 : 1;
+}
+
+function getPhotoImageSpan(img, axis) {
+  const orientation = getPhotoImageOrientation(img);
+  const grid = (img && img.grid && typeof img.grid === 'object') ? img.grid : {};
+  const fallback = axis === 'col'
+    ? defaultPhotoImageColSpan(orientation)
+    : defaultPhotoImageRowSpan(orientation);
+  return clampPhotoSpan(grid[axis === 'col' ? 'colSpan' : 'rowSpan'] || fallback);
+}
+
 async function loadPhotosTab() {
   try {
     const url = `${PHOTOS_URL}?t=${Date.now()}`;
@@ -1820,6 +1843,7 @@ async function loadPhotosTab() {
     sortPhotosSeries();
     state.photosDataClean = JSON.parse(JSON.stringify(state.photosData));
     state.photosLayoutDirty = false;
+    state.photosImageLayoutDirtyIds = new Set();
     renderPhotosTab();
     updatePhotosLayoutButtons();
   } catch (e) {
@@ -1827,6 +1851,7 @@ async function loadPhotosTab() {
     state.photosData = { series: [] };
     state.photosDataClean = { series: [] };
     state.photosLayoutDirty = false;
+    state.photosImageLayoutDirtyIds = new Set();
     toast(`Failed to load photos: ${e.message}`, 'error');
     renderPhotosTab();
     updatePhotosLayoutButtons();
@@ -1886,6 +1911,15 @@ function sortPhotosSeries() {
     if (oa !== ob) return oa - ob;
     return String(a.title || '').localeCompare(String(b.title || ''));
   });
+  state.photosData.series.forEach(series => {
+    if (!Array.isArray(series.images)) return;
+    series.images.sort((a, b) => {
+      const oa = Number.isFinite(a.order) ? a.order : 999;
+      const ob = Number.isFinite(b.order) ? b.order : 999;
+      if (oa !== ob) return oa - ob;
+      return String(a.id || '').localeCompare(String(b.id || ''));
+    });
+  });
 }
 
 function renderPhotosTab() {
@@ -1899,6 +1933,49 @@ function initPhotosLayoutControls() {
   const discardBtn = document.getElementById('discard-bento-btn');
   if (saveBtn) saveBtn.addEventListener('click', savePhotosLayout);
   if (discardBtn) discardBtn.addEventListener('click', discardPhotosLayout);
+}
+
+function markPhotoImageLayoutDirty(seriesId) {
+  if (!seriesId) return;
+  state.photosImageLayoutDirtyIds.add(seriesId);
+  renderPhotosSeriesList();
+}
+
+function getCleanPhotosSeries(seriesId) {
+  return state.photosDataClean
+    && state.photosDataClean.series
+    && state.photosDataClean.series.find(s => s.id === seriesId);
+}
+
+async function savePhotoImageLayout(seriesId) {
+  const series = state.photosData && state.photosData.series.find(s => s.id === seriesId);
+  if (!series) return;
+
+  const layout = (series.images || []).map(img => ({
+    imageId: img.id,
+    colSpan: getPhotoImageSpan(img, 'col'),
+    rowSpan: getPhotoImageSpan(img, 'row')
+  }));
+
+  try {
+    await apiCall('POST', '/photosdata', { action: 'updateImageLayout', seriesId, layout });
+    toast('Image layout saved');
+    await loadPhotosTab();
+    state.expandedSeriesIds.add(seriesId);
+    renderPhotosSeriesList();
+  } catch (e) {
+    toast(`Error saving image layout: ${e.message}`, 'error');
+  }
+}
+
+function discardPhotoImageLayout(seriesId) {
+  const series = state.photosData && state.photosData.series.find(s => s.id === seriesId);
+  const clean = getCleanPhotosSeries(seriesId);
+  if (!series || !clean) return;
+  series.images = JSON.parse(JSON.stringify(clean.images || []));
+  state.photosImageLayoutDirtyIds.delete(seriesId);
+  renderPhotosSeriesList();
+  toast('Image layout changes discarded', 'warning');
 }
 
 function renderPhotosBentoPreview() {
@@ -2033,16 +2110,40 @@ function renderPhotosSeriesList() {
     const colSpan = clampPhotoSpan(s.grid && s.grid.colSpan);
     const rowSpan = clampPhotoSpan(s.grid && s.grid.rowSpan);
 
-    const imagesHtml = (s.images || []).map(img => `
-      <div class="ph-image-tile" data-image-id="${esc(img.id)}">
+    const imageLayoutDirty = state.photosImageLayoutDirtyIds.has(s.id);
+
+    const imagesHtml = (s.images || []).map(img => {
+      const colSpan = getPhotoImageSpan(img, 'col');
+      const rowSpan = getPhotoImageSpan(img, 'row');
+      const orientation = getPhotoImageOrientation(img);
+      return `
+      <div class="ph-image-tile" data-series-id="${esc(s.id)}" data-image-id="${esc(img.id)}" draggable="true"
+           data-col-span="${colSpan}" data-row-span="${rowSpan}" data-orientation="${orientation}"
+           style="grid-column: span ${colSpan}; grid-row: span ${rowSpan};">
         <img src="${esc(img.url)}" alt="" onerror="this.src='https://beyondmebtw.com/assets/images/favicon.ico'">
-        <div class="ph-image-tile-meta">${esc(img.description || 'No description')}</div>
+        <div class="ph-image-tile-meta">
+          <strong>${esc(img.id)}</strong>
+          <span>${esc(img.description || orientation)}</span>
+        </div>
+        <div class="ph-image-layout-controls">
+          <span class="ph-span-ctrl" title="Image width">
+            <button type="button" data-image-layout-action="span" data-axis="col" data-delta="-1" data-series-id="${esc(s.id)}" data-image-id="${esc(img.id)}" ${colSpan<=1?'disabled':''}>&minus;</button>
+            <span class="ph-span-ctrl-label">${colSpan}w</span>
+            <button type="button" data-image-layout-action="span" data-axis="col" data-delta="1" data-series-id="${esc(s.id)}" data-image-id="${esc(img.id)}" ${colSpan>=PHOTOS_BENTO_MAX_SPAN?'disabled':''}>+</button>
+          </span>
+          <span class="ph-span-ctrl" title="Image height">
+            <button type="button" data-image-layout-action="span" data-axis="row" data-delta="-1" data-series-id="${esc(s.id)}" data-image-id="${esc(img.id)}" ${rowSpan<=1?'disabled':''}>&minus;</button>
+            <span class="ph-span-ctrl-label">${rowSpan}h</span>
+            <button type="button" data-image-layout-action="span" data-axis="row" data-delta="1" data-series-id="${esc(s.id)}" data-image-id="${esc(img.id)}" ${rowSpan>=PHOTOS_BENTO_MAX_SPAN?'disabled':''}>+</button>
+          </span>
+        </div>
         <div class="ph-image-tile-actions">
           <button type="button" data-photos-action="edit-image" data-series-id="${esc(s.id)}" data-image-id="${esc(img.id)}">Edit</button>
           <button type="button" class="danger" data-photos-action="delete-image" data-series-id="${esc(s.id)}" data-image-id="${esc(img.id)}">Delete</button>
         </div>
       </div>
-    `).join('');
+    `;
+    }).join('');
 
     return `
       <div class="ph-series-card ${expanded ? 'expanded' : ''}" data-series-id="${esc(s.id)}">
@@ -2063,7 +2164,12 @@ function renderPhotosSeriesList() {
           ${s.description ? `<p style="color:var(--text-muted);font-size:13px;margin-bottom:10px;">${esc(s.description)}</p>` : ''}
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <h4 style="font-size:13px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Images</h4>
-            <button type="button" class="btn-primary" data-photos-action="add-image" data-series-id="${esc(s.id)}">+ Add Image</button>
+            <div class="ph-image-layout-actions">
+              <span class="bento-dirty-flag" ${imageLayoutDirty ? '' : 'hidden'}>Unsaved image layout</span>
+              <button type="button" class="btn-ghost btn-small" data-image-layout-action="discard" data-series-id="${esc(s.id)}" ${imageLayoutDirty ? '' : 'disabled'}>Discard</button>
+              <button type="button" class="btn-secondary btn-small" data-image-layout-action="save" data-series-id="${esc(s.id)}" ${imageLayoutDirty ? '' : 'disabled'}>Save image layout</button>
+              <button type="button" class="btn-primary" data-photos-action="add-image" data-series-id="${esc(s.id)}">+ Add Image</button>
+            </div>
           </div>
           ${count === 0
             ? '<p class="empty-msg" style="padding:20px 0;">No images yet.</p>'
@@ -2076,6 +2182,91 @@ function renderPhotosSeriesList() {
   container.querySelectorAll('[data-photos-action]').forEach(btn => {
     btn.addEventListener('click', handlePhotosListAction);
   });
+  container.querySelectorAll('[data-image-layout-action]').forEach(btn => {
+    btn.addEventListener('click', handlePhotoImageLayoutAction);
+  });
+  initPhotoImageDrag(container);
+}
+
+function handlePhotoImageLayoutAction(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  const btn = e.currentTarget;
+  const action = btn.dataset.imageLayoutAction;
+  const seriesId = btn.dataset.seriesId;
+  const imageId = btn.dataset.imageId;
+
+  if (action === 'save') return savePhotoImageLayout(seriesId);
+  if (action === 'discard') return discardPhotoImageLayout(seriesId);
+  if (action !== 'span') return;
+
+  const series = state.photosData.series.find(s => s.id === seriesId);
+  const img = series && (series.images || []).find(i => i.id === imageId);
+  if (!img) return;
+
+  const axis = btn.dataset.axis;
+  const key = axis === 'col' ? 'colSpan' : 'rowSpan';
+  const delta = parseInt(btn.dataset.delta, 10);
+  if (!img.grid) img.grid = {};
+  const next = clampPhotoSpan(getPhotoImageSpan(img, axis) + delta);
+  if (next === getPhotoImageSpan(img, axis)) return;
+  img.grid[key] = next;
+  markPhotoImageLayoutDirty(seriesId);
+}
+
+function initPhotoImageDrag(container) {
+  let drag = null;
+  container.querySelectorAll('.ph-image-layout-controls, .ph-image-tile-actions').forEach(el => {
+    el.addEventListener('mousedown', e => e.stopPropagation());
+    el.addEventListener('dragstart', e => {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+  });
+
+  container.querySelectorAll('.ph-image-tile').forEach(tile => {
+    tile.addEventListener('dragstart', e => {
+      drag = {
+        seriesId: tile.dataset.seriesId,
+        imageId: tile.dataset.imageId
+      };
+      tile.classList.add('dragging');
+      if (e.dataTransfer) {
+        e.dataTransfer.effectAllowed = 'move';
+        try { e.dataTransfer.setData('text/plain', drag.imageId); } catch (_) {}
+      }
+    });
+    tile.addEventListener('dragend', () => {
+      tile.classList.remove('dragging');
+      container.querySelectorAll('.ph-image-tile').forEach(t => t.classList.remove('drag-over'));
+      drag = null;
+    });
+    tile.addEventListener('dragover', e => {
+      if (!drag || drag.seriesId !== tile.dataset.seriesId) return;
+      e.preventDefault();
+      if (tile.dataset.imageId !== drag.imageId) tile.classList.add('drag-over');
+    });
+    tile.addEventListener('dragleave', () => tile.classList.remove('drag-over'));
+    tile.addEventListener('drop', e => {
+      e.preventDefault();
+      tile.classList.remove('drag-over');
+      if (!drag) return;
+      reorderPhotoImage(drag.seriesId, drag.imageId, tile.dataset.imageId);
+    });
+  });
+}
+
+function reorderPhotoImage(seriesId, sourceId, targetId) {
+  if (!seriesId || !sourceId || !targetId || sourceId === targetId) return;
+  const series = state.photosData.series.find(s => s.id === seriesId);
+  if (!series || !Array.isArray(series.images)) return;
+  const fromIdx = series.images.findIndex(img => img.id === sourceId);
+  const toIdx = series.images.findIndex(img => img.id === targetId);
+  if (fromIdx === -1 || toIdx === -1 || fromIdx === toIdx) return;
+  const [moved] = series.images.splice(fromIdx, 1);
+  series.images.splice(toIdx, 0, moved);
+  series.images.forEach((img, i) => { img.order = i + 1; });
+  markPhotoImageLayoutDirty(seriesId);
 }
 
 function handlePhotosListAction(e) {

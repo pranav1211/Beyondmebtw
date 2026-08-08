@@ -683,13 +683,27 @@ function normalizePhotosImage(image, fallbackId) {
   const id = sanitizePhotosId(image.id) || sanitizePhotosId(fallbackId) || `img_${Date.now()}`;
   const rawO = String(image.orientation || '').toLowerCase().trim();
   const orientation = (rawO === 'portrait' || rawO === 'square') ? rawO : 'landscape';
+  const grid = (image.grid && typeof image.grid === 'object') ? image.grid : {};
   return {
     id,
     url,
     description: String(image.description || '').trim(),
     alt: String(image.alt || '').trim(),
-    orientation
+    orientation,
+    grid: {
+      colSpan: clampSpan(grid.colSpan || defaultImageColSpan(orientation)),
+      rowSpan: clampSpan(grid.rowSpan || defaultImageRowSpan(orientation))
+    },
+    order: Number.isFinite(parseInt(image.order, 10)) ? parseInt(image.order, 10) : 999
   };
+}
+
+function defaultImageColSpan(orientation) {
+  return orientation === 'landscape' ? 2 : 1;
+}
+
+function defaultImageRowSpan(orientation) {
+  return orientation === 'portrait' ? 2 : 1;
 }
 
 function normalizePhotosSeries(series) {
@@ -809,6 +823,52 @@ function handlePhotosUpdateLayout(body, response) {
     if (err) return sendError(response, "Error writing photos.json", 500);
     runScriptIgnoreError(() => {
       sendJSON(response, { success: true, message: "Layout saved", series: data.series });
+    });
+  });
+}
+
+function handlePhotosUpdateImageLayout(body, response) {
+  const data = readPhotosJSON();
+  const seriesId = sanitizePhotosId(body.seriesId);
+  const layout = Array.isArray(body.layout) ? body.layout : null;
+  if (!seriesId) return sendError(response, "Missing seriesId");
+  if (!layout) return sendError(response, "Missing layout array");
+
+  const sIdx = findSeriesIndex(data, seriesId);
+  if (sIdx === -1) return sendError(response, "Series not found");
+
+  const series = data.series[sIdx];
+  const images = Array.isArray(series.images) ? series.images : [];
+  const byId = new Map(images.map(img => [img.id, img]));
+  const next = [];
+  const seen = new Set();
+
+  layout.forEach((item, position) => {
+    if (!item || typeof item !== 'object') return;
+    const imageId = sanitizePhotosId(item.imageId);
+    const img = byId.get(imageId);
+    if (!img || seen.has(imageId)) return;
+    if (!img.grid) img.grid = {};
+    if (item.colSpan !== undefined) img.grid.colSpan = clampSpan(item.colSpan);
+    if (item.rowSpan !== undefined) img.grid.rowSpan = clampSpan(item.rowSpan);
+    img.order = position + 1;
+    next.push(img);
+    seen.add(imageId);
+  });
+
+  images.forEach(img => {
+    if (img && img.id && !seen.has(img.id)) {
+      img.order = next.length + 1;
+      next.push(img);
+    }
+  });
+
+  series.images = next;
+
+  writePhotosJSON(data, err => {
+    if (err) return sendError(response, "Error writing photos.json", 500);
+    runScriptIgnoreError(() => {
+      sendJSON(response, { success: true, message: "Image layout saved", images: series.images });
     });
   });
 }
@@ -1601,6 +1661,7 @@ const server = http.createServer((request, response) => {
           case 'deleteSeries': return handlePhotosDeleteSeries(body, response);
           case 'reorderSeries': return handlePhotosReorder(body, response);
           case 'updateLayout': return handlePhotosUpdateLayout(body, response);
+          case 'updateImageLayout': return handlePhotosUpdateImageLayout(body, response);
           case 'addImage':     return handlePhotosAddImage(body, response);
           case 'updateImage':  return handlePhotosUpdateImage(body, response);
           case 'deleteImage':  return handlePhotosDeleteImage(body, response);
