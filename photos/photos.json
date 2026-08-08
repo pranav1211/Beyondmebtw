@@ -18,28 +18,48 @@
           "url": "https://content.beyondmebtw.com/assets/photos/bks/k1.png",
           "description": "",
           "alt": "",
-          "orientation": "portrait"
+          "orientation": "portrait",
+          "grid": {
+            "colSpan": 1,
+            "rowSpan": 4
+          },
+          "order": 1
         },
         {
           "id": "blackkite_2",
           "url": "https://content.beyondmebtw.com/assets/photos/bks/k2.png",
           "description": "",
           "alt": "",
-          "orientation": "portrait"
+          "orientation": "portrait",
+          "grid": {
+            "colSpan": 1,
+            "rowSpan": 4
+          },
+          "order": 2
         },
         {
           "id": "blackkite_3",
           "url": "https://content.beyondmebtw.com/assets/photos/bks/k3.png",
           "description": "",
           "alt": "",
-          "orientation": "portrait"
+          "orientation": "portrait",
+          "grid": {
+            "colSpan": 1,
+            "rowSpan": 4
+          },
+          "order": 3
         },
         {
           "id": "blackkite_4",
           "url": "https://content.beyondmebtw.com/assets/photos/bks/k4.webp",
           "description": "",
           "alt": "",
-          "orientation": "landscape"
+          "orientation": "landscape",
+          "grid": {
+            "colSpan": 3,
+            "rowSpan": 2
+          },
+          "order": 4
         }
       ]
     },
