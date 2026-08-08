@@ -56,8 +56,8 @@
           "alt": "",
           "orientation": "landscape",
           "grid": {
-            "colSpan": 3,
-            "rowSpan": 2
+            "colSpan": 1,
+            "rowSpan": 3
           },
           "order": 4
         }
