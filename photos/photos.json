@@ -104,49 +104,84 @@
           "url": "https://content.beyondmebtw.com/assets/photos/rbl/1.webp",
           "description": "",
           "alt": "",
-          "orientation": "landscape"
+          "orientation": "landscape",
+          "grid": {
+            "colSpan": 1,
+            "rowSpan": 1
+          },
+          "order": 1
         },
         {
           "id": "rbl_2",
           "url": "https://content.beyondmebtw.com/assets/photos/rbl/2.webp",
           "description": "",
           "alt": "",
-          "orientation": "landscape"
+          "orientation": "landscape",
+          "grid": {
+            "colSpan": 1,
+            "rowSpan": 1
+          },
+          "order": 2
         },
         {
           "id": "rbl_3",
           "url": "https://content.beyondmebtw.com/assets/photos/rbl/3.webp",
           "description": "",
           "alt": "",
-          "orientation": "landscape"
+          "orientation": "landscape",
+          "grid": {
+            "colSpan": 1,
+            "rowSpan": 1
+          },
+          "order": 3
         },
         {
           "id": "rbl_4",
           "url": "https://content.beyondmebtw.com/assets/photos/rbl/4.webp",
           "description": "",
           "alt": "",
-          "orientation": "square"
+          "orientation": "square",
+          "grid": {
+            "colSpan": 1,
+            "rowSpan": 1
+          },
+          "order": 4
         },
         {
           "id": "rbl_5",
           "url": "https://content.beyondmebtw.com/assets/photos/rbl/5.webp",
           "description": "",
           "alt": "",
-          "orientation": "landscape"
+          "orientation": "landscape",
+          "grid": {
+            "colSpan": 1,
+            "rowSpan": 1
+          },
+          "order": 5
         },
         {
           "id": "rbl_6",
           "url": "https://content.beyondmebtw.com/assets/photos/rbl/6.webp",
           "description": "",
           "alt": "",
-          "orientation": "square"
+          "orientation": "square",
+          "grid": {
+            "colSpan": 1,
+            "rowSpan": 1
+          },
+          "order": 6
         },
         {
           "id": "rbl_7",
           "url": "https://content.beyondmebtw.com/assets/photos/rbl/7.webp",
           "description": "",
           "alt": "",
-          "orientation": "square"
+          "orientation": "square",
+          "grid": {
+            "colSpan": 1,
+            "rowSpan": 1
+          },
+          "order": 7
         }
       ]
     }
