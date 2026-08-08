@@ -100,14 +100,14 @@
       "order": 3,
       "images": [
         {
-          "id": "rbl_1",
-          "url": "https://content.beyondmebtw.com/assets/photos/rbl/1.webp",
+          "id": "rbl_6",
+          "url": "https://content.beyondmebtw.com/assets/photos/rbl/6.webp",
           "description": "",
           "alt": "",
-          "orientation": "landscape",
+          "orientation": "square",
           "grid": {
             "colSpan": 1,
-            "rowSpan": 1
+            "rowSpan": 2
           },
           "order": 1
         },
@@ -118,22 +118,10 @@
           "alt": "",
           "orientation": "landscape",
           "grid": {
-            "colSpan": 1,
-            "rowSpan": 1
+            "colSpan": 2,
+            "rowSpan": 2
           },
           "order": 2
-        },
-        {
-          "id": "rbl_3",
-          "url": "https://content.beyondmebtw.com/assets/photos/rbl/3.webp",
-          "description": "",
-          "alt": "",
-          "orientation": "landscape",
-          "grid": {
-            "colSpan": 1,
-            "rowSpan": 1
-          },
-          "order": 3
         },
         {
           "id": "rbl_4",
@@ -145,31 +133,7 @@
             "colSpan": 1,
             "rowSpan": 3
           },
-          "order": 4
-        },
-        {
-          "id": "rbl_5",
-          "url": "https://content.beyondmebtw.com/assets/photos/rbl/5.webp",
-          "description": "",
-          "alt": "",
-          "orientation": "landscape",
-          "grid": {
-            "colSpan": 1,
-            "rowSpan": 1
-          },
-          "order": 5
-        },
-        {
-          "id": "rbl_6",
-          "url": "https://content.beyondmebtw.com/assets/photos/rbl/6.webp",
-          "description": "",
-          "alt": "",
-          "orientation": "square",
-          "grid": {
-            "colSpan": 1,
-            "rowSpan": 2
-          },
-          "order": 6
+          "order": 3
         },
         {
           "id": "rbl_7",
@@ -180,6 +144,42 @@
           "grid": {
             "colSpan": 1,
             "rowSpan": 2
+          },
+          "order": 4
+        },
+        {
+          "id": "rbl_1",
+          "url": "https://content.beyondmebtw.com/assets/photos/rbl/1.webp",
+          "description": "",
+          "alt": "",
+          "orientation": "landscape",
+          "grid": {
+            "colSpan": 1,
+            "rowSpan": 1
+          },
+          "order": 5
+        },
+        {
+          "id": "rbl_3",
+          "url": "https://content.beyondmebtw.com/assets/photos/rbl/3.webp",
+          "description": "",
+          "alt": "",
+          "orientation": "landscape",
+          "grid": {
+            "colSpan": 1,
+            "rowSpan": 1
+          },
+          "order": 6
+        },
+        {
+          "id": "rbl_5",
+          "url": "https://content.beyondmebtw.com/assets/photos/rbl/5.webp",
+          "description": "",
+          "alt": "",
+          "orientation": "landscape",
+          "grid": {
+            "colSpan": 1,
+            "rowSpan": 1
           },
           "order": 7
         }
