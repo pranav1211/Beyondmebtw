@@ -143,7 +143,7 @@
           "orientation": "square",
           "grid": {
             "colSpan": 1,
-            "rowSpan": 1
+            "rowSpan": 3
           },
           "order": 4
         },
@@ -167,7 +167,7 @@
           "orientation": "square",
           "grid": {
             "colSpan": 1,
-            "rowSpan": 1
+            "rowSpan": 2
           },
           "order": 6
         },
@@ -179,7 +179,7 @@
           "orientation": "square",
           "grid": {
             "colSpan": 1,
-            "rowSpan": 1
+            "rowSpan": 2
           },
           "order": 7
         }
