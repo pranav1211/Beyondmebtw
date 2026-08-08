@@ -329,6 +329,7 @@ body {
     transition: var(--transition);
     display: block;
     min-height: 0;
+    contain: layout paint;
 }
 
 .series-image-card:hover {

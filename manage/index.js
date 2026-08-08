@@ -32,6 +32,7 @@ let state = {
   photosLayoutDirty: false,  // true when local layout differs from photosDataClean
   photosImageLayoutDirtyIds: new Set(), // series ids with unsaved image layout edits
   expandedSeriesIds: new Set(), // which series cards are expanded in the list
+  activePhotosSeriesId: null, // selected series in the photos workspace
   deployRegistry: null,      // from /deployregistry (multigitman override table)
   deployData: null,          // full list payload: projects on disk, lastDeploys, multigitUp
   editingDeployRepo: null    // repo key when editing an existing registry row
@@ -1941,6 +1942,42 @@ function markPhotoImageLayoutDirty(seriesId) {
   renderPhotosSeriesList();
 }
 
+function markPhotoImageLayoutDirtyInline(seriesId) {
+  if (!seriesId) return;
+  state.photosImageLayoutDirtyIds.add(seriesId);
+  document.querySelectorAll(`.ph-image-layout-actions [data-series-id="${seriesId}"]`).forEach(btn => {
+    if (btn.dataset.imageLayoutAction === 'save' || btn.dataset.imageLayoutAction === 'discard') {
+      btn.disabled = false;
+    }
+  });
+  document.querySelectorAll('.ph-image-layout-actions .bento-dirty-flag').forEach(flag => {
+    flag.hidden = false;
+  });
+  const tab = document.querySelector(`.ph-series-tab[data-series-id="${seriesId}"] .ph-series-tab-meta span`);
+  if (tab && !tab.textContent.includes('unsaved')) tab.textContent = `${tab.textContent} · unsaved`;
+}
+
+function syncPhotoImageTileLayout(seriesId, img) {
+  const tile = document.querySelector(`.ph-image-tile[data-series-id="${seriesId}"][data-image-id="${img.id}"]`);
+  if (!tile) return;
+  const colSpan = getPhotoImageSpan(img, 'col');
+  const rowSpan = getPhotoImageSpan(img, 'row');
+  tile.dataset.colSpan = String(colSpan);
+  tile.dataset.rowSpan = String(rowSpan);
+  tile.style.gridColumn = `span ${colSpan}`;
+  tile.style.gridRow = `span ${rowSpan}`;
+
+  ['col', 'row'].forEach(axis => {
+    const value = axis === 'col' ? colSpan : rowSpan;
+    const label = tile.querySelector(`.ph-span-ctrl button[data-axis="${axis}"] + .ph-span-ctrl-label`);
+    if (label) label.textContent = axis === 'col' ? `${value}w` : `${value}h`;
+    tile.querySelectorAll(`.ph-span-ctrl button[data-axis="${axis}"]`).forEach(btn => {
+      const delta = parseInt(btn.dataset.delta, 10);
+      btn.disabled = (delta < 0 && value <= 1) || (delta > 0 && value >= PHOTOS_BENTO_MAX_SPAN);
+    });
+  });
+}
+
 function getCleanPhotosSeries(seriesId) {
   return state.photosDataClean
     && state.photosDataClean.series
@@ -1960,8 +1997,8 @@ async function savePhotoImageLayout(seriesId) {
   try {
     await apiCall('POST', '/photosdata', { action: 'updateImageLayout', seriesId, layout });
     toast('Image layout saved');
+    state.activePhotosSeriesId = seriesId;
     await loadPhotosTab();
-    state.expandedSeriesIds.add(seriesId);
     renderPhotosSeriesList();
   } catch (e) {
     toast(`Error saving image layout: ${e.message}`, 'error');
@@ -2101,83 +2138,68 @@ function renderPhotosSeriesList() {
     return;
   }
 
-  container.innerHTML = series.map(s => {
-    const expanded = state.expandedSeriesIds.has(s.id);
-    const thumb = s.thumbnail
-      || (s.images && s.images[0] && s.images[0].url)
-      || 'https://beyondmebtw.com/assets/images/favicon.ico';
+  if (!state.activePhotosSeriesId || !series.some(s => s.id === state.activePhotosSeriesId)) {
+    state.activePhotosSeriesId = series[0].id;
+  }
+
+  const active = series.find(s => s.id === state.activePhotosSeriesId) || series[0];
+  const activeThumb = getPhotosSeriesThumb(active);
+  const activeCount = (active.images || []).length;
+  const activeColSpan = clampPhotoSpan(active.grid && active.grid.colSpan);
+  const activeRowSpan = clampPhotoSpan(active.grid && active.grid.rowSpan);
+  const imageLayoutDirty = state.photosImageLayoutDirtyIds.has(active.id);
+  const imagesHtml = renderPhotoImageTiles(active);
+
+  const tabsHtml = series.map(s => {
+    const thumb = getPhotosSeriesThumb(s);
     const count = (s.images || []).length;
-    const colSpan = clampPhotoSpan(s.grid && s.grid.colSpan);
-    const rowSpan = clampPhotoSpan(s.grid && s.grid.rowSpan);
-
-    const imageLayoutDirty = state.photosImageLayoutDirtyIds.has(s.id);
-
-    const imagesHtml = (s.images || []).map(img => {
-      const colSpan = getPhotoImageSpan(img, 'col');
-      const rowSpan = getPhotoImageSpan(img, 'row');
-      const orientation = getPhotoImageOrientation(img);
-      return `
-      <div class="ph-image-tile" data-series-id="${esc(s.id)}" data-image-id="${esc(img.id)}" draggable="true"
-           data-col-span="${colSpan}" data-row-span="${rowSpan}" data-orientation="${orientation}"
-           style="grid-column: span ${colSpan}; grid-row: span ${rowSpan};">
-        <img src="${esc(img.url)}" alt="" onerror="this.src='https://beyondmebtw.com/assets/images/favicon.ico'">
-        <div class="ph-image-tile-meta">
-          <strong>${esc(img.id)}</strong>
-          <span>${esc(img.description || orientation)}</span>
-        </div>
-        <div class="ph-image-layout-controls">
-          <span class="ph-span-ctrl" title="Image width">
-            <button type="button" data-image-layout-action="span" data-axis="col" data-delta="-1" data-series-id="${esc(s.id)}" data-image-id="${esc(img.id)}" ${colSpan<=1?'disabled':''}>&minus;</button>
-            <span class="ph-span-ctrl-label">${colSpan}w</span>
-            <button type="button" data-image-layout-action="span" data-axis="col" data-delta="1" data-series-id="${esc(s.id)}" data-image-id="${esc(img.id)}" ${colSpan>=PHOTOS_BENTO_MAX_SPAN?'disabled':''}>+</button>
-          </span>
-          <span class="ph-span-ctrl" title="Image height">
-            <button type="button" data-image-layout-action="span" data-axis="row" data-delta="-1" data-series-id="${esc(s.id)}" data-image-id="${esc(img.id)}" ${rowSpan<=1?'disabled':''}>&minus;</button>
-            <span class="ph-span-ctrl-label">${rowSpan}h</span>
-            <button type="button" data-image-layout-action="span" data-axis="row" data-delta="1" data-series-id="${esc(s.id)}" data-image-id="${esc(img.id)}" ${rowSpan>=PHOTOS_BENTO_MAX_SPAN?'disabled':''}>+</button>
-          </span>
-        </div>
-        <div class="ph-image-tile-actions">
-          <button type="button" data-photos-action="edit-image" data-series-id="${esc(s.id)}" data-image-id="${esc(img.id)}">Edit</button>
-          <button type="button" class="danger" data-photos-action="delete-image" data-series-id="${esc(s.id)}" data-image-id="${esc(img.id)}">Delete</button>
-        </div>
-      </div>
-    `;
-    }).join('');
-
+    const dirty = state.photosImageLayoutDirtyIds.has(s.id);
+    const selected = s.id === active.id;
     return `
-      <div class="ph-series-card ${expanded ? 'expanded' : ''}" data-series-id="${esc(s.id)}">
-        <div class="ph-series-head">
-          <img class="ph-series-thumb" src="${esc(thumb)}" alt="" onerror="this.src='https://beyondmebtw.com/assets/images/favicon.ico'">
-          <div class="ph-series-meta">
-            <h3>${esc(s.title)}</h3>
-            <div class="ph-series-id">${esc(s.id)}</div>
-            <div class="ph-series-stats">${count} ${count === 1 ? 'image' : 'images'} &middot; ${colSpan}&times;${rowSpan} bento</div>
-          </div>
-          <div class="ph-series-actions">
-            <button type="button" class="btn-secondary" data-photos-action="toggle-series" data-series-id="${esc(s.id)}">${expanded ? 'Collapse' : 'Manage Images'}</button>
-            <button type="button" class="btn-secondary" data-photos-action="edit-series" data-series-id="${esc(s.id)}">Edit</button>
-            <button type="button" class="btn-danger" data-photos-action="delete-series" data-series-id="${esc(s.id)}">Delete</button>
-          </div>
-        </div>
-        <div class="ph-series-body">
-          ${s.description ? `<p style="color:var(--text-muted);font-size:13px;margin-bottom:10px;">${esc(s.description)}</p>` : ''}
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <h4 style="font-size:13px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Images</h4>
-            <div class="ph-image-layout-actions">
-              <span class="bento-dirty-flag" ${imageLayoutDirty ? '' : 'hidden'}>Unsaved image layout</span>
-              <button type="button" class="btn-ghost btn-small" data-image-layout-action="discard" data-series-id="${esc(s.id)}" ${imageLayoutDirty ? '' : 'disabled'}>Discard</button>
-              <button type="button" class="btn-secondary btn-small" data-image-layout-action="save" data-series-id="${esc(s.id)}" ${imageLayoutDirty ? '' : 'disabled'}>Save image layout</button>
-              <button type="button" class="btn-primary" data-photos-action="add-image" data-series-id="${esc(s.id)}">+ Add Image</button>
-            </div>
-          </div>
-          ${count === 0
-            ? '<p class="empty-msg" style="padding:20px 0;">No images yet.</p>'
-            : `<div class="ph-images-grid">${imagesHtml}</div>`}
-        </div>
-      </div>
+      <button type="button" class="ph-series-tab ${selected ? 'active' : ''}" data-photos-action="select-series" data-series-id="${esc(s.id)}" aria-selected="${selected}">
+        <img class="ph-series-tab-thumb" src="${esc(thumb)}" alt="" loading="lazy" decoding="async" onerror="this.src='https://beyondmebtw.com/assets/images/favicon.ico'">
+        <span class="ph-series-tab-meta">
+          <strong>${esc(s.title || s.id)}</strong>
+          <span>${count} ${count === 1 ? 'image' : 'images'}${dirty ? ' · unsaved' : ''}</span>
+        </span>
+      </button>
     `;
   }).join('');
+
+  container.innerHTML = `
+    <div class="ph-series-tabs">
+      <div class="ph-series-tabs-nav" role="tablist" aria-label="Photo series">
+        ${tabsHtml}
+      </div>
+      <div class="ph-series-workspace" data-series-id="${esc(active.id)}">
+        <div class="ph-series-workspace-head">
+          <img class="ph-series-thumb" src="${esc(activeThumb)}" alt="" decoding="async" onerror="this.src='https://beyondmebtw.com/assets/images/favicon.ico'">
+          <div class="ph-series-meta">
+            <h3>${esc(active.title)}</h3>
+            <div class="ph-series-id">${esc(active.id)}</div>
+            <div class="ph-series-stats">${activeCount} ${activeCount === 1 ? 'image' : 'images'} &middot; ${activeColSpan}&times;${activeRowSpan} series bento</div>
+          </div>
+          <div class="ph-series-actions">
+            <button type="button" class="btn-secondary" data-photos-action="edit-series" data-series-id="${esc(active.id)}">Edit series</button>
+            <button type="button" class="btn-danger" data-photos-action="delete-series" data-series-id="${esc(active.id)}">Delete series</button>
+          </div>
+        </div>
+        ${active.description ? `<p class="ph-series-description">${esc(active.description)}</p>` : ''}
+        <div class="ph-image-layout-toolbar">
+          <h4>Images</h4>
+          <div class="ph-image-layout-actions">
+            <span class="bento-dirty-flag" ${imageLayoutDirty ? '' : 'hidden'}>Unsaved image layout</span>
+            <button type="button" class="btn-ghost btn-small" data-image-layout-action="discard" data-series-id="${esc(active.id)}" ${imageLayoutDirty ? '' : 'disabled'}>Discard</button>
+            <button type="button" class="btn-secondary btn-small" data-image-layout-action="save" data-series-id="${esc(active.id)}" ${imageLayoutDirty ? '' : 'disabled'}>Save image layout</button>
+            <button type="button" class="btn-primary" data-photos-action="add-image" data-series-id="${esc(active.id)}">+ Add Image</button>
+          </div>
+        </div>
+        ${activeCount === 0
+          ? '<p class="empty-msg" style="padding:20px 0;">No images yet.</p>'
+          : `<div class="ph-images-grid">${imagesHtml}</div>`}
+      </div>
+    </div>
+  `;
 
   container.querySelectorAll('[data-photos-action]').forEach(btn => {
     btn.addEventListener('click', handlePhotosListAction);
@@ -2186,6 +2208,47 @@ function renderPhotosSeriesList() {
     btn.addEventListener('click', handlePhotoImageLayoutAction);
   });
   initPhotoImageDrag(container);
+}
+
+function getPhotosSeriesThumb(series) {
+  return series.thumbnail
+    || (series.images && series.images[0] && series.images[0].url)
+    || 'https://beyondmebtw.com/assets/images/favicon.ico';
+}
+
+function renderPhotoImageTiles(series) {
+  return (series.images || []).map(img => {
+    const colSpan = getPhotoImageSpan(img, 'col');
+    const rowSpan = getPhotoImageSpan(img, 'row');
+    const orientation = getPhotoImageOrientation(img);
+    return `
+      <div class="ph-image-tile" data-series-id="${esc(series.id)}" data-image-id="${esc(img.id)}" draggable="true"
+           data-col-span="${colSpan}" data-row-span="${rowSpan}" data-orientation="${orientation}"
+           style="grid-column: span ${colSpan}; grid-row: span ${rowSpan};">
+        <img src="${esc(img.url)}" alt="" loading="lazy" decoding="async" onerror="this.src='https://beyondmebtw.com/assets/images/favicon.ico'">
+        <div class="ph-image-tile-meta">
+          <strong>${esc(img.id)}</strong>
+          <span>${esc(img.description || orientation)}</span>
+        </div>
+        <div class="ph-image-layout-controls">
+          <span class="ph-span-ctrl" title="Image width">
+            <button type="button" data-image-layout-action="span" data-axis="col" data-delta="-1" data-series-id="${esc(series.id)}" data-image-id="${esc(img.id)}" ${colSpan<=1?'disabled':''}>&minus;</button>
+            <span class="ph-span-ctrl-label">${colSpan}w</span>
+            <button type="button" data-image-layout-action="span" data-axis="col" data-delta="1" data-series-id="${esc(series.id)}" data-image-id="${esc(img.id)}" ${colSpan>=PHOTOS_BENTO_MAX_SPAN?'disabled':''}>+</button>
+          </span>
+          <span class="ph-span-ctrl" title="Image height">
+            <button type="button" data-image-layout-action="span" data-axis="row" data-delta="-1" data-series-id="${esc(series.id)}" data-image-id="${esc(img.id)}" ${rowSpan<=1?'disabled':''}>&minus;</button>
+            <span class="ph-span-ctrl-label">${rowSpan}h</span>
+            <button type="button" data-image-layout-action="span" data-axis="row" data-delta="1" data-series-id="${esc(series.id)}" data-image-id="${esc(img.id)}" ${rowSpan>=PHOTOS_BENTO_MAX_SPAN?'disabled':''}>+</button>
+          </span>
+        </div>
+        <div class="ph-image-tile-actions">
+          <button type="button" data-photos-action="edit-image" data-series-id="${esc(series.id)}" data-image-id="${esc(img.id)}">Edit</button>
+          <button type="button" class="danger" data-photos-action="delete-image" data-series-id="${esc(series.id)}" data-image-id="${esc(img.id)}">Delete</button>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 function handlePhotoImageLayoutAction(e) {
@@ -2211,7 +2274,8 @@ function handlePhotoImageLayoutAction(e) {
   const next = clampPhotoSpan(getPhotoImageSpan(img, axis) + delta);
   if (next === getPhotoImageSpan(img, axis)) return;
   img.grid[key] = next;
-  markPhotoImageLayoutDirty(seriesId);
+  markPhotoImageLayoutDirtyInline(seriesId);
+  syncPhotoImageTileLayout(seriesId, img);
 }
 
 function initPhotoImageDrag(container) {
@@ -2276,9 +2340,12 @@ function handlePhotosListAction(e) {
   const imageId = btn.dataset.imageId;
 
   switch (action) {
+    case 'select-series':
+      state.activePhotosSeriesId = seriesId;
+      renderPhotosSeriesList();
+      break;
     case 'toggle-series':
-      if (state.expandedSeriesIds.has(seriesId)) state.expandedSeriesIds.delete(seriesId);
-      else state.expandedSeriesIds.add(seriesId);
+      state.activePhotosSeriesId = seriesId;
       renderPhotosSeriesList();
       break;
     case 'edit-series':
