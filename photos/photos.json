@@ -81,28 +81,48 @@
           "url": "https://content.beyondmebtw.com/assets/photos/ommn/m1.webp",
           "description": "",
           "alt": "",
-          "orientation": "square"
+          "orientation": "square",
+          "grid": {
+            "colSpan": 1,
+            "rowSpan": 2
+          },
+          "order": 1
         },
         {
           "id": "moon_2",
           "url": "https://content.beyondmebtw.com/assets/photos/ommn/m2.webp",
           "description": "",
           "alt": "",
-          "orientation": "square"
+          "orientation": "square",
+          "grid": {
+            "colSpan": 1,
+            "rowSpan": 2
+          },
+          "order": 2
         },
         {
           "id": "moon_3",
           "url": "https://content.beyondmebtw.com/assets/photos/ommn/m3.webp",
           "description": "",
           "alt": "",
-          "orientation": "square"
+          "orientation": "square",
+          "grid": {
+            "colSpan": 1,
+            "rowSpan": 2
+          },
+          "order": 3
         },
         {
           "id": "moon_4",
           "url": "https://content.beyondmebtw.com/assets/photos/ommn/m4.webp",
           "description": "",
           "alt": "",
-          "orientation": "square"
+          "orientation": "square",
+          "grid": {
+            "colSpan": 1,
+            "rowSpan": 2
+          },
+          "order": 4
         }
       ]
     },
