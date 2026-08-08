@@ -76,6 +76,13 @@
           "description": "",
           "alt": "",
           "orientation": "square"
+        },
+        {
+          "id": "moon_4",
+          "url": "https://content.beyondmebtw.com/assets/photos/ommn/m4.webp",
+          "description": "",
+          "alt": "",
+          "orientation": "square"
         }
       ]
     },
