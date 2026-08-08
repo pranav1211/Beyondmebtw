@@ -55,7 +55,15 @@
         "rowSpan": 2
       },
       "order": 2,
-      "images": []
+      "images": [
+        {
+          "id": "moon_1",
+          "url": "https://content.beyondmebtw.com/assets/photos/ommn/m1.webp",
+          "description": "",
+          "alt": "",
+          "orientation": "square"
+        }
+      ]
     },
     {
       "id": "rbl",
