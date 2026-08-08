@@ -131,7 +131,7 @@
           "orientation": "square",
           "grid": {
             "colSpan": 1,
-            "rowSpan": 3
+            "rowSpan": 2
           },
           "order": 3
         },
@@ -155,7 +155,7 @@
           "orientation": "landscape",
           "grid": {
             "colSpan": 1,
-            "rowSpan": 1
+            "rowSpan": 2
           },
           "order": 5
         },
@@ -167,7 +167,7 @@
           "orientation": "landscape",
           "grid": {
             "colSpan": 1,
-            "rowSpan": 1
+            "rowSpan": 2
           },
           "order": 6
         },
@@ -179,7 +179,7 @@
           "orientation": "landscape",
           "grid": {
             "colSpan": 1,
-            "rowSpan": 1
+            "rowSpan": 2
           },
           "order": 7
         }
