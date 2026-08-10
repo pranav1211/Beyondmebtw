@@ -24,7 +24,7 @@ Also check out other showcases
 
 - **Photos:** [Photos.BeyondMeBtw.com](https://photos.beyondmebtw.com)
 
-<img src="https://content.beyondmebtw.com/assets/projects/bmb/home.webp" alt="Home page">
+<img src="https://content.beyondmebtw.com/assets/projects/bmb/homer.webp" alt="Home page">
 The Current Home Page
 
 
