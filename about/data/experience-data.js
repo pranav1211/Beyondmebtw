@@ -33,7 +33,7 @@ const experienceData = [
         roles: [
             {
                 title: "AI and Full Stack Development Intern",
-                duration: "Jan 2026 - Present",
+                duration: "Jan 2026 - Jun 2026",
                 description: [
                     "Working across the stack with <strong>Vue.js</strong>, <strong>MongoDB</strong>, <strong>Node.js</strong>, and <strong>Nginx</strong>, using <strong>Postman</strong> for API design and testing.",
                     "Serving as the <strong>primary UI/UX designer</strong>, owning interface design and user experience decisions across product surfaces.",

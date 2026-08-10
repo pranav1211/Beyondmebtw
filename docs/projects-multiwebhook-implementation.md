@@ -200,7 +200,7 @@ git commit -m "projects now deploy independently via multigitman"
 `/projects` anyway.) Legacy folders without their own repos (V1, grocery, minescan,
 pairgame, beyondpages, rtdms) stay in the main repo — no subdomains, no change.
 
-Then update `CLAUDE.md` project structure + flip the design doc status line.
+Then update `AGENTS.md` project structure + flip the design doc status line.
 
 ## Adding a project from now on
 

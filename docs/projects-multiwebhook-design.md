@@ -210,5 +210,5 @@ folder once → (optional) add a registry row for branch/alias.**
 7. Add the webhook to each project repo on GitHub (same URL + secret each time).
 8. Test one project end-to-end: push → webhook fires → fetch+reset → live on subdomain.
 9. Once verified for all: `gitignore` (or remove) `projects/` in the `Beyondmebtw` repo.
-10. Update `CLAUDE.md` project structure to reflect projects living outside the repo.
+10. Update `AGENTS.md` project structure to reflect projects living outside the repo.
 ```
