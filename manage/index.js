@@ -6,7 +6,7 @@ const BASE_URL = "https://manage.beyondmebtw.com";
 const PROJECTS_URL = 'https://beyondmebtw.com/projects/project-data.json';
 const BLOG_BASE_URL = 'https://beyondmebtw.com/blog';
 const CATEGORIES_MANIFEST_URL = 'https://beyondmebtw.com/blog/categories.json';
-const PHOTOS_URL = 'https://beyondmebtw.com/photos/photos.json';
+const PHOTOS_URL = 'https://photos.beyondmebtw.com/photos.json';
 
 // ─── State ────────────────────────────────────────────────────────────────────
 let state = {
