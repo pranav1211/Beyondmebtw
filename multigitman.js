@@ -111,11 +111,15 @@ function loadRegistry() {
 }
 
 // repo name -> { folder, branch, enabled, path }, falling back to convention.
-function resolveEntry(repoName) {
+// Branch precedence: registry override > repo's GitHub default branch > 'main'.
+// Deriving the default from the payload means a master-default repo (e.g. mynyl)
+// deploys on push with no registry row, while a push to a non-default branch is
+// still ignored — keeping the feature-branch guard the design intends.
+function resolveEntry(repoName, defaultBranch) {
   const row = loadRegistry()[repoName];
   return {
     folder: (row && row.folder) || repoName,
-    branch: (row && row.branch) || 'main',
+    branch: (row && row.branch) || defaultBranch || 'main',
     path: (row && row.path) || '',
     enabled: !row || row.enabled !== false,
     explicit: !!row
@@ -212,7 +216,10 @@ app.post('/multig', (req, res) => {
   const repoName = payload.repository && payload.repository.name;
   if (!repoName) return res.status(400).json({ message: 'No repository.name in payload' });
 
-  const { folder, branch, enabled, path: servePath, explicit } = resolveEntry(repoName);
+  // GitHub's push payload carries the repo's default branch; fall back to it so
+  // master-default repos deploy without needing a registry row.
+  const defaultBranch = (payload.repository && payload.repository.default_branch) || 'main';
+  const { folder, branch, enabled, path: servePath, explicit } = resolveEntry(repoName, defaultBranch);
 
   if (!enabled) {
     log(`${repoName}: disabled in registry — ignored`);
