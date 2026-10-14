@@ -116,6 +116,15 @@
         "uid": "exper_44",
         "title": "When The Curtain Falls",
         "thumbnail": "https://content.beyondmebtw.com/thumbnails/experience/wtcf.webp"
+      },
+      "subcategories": {
+        "college": {
+          "mainPost": {
+            "uid": "exper_45",
+            "title": "A Journey Called College",
+            "thumbnail": "https://content.beyondmebtw.com/thumbnails/experience/grad.webp"
+          }
+        }
       }
     },
     "techarti": {
