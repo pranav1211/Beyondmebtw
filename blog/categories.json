@@ -19,7 +19,9 @@
   "experience": {
     "name": "Personal Experience",
     "icon": "fas fa-compass",
-    "subcategories": []
+    "subcategories": [
+      "College"
+    ]
   },
   "techarti": {
     "name": "Technology",
