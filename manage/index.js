@@ -17,6 +17,7 @@ let state = {
   categories: {},            // from blog/categories.json manifest
   currentBlogCategory: 'all',
   blogSearch: '',
+  expandedBlogCategories: new Set(),
   editingBlogPost: null,     // { category, uid } when editing
   editingProjectId: null,    // id when editing
   projectImagesDraft: [],
@@ -799,6 +800,7 @@ function buildCategoryTabs() {
 function switchBlogCategory(key) {
   state.currentBlogCategory = key;
   state.blogSearch = '';
+  state.expandedBlogCategories.clear();
   const searchInput = document.getElementById('blog-search');
   if (searchInput) searchInput.value = '';
   document.querySelectorAll('.cat-tab-btn').forEach(b => {
@@ -807,7 +809,7 @@ function switchBlogCategory(key) {
   renderPostsList();
 }
 
-// Render posts: first 4 per category by default, or search results across all categories
+// Render posts: first 4 per category by default, with older posts revealed on request.
 function renderPostsList() {
   const container = document.getElementById('blog-posts-list');
   if (!container || !state.blogData) return;
@@ -861,13 +863,14 @@ function renderPostsList() {
 
     const catConfig = state.categories[catKey] || {};
     const posts = catData.posts || [];
-    const preview = posts.slice(-4).reverse(); // last 4 = most recent
+    const isExpanded = state.expandedBlogCategories.has(catKey);
+    const preview = (isExpanded ? posts : posts.slice(-4)).slice().reverse(); // last 4 = most recent
 
     html += `
       <div class="category-section-header">
         <span class="cat-name">${esc(catConfig.name || catKey)}</span>
         <span class="post-count">${posts.length} post${posts.length !== 1 ? 's' : ''} — showing ${preview.length}</span>
-        ${posts.length > 4 ? '<span class="search-hint">Search to find older posts</span>' : ''}
+        ${posts.length > 4 ? `<button class="btn-secondary blog-load-all" type="button" data-load-category="${esc(catKey)}">${isExpanded ? 'Show recent 4' : 'Load all'}</button>` : ''}
       </div>
     `;
 
@@ -881,6 +884,14 @@ function renderPostsList() {
 
   container.innerHTML = html;
   attachPostRowHandlers(container);
+  container.querySelectorAll('[data-load-category]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.loadCategory;
+      if (state.expandedBlogCategories.has(key)) state.expandedBlogCategories.delete(key);
+      else state.expandedBlogCategories.add(key);
+      renderPostsList();
+    });
+  });
 }
 
 function attachPostRowHandlers(container) {
