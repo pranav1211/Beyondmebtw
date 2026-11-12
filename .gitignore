@@ -3,3 +3,5 @@ node_modules
 .claude
 ecosystem.config.js
 ecosystem.config.example.js
+
+.cc-history
