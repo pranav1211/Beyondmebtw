@@ -1,7 +1,8 @@
 // index.js — Manage page client logic
 // Three sections: Homepage, Blog, Projects
 
-const BASE_URL = "https://manage.beyondmebtw.com";
+// Host-relative: legacy Manage now also runs at oldmanage.beyondmebtw.com (Phase 3 Stage 5).
+const BASE_URL = window.location.origin;
 
 const PROJECTS_URL = 'https://beyondmebtw.com/projects/project-data.json';
 const BLOG_BASE_URL = 'https://beyondmebtw.com/blog';

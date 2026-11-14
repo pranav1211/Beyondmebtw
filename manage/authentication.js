@@ -5,7 +5,8 @@ class AuthenticationSystem {
         this.cookieName = 'beyondme_auth';
         this.authKeyCookieName = 'beyondme_auth_key';
         this.cookieDomain = '.beyondmebtw.com';
-        this.baseUrl = "https://manage.beyondmebtw.com/loginauth";
+        // Host-relative so the legacy admin works under whichever hostname serves it.
+        this.baseUrl = `${window.location.origin}/loginauth`;
     }
 
     // Cookie utility functions
@@ -64,9 +65,9 @@ class AuthenticationSystem {
         
         // Define protected pages and their redirect targets
         const protectedPages = {
-            'manage.html': 'https://manage.beyondmebtw.com/index.html',
-            'dashboard.html': 'https://manage.beyondmebtw.com/index.html',
-            'minis.html': 'https://manage.beyondmebtw.com/index.html'
+            'manage.html': `${window.location.origin}/index.html`,
+            'dashboard.html': `${window.location.origin}/index.html`,
+            'minis.html': `${window.location.origin}/index.html`
         };
         
         // Check if current page is protected and user is not authenticated
@@ -124,8 +125,8 @@ class AuthenticationSystem {
     // Logout function
     logout() {
         this.clearAuthentication();
-        // Always redirect to manage.beyondmebtw.com index page
-        window.location.href = 'https://manage.beyondmebtw.com/index.html';
+        // Always redirect to this host's index page
+        window.location.href = `${window.location.origin}/index.html`;
     }
 
     // Initialize authentication system
