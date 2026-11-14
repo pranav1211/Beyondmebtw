@@ -181,8 +181,9 @@ function renderFeaturedProjects(projects) {
 
 document.addEventListener("DOMContentLoaded", () => {
     Promise.all([
-        fetch('https://beyondmebtw.com/manage/latest.json').then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }),
-        fetch('https://beyondmebtw.com/projects/project-data.json').then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+        // Canonical in bmb-data, served by Manage (catalog keys home.latest, projects).
+        fetch('https://manage.beyondmebtw.com/api/v1/data/resources/home.latest').then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }).then(b => b.data),
+        fetch('https://manage.beyondmebtw.com/api/v1/data/resources/projects').then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }).then(b => b.data)
     ]).then(([data, allProjects]) => {
         // Handle main post
         const mainPost = data.mainPost;

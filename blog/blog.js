@@ -9,8 +9,10 @@ const postsPerPage = 8;
 let isLoading = false;
 let hasMorePosts = true;
 
-// Category manifest — fetched from blog/categories.json
-const CATEGORIES_MANIFEST_URL = 'https://beyondmebtw.com/blog/categories.json';
+// Blog data is canonical in bmb-data, served by Manage's public data API
+// (catalog keys blog.categories, blog.posts.<category>).
+const DATA_API = 'https://manage.beyondmebtw.com/api/v1/data/resources/';
+const CATEGORIES_MANIFEST_URL = `${DATA_API}blog.categories`;
 let categoriesManifest = {};
 
 async function fetchWithCache(url) {
@@ -18,7 +20,7 @@ async function fetchWithCache(url) {
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
-    return response.json();
+    return (await response.json()).data;
 }
 
 // Subcategory mappings — built dynamically from JSON after load
@@ -136,7 +138,7 @@ async function loadAllData() {
         const keys = Object.keys(categoriesManifest);
         const categoryPromises = keys.map(async (categoryKey) => {
             try {
-                const jsonFile = `https://beyondmebtw.com/blog/${categoryKey}.json`;
+                const jsonFile = `${DATA_API}blog.posts.${categoryKey}`;
                 const categoryData = await fetchWithCache(jsonFile);
 
                 if (categoryData.subcategories && Array.isArray(categoryData.subcategories) && categoryData.subcategories.length > 0) {

@@ -28,11 +28,13 @@ function loadProjectsData() {
     console.warn('Failed to read projects cache:', error);
   }
 
-  return fetch('./project-data.json', { cache: 'no-cache' })
+  // Canonical in bmb-data, served by Manage (catalog key: projects).
+  return fetch('https://manage.beyondmebtw.com/api/v1/data/resources/projects', { cache: 'no-cache' })
     .then(res => {
       if (!res.ok) throw new Error(`Failed to load project data: ${res.status}`);
       return res.json();
     })
+    .then(body => body.data)
     .then(data => {
       try {
         sessionStorage.setItem(storageKey, JSON.stringify(data));
