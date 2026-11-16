@@ -1,5 +1,7 @@
 # Backend Restructuring Evaluation
 
+> **HISTORICAL / SUPERSEDED (Phase 3, Nov 2026).** This note describes the pre-Phase-3 design (legacy `manage/`, gitman servers, local JSON data). It no longer reflects the system: data lives in `bmb-data` behind Manage, and deployment is done by Argus. Current architecture and operations docs live in the `manage-beyondmebtw` repository. Kept for history only.
+
 > Comprehensive analysis of the current backend architecture, the proposed changes, and recommended improvements.
 > Created: 2026-08-10
 

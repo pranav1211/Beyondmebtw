@@ -1,5 +1,7 @@
 # Projects Multi-Webhook — Implementation Runbook
 
+> **HISTORICAL / SUPERSEDED (Phase 3, Nov 2026).** This note describes the pre-Phase-3 design (legacy `manage/`, gitman servers, local JSON data). It no longer reflects the system: data lives in `bmb-data` behind Manage, and deployment is done by Argus. Current architecture and operations docs live in the `manage-beyondmebtw` repository. Kept for history only.
+
 > Companion to [projects-multiwebhook-design.md](projects-multiwebhook-design.md).
 > Code shipped in the repo: [multigitman.js](../multigitman.js) (webhook server, port 6030),
 > registry CRUD in [manage/manageserver.js](../manage/manageserver.js) (`/deployregistry`),
