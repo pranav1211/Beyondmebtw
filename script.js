@@ -294,7 +294,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Preferred path: Manage precomputes `recent` (and `categoryName` on
         // mainPost/featured) whenever blog or home data is saved.
         const hasRecent = Array.isArray(data.recent) && data.recent.length > 0;
-        const needsLabels = !main.categoryName || featured.some(p => !p.categoryName);
+        // Once Manage has derived the fields (recentGeneratedAt), a card without categoryName is
+        // deliberate: an empty slot or a link to something that isn't a blog post. Only fetch
+        // labels before that, and only for cards that actually link somewhere.
+        const needsLabels = !data.recentGeneratedAt && [main, ...featured].some(p => p && p.link && !p.categoryName);
 
         if (hasRecent) renderRecentPosts(pickRecent(data.recent, data));
         if (hasRecent && !needsLabels) return;
