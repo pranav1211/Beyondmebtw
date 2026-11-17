@@ -1,4 +1,8 @@
-/* latest-post.css — the hand-picked, promoted post at the top */
+/* latest-post.css — the hand-picked, promoted post at the top.
+   Thumbnails are always 16:9, so the image is shown at exactly that ratio:
+   nothing cropped, nothing letterboxed. The card's height is set by its
+   neighbours (profile photo, get-in-touch), so the image + text pair is
+   centred vertically and any spare height splits evenly around it. */
 .latest-post {
     grid-column: 2 / 4;
     grid-row: 2 / 3;
@@ -8,37 +12,50 @@
 }
 
 .latest-post-content {
-    display: flex;
-    gap: 22px;
     flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 26px;
+    padding: 10px 8px 8px;
     color: inherit;
     text-decoration: none;
     border-radius: 12px;
 }
 
-/* As before the redesign: the image stretches to the full height of the text
-   column (no empty band underneath), and hovering it shows the whole image. */
+/* The image as a print: thin paper border, soft shadow, a slight tilt that
+   straightens on hover (same language as the Minis sticky note). */
 .latest-post-img {
-    width: 35%;
-    border-radius: 12px;
+    display: block;
+    width: 100%;
+    height: auto;
     aspect-ratio: 16 / 9;
     object-fit: cover;
-    object-position: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s;
+    /* The paper frame is a ring, not a border, so it never eats into the
+       16:9 box (a border would crop the image slightly). */
+    border-radius: 6px;
+    box-shadow:
+        0 0 0 6px #FBF8F3,
+        0 1px 2px 6px rgba(59, 52, 45, 0.10),
+        0 18px 30px -10px rgba(59, 52, 45, 0.55);
+    transform: rotate(-1.2deg);
+    transition:
+        transform 320ms var(--ease-out),
+        box-shadow 320ms var(--ease-out);
 }
 
-.latest-post-img:hover {
-    transform: scale(1.02);
-    object-fit: contain;
+.latest-post-content:hover .latest-post-img {
+    transform: rotate(0deg) translateY(-3px);
+    box-shadow:
+        0 0 0 6px #FBF8F3,
+        0 2px 4px 6px rgba(59, 52, 45, 0.10),
+        0 24px 36px -12px rgba(59, 52, 45, 0.6);
 }
 
 .latest-post-info {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    gap: 14px;
-    flex: 1;
+    gap: 16px;
     min-width: 0;
 }
 
@@ -63,16 +80,20 @@
 }
 
 .latest-post-excerpt {
-    font-size: 21px;
+    font-size: 20px;
     line-height: 1.5;
     color: var(--ink);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
 }
 
 .latest-post .read-more {
-    align-self: flex-end;
+    align-self: flex-start;
     background-color: #6a5a4a;
     color: #fff;
-    padding: 12px 24px;
+    padding: 11px 24px;
     border-radius: 30px;
     font-family: "Kreon", serif;
     font-weight: 600;
@@ -85,13 +106,64 @@
     transform: translateY(-2px);
 }
 
+/* Narrower 4-column laptops: give the text a little more room. */
+@media (max-width: 1600px) {
+    .latest-post-content {
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+        gap: 22px;
+    }
+
+    .latest-post-title {
+        font-size: 26px;
+    }
+
+    .latest-post-excerpt {
+        font-size: 18px;
+        -webkit-line-clamp: 3;
+    }
+}
+
+/* Stacked (2-column bento and below): full-width 16:9 image on top, text
+   underneath. */
+@media (max-width: 1350px) {
+    .latest-post-content {
+        grid-template-columns: 1fr;
+        align-content: start;
+        gap: 20px;
+    }
+
+    .latest-post-img {
+        transform: rotate(-0.8deg);
+    }
+
+    .latest-post-excerpt {
+        -webkit-line-clamp: 4;
+    }
+}
+
+@media (max-width: 600px) {
+    .latest-post-img {
+        box-shadow:
+            0 0 0 4px #FBF8F3,
+            0 14px 24px -10px rgba(59, 52, 45, 0.5);
+    }
+
+    .latest-post-title {
+        font-size: 24px;
+    }
+
+    .latest-post-excerpt {
+        font-size: 17px;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .latest-post-img,
     .latest-post .read-more {
         transition: none;
     }
 
-    .latest-post-img:hover,
+    .latest-post-content:hover .latest-post-img,
     .latest-post-content:hover .read-more {
         transform: none;
     }
