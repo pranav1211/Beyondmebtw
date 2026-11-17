@@ -1,83 +1,96 @@
-/* latest-post.css */
+/* latest-post.css — the hand-picked, promoted post at the top */
 .latest-post {
-    grid-column: 2 / 4; /* Span middle two columns */
+    grid-column: 2 / 4;
     grid-row: 2 / 3;
     display: flex;
     flex-direction: column;
     height: 100%;
-    cursor: pointer;
-}
-
-.latest-post-header {
-    font-size: 28px;
-    font-weight: bold;
-    margin-bottom: 15px;
-    color: #3b342d;
 }
 
 .latest-post-content {
     display: flex;
-    gap: 20px;
+    gap: 22px;
     flex: 1;
+    color: inherit;
+    text-decoration: none;
+    border-radius: 12px;
 }
 
 .latest-post-img {
-    width: 35%;
+    width: 38%;
+    align-self: flex-start;
     border-radius: 12px;
     aspect-ratio: 16 / 9;
     object-fit: cover;
-    object-position: center; /* Centers the focus */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s;
+    object-position: center;
+    box-shadow: 0 10px 24px -10px rgba(59, 52, 45, 0.45);
+    transition: transform 400ms var(--ease-out);
 }
 
-.latest-post-img:hover {
-    transform: scale(1.02);
-    object-fit: contain;
+.latest-post-content:hover .latest-post-img {
+    transform: rotate(-1deg) scale(1.02);
 }
 
 .latest-post-info {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    gap: 14px;
     flex: 1;
+    min-width: 0;
+}
+
+.latest-post-meta {
+    font-family: "Delius", cursive;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 6px;
+    min-height: 1em;
 }
 
 .latest-post-title {
-    font-size: 28px;
-    font-weight: 500;
-    color: #3b342d;
-    font-weight: bolder;
-}
-
-.latest-post-date {
-    font-size: 14px;
-    color: #3b342d;
-    margin: 5px 0 10px;
-    font-style: italic;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--ink-deep);
+    margin-bottom: 10px;
+    text-wrap: balance;
 }
 
 .latest-post-excerpt {
-    font-size: 22px;
+    font-size: 21px;
     line-height: 1.5;
-    color: #3b342d;
+    color: var(--ink);
 }
 
-.read-more {
+.latest-post .read-more {
     align-self: flex-end;
     background-color: #6a5a4a;
     color: #fff;
-    border: none;
     padding: 12px 24px;
     border-radius: 30px;
-    cursor: pointer;
     font-family: "Kreon", serif;
-    font-weight: 500;
+    font-weight: 600;
     font-size: 18px;
     transition: background-color 0.3s, transform 0.3s;
 }
 
-.read-more:hover {
+.latest-post-content:hover .read-more {
     background-color: #5a4c3e;
     transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .latest-post-img,
+    .latest-post .read-more {
+        transition: none;
+    }
+
+    .latest-post-content:hover .latest-post-img,
+    .latest-post-content:hover .read-more {
+        transform: none;
+    }
 }

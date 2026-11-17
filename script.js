@@ -22,107 +22,64 @@ aboutlink.addEventListener('click', () => {
     window.location = "https://beyondmebtw.com/about";
 });
 
-const profilePic = document.querySelector('.profile-pic');
-if (profilePic) {
-    profilePic.addEventListener('mouseover', () => {
-        profilePic.style.transform = 'scale(1.03)';
-    });
-
-    profilePic.addEventListener('mouseout', () => {
-        profilePic.style.transform = 'scale(1)';
-    });
-}
-
 document.getElementById('copy-email').addEventListener('click', function (event) {
     event.preventDefault();
     const email = "pranav@beyondmebtw.com";
-
     const gmailUrl = `https://mail.google.com/mail/u/0/?to=${encodeURIComponent(email)}&tf=cm`;
-
     window.open(gmailUrl, '_blank');
 });
 
-function showToast(message) {
-    const toast = document.getElementById('toast');
-    toast.innerText = message;
-    toast.classList.add('show');
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 3000);
+// ── Data (canonical in bmb-data, served by Manage) ───────────────────────
+const DATA_API = 'https://manage.beyondmebtw.com/api/v1/data/resources/';
+
+function fetchResource(key) {
+    return fetch(DATA_API + key)
+        .then(r => { if (!r.ok) throw new Error(`${key}: ${r.status}`); return r.json(); })
+        .then(b => b.data);
 }
 
-// Component creation functions
-function createFeaturedPost(post, index) {
-    const postDate = new Date(post.date);
-    const formattedDate = new Intl.DateTimeFormat('en-US', {
-        month: 'short',
-        day: '2-digit',
-        year: 'numeric',
-    }).format(postDate);
-
-    const postElement = document.createElement('div');
-    postElement.className = 'featured-post';
-    postElement.innerHTML = `
-        <img src="${post.thumbnail}" alt="Featured post" class="featured-post-img">
-        <div class="featured-post-details">
-            <h3 class="featured-post-title">${post.title}</h3>
-            <p class="featured-post-date">${formattedDate}</p>
-            <p class="featured-post-excerpt">${post.excerpt}</p>
-        </div>
-        <button class="featured-read-more">Read More</button>
-    `;
-
-    postElement.addEventListener('click', () => {
-        window.open(post.link, '_blank');
-    });
-
-    return postElement;
+// ── Helpers ───────────────────────────────────────────────────────────────
+// Everything from Manage is treated as untrusted text.
+function esc(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
 }
 
-function renderFeaturedPosts(posts) {
-    const container = document.getElementById('featured-posts-container');
-    container.innerHTML = ''; // Clear existing content
-
-    posts.forEach((post, index) => {
-        const postElement = createFeaturedPost(post, index);
-        container.appendChild(postElement);
-    });
-}
-
-function ordinalSuffix(n) {
-    const v = n % 100;
-    if (v >= 11 && v <= 13) return 'th';
-    switch (n % 10) {
-        case 1: return 'st';
-        case 2: return 'nd';
-        case 3: return 'rd';
-        default: return 'th';
+// Only http(s) URLs make it into href/src attributes.
+function safeUrl(value) {
+    try {
+        const u = new URL(String(value || ''), window.location.href);
+        return (u.protocol === 'https:' || u.protocol === 'http:') ? u.href : '';
+    } catch {
+        return '';
     }
 }
 
-function formatMiniDate(dateStr) {
-    if (!dateStr) return '';
-    const d = new Date(dateStr);
-    if (isNaN(d.getTime())) return dateStr;
-    const day = d.getDate();
-    const month = d.toLocaleString('en-US', { month: 'long' });
-    const year = d.getFullYear();
-    return `${day}${ordinalSuffix(day)} ${month}, ${year}`;
+function parseDate(value) {
+    const d = new Date(value);
+    return isNaN(d.getTime()) ? null : d;
 }
 
-function formatMiniHeroDate(dateStr) {
-    if (!dateStr) return '';
-    const d = new Date(dateStr);
-    if (isNaN(d.getTime())) return '';
+function formatDate(value, opts = { month: 'short', day: 'numeric', year: 'numeric' }) {
+    const d = parseDate(value);
+    return d ? new Intl.DateTimeFormat('en-US', opts).format(d) : '';
+}
+
+function formatMiniDate(value) {
+    const d = parseDate(value);
+    if (!d) return '';
     const dd = String(d.getDate()).padStart(2, '0');
     const mm = String(d.getMonth() + 1).padStart(2, '0');
     const yy = String(d.getFullYear()).slice(-2);
     return `${dd}.${mm}.${yy}`;
 }
 
-function truncateExcerpt(text, limit = 200) {
-    if (!text) return '';
-    const trimmed = text.trim();
+function truncate(text, limit) {
+    const trimmed = String(text || '').trim();
     if (trimmed.length <= limit) return trimmed;
     const slice = trimmed.slice(0, limit);
     const lastSpace = slice.lastIndexOf(' ');
@@ -130,92 +87,176 @@ function truncateExcerpt(text, limit = 200) {
     return cut.replace(/[.,;:!?\-—\s]+$/, '') + '…';
 }
 
-function createFeaturedMini(mini) {
-    const el = document.createElement('div');
-    el.className = 'featured-mini';
-    const heroDate = formatMiniHeroDate(mini.date);
-    el.innerHTML = `
-        <div class="featured-mini-hero">
-            <span class="featured-mini-hero-eyebrow">${heroDate ? `Mini &middot; ${heroDate}` : 'Mini'}</span>
-            <h3 class="featured-mini-hero-title">${mini.title || 'Untitled'}</h3>
-        </div>
-        <div class="featured-mini-details">
-            <p class="featured-mini-excerpt">${truncateExcerpt(mini.featuredExcerpt, 200)}</p>
-        </div>
-        <button class="featured-mini-read-more">Read More</button>
-    `;
-    if (mini.id) {
-        const url = `https://minis.beyondmebtw.com/post/${encodeURIComponent(mini.id)}/`;
-        el.addEventListener('click', () => window.open(url, '_blank'));
-    }
-    return el;
+// Same post can be linked with different casing/trailing bits; compare loosely.
+function linkKey(link) {
+    return String(link || '').toLowerCase().replace(/[?#].*$/, '').replace(/\/+$/, '');
 }
 
-function renderFeaturedMinis(minis) {
-    const container = document.getElementById('featured-minis-container');
+function meta(...parts) {
+    return parts.filter(Boolean).map(p => `<span class="meta-part">${esc(p)}</span>`).join('<span class="meta-dot" aria-hidden="true">&middot;</span>');
+}
+
+// ── Latest post (hand-picked in Manage) ──────────────────────────────────
+function renderLatestPost(post, categoryName) {
+    const link = safeUrl(post.link);
+    const anchor = document.querySelector('.latest-post-content');
+    if (link) anchor.href = link;
+    const img = document.querySelector('.latest-post-img');
+    const thumb = safeUrl(post.thumbnail);
+    if (thumb) img.src = thumb;
+    document.querySelector('.latest-post-title').textContent = post.title || '';
+    document.querySelector('.latest-post-meta').innerHTML = meta(formatDate(post.date), categoryName);
+    document.querySelector('.latest-post-excerpt').textContent = post.excerpt || '';
+}
+
+// ── Recent posts (automatic: newest across all categories) ───────────────
+function renderRecentPosts(posts) {
+    const container = document.getElementById('recent-grid');
     if (!container) return;
-    container.innerHTML = '';
-    (minis || [])
-        .filter(m => m && (m.title || m.id))
-        .forEach(m => container.appendChild(createFeaturedMini(m)));
-}
-
-function renderFeaturedProjects(projects) {
-    const container = document.getElementById('projects-grid');
-    if (!container || !projects || projects.length === 0) return;
-    container.innerHTML = projects.map(proj => `
-        <div class="project-card">
-            <div class="project-details">
-                <div class="project-icon">${proj.logo ? `<img src="${proj.logo}" alt="" style="width:28px;height:28px;object-fit:contain;border-radius:4px">` : '&#9670;'}</div>
-                <div>
-                    <h3 class="project-title">${proj.title || ''}</h3>
-                    <p class="project-desc">${proj.shortDescription || ''}</p>
-                </div>
+    container.innerHTML = posts.map(p => `
+        <a class="recent-card" href="${esc(safeUrl(p.link))}" target="_blank" rel="noopener">
+            <div class="recent-thumb">
+                <img src="${esc(safeUrl(p.thumbnail))}" alt="" loading="lazy">
             </div>
-            <a href="${proj.link || proj.githubLink || '#'}" target="_blank">
-                <button class="project-explore">Explore</button>
-            </a>
-        </div>
+            <div class="recent-body">
+                <p class="card-meta">${meta(formatDate(p.date), p.categoryName)}</p>
+                <h3 class="recent-title">${esc(p.title)}</h3>
+            </div>
+        </a>
     `).join('');
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    Promise.all([
-        // Canonical in bmb-data, served by Manage (catalog keys home.latest, projects).
-        fetch('https://manage.beyondmebtw.com/api/v1/data/resources/home.latest').then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }).then(b => b.data),
-        fetch('https://manage.beyondmebtw.com/api/v1/data/resources/projects').then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }).then(b => b.data)
-    ]).then(([data, allProjects]) => {
-        // Handle main post
-        const mainPost = data.mainPost;
-        const mainDate = new Date(mainPost.date);
-        const formattedDate = new Intl.DateTimeFormat('en-US', {
-            month: 'short',
-            day: '2-digit',
-            year: 'numeric',
-        }).format(mainDate);
+// ── Featured posts (hand-picked) ─────────────────────────────────────────
+function renderFeaturedPosts(posts, categoryOf) {
+    const container = document.getElementById('featured-posts-container');
+    if (!container) return;
+    container.innerHTML = (posts || []).map(p => `
+        <a class="featured-card" href="${esc(safeUrl(p.link))}" target="_blank" rel="noopener">
+            <div class="featured-thumb">
+                <img src="${esc(safeUrl(p.thumbnail))}" alt="" loading="lazy">
+            </div>
+            <div class="featured-body">
+                <p class="card-meta" data-link="${esc(linkKey(p.link))}">${meta(formatDate(p.date), categoryOf(p.link))}</p>
+                <h3 class="featured-title">${esc(p.title)}</h3>
+                <p class="featured-excerpt">${esc(p.excerpt)}</p>
+                <span class="card-cta">Read <span aria-hidden="true">&rarr;</span></span>
+            </div>
+        </a>
+    `).join('');
+}
 
-        document.querySelector('.latest-post-title').innerText = mainPost.title;
-        document.querySelector('.latest-post-date').innerText = formattedDate;
-        document.querySelector('.latest-post-excerpt').innerText = mainPost.excerpt;
-        document.querySelector('.latest-post-img').src = mainPost.thumbnail;
+// ── Featured minis: one lead, the rest alongside ─────────────────────────
+function renderFeaturedMinis(minis) {
+    const container = document.getElementById('featured-minis-container');
+    if (!container) return;
+    const list = (minis || []).filter(m => m && (m.title || m.id));
+    container.innerHTML = list.map((m, i) => {
+        const lead = i === 0;
+        const href = m.id ? `https://minis.beyondmebtw.com/post/${encodeURIComponent(m.id)}/` : 'https://minis.beyondmebtw.com';
+        const date = formatMiniDate(m.date);
+        return `
+        <a class="mini-card${lead ? ' mini-lead' : ''}" href="${esc(href)}" target="_blank" rel="noopener">
+            <div class="mini-hero">
+                <span class="mini-eyebrow">Mini${date ? ` &middot; ${esc(date)}` : ''}</span>
+                <h3 class="mini-title">${esc(m.title || 'Untitled')}</h3>
+            </div>
+            <div class="mini-body">
+                <p class="mini-excerpt">${esc(truncate(m.featuredExcerpt, lead ? 460 : 170))}</p>
+                <span class="card-cta">Keep reading <span aria-hidden="true">&rarr;</span></span>
+            </div>
+        </a>`;
+    }).join('');
+}
 
-        document.querySelector('.latest-post-content').onclick = () => window.open(mainPost.link, '_blank');
-        document.querySelector('.read-more').onclick = () => window.open(mainPost.link, '_blank');
+// ── Featured projects ────────────────────────────────────────────────────
+function renderFeaturedProjects(projects) {
+    const container = document.getElementById('projects-grid');
+    if (!container || !projects || projects.length === 0) return;
+    container.innerHTML = projects.map(proj => {
+        const href = safeUrl(proj.link) || safeUrl(proj.githubLink);
+        const cover = safeUrl(proj.coverImage);
+        const logo = safeUrl(proj.logo);
+        const tags = (proj.tags || []).slice(0, 3);
+        return `
+        <a class="project-card" ${href ? `href="${esc(href)}"` : ''} target="_blank" rel="noopener">
+            <div class="project-cover">
+                ${cover ? `<img src="${esc(cover)}" alt="" loading="lazy">` : ''}
+            </div>
+            <div class="project-body">
+                ${logo ? `<span class="project-logo-badge"><img src="${esc(logo)}" alt=""></span>` : ''}
+                ${proj.category ? `<p class="card-meta">${esc(proj.category)}</p>` : ''}
+                <h3 class="project-title">${esc(proj.title)}</h3>
+                <p class="project-desc">${esc(proj.shortDescription)}</p>
+                ${tags.length ? `<ul class="project-tags">${tags.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
+            </div>
+        </a>`;
+    }).join('');
 
-        // Render featured posts
-        renderFeaturedPosts(data.featured);
-
-        // Render featured minis
-        renderFeaturedMinis(data.featuredMinis || []);
-
-        // Render featured projects from latest.json featuredProjects IDs
-        if (data.featuredProjects && allProjects) {
-            const featured = data.featuredProjects
-                .map(id => allProjects.find(p => p.id === id))
-                .filter(Boolean);
-            renderFeaturedProjects(featured);
-        }
-    }).catch((error) => {
-        console.error("Error fetching JSON data:", error);
+    // A logo that fails to load drops its badge rather than showing a broken image.
+    container.querySelectorAll('.project-logo-badge img').forEach(img => {
+        const drop = () => img.parentElement && img.parentElement.remove();
+        if (img.complete && img.naturalWidth === 0) drop();
+        else img.addEventListener('error', drop);
     });
+}
+
+// ── Boot ─────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    const homeReq = fetchResource('home.latest');
+
+    // Category names + every post, used for Recent and for labelling posts
+    // with their category. Loaded independently so the top of the page never
+    // waits on it.
+    const postsReq = fetchResource('blog.categories').then(cats =>
+        Promise.all(Object.keys(cats || {}).map(key =>
+            fetchResource(`blog.posts.${key}`)
+                .then(d => (d && d.posts) || [])
+                .catch(() => [])
+                .then(posts => posts.map(p => ({ ...p, categoryName: cats[key].name || key })))
+        )).then(groups => groups.flat())
+    );
+
+    const categoryLookup = postsReq
+        .then(all => {
+            const map = new Map(all.map(p => [linkKey(p.link), p.categoryName]));
+            return link => map.get(linkKey(link)) || '';
+        })
+        .catch(() => () => '');
+
+    homeReq.then(data => {
+        renderLatestPost(data.mainPost || {}, '');
+        renderFeaturedPosts(data.featured, () => '');
+        renderFeaturedMinis(data.featuredMinis);
+
+        // Fill in category labels once the post lists arrive.
+        categoryLookup.then(categoryOf => {
+            const main = data.mainPost || {};
+            document.querySelector('.latest-post-meta').innerHTML = meta(formatDate(main.date), categoryOf(main.link));
+            document.querySelectorAll('#featured-posts-container .card-meta').forEach((el, i) => {
+                const p = (data.featured || [])[i];
+                if (p) el.innerHTML = meta(formatDate(p.date), categoryOf(p.link));
+            });
+        });
+    }).catch(err => console.error('Error loading home data:', err));
+
+    // Recent: newest 4, skipping the promoted Latest post so it isn't shown twice.
+    Promise.all([postsReq, homeReq.catch(() => ({}))]).then(([all, data]) => {
+        const skip = linkKey(data.mainPost && data.mainPost.link);
+        const recent = all
+            .filter(p => parseDate(p.date) && linkKey(p.link) !== skip)
+            .sort((a, b) => parseDate(b.date) - parseDate(a.date))
+            .slice(0, 4);
+        renderRecentPosts(recent);
+    }).catch(err => {
+        console.error('Error loading recent posts:', err);
+        const section = document.querySelector('.recent-posts');
+        if (section) section.hidden = true;
+    });
+
+    Promise.all([homeReq, fetchResource('projects')]).then(([data, allProjects]) => {
+        const featured = (data.featuredProjects || [])
+            .map(id => (allProjects || []).find(p => p.id === id))
+            .filter(Boolean);
+        renderFeaturedProjects(featured);
+    }).catch(err => console.error('Error loading projects:', err));
 });

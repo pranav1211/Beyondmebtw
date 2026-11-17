@@ -27,32 +27,32 @@
     </style>
 
         <!-- Shared CSS Files -->
-        <link rel="stylesheet" href="https://beyondmebtw.com/css/base.css">
-        <link rel="stylesheet" href="https://beyondmebtw.com/css/header.css">
-        <link rel="stylesheet" href="https://beyondmebtw.com/css/buttons.css">
+        <link rel="stylesheet" href="/css/base.css">
+        <link rel="stylesheet" href="/css/header.css">
+        <link rel="stylesheet" href="/css/buttons.css">
 
         <!-- Page-Specific CSS Files -->
         <link rel="stylesheet"
-            href="https://beyondmebtw.com/homecss/styles.css">
+            href="/homecss/styles.css">
         <link rel="stylesheet"
-            href="https://beyondmebtw.com/homecss/profile-card.css">
+            href="/homecss/profile-card.css">
         <link rel="stylesheet"
-            href="https://beyondmebtw.com/homecss/welcome-card.css">
+            href="/homecss/welcome-card.css">
         <link rel="stylesheet"
-            href="https://beyondmebtw.com/homecss/latest-post.css">
+            href="/homecss/latest-post.css">
         <link rel="stylesheet"
-            href="https://beyondmebtw.com/homecss/get-in-touch.css">
+            href="/homecss/get-in-touch.css">
         <link rel="stylesheet"
-            href="https://beyondmebtw.com/homecss/featured-posts.css">
+            href="/homecss/featured-posts.css">
         <link rel="stylesheet"
-            href="https://beyondmebtw.com/homecss/featured-minis.css">
+            href="/homecss/featured-minis.css">
         <link rel="stylesheet"
-            href="https://beyondmebtw.com/homecss/projects-showcase.css">
+            href="/homecss/projects-showcase.css">
 
         <!-- Responsive and Special CSS -->
         <link rel="stylesheet"
-            href="https://beyondmebtw.com/css/responsive-unified.css">
-        <link rel="stylesheet" href="https://beyondmebtw.com/css/specials.css">
+            href="/css/responsive-unified.css">
+        <link rel="stylesheet" href="/css/specials.css">
 
         <!-- Open Graph -->
         <meta property="og:title" content="Home | BeyondMeBtw">
@@ -247,12 +247,10 @@
                             <div class="social-info">
                                 <div class="social-name">Email</div>
                                 <div class="social-username"
-                                    id="email-address">Pranav@BeyondMeBtw.com</div>
+                                    id="email-address">Pranav<wbr>@BeyondMeBtw.com</div>
                             </div>
                         </div>
                     </a>
-                    <div id="toast" class="toast">Email copied to
-                        clipboard!</div>
                 </div>
 
                 <div class="contact-cta">Let's connect and grow!</div>
@@ -261,48 +259,54 @@
             <!-- Latest Post -->
             <div class="bento-item latest-post">
                 <div class="section-title">Latest Post!</div>
-                <div class="latest-post-content">
-                    <img src alt="Latest-post" class="latest-post-img">
+                <a class="latest-post-content" target="_blank" rel="noopener">
+                    <img alt="" class="latest-post-img">
                     <div class="latest-post-info">
                         <div>
+                            <div class="latest-post-meta"></div>
                             <div class="latest-post-title"></div>
-                            <div class="latest-post-date"></div>
                             <div class="latest-post-excerpt"></div>
                         </div>
-                        <button class="read-more">Read More</button>
+                        <span class="read-more">Read More</span>
                     </div>
-                </div>
+                </a>
             </div>
 
-            <!-- Featured Posts -->
-            <div class="bento-item featured-posts">
-                <h2 class="section-title">Featured Posts</h2>
-                <div class="featured-posts-container"
-                    id="featured-posts-container">
+            <!-- Recent Posts: the newest posts across every category, automatic -->
+            <section class="bento-item home-section recent-posts" aria-labelledby="recent-title">
+                <div class="section-head">
+                    <h2 class="section-title" id="recent-title">Recent Posts</h2>
+                    <a href="https://blog.beyondmebtw.com" class="section-link">All posts <span aria-hidden="true">&rarr;</span></a>
                 </div>
-                <a href="https://blog.beyondmebtw.com" class="view-all-btn">View
-                    All Posts</a>
-            </div>
+                <div class="recent-grid" id="recent-grid"></div>
+            </section>
+
+            <!-- Featured Posts: hand-picked in Manage -->
+            <section class="bento-item home-section featured-posts" aria-labelledby="featured-title">
+                <div class="section-head">
+                    <h2 class="section-title" id="featured-title">Featured Posts</h2>
+                    <a href="https://blog.beyondmebtw.com" class="section-link">All posts <span aria-hidden="true">&rarr;</span></a>
+                </div>
+                <div class="featured-grid" id="featured-posts-container"></div>
+            </section>
 
             <!-- Featured Minis -->
-            <div class="bento-item featured-minis">
-                <h2 class="section-title">Featured Minis</h2>
-                <div class="featured-minis-container"
-                    id="featured-minis-container">
+            <section class="bento-item home-section featured-minis" aria-labelledby="minis-title">
+                <div class="section-head">
+                    <h2 class="section-title" id="minis-title">Featured Minis</h2>
+                    <a href="https://minis.beyondmebtw.com" class="section-link">All minis <span aria-hidden="true">&rarr;</span></a>
                 </div>
-                <a href="https://minis.beyondmebtw.com" class="view-all-btn">View
-                    All Minis</a>
-            </div>
+                <div class="minis-layout" id="featured-minis-container"></div>
+            </section>
 
-            <!-- Projects Grid -->
-            <div class="bento-item projects-showcase">
-                <h2 class="section-title">Featured Projects</h2>
-                <div class="projects-grid" id="projects-grid">
-                    <!-- Populated dynamically from latest.json featuredProjects + project-data.json -->
+            <!-- Featured Projects -->
+            <section class="bento-item home-section projects-showcase" aria-labelledby="projects-title">
+                <div class="section-head">
+                    <h2 class="section-title" id="projects-title">Featured Projects</h2>
+                    <a href="https://beyondmebtw.com/projects" class="section-link">All projects <span aria-hidden="true">&rarr;</span></a>
                 </div>
-                <a href="https://beyondmebtw.com/projects"
-                    class="view-all-btn">View All Projects</a>
-            </div>
+                <div class="home-projects" id="projects-grid"></div>
+            </section>
         </div>
 
         <div id="footer">

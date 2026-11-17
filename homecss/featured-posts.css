@@ -1,109 +1,157 @@
-/* featured-posts.css */
-.featured-posts {
-    grid-column: 1 / 5;
-    /* Span all four columns */
-    grid-row: 3 / 4;
-    /* Take one row only */
-}
+/* featured-posts.css — Recent Posts (automatic) + Featured Posts (hand-picked) */
 
-.featured-posts-container {
+/* ========================================
+   Recent: compact, image-led, no excerpt
+   ======================================== */
+.recent-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    /* Changed from 2 to 4 columns */
-    grid-gap: 15px;
-    margin-bottom: 20px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
 }
 
-.featured-post {
-    display: flex;
-    flex-direction: column;
-    background-color: rgba(244, 242, 239, 0.7);
-    border-radius: 15px;
-    overflow: hidden;
-    transition: transform 0.3s, box-shadow 0.3s;
-    height: 100%;
-}
-
-.featured-post:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-}
-
-.featured-post-img {
-    width: 100%;
+.recent-thumb {
     aspect-ratio: 16 / 9;
-    /* Set a fixed aspect ratio */
-    object-fit: cover;
-    object-position: center;
-    /* Centers the focus point */
+    overflow: hidden;
+    background-color: #EFE6DC;
 }
 
-.featured-post-details {
-    padding: 15px;
-    padding-bottom:0 ;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+.recent-body {
+    padding: 14px 16px 18px;
 }
 
-.featured-post-title {
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 8px;
-    color: #3b342d;
-}
-
-.featured-post-date {
-    font-size: 14px;
-    color: #3b342d;
-    font-style: italic;
-    margin-bottom: 10px;
-}
-
-.featured-post-excerpt {
-    font-size: 16px;    
-    color: #3b342d;    
-    line-height: 1.4;
+.recent-title {
+    font-family: "Kreon", serif;
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--ink-deep);
+    text-wrap: balance;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    overflow: hidden;    
+    -webkit-line-clamp: 3;
+    overflow: hidden;
 }
 
-.featured-posts .view-all-btn {
-    display: block;
-    text-align: center;
-    background-color: #6a5a4a;
-    color: #fff;
-    text-decoration: none;
-    padding: 12px;
-    border-radius: 30px;
-    font-weight: 500;
-    font-size: 16px;
-    transition: background-color 0.3s;
-    margin-top: 20px;    
+/* ========================================
+   Featured: bigger, horizontal, with the excerpt
+   ======================================== */
+.featured-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
 }
 
-.featured-posts .view-all-btn:hover {
-    background-color: #5a4c3e;
+.featured-card {
+    flex-direction: row;
+    min-height: 230px;
 }
 
-.featured-read-more {
-    align-self: flex-end;
-    background-color: #6a5a4a;
-    color: #fff;
-    border: none;
-    padding: 8px 20px;
-    margin-bottom: 15px;
-    margin-right: 15px;
-    border-radius: 30px;
-    cursor: pointer;
+.featured-thumb {
+    flex: 0 0 44%;
+    overflow: hidden;
+    background-color: #EFE6DC;
+}
+
+.featured-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    padding: 20px 22px 20px;
+}
+
+.featured-title {
     font-family: "Kreon", serif;
-    font-weight: 500;
-    font-size: 18px;
-    transition: background-color 0.3s, transform 0.3s;
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--ink-deep);
+    margin-bottom: 10px;
+    text-wrap: balance;
 }
 
-.featured-read-more:hover {
-    background-color: #5a4c3e;
-    transform: translateY(-2px);
+.featured-excerpt {
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--ink);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+}
+
+/* ========================================
+   Responsive
+   ======================================== */
+@media (max-width: 1500px) {
+    .featured-title {
+        font-size: 23px;
+    }
+
+    .featured-excerpt {
+        font-size: 17px;
+        -webkit-line-clamp: 3;
+    }
+}
+
+@media (max-width: 1100px) {
+    .recent-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .featured-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Phones: recent becomes a tight list, featured stacks image-on-top. */
+@media (max-width: 600px) {
+    .recent-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .recent-card {
+        flex-direction: row;
+        align-items: stretch;
+    }
+
+    .recent-thumb {
+        flex: 0 0 42%;
+        align-self: center;
+    }
+
+    .recent-body {
+        padding: 10px 12px;
+        align-self: center;
+        min-width: 0;
+    }
+
+    .recent-body .card-meta {
+        font-size: 11px;
+        letter-spacing: 0.04em;
+        margin-bottom: 4px;
+    }
+
+    .recent-title {
+        font-size: 17px;
+    }
+
+    .featured-card {
+        flex-direction: column;
+        min-height: 0;
+    }
+
+    .featured-thumb {
+        flex: none;
+        aspect-ratio: 16 / 9;
+    }
+
+    .featured-body {
+        padding: 16px 18px 18px;
+    }
+
+    .featured-title {
+        font-size: 22px;
+    }
 }

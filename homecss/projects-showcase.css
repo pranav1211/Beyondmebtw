@@ -1,90 +1,93 @@
-/* projects-showcase.css */
-.projects-showcase {
-    grid-column: 1 / 5; /* Span all four columns */
-    grid-row: 5 / 6;    /* Row 5: below Featured Minis */
-}
+/* projects-showcase.css — Featured Projects: cover image, logo badge, tags */
 
-.projects-grid {
+.home-projects {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* Changed from 2 to 4 columns */
-    grid-gap: 15px;
-    margin-bottom: 20px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
 }
 
-.project-card {
-    background-color: rgba(244, 242, 239, 0.7);
-    padding: 15px;
-    border-radius: 15px;
-    transition: transform 0.3s, box-shadow 0.3s;
-    position: relative; /* Add this to position the button relative to the card */
+.project-cover {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background-color: #EFE6DC;
+}
+
+/* Sits in the body, pulled up to overlap the cover's bottom edge. */
+.project-logo-badge {
+    position: relative;
+    z-index: 1;
+    margin: -40px 0 10px;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background-color: #fff;
+    border: 1px solid var(--card-line);
+    box-shadow: 0 6px 14px -6px rgba(59, 52, 45, 0.35);
+}
+
+.project-logo-badge img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.project-body {
     display: flex;
-    flex-direction: column; /* Allow proper positioning of elements */
-    min-height: 180px; /* Ensure cards have minimum height for button positioning */
-}
-
-.project-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-}
-
-.project-icon {
-    font-size: 32px;
-    margin-bottom: 10px;
+    flex-direction: column;
+    flex: 1;
+    padding: 18px 18px 18px;
 }
 
 .project-title {
-    font-size: 26px;
-    font-weight: bold;
-    margin-bottom: 8px;
-    color: #4a3f35;
+    font-family: "Kreon", serif;
+    font-size: 23px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--ink-deep);
+    margin-bottom: 6px;
+    text-wrap: balance;
 }
 
 .project-desc {
-    font-size: 19px;
-    color: #3b342d;
-    line-height: 1.4;
-    margin-bottom: 40px; /* Add space for the button */
+    font-size: 17px;
+    line-height: 1.45;
+    color: var(--ink);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
 }
 
-.view-all-btn {
-    display: block;
-    text-align: center;
-    background-color: #6a5a4a;
-    color: #fff;
-    text-decoration: none;
-    padding: 12px;
-    border-radius: 30px;
-    font-weight: 500;
-    font-size: 16px;
-    transition: background-color 0.3s;
-    margin-top: 10px;
+.project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    list-style: none;
+    margin-top: auto;
+    padding-top: 14px;
 }
 
-.view-all-btn:hover {
-    background-color: #5a4c3e;
-}
-
-.project-explore {
-    position: absolute; /* Position absolutely within the card */
-    bottom: 15px; /* Distance from the bottom */
-    right: 15px; /* Distance from the right */
-    background-color: #6a5a4a;
-    color: #fff;
-    border: none;
-    padding: 8px 20px;
-    border-radius: 30px;
-    cursor: pointer;
+.project-tags li {
     font-family: "Kreon", serif;
-    font-weight: 500;
-    font-size: 18px;
-    transition: background-color 0.3s, transform 0.3s;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    background-color: rgba(59, 52, 45, 0.07);
+    border-radius: 999px;
+    padding: 3px 10px;
 }
 
-.project-explore:hover {
-    background-color: #5a4c3e;
-    transform: translateY(-2px);
+@media (max-width: 1100px) {
+    .home-projects {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
-.project-details {
-    padding: 12px;
+@media (max-width: 600px) {
+    .home-projects {
+        grid-template-columns: 1fr;
+    }
 }

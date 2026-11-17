@@ -90,6 +90,54 @@
     width: 100%;
 }
 
+/* Flex children default to min-width:auto, which stops the text column
+   shrinking below the email's length — that is what pushed it past the card
+   edge on laptops. Let it shrink; if it still can't fit, the <wbr> in the
+   markup lets the email wrap cleanly before the "@". */
+.social-link,
+.social-item,
+.social-info {
+    min-width: 0;
+}
+
+.social-icon-wrapper {
+    flex-shrink: 0;
+}
+
+.social-username {
+    overflow-wrap: break-word;
+}
+
+/* 4-column laptop range: column 4 is only ~300px wide, so tighten the rows. */
+@media (min-width: 1351px) and (max-width: 1600px) {
+    .get-in-touch {
+        padding: 20px 16px;
+    }
+
+    .social-item {
+        gap: 12px;
+        padding: 10px 8px;
+    }
+
+    .social-icon-wrapper {
+        width: 42px;
+        height: 42px;
+    }
+
+    .social-icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    .social-name {
+        font-size: 17px;
+    }
+
+    .social-username {
+        font-size: 16.5px;
+    }
+}
+
 .contact-cta {
     text-align: center;
     margin-top: 15px;
