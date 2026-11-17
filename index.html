@@ -228,9 +228,13 @@
                         </div>
                     </a>
 
-                    <a href="#" class="social-link" id="copy-email">
-                        <div class="social-item">
-                            <div class="social-icon-wrapper">
+                    <!-- Click copies the address; the small button opens the
+                         visitor's own mail app (works for any provider). -->
+                    <div class="social-link email-row">
+                        <button type="button" class="social-item email-copy"
+                            id="copy-email" data-email="pranav@beyondmebtw.com"
+                            title="Copy email address">
+                            <span class="social-icon-wrapper">
                                 <svg class="social-icon"
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24" fill="none"
@@ -243,14 +247,26 @@
                                     <polyline
                                         points="22,6 12,13 2,6"></polyline>
                                 </svg>
-                            </div>
-                            <div class="social-info">
-                                <div class="social-name">Email</div>
-                                <div class="social-username"
-                                    id="email-address">Pranav<wbr>@BeyondMeBtw.com</div>
-                            </div>
-                        </div>
-                    </a>
+                            </span>
+                            <span class="social-info">
+                                <span class="social-name" id="email-label">Email <span class="email-hint">&middot; click to copy</span></span>
+                                <span class="social-username"
+                                    id="email-address">Pranav<wbr>@BeyondMeBtw.com</span>
+                            </span>
+                        </button>
+                        <a class="email-open" href="mailto:pranav@beyondmebtw.com"
+                            aria-label="Open in your mail app"
+                            title="Open in your mail app">
+                            <svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round"
+                                aria-hidden="true">
+                                <path d="M7 17 17 7"></path>
+                                <path d="M8 7h9v9"></path>
+                            </svg>
+                        </a>
+                        <span class="sr-only" id="email-status" aria-live="polite"></span>
+                    </div>
                 </div>
 
                 <div class="contact-cta">Let's connect and grow!</div>

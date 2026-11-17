@@ -22,12 +22,52 @@ aboutlink.addEventListener('click', () => {
     window.location = "https://beyondmebtw.com/about";
 });
 
-document.getElementById('copy-email').addEventListener('click', function (event) {
-    event.preventDefault();
-    const email = "pranav@beyondmebtw.com";
-    const gmailUrl = `https://mail.google.com/mail/u/0/?to=${encodeURIComponent(email)}&tf=cm`;
-    window.open(gmailUrl, '_blank');
-});
+// ── Email: click copies the address (works whatever mail provider the
+// visitor uses); the small ↗ button next to it is a plain mailto link.
+function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text);
+    }
+    return new Promise((resolve, reject) => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        const ok = document.execCommand('copy');
+        ta.remove();
+        ok ? resolve() : reject(new Error('copy failed'));
+    });
+}
+
+(function setupEmailCopy() {
+    const btn = document.getElementById('copy-email');
+    const label = document.getElementById('email-label');
+    const status = document.getElementById('email-status');
+    if (!btn || !label) return;
+    const email = btn.dataset.email;
+    const original = label.innerHTML;
+    let timer;
+
+    btn.addEventListener('click', () => {
+        copyText(email).then(() => {
+            label.textContent = 'Copied ✓';
+            btn.classList.add('is-copied');
+            if (status) status.textContent = 'Email address copied to clipboard';
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                label.innerHTML = original;
+                btn.classList.remove('is-copied');
+                if (status) status.textContent = '';
+            }, 2200);
+        }).catch(() => {
+            // Clipboard blocked: fall back to the visitor's mail app.
+            window.location.href = `mailto:${email}`;
+        });
+    });
+})();
 
 // ── Data (canonical in bmb-data, served by Manage) ───────────────────────
 const DATA_API = 'https://manage.beyondmebtw.com/api/v1/data/resources/';
@@ -136,7 +176,7 @@ function renderFeaturedPosts(posts, categoryOf) {
                 <img src="${esc(safeUrl(p.thumbnail))}" alt="" loading="lazy">
             </div>
             <div class="featured-body">
-                <p class="card-meta" data-link="${esc(linkKey(p.link))}">${meta(formatDate(p.date), categoryOf(p.link))}</p>
+                <p class="card-meta">${meta(formatDate(p.date), categoryOf(p))}</p>
                 <h3 class="featured-title">${esc(p.title)}</h3>
                 <p class="featured-excerpt">${esc(p.excerpt)}</p>
                 <span class="card-cta">Read <span aria-hidden="true">&rarr;</span></span>
@@ -200,57 +240,83 @@ function renderFeaturedProjects(projects) {
     });
 }
 
+// ── Recent posts: picked from a list, minus anything already on the page ─
+const RECENT_COUNT = 4;
+
+function pickRecent(posts, data) {
+    // Skip the promoted Latest post and the Featured posts so nothing shows twice.
+    const skip = new Set(
+        [data.mainPost, ...(data.featured || [])]
+            .filter(Boolean)
+            .map(p => linkKey(p.link))
+    );
+    return (posts || [])
+        .filter(p => p && parseDate(p.date) && !skip.has(linkKey(p.link)))
+        .sort((a, b) => parseDate(b.date) - parseDate(a.date))
+        .slice(0, RECENT_COUNT);
+}
+
+// Fallback only: every post across every category, labelled with its
+// category name. Used while Manage doesn't yet precompute `recent` and
+// `categoryName` into home.latest. Fetched at most once.
+let allPostsPromise = null;
+function loadAllPosts() {
+    if (!allPostsPromise) {
+        allPostsPromise = fetchResource('blog.categories').then(cats =>
+            Promise.all(Object.keys(cats || {}).map(key =>
+                fetchResource(`blog.posts.${key}`)
+                    .then(d => (d && d.posts) || [])
+                    .catch(() => [])
+                    .then(posts => posts.map(p => ({ ...p, categoryName: cats[key].name || key })))
+            )).then(groups => groups.flat())
+        );
+    }
+    return allPostsPromise;
+}
+
+function hideRecent() {
+    const section = document.querySelector('.recent-posts');
+    if (section) section.hidden = true;
+}
+
 // ── Boot ─────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     const homeReq = fetchResource('home.latest');
 
-    // Category names + every post, used for Recent and for labelling posts
-    // with their category. Loaded independently so the top of the page never
-    // waits on it.
-    const postsReq = fetchResource('blog.categories').then(cats =>
-        Promise.all(Object.keys(cats || {}).map(key =>
-            fetchResource(`blog.posts.${key}`)
-                .then(d => (d && d.posts) || [])
-                .catch(() => [])
-                .then(posts => posts.map(p => ({ ...p, categoryName: cats[key].name || key })))
-        )).then(groups => groups.flat())
-    );
-
-    const categoryLookup = postsReq
-        .then(all => {
-            const map = new Map(all.map(p => [linkKey(p.link), p.categoryName]));
-            return link => map.get(linkKey(link)) || '';
-        })
-        .catch(() => () => '');
-
     homeReq.then(data => {
-        renderLatestPost(data.mainPost || {}, '');
-        renderFeaturedPosts(data.featured, () => '');
+        const main = data.mainPost || {};
+        const featured = data.featured || [];
+
+        renderLatestPost(main, main.categoryName || '');
+        renderFeaturedPosts(featured, p => p.categoryName || '');
         renderFeaturedMinis(data.featuredMinis);
 
-        // Fill in category labels once the post lists arrive.
-        categoryLookup.then(categoryOf => {
-            const main = data.mainPost || {};
-            document.querySelector('.latest-post-meta').innerHTML = meta(formatDate(main.date), categoryOf(main.link));
-            document.querySelectorAll('#featured-posts-container .card-meta').forEach((el, i) => {
-                const p = (data.featured || [])[i];
-                if (p) el.innerHTML = meta(formatDate(p.date), categoryOf(p.link));
-            });
-        });
-    }).catch(err => console.error('Error loading home data:', err));
+        // Preferred path: Manage precomputes `recent` (and `categoryName` on
+        // mainPost/featured) whenever blog or home data is saved.
+        const hasRecent = Array.isArray(data.recent) && data.recent.length > 0;
+        const needsLabels = !main.categoryName || featured.some(p => !p.categoryName);
 
-    // Recent: newest 4, skipping the promoted Latest post so it isn't shown twice.
-    Promise.all([postsReq, homeReq.catch(() => ({}))]).then(([all, data]) => {
-        const skip = linkKey(data.mainPost && data.mainPost.link);
-        const recent = all
-            .filter(p => parseDate(p.date) && linkKey(p.link) !== skip)
-            .sort((a, b) => parseDate(b.date) - parseDate(a.date))
-            .slice(0, 4);
-        renderRecentPosts(recent);
+        if (hasRecent) renderRecentPosts(pickRecent(data.recent, data));
+        if (hasRecent && !needsLabels) return;
+
+        // Fallback: work it out here from the full post lists.
+        loadAllPosts().then(all => {
+            if (!hasRecent) renderRecentPosts(pickRecent(all, data));
+            if (needsLabels) {
+                const names = new Map(all.map(p => [linkKey(p.link), p.categoryName]));
+                const categoryOf = p => p.categoryName || names.get(linkKey(p.link)) || '';
+                document.querySelector('.latest-post-meta').innerHTML = meta(formatDate(main.date), categoryOf(main));
+                document.querySelectorAll('#featured-posts-container .card-meta').forEach((el, i) => {
+                    if (featured[i]) el.innerHTML = meta(formatDate(featured[i].date), categoryOf(featured[i]));
+                });
+            }
+        }).catch(err => {
+            console.error('Error loading posts:', err);
+            if (!hasRecent) hideRecent();
+        });
     }).catch(err => {
-        console.error('Error loading recent posts:', err);
-        const section = document.querySelector('.recent-posts');
-        if (section) section.hidden = true;
+        console.error('Error loading home data:', err);
+        hideRecent();
     });
 
     Promise.all([homeReq, fetchResource('projects')]).then(([data, allProjects]) => {

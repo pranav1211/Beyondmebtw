@@ -136,6 +136,18 @@
     .social-username {
         font-size: 16.5px;
     }
+
+    .email-row .email-open {
+        top: 5px;
+        right: 4px;
+        width: 26px;
+        height: 26px;
+    }
+
+    .email-row .email-open svg {
+        width: 14px;
+        height: 14px;
+    }
 }
 
 .contact-cta {
@@ -146,23 +158,106 @@
     font-size: 16px;
 }
 
-.toast {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #333;
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-size: 14px;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s, visibility 0.3s;
-    z-index: 1000; /* Ensure it's above other elements */
+/* ========================================
+   Email row: the row copies; ↗ opens the mail app
+   ======================================== */
+.email-row {
+    position: relative;
 }
 
-.toast.show {
+/* Reset the <button> so it looks exactly like the link rows above it. */
+.email-copy {
+    width: 100%;
+    background: none;
+    border: 0;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.email-copy .social-name {
+    display: block;
+}
+
+.email-hint {
+    font-size: 0.72em;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0;
+    color: #8a7a6a;
+    opacity: 0;
+    transition: opacity 180ms ease;
+}
+
+.email-copy:hover .email-hint,
+.email-copy:focus-visible .email-hint {
     opacity: 1;
-    visibility: visible;
+}
+
+.email-copy.is-copied .social-name {
+    color: #3f7a4a;
+}
+
+.email-copy:focus-visible,
+.social-link:focus-visible {
+    outline: 3px solid #3b342d;
+    outline-offset: 2px;
+    border-radius: 10px;
+}
+
+.email-open {
+    position: absolute;
+    top: 8px;
+    right: 6px;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    color: #5a4a3a;
+    background-color: rgba(244, 242, 239, 0.8);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    transition: transform 200ms ease, background-color 200ms ease;
+}
+
+.email-open svg {
+    width: 16px;
+    height: 16px;
+}
+
+.email-open:hover {
+    background-color: #fff;
+    transform: translateY(-1px);
+}
+
+.email-open:focus-visible {
+    outline: 3px solid #3b342d;
+    outline-offset: 2px;
+}
+
+/* Touch screens have no hover, so the hint is always shown there. */
+@media (hover: none) {
+    .email-hint {
+        opacity: 1;
+    }
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .email-hint,
+    .email-row .email-open {
+        transition: none;
+    }
 }

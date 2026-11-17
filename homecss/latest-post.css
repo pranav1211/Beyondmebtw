@@ -16,19 +16,21 @@
     border-radius: 12px;
 }
 
+/* As before the redesign: the image stretches to the full height of the text
+   column (no empty band underneath), and hovering it shows the whole image. */
 .latest-post-img {
-    width: 38%;
-    align-self: flex-start;
+    width: 35%;
     border-radius: 12px;
     aspect-ratio: 16 / 9;
     object-fit: cover;
     object-position: center;
-    box-shadow: 0 10px 24px -10px rgba(59, 52, 45, 0.45);
-    transition: transform 400ms var(--ease-out);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
 }
 
-.latest-post-content:hover .latest-post-img {
-    transform: rotate(-1deg) scale(1.02);
+.latest-post-img:hover {
+    transform: scale(1.02);
+    object-fit: contain;
 }
 
 .latest-post-info {
@@ -89,7 +91,7 @@
         transition: none;
     }
 
-    .latest-post-content:hover .latest-post-img,
+    .latest-post-img:hover,
     .latest-post-content:hover .read-more {
         transform: none;
     }
