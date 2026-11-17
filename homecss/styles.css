@@ -156,6 +156,14 @@
     transform: scale(1.04);
 }
 
+/* Post thumbnails are meant to be 16:9 and some use the whole frame, so
+   they are fitted, never cropped. For a true 16:9 image this is identical to
+   cover; an off-ratio one gets thin paper bands instead of losing its edges. */
+.recent-thumb img,
+.featured-thumb img {
+    object-fit: contain;
+}
+
 /* Date · Category line */
 .card-meta {
     font-family: "Delius", cursive;

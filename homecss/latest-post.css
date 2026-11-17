@@ -14,7 +14,7 @@
 .latest-post-content {
     flex: 1;
     display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 0.96fr) minmax(0, 1fr);
     align-items: center;
     gap: 26px;
     padding: 10px 8px 8px;
@@ -30,7 +30,8 @@
     width: 100%;
     height: auto;
     aspect-ratio: 16 / 9;
-    object-fit: cover;
+    object-fit: contain;
+    background-color: #EFE6DC;
     /* The paper frame is a ring, not a border, so it never eats into the
        16:9 box (a border would crop the image slightly). */
     border-radius: 6px;
@@ -109,7 +110,7 @@
 /* Narrower 4-column laptops: give the text a little more room. */
 @media (max-width: 1600px) {
     .latest-post-content {
-        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+        grid-template-columns: minmax(0, 0.89fr) minmax(0, 1fr);
         gap: 22px;
     }
 
@@ -132,8 +133,9 @@
         gap: 20px;
     }
 
-    .latest-post-img {
+    .latest-post .latest-post-img {
         transform: rotate(-0.8deg);
+        width: 90%;
     }
 
     .latest-post-excerpt {
@@ -142,6 +144,10 @@
 }
 
 @media (max-width: 600px) {
+    .latest-post .latest-post-img {
+        width: 100%;
+    }
+
     .latest-post-img {
         box-shadow:
             0 0 0 4px #FBF8F3,
